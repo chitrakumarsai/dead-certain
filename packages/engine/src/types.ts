@@ -9,8 +9,46 @@ export type FactType = "boolean" | "number" | "money" | "date" | "enum";
 /** Where a fact's value came from. */
 export type FactSource = "answered" | "collected" | "derived";
 
-/** Compiled expression. Its shape is owned by the rule-language spec, so it is opaque here. */
-export type Expr = unknown;
+/** The unique sentinel for an indeterminate fact value. */
+export const UNKNOWN: unique symbol = Symbol.for("dead-certain.unknown");
+export type Unknown = typeof UNKNOWN;
+
+export type BinaryOp =
+	| "+"
+	| "-"
+	| "*"
+	| "/"
+	| "=="
+	| "!="
+	| "<"
+	| "<="
+	| ">"
+	| ">="
+	| "and"
+	| "or";
+
+export type BuiltinFn = "min" | "max" | "round" | "if" | "days_between";
+
+/** Compiled expression — concrete tagged union. */
+export type Expr =
+	| {
+			readonly kind: "literal";
+			readonly type: FactType;
+			readonly value: FactValue;
+	  }
+	| { readonly kind: "fact"; readonly name: string }
+	| { readonly kind: "unary"; readonly op: "not" | "-"; readonly operand: Expr }
+	| {
+			readonly kind: "binary";
+			readonly op: BinaryOp;
+			readonly left: Expr;
+			readonly right: Expr;
+	  }
+	| {
+			readonly kind: "call";
+			readonly fn: BuiltinFn;
+			readonly args: readonly Expr[];
+	  };
 
 export interface FactDef {
 	readonly type: FactType;
