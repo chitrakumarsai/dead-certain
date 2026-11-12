@@ -1,5 +1,19 @@
 // Public API for @dead-certain/engine
 
+// Engine functions
+export {
+	answer,
+	audit,
+	decode,
+	encode,
+	explain,
+	next,
+	start,
+	whatIf,
+} from "./api";
+// Errors
+export type { ErrorCode } from "./errors";
+export { EngineError } from "./errors";
 // Evaluator
 export type {
 	Env,

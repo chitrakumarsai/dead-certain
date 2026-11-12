@@ -39,6 +39,7 @@ Each key is a fact name. Each value is a fact definition. Fact names are the bar
 | `derived` | boolean | optional | Marks a fact that rules compute, rather than one the user answers or an app collects. |
 | `options` | array of strings | optional | The allowed values. Used when `type` is `enum`. |
 | `role` | `deduction` or `check` | optional | Marks facts the interface lists as line items. |
+| `label` | string | optional | Display name shown on ledger lines. When absent, the engine derives one from the fact name: underscores become spaces and the first letter is capitalised. |
 
 ## The `rules` array
 
@@ -83,6 +84,7 @@ facts:
     type: money
     derived: true
     role: deduction
+    label: Room rent over the limit
 
 rules:
   - id: ROOM-01
@@ -526,3 +528,12 @@ The printer follows these rules:
 | `(not a) == b` | `not a == b` | `not` binds tighter than a comparison. |
 | `not (a == b)` | `not (a == b)` | The parentheses are needed. |
 | `(a < b) == c` | `(a < b) == c` | Comparisons do not chain, so a comparison inside a comparison always keeps its parentheses. |
+
+## Notes for the kb-tools schema and validator
+
+These notes record what the engine assumes about a knowledge base, so the `kb-tools` schema and validator can enforce it.
+
+1. The schema accepts the optional `label` string on a fact, matching `FactDef.label`.
+2. The validator warns when a fact with `role: deduction` has no unguarded fallback rule. The engine reports `undefined` for such a fact when every guard is false.
+3. The `kb-tools` tests fail on any `money` rule that lacks an explicit `round(...)`, so `NON_INTEGER_MONEY` is caught at build time.
+4. Every `cite` must name a clause. The engine assumes this and does not check it at run time.

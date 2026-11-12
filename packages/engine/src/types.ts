@@ -60,6 +60,8 @@ export interface FactDef {
 	readonly options?: readonly string[];
 	/** Marks facts the interface lists as line items. */
 	readonly role?: "deduction" | "check";
+	/** Display name for ledger lines. Falls back to a name derived from the fact. */
+	readonly label?: string;
 }
 
 export interface Rule {
