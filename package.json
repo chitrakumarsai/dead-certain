@@ -1,0 +1,22 @@
+{
+	"name": "dead-certain",
+	"private": true,
+	"type": "module",
+	"packageManager": "pnpm@10.9.0",
+	"engines": {
+		"node": ">=22"
+	},
+	"scripts": {
+		"check": "biome check . && tsc --noEmit && vitest run --passWithNoTests",
+		"check:changed": "biome check --changed --no-errors-on-unmatched . && tsc --noEmit && vitest run --changed --passWithNoTests",
+		"test:props": "vitest run .props. --passWithNoTests",
+		"build": "pnpm -r --if-present build",
+		"e2e": "playwright test"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.6.7",
+		"@playwright/test": "1.65.0",
+		"typescript": "7.0.2",
+		"vitest": "5.1.0"
+	}
+}
