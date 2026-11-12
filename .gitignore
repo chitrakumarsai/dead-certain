@@ -18,7 +18,6 @@ __pycache__/
 .env.*
 .claude/settings.local.json
 .DS_Store
-pr.diff
 
 # Markdown stays out of git by owner's instruction (README.md was already tracked).
 # Hackathon rules need .kiro/ steering and specs in the repo: see the G0 report before Kiro adds them.

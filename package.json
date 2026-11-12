@@ -11,8 +11,7 @@
 		"check:changed": "biome check --changed --no-errors-on-unmatched . && tsc --noEmit && vitest run --changed --passWithNoTests",
 		"test:props": "vitest run .props. --passWithNoTests",
 		"build": "pnpm -r --if-present build",
-		"e2e": "playwright test",
-		"kb:compile": "bash scripts/kb-compile.sh"
+		"e2e": "playwright test"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.6.7",
