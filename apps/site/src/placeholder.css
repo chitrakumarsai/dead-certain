@@ -1,0 +1,53 @@
+/* Placeholder only. The real tokens land in packages/ui/tokens.css with the ui-kit spec (Phase 1). */
+:root {
+	--lightbox: #edf2f3;
+	--paper: #fcfefe;
+	--ink: #13222c;
+	--ink-soft: #4a5a64;
+	--hairline: #c9d5d9;
+	--focus: #1f6feb;
+}
+
+body {
+	margin: 0;
+	padding: 48px 16px;
+	background: var(--lightbox);
+	color: var(--ink);
+	font:
+		17px / 26px "IBM Plex Sans",
+		system-ui,
+		sans-serif;
+}
+
+main {
+	max-width: 680px;
+	padding: 32px 24px;
+	background: var(--paper);
+	border: 1px solid var(--hairline);
+	border-radius: 4px;
+}
+
+h1 {
+	margin: 0 0 24px;
+	font:
+		600 36px / 44px "IBM Plex Serif",
+		Georgia,
+		serif;
+}
+
+a {
+	color: var(--ink);
+}
+
+a:focus-visible {
+	outline: 2px solid var(--focus);
+	outline-offset: 2px;
+}
+
+footer {
+	max-width: 680px;
+	margin-top: 24px;
+	color: var(--ink-soft);
+	font-size: 14px;
+	line-height: 20px;
+}
