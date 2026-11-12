@@ -29,3 +29,4 @@ __pycache__/
 !/.claude/**
 !/apps/*/rulebook/**
 !/apps/*/kb/**
+!/docs/kb-format.md
