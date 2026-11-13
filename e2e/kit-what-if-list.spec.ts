@@ -7,7 +7,7 @@ const specimen = (page: Page, state: string) =>
 test("the what-if specimens exist and pass axe", async ({ page }) => {
 	await page.goto("./kit/#whatiflist-money");
 
-	for (const state of ["money", "no-money", "empty"]) {
+	for (const state of ["money", "no-money", "edges", "empty"]) {
 		await expect(specimen(page, state), state).toHaveCount(1);
 		await expectNoAxeViolations(page, `[data-specimen="whatiflist-${state}"]`);
 	}
@@ -50,4 +50,16 @@ test("rows are plain text, and an empty list renders nothing", async ({
 	const empty = specimen(page, "empty");
 	await expect(empty.locator("h2, [role=heading], ul")).toHaveCount(0);
 	await expect(empty.locator("[data-whatif-host]")).toBeEmpty();
+});
+
+test("edge rows: yes/no lower case, enums and money verbatim, generic and unknown", async ({
+	page,
+}) => {
+	await page.goto("./kit/#whatiflist-edges");
+
+	await expect(specimen(page, "edges").getByRole("listitem")).toHaveText([
+		"If is emergency were no: + ₹29,500",
+		"If MIT licence type were MIT: the verdict changes",
+		"If room rent per day were ₹6,000: amount not known yet; Paid in part to More answers needed",
+	]);
 });
