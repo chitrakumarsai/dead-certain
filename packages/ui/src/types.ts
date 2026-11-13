@@ -5,3 +5,12 @@ export interface FormatContext {
 	/** Defaults to "en-IN" for INR and "en" otherwise. */
 	readonly locale?: string;
 }
+
+/** What a verdict headline can say. */
+export type VerdictState =
+	| "paid"
+	| "reduced"
+	| "denied" // Claim Check
+	| "ready"
+	| "not_ready" // Pre-Flight
+	| "undecided"; // goals unknown, questions still needed
