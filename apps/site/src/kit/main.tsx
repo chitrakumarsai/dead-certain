@@ -4,13 +4,15 @@ import "@dead-certain/ui/styles.css";
 
 function Gallery() {
 	return (
-		<>
-			<a href="#content">Skip to the content</a>
-			<header>
-				<h1>Component kit</h1>
+		<div className="p-4 md:p-6">
+			<a href="#content" className="text-sys-small underline">
+				Skip to the content
+			</a>
+			<header className="pt-4">
+				<h1 className="text-question font-semibold">Component kit</h1>
 			</header>
 			<main id="content" tabIndex={-1} />
-		</>
+		</div>
 	);
 }
 

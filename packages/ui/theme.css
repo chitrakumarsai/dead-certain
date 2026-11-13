@@ -1,1 +1,111 @@
-/* Tailwind theme mapping. Filled in by task 2.2. */
+/*
+ * Maps the tokens in tokens.css into Tailwind. The default theme is removed,
+ * so only token-backed classes compile: bg-red-500 and p-5 produce nothing.
+ */
+@import "tailwindcss";
+
+/* Scan the kit's own components for class names, wherever the app is built. */
+@source "./src";
+
+/*
+ * inline: classes read the token directly, so they follow data-surface.
+ * reference: Tailwind emits no theme variables of its own. Several share a
+ * name with a token (--radius-paper) and would otherwise define themselves
+ * in terms of themselves.
+ */
+@theme inline reference {
+	--*: initial;
+
+	/* Breakpoints: 390 is the base. Media queries cannot read custom properties. */
+	--breakpoint-md: 768px;
+	--breakpoint-lg: 1024px;
+	--breakpoint-xl: 1280px;
+
+	/* Colour */
+	--color-lightbox: var(--lightbox);
+	--color-paper: var(--paper);
+	--color-ink: var(--ink);
+	--color-ink-soft: var(--ink-soft);
+	--color-hairline: var(--hairline);
+	--color-film: var(--film);
+	--color-bone: var(--bone);
+	--color-bone-soft: var(--bone-soft);
+	--color-wax: var(--wax);
+	--color-paid: var(--paid);
+	--color-reduced: var(--reduced);
+	--color-denied: var(--denied);
+
+	/* Surface context: these follow data-surface. Prefer them in components. */
+	--color-surface: var(--surface);
+	--color-text: var(--text);
+	--color-text-soft: var(--text-soft);
+	--color-control-border: var(--control-border);
+	--color-divider: var(--divider);
+	--color-focus: var(--focus);
+
+	/* Spacing: named steps only. No --spacing base, so off-scale steps fail. */
+	--spacing-1: var(--space-1);
+	--spacing-2: var(--space-2);
+	--spacing-3: var(--space-3);
+	--spacing-4: var(--space-4);
+	--spacing-6: var(--space-6);
+	--spacing-8: var(--space-8);
+	--spacing-12: var(--space-12);
+	--spacing-16: var(--space-16);
+	--spacing-24: var(--space-24);
+	--spacing-touch: var(--touch-min);
+	--spacing-rail: var(--rail-width);
+	--container-column: var(--column-max);
+
+	--radius-paper: var(--radius-paper);
+	--radius-control: var(--radius-control);
+	--radius-film: var(--radius-film);
+
+	/* Type: three voices, seven styles. */
+	--font-doc: var(--font-doc);
+	--font-sys: var(--font-sys);
+	--font-mono: var(--font-mono);
+	--font-weight-normal: 400;
+	--font-weight-semibold: 600;
+
+	--text-doc-body: var(--text-doc-body);
+	--text-doc-body--line-height: var(--leading-doc-body);
+	--text-doc-fine: var(--text-doc-fine);
+	--text-doc-fine--line-height: var(--leading-doc-fine);
+	--text-verdict: var(--text-verdict);
+	--text-verdict--line-height: var(--leading-verdict);
+	--text-sys-body: var(--text-sys-body);
+	--text-sys-body--line-height: var(--leading-sys-body);
+	--text-question: var(--text-question);
+	--text-question--line-height: var(--leading-question);
+	--text-sys-small: var(--text-sys-small);
+	--text-sys-small--line-height: var(--leading-sys-small);
+	--text-mono: var(--text-mono);
+	--text-mono--line-height: var(--leading-mono);
+
+	/* Motion: one curve. Durations are read directly, as duration-(--dur-press). */
+	--ease-kit: var(--ease);
+	--default-transition-timing-function: var(--ease);
+	--default-transition-duration: var(--dur-press);
+}
+
+/* Every monetary amount lines up in columns. */
+@utility figures {
+	font-variant-numeric: tabular-nums lining-nums;
+}
+
+/*
+ * Windows high-contrast mode. Surfaces, borders and icons take system colours
+ * through the same context properties. Focus is an outline, so it survives.
+ */
+@media (forced-colors: active) {
+	:root,
+	[data-surface="film"] {
+		--surface: Canvas;
+		--text: CanvasText;
+		--text-soft: CanvasText;
+		--control-border: CanvasText;
+		--divider: CanvasText;
+		--focus: Highlight;
+	}
+}
