@@ -28,6 +28,7 @@ export {
 } from "./components/ClauseQuote";
 export { Disclosure, type DisclosureProps } from "./components/Disclosure";
 export { Film, type FilmProps } from "./components/Film";
+export { Ledger, type LedgerProps } from "./components/Ledger";
 export {
 	ProportionBar,
 	type ProportionBarProps,

@@ -29,9 +29,11 @@ function IconGrid() {
 	return (
 		<ul className="grid grid-cols-2 gap-4 md:grid-cols-4">
 			{ICONS.map(([name, icon]) => (
-				<li key={name} className="flex items-center gap-3">
+				<li key={name} className="flex min-w-0 items-center gap-3">
 					{icon}
-					<span className="font-mono text-mono">{name}</span>
+					<span className="min-w-0 font-mono text-mono wrap-anywhere">
+						{name}
+					</span>
 				</li>
 			))}
 		</ul>

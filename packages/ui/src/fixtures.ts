@@ -238,6 +238,11 @@ export const clauseFixtures: Readonly<Record<string, Clause>> = {
 		title: "Co-payment",
 		text: "A policyholder aged 61 or over pays 20% of every admissible claim.",
 	},
+	"5.3": {
+		id: "5.3",
+		title: "Items the policy does not pay",
+		text: "Gloves, masks, gowns and other consumables listed in Annexure 1 are not payable.",
+	},
 	"3.1": {
 		id: "3.1",
 		title: "Waiting period",
@@ -444,4 +449,82 @@ export const undecidedVerdictFixture: Verdict = {
 		},
 	],
 	needed: [questionFixture, questionFixtures.age as Question],
+};
+
+const CONSUMABLES = [
+	"Gloves",
+	"Face masks",
+	"Surgical gowns",
+	"Disposable caps",
+	"Shoe covers",
+	"Cotton wool",
+	"Adhesive tape",
+	"Thermometer",
+	"Nebuliser kit",
+	"Spacer",
+] as const;
+
+/** Thirty deductions of ₹1,000 each, for long ledgers. */
+export const manyDeductionsFixture: Verdict = {
+	kind: "verdict",
+	goals: { payable_amount: CLAIMED_AMOUNT - 30 * 1_000_00, verdict: "reduced" },
+	lineItems: Array.from({ length: 30 }, (_, i) => ({
+		fact: `consumable_${i + 1}_deduction`,
+		role: "deduction" as const,
+		label: `${CONSUMABLES[i % CONSUMABLES.length]}, ward ${Math.floor(i / CONSUMABLES.length) + 1}`,
+		value: 1_000_00,
+		rule: `CONS-${String(i + 1).padStart(2, "0")}`,
+		clause: "5.3",
+	})),
+	needed: [],
+};
+
+/** One deduction is not known yet; the known one alone sets payable. */
+export const unknownLineFixture: Verdict = {
+	kind: "verdict",
+	goals: { payable_amount: 172_000_00, verdict: "reduced" },
+	lineItems: [
+		{
+			fact: "room_rent_deduction",
+			role: "deduction",
+			label: "Room rent above the limit",
+			value: 38_000_00,
+			rule: "ROOM-03",
+			clause: "4.2",
+		},
+		{
+			fact: "copay_deduction",
+			role: "deduction",
+			label: "Co-payment at age 61 or over",
+			value: undefined,
+			rule: "COPAY-01",
+			clause: "6.1",
+		},
+	],
+	needed: [],
+};
+
+/** A deduction that worked out to nothing: the ledger leaves it out. */
+export const zeroDeductionFixture: Verdict = {
+	kind: "verdict",
+	goals: { payable_amount: 172_000_00, verdict: "reduced" },
+	lineItems: [
+		{
+			fact: "room_rent_deduction",
+			role: "deduction",
+			label: "Room rent above the limit",
+			value: 38_000_00,
+			rule: "ROOM-03",
+			clause: "4.2",
+		},
+		{
+			fact: "copay_deduction",
+			role: "deduction",
+			label: "Co-payment at age 61 or over",
+			value: 0,
+			rule: "COPAY-01",
+			clause: "6.1",
+		},
+	],
+	needed: [],
 };

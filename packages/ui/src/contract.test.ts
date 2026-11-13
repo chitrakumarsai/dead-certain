@@ -4,6 +4,7 @@ import type {
 	FactDef,
 	FactSource,
 	FactValue,
+	LineItem,
 	Question,
 } from "@dead-certain/engine/types";
 import { expectTypeOf, test } from "vitest";
@@ -16,6 +17,7 @@ import type {
 } from "./components/ClauseQuote";
 import type { DisclosureProps } from "./components/Disclosure";
 import type { FilmProps } from "./components/Film";
+import type { LedgerProps } from "./components/Ledger";
 import type {
 	ProportionBarProps,
 	ProportionPart,
@@ -130,4 +132,19 @@ test("ProportionBar takes a total, paid and cut parts, and a format", () => {
 	>();
 	expectTypeOf<ProportionPart["kind"]>().toEqualTypeOf<"paid" | "cut">();
 	expectTypeOf<ProportionBarProps["format"]>().toEqualTypeOf<FormatContext>();
+});
+
+test("Ledger takes LineItem unchanged and hands back the item and its opener", () => {
+	expectTypeOf<LedgerProps["items"]>().toEqualTypeOf<readonly LineItem[]>();
+	expectTypeOf<LedgerProps["onOpen"]>().toEqualTypeOf<
+		(item: LineItem, opener: HTMLElement) => void
+	>();
+	expectTypeOf<LedgerProps["claimed"]>().toEqualTypeOf<{
+		label: string;
+		value: number;
+	}>();
+	expectTypeOf<LedgerProps["selectedFact"]>().toEqualTypeOf<
+		string | undefined
+	>();
+	expectTypeOf<LedgerProps["format"]>().toEqualTypeOf<FormatContext>();
 });

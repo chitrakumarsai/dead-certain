@@ -7,12 +7,15 @@ import {
 	deepProofFixture,
 	deniedVerdictFixture,
 	factDefFixtures,
+	manyDeductionsFixture,
 	paidInFullVerdictFixture,
 	preFlightClauseFixtures,
 	preFlightVerdictFixture,
 	proofFixture,
 	questionFixtures,
 	undecidedVerdictFixture,
+	unknownLineFixture,
+	zeroDeductionFixture,
 } from "./fixtures";
 
 test.each([
@@ -32,6 +35,38 @@ test.each([
 		expect(verdict.needed).toEqual([]);
 	},
 );
+
+const CLAIM_VERDICTS = {
+	claimVerdictFixture,
+	paidInFullVerdictFixture,
+	deniedVerdictFixture,
+	undecidedVerdictFixture,
+	manyDeductionsFixture,
+	unknownLineFixture,
+	zeroDeductionFixture,
+};
+
+test.each(
+	Object.entries(CLAIM_VERDICTS).filter(
+		([, verdict]) => typeof verdict.goals.payable_amount === "number",
+	),
+)("%s: claimed minus known deductions equals payable", (_, verdict) => {
+	const deductions = verdict.lineItems
+		.filter((item) => item.role === "deduction")
+		.reduce((sum, item) => sum + Number(item.value ?? 0), 0);
+
+	expect(CLAIMED_AMOUNT - deductions).toBe(verdict.goals.payable_amount);
+});
+
+test("ledger edge fixtures have their edge: 30 lines, one unknown, one zero", () => {
+	expect(manyDeductionsFixture.lineItems).toHaveLength(30);
+	expect(
+		unknownLineFixture.lineItems.filter((item) => item.value === undefined),
+	).toHaveLength(1);
+	expect(
+		zeroDeductionFixture.lineItems.filter((item) => item.value === 0),
+	).toHaveLength(1);
+});
 
 test("paid in full has no deductions; denied pays nothing", () => {
 	expect(paidInFullVerdictFixture.lineItems).toEqual([]);
@@ -58,12 +93,9 @@ test("proof fixture explains a line item of the claim fixture", () => {
 
 test("every clause a Claim Check fixture cites has a clause fixture", () => {
 	const cited = [
-		...[
-			claimVerdictFixture,
-			paidInFullVerdictFixture,
-			deniedVerdictFixture,
-			undecidedVerdictFixture,
-		].flatMap((verdict) => verdict.lineItems.map((item) => item.clause)),
+		...Object.values(CLAIM_VERDICTS).flatMap((verdict) =>
+			verdict.lineItems.map((item) => item.clause),
+		),
 		...proofClauses(proofFixture),
 		...proofClauses(deepProofFixture),
 	];
