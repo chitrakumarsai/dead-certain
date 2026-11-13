@@ -124,3 +124,86 @@ export const preFlightVerdictFixture: Verdict = {
 		},
 	],
 };
+
+const SUM_INSURED = 500_000_00;
+
+const sumInsuredAnswer: ProofNode = {
+	fact: "sum_insured",
+	value: SUM_INSURED,
+	source: "answered",
+	children: [],
+};
+
+/** Four levels deep, with `sum_insured` used by two different rules. */
+export const deepProofFixture: ProofNode = {
+	fact: "payable_amount",
+	value: 142_500_00,
+	source: "derived",
+	rule: "PAY-01",
+	clause: "1.2",
+	because: "The payable amount is the claim less each deduction.",
+	children: [
+		{
+			fact: "room_rent_deduction",
+			value: 38_000_00,
+			source: "derived",
+			rule: "ROOM-03",
+			clause: "4.2",
+			because: "Other charges reduce in the same ratio as the room rent.",
+			children: [
+				{
+					fact: "room_rent_cap",
+					value: 5_000_00,
+					source: "derived",
+					rule: "ROOM-01",
+					clause: "4.2",
+					because: "The room rent limit is 1% of the sum insured per day.",
+					children: [sumInsuredAnswer],
+				},
+			],
+		},
+		{
+			fact: "within_sum_insured",
+			value: true,
+			source: "derived",
+			rule: "LIMIT-01",
+			clause: "2.2",
+			because: "The claim is within the sum insured.",
+			children: [sumInsuredAnswer],
+		},
+	],
+};
+
+const HUGE_JOINTS = 18;
+const HUGE_LEAVES_PER_JOINT = 10;
+
+/** 200 nodes: a root, 18 rules with 10 answers each, and one direct answer. */
+export const hugeProofFixture: ProofNode = {
+	fact: "payable_amount",
+	value: 142_500_00,
+	source: "derived",
+	rule: "PAY-01",
+	because: "The payable amount is the claim less each deduction.",
+	children: [
+		...Array.from(
+			{ length: HUGE_JOINTS },
+			(_, joint): ProofNode => ({
+				fact: `deduction_${joint + 1}`,
+				value: (joint + 1) * 1_000_00,
+				source: "derived",
+				rule: `DED-${String(joint + 1).padStart(2, "0")}`,
+				because: `Deduction ${joint + 1} applies to this claim.`,
+				children: Array.from(
+					{ length: HUGE_LEAVES_PER_JOINT },
+					(_, leaf): ProofNode => ({
+						fact: `charge_${joint + 1}_${leaf + 1}`,
+						value: (leaf + 1) * 100_00,
+						source: "answered",
+						children: [],
+					}),
+				),
+			}),
+		),
+		sumInsuredAnswer,
+	],
+};
