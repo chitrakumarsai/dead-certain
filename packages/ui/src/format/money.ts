@@ -36,12 +36,19 @@ export function formatMoney(
 ): string {
 	const digits = minorDigits(currency, locale);
 	const whole = minor % 10 ** digits === 0;
+	// The amount goes to Intl as an exact decimal string. Dividing by
+	// 10 ** digits first would lose paise on large amounts.
+	const text = String(Math.abs(minor)).padStart(digits + 1, "0");
+	const cut = text.length - digits;
+	const decimal = `${minor < 0 ? "-" : ""}${text.slice(0, cut)}${
+		digits ? `.${text.slice(cut)}` : ""
+	}`;
 	return new Intl.NumberFormat(locale, {
 		style: "currency",
 		currency,
 		minimumFractionDigits: whole ? 0 : digits,
 		maximumFractionDigits: digits,
-	}).format(minor / 10 ** digits);
+	}).format(decimal as unknown as number);
 }
 
 /**
