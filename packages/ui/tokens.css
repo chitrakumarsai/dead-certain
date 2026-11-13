@@ -119,6 +119,11 @@
 	outline-offset: 2px;
 }
 
+/* A field inside a framed control hands its ring to the frame, so there is one ring. */
+[data-focus-ring="frame"]:focus-visible {
+	outline: none;
+}
+
 /* The page is the lightbox. Sheets and films paint their own surface. */
 body {
 	margin: 0;

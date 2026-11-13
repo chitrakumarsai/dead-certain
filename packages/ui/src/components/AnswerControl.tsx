@@ -5,18 +5,31 @@ import {
 	type ReactNode,
 	useEffect,
 	useId,
+	useLayoutEffect,
 	useRef,
+	useState,
 } from "react";
 import { humanize } from "../format/label";
+import {
+	currencySymbol,
+	defaultLocale,
+	formatMoney,
+	reformatMoneyInput,
+} from "../format/money";
 import { CheckCircle } from "../icons";
 import type { FormatContext } from "../types";
+import { moneyAnswer } from "./answerMessages";
 
 export type AnswerControlProps = {
 	fact: string;
 	/** The control follows `def.type`; enum options come from `def.options`. */
 	def: FactDef;
 	value: FactValue | undefined;
-	onChange: (next: FactValue | undefined) => void;
+	/**
+	 * The parsed answer, or undefined while there is none. Text fields also pass
+	 * the reason the text is not accepted, so the owner can show it on Enter.
+	 */
+	onChange: (next: FactValue | undefined, problem?: string) => void;
 	/** Called when Enter is pressed inside a text-like field. */
 	onEnter?: () => void;
 	/** Plain words, shown under the field. */
@@ -151,6 +164,134 @@ function ChoiceBody({
 	);
 }
 
+/** The currency name screen readers hear with the field, such as "Indian rupees". */
+function currencyName(currency: string, locale: string): string {
+	return (
+		new Intl.NumberFormat(locale, {
+			style: "currency",
+			currency,
+			currencyDisplay: "name",
+		})
+			.formatToParts(1)
+			.find((part) => part.type === "currency")?.value ?? currency
+	);
+}
+
+/** Field text for a stored amount: "1,42,500", with no currency sign. */
+function moneyText(
+	value: FactValue | undefined,
+	currency: string,
+	locale: string,
+) {
+	if (typeof value !== "number") return "";
+	const symbol = currencySymbol(currency, locale);
+	return formatMoney(value, currency, locale).replace(symbol, "").trim();
+}
+
+const TEXT_FIELD =
+	"min-h-touch w-full min-w-0 bg-transparent px-3 text-sys-body text-text outline-none placeholder:text-text-soft disabled:cursor-not-allowed disabled:text-text-soft";
+
+const FIELD_FRAME =
+	"flex max-w-80 items-center rounded-control border border-control-border bg-surface has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-focus-visible:outline-solid has-[:disabled]:border-dashed has-[[aria-invalid=true]]:border-denied";
+
+type MoneyBodyProps = Pick<
+	AnswerControlProps,
+	| "value"
+	| "onChange"
+	| "onEnter"
+	| "labelledBy"
+	| "error"
+	| "autoFocus"
+	| "disabled"
+	| "min"
+	| "format"
+> & { errorId: string };
+
+/**
+ * A money field. Digits regroup as they are typed and the caret stays after
+ * the same digit. It emits integer minor units, or undefined with a reason.
+ */
+function MoneyBody({
+	value,
+	onChange,
+	onEnter,
+	labelledBy,
+	error,
+	errorId,
+	autoFocus,
+	disabled,
+	min,
+	format,
+}: MoneyBodyProps) {
+	const currency = format.currency ?? "INR";
+	const locale = format.locale ?? defaultLocale(currency);
+	const unitId = useId();
+	const inputRef = useRef<HTMLInputElement>(null);
+	const pendingCaret = useRef<number | null>(null);
+	const lastEmitted = useRef<FactValue | undefined>(value);
+	const [text, setText] = useState(() => moneyText(value, currency, locale));
+
+	// A value set from outside (not typed here) replaces the text.
+	if (value !== lastEmitted.current) {
+		lastEmitted.current = value;
+		const next = moneyText(value, currency, locale);
+		if (next !== text) setText(next);
+	}
+
+	useLayoutEffect(() => {
+		const caret = pendingCaret.current;
+		if (caret === null || document.activeElement !== inputRef.current) return;
+		inputRef.current?.setSelectionRange(caret, caret);
+		pendingCaret.current = null;
+	});
+
+	useEffect(() => {
+		if (autoFocus) inputRef.current?.focus();
+	}, [autoFocus]);
+
+	const edit = (raw: string, caret: number): void => {
+		const next = reformatMoneyInput(raw, caret, locale);
+		pendingCaret.current = next.caret;
+		setText(next.text);
+		const answer = moneyAnswer(next.text, format, min);
+		lastEmitted.current = answer.value;
+		onChange(answer.value, answer.problem);
+	};
+
+	return (
+		<div className={FIELD_FRAME}>
+			<span aria-hidden="true" className="pl-3 text-sys-body text-text-soft">
+				{currencySymbol(currency, locale)}
+			</span>
+			<span id={unitId} className="sr-only">
+				{currencyName(currency, locale)}
+			</span>
+			<input
+				ref={inputRef}
+				type="text"
+				inputMode="decimal"
+				autoComplete="off"
+				data-focus-ring="frame"
+				value={text}
+				disabled={disabled}
+				aria-labelledby={`${labelledBy} ${unitId}`}
+				aria-invalid={error ? true : undefined}
+				aria-describedby={error ? errorId : undefined}
+				onChange={(event) =>
+					edit(
+						event.target.value,
+						event.target.selectionStart ?? event.target.value.length,
+					)
+				}
+				onKeyDown={(event) => {
+					if (event.key === "Enter") onEnter?.();
+				}}
+				className={`figures ${TEXT_FIELD}`}
+			/>
+		</div>
+	);
+}
+
 const YES_NO: readonly Choice[] = [
 	{ key: "yes", label: "Yes", emit: true },
 	{ key: "no", label: "No", emit: false },
@@ -179,8 +320,8 @@ function choicesFor(
 }
 
 /**
- * One answer field whose body follows the fact's type. Boolean and enum are
- * built; tasks 6.3 to 6.5 add money, number and date.
+ * One answer field whose body follows the fact's type. Boolean, enum and
+ * money are built; tasks 6.4 and 6.5 add number and date.
  */
 export function AnswerControl(props: AnswerControlProps) {
 	const errorId = useId();
@@ -198,6 +339,8 @@ export function AnswerControl(props: AnswerControlProps) {
 				showDigits={def.type === "enum"}
 			/>
 		);
+	} else if (def.type === "money") {
+		body = <MoneyBody {...props} errorId={errorId} />;
 	} else {
 		// Never throws: a type without a body yet renders a plain line.
 		body = (

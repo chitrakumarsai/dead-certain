@@ -5,7 +5,13 @@ export {
 	AnswerControl,
 	type AnswerControlProps,
 } from "./components/AnswerControl";
-export { ANSWER_MESSAGES } from "./components/answerMessages";
+export {
+	ANSWER_MESSAGES,
+	atLeastMessage,
+	decimalsMessage,
+	type MoneyAnswer,
+	moneyAnswer,
+} from "./components/answerMessages";
 export { Button, type ButtonProps } from "./components/Button";
 export {
 	ClauseQuote,
