@@ -27,6 +27,8 @@ __pycache__/
 !/CLAUDE.md
 !/.kiro/**
 !/.claude/**
+# The line above re-includes everything under .claude; keep machine-local settings out.
+/.claude/settings.local.json
 !/apps/*/rulebook/**
 !/apps/*/kb/**
 !/docs/kb-format.md
