@@ -6,6 +6,10 @@ export {
 	type AnswerControlProps,
 } from "./components/AnswerControl";
 export {
+	AnswersRail,
+	type AnswersRailProps,
+} from "./components/AnswersRail";
+export {
 	ANSWER_MESSAGES,
 	atLeastMessage,
 	dateAnswer,
@@ -30,6 +34,7 @@ export {
 } from "./components/QuestionCard";
 export { Sheet, type SheetProps } from "./components/Sheet";
 export { SourceBadge, type SourceBadgeProps } from "./components/SourceBadge";
+export { formatEntries } from "./format/entries";
 export { humanize } from "./format/label";
 export { formatMoney, parseMoney } from "./format/money";
 export { formatDate, formatValue } from "./format/value";
@@ -45,8 +50,10 @@ export {
 } from "./icons";
 export { contrast } from "./tokens/contrast";
 export type {
+	AnswerEntry,
 	FormatContext,
 	ReplayFailure,
+	SkippedNote,
 	Surface,
 	VerdictState,
 } from "./types";

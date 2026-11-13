@@ -8,6 +8,7 @@ import type {
 } from "@dead-certain/engine/types";
 import { expectTypeOf, test } from "vitest";
 import type { AnswerControlProps } from "./components/AnswerControl";
+import type { AnswersRailProps } from "./components/AnswersRail";
 import type { ButtonProps } from "./components/Button";
 import type {
 	ClauseQuoteProps,
@@ -18,7 +19,13 @@ import type { FilmProps } from "./components/Film";
 import type { QuestionCardProps } from "./components/QuestionCard";
 import type { SheetProps } from "./components/Sheet";
 import type { SourceBadgeProps } from "./components/SourceBadge";
-import type { FormatContext, ReplayFailure, Surface } from "./types";
+import type {
+	AnswerEntry,
+	FormatContext,
+	ReplayFailure,
+	SkippedNote,
+	Surface,
+} from "./types";
 
 // Each component task adds one expectTypeOf line here for its props, proving
 // they take the engine's contract types without conversion.
@@ -82,4 +89,17 @@ test("QuestionCard takes Question, FactDef and Clause unchanged", () => {
 	expectTypeOf<QuestionCardProps["onBack"]>().toEqualTypeOf<
 		(() => void) | undefined
 	>();
+});
+
+test("AnswersRail takes answer entries and calls back with the fact", () => {
+	expectTypeOf<AnswersRailProps["answers"]>().toEqualTypeOf<
+		readonly AnswerEntry[]
+	>();
+	expectTypeOf<AnswersRailProps["skipped"]>().toEqualTypeOf<
+		readonly SkippedNote[] | undefined
+	>();
+	expectTypeOf<AnswersRailProps["onChange"]>().toEqualTypeOf<
+		(fact: string) => void
+	>();
+	expectTypeOf<AnswerEntry["value"]>().toEqualTypeOf<FactValue>();
 });

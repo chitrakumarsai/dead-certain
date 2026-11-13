@@ -7,6 +7,7 @@ import type {
 	Question,
 	Verdict,
 } from "@dead-certain/engine/types";
+import type { AnswerEntry, SkippedNote } from "./types";
 
 export const CLAIMED_AMOUNT = 210_000_00;
 
@@ -370,3 +371,30 @@ export const questionFixtures: Readonly<Record<string, Question>> = {
 		text: "Is the demo video under 3 minutes?",
 	},
 };
+
+/** Three answers as the rail shows them, in the order they were given. */
+export const answersFixture: readonly AnswerEntry[] = [
+	{
+		fact: "room_rent_per_day",
+		label: "Room rent per day",
+		display: "₹6,000",
+		value: 6_000_00,
+	},
+	{
+		fact: "sum_insured",
+		label: "Sum insured",
+		display: "₹5,00,000",
+		value: 500_000_00,
+	},
+	{ fact: "age", label: "Age", display: "64", value: 64 },
+];
+
+/** A question that stopped mattering, with the line the app writes for it. */
+export const skippedFixture: readonly SkippedNote[] = [
+	{
+		fact: "pre_existing_condition",
+		label: "Pre-existing condition",
+		reason:
+			"Pre-existing condition no longer matters. The answers so far decide this without it.",
+	},
+];

@@ -1,3 +1,5 @@
+import type { FactValue } from "@dead-certain/engine/types";
+
 /** What the kit needs to print values. The app takes it from `kb.currency`. */
 export interface FormatContext {
 	/** ISO 4217 code, for money. */
@@ -23,3 +25,20 @@ export type ReplayFailure =
 
 /** The two materials. Paper asks and answers; film shows proof. */
 export type Surface = "paper" | "film";
+
+/** One answer in the rail: its label, the value as printed, and the raw value. */
+export interface AnswerEntry {
+	readonly fact: string;
+	/** `FactDef.label ?? humanize(fact)`. */
+	readonly label: string;
+	/** The value as printed, such as "₹6,000". */
+	readonly display: string;
+	readonly value: FactValue;
+}
+
+/** A question that no longer matters, with the app's one-line reason. */
+export interface SkippedNote {
+	readonly fact: string;
+	readonly label: string;
+	readonly reason: string;
+}

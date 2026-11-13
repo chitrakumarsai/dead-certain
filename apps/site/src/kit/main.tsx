@@ -6,6 +6,10 @@ import {
 	ANSWER_CONTROL_SPECIMENS,
 	AnswerControlSection,
 } from "./AnswerControlSection";
+import {
+	ANSWERS_RAIL_SPECIMENS,
+	AnswersRailSection,
+} from "./AnswersRailSection";
 import { BUTTON_SPECIMENS, ButtonsSection } from "./ButtonsSection";
 import {
 	CLAUSE_QUOTE_SPECIMENS,
@@ -34,6 +38,7 @@ const SECTIONS = [
 	{ title: "Sheet and Film", specimens: SHEET_FILM_SPECIMENS },
 	{ title: "AnswerControl", specimens: ANSWER_CONTROL_SPECIMENS },
 	{ title: "QuestionCard", specimens: QUESTION_CARD_SPECIMENS },
+	{ title: "AnswersRail", specimens: ANSWERS_RAIL_SPECIMENS },
 ];
 
 function Gallery() {
@@ -92,6 +97,7 @@ function Gallery() {
 				<SheetFilmSection />
 				<AnswerControlSection />
 				<QuestionCardSection />
+				<AnswersRailSection />
 			</main>
 		</div>
 	);
