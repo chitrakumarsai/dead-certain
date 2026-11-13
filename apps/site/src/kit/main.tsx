@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import "@dead-certain/ui/styles.css";
 
 function Gallery() {
 	return (

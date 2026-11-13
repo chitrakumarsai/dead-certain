@@ -4,7 +4,10 @@
 	"private": true,
 	"type": "module",
 	"exports": {
-		"./fixtures": "./src/fixtures.ts"
+		".": "./src/index.ts",
+		"./fixtures": "./src/fixtures.ts",
+		"./styles.css": "./styles.css",
+		"./tokens.css": "./tokens.css"
 	},
 	"dependencies": {
 		"@dead-certain/engine": "workspace:*",
