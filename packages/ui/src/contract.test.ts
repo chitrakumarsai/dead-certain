@@ -1,7 +1,9 @@
 import type { ErrorCode } from "@dead-certain/engine";
+import type { FactSource } from "@dead-certain/engine/types";
 import { expectTypeOf, test } from "vitest";
 import type { ButtonProps } from "./components/Button";
 import type { DisclosureProps } from "./components/Disclosure";
+import type { SourceBadgeProps } from "./components/SourceBadge";
 import type { ReplayFailure, Surface } from "./types";
 
 // Each component task adds one expectTypeOf line here for its props, proving
@@ -25,4 +27,8 @@ test("Disclosure props: a title, and controlled or uncontrolled open state", () 
 	expectTypeOf<DisclosureProps["onOpenChange"]>().toEqualTypeOf<
 		((open: boolean) => void) | undefined
 	>();
+});
+
+test("SourceBadge takes the engine's FactSource unchanged", () => {
+	expectTypeOf<SourceBadgeProps["source"]>().toEqualTypeOf<FactSource>();
 });

@@ -5,6 +5,10 @@ import { LiveRegion } from "@dead-certain/ui";
 import { BUTTON_SPECIMENS, ButtonsSection } from "./ButtonsSection";
 import { DISCLOSURE_SPECIMENS, DisclosureSection } from "./DisclosureSection";
 import { PRIMITIVE_SPECIMENS, PrimitivesSection } from "./PrimitivesSection";
+import {
+	SOURCE_BADGE_SPECIMENS,
+	SourceBadgeSection,
+} from "./SourceBadgeSection";
 import { TOKEN_SPECIMENS, TokensSection } from "./TokensSection";
 
 const SECTIONS = [
@@ -12,6 +16,7 @@ const SECTIONS = [
 	{ title: "Icons and accessibility helpers", specimens: PRIMITIVE_SPECIMENS },
 	{ title: "Button", specimens: BUTTON_SPECIMENS },
 	{ title: "Disclosure", specimens: DISCLOSURE_SPECIMENS },
+	{ title: "SourceBadge", specimens: SOURCE_BADGE_SPECIMENS },
 ];
 
 function Gallery() {
@@ -56,6 +61,7 @@ function Gallery() {
 				<PrimitivesSection />
 				<ButtonsSection />
 				<DisclosureSection />
+				<SourceBadgeSection />
 			</main>
 		</div>
 	);

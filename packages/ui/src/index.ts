@@ -3,6 +3,7 @@ export { useFocusOnMount } from "./a11y/useFocusOnMount";
 export { useReducedMotion } from "./a11y/useReducedMotion";
 export { Button, type ButtonProps } from "./components/Button";
 export { Disclosure, type DisclosureProps } from "./components/Disclosure";
+export { SourceBadge, type SourceBadgeProps } from "./components/SourceBadge";
 export {
 	CheckCircle,
 	Chevron,
