@@ -1,6 +1,11 @@
 // Fixture data shaped like engine output, so the interface can be built before the engine exists.
 // Sample amounts from BUILD_PLAN section 8, in paise.
-import type { ProofNode, Question, Verdict } from "@dead-certain/engine/types";
+import type {
+	Clause,
+	ProofNode,
+	Question,
+	Verdict,
+} from "@dead-certain/engine/types";
 
 export const CLAIMED_AMOUNT = 210_000_00;
 
@@ -206,4 +211,54 @@ export const hugeProofFixture: ProofNode = {
 		),
 		sumInsuredAnswer,
 	],
+};
+
+// Sample clause text written for this project. Not from any real policy.
+/** Claim Check clauses cited by the Claim Check fixtures. */
+export const clauseFixtures: Readonly<Record<string, Clause>> = {
+	"1.2": {
+		id: "1.2",
+		title: "What the policy pays",
+		text: "The policy pays the hospital bill less every deduction set out in this policy.",
+	},
+	"2.2": {
+		id: "2.2",
+		title: "Sum insured",
+		text: "The most the policy pays in one policy year is the sum insured shown in the schedule.",
+	},
+	"4.2": {
+		id: "4.2",
+		title: "Room rent limit",
+		text: "Room rent is limited to 1% of the sum insured per day. Where the rent is higher, other charges reduce in the same ratio.",
+	},
+	"6.1": {
+		id: "6.1",
+		title: "Co-payment",
+		text: "A policyholder aged 61 or over pays 20% of every admissible claim.",
+	},
+};
+
+// Sample checklist text written for this project, in our own words.
+/** Pre-Flight clauses cited by the Pre-Flight fixture. Ids overlap Claim Check's. */
+export const preFlightClauseFixtures: Readonly<Record<string, Clause>> = {
+	"1.1": {
+		id: "1.1",
+		title: "Public repository",
+		text: "The repository is public, so anyone can read the source.",
+	},
+	"1.2": {
+		id: "1.2",
+		title: "Open-source licence",
+		text: "A licence file sits at the root, where GitHub can detect it.",
+	},
+	"2.2": {
+		id: "2.2",
+		title: "Kiro directory",
+		text: "The .kiro directory is committed and is not listed in .gitignore.",
+	},
+	"4.1": {
+		id: "4.1",
+		title: "Demo video",
+		text: "The demo video runs for less than 3 minutes.",
+	},
 };

@@ -3,6 +3,10 @@ import { createRoot } from "react-dom/client";
 import "@dead-certain/ui/styles.css";
 import { LiveRegion } from "@dead-certain/ui";
 import { BUTTON_SPECIMENS, ButtonsSection } from "./ButtonsSection";
+import {
+	CLAUSE_QUOTE_SPECIMENS,
+	ClauseQuoteSection,
+} from "./ClauseQuoteSection";
 import { DISCLOSURE_SPECIMENS, DisclosureSection } from "./DisclosureSection";
 import { PRIMITIVE_SPECIMENS, PrimitivesSection } from "./PrimitivesSection";
 import {
@@ -17,6 +21,7 @@ const SECTIONS = [
 	{ title: "Button", specimens: BUTTON_SPECIMENS },
 	{ title: "Disclosure", specimens: DISCLOSURE_SPECIMENS },
 	{ title: "SourceBadge", specimens: SOURCE_BADGE_SPECIMENS },
+	{ title: "ClauseQuote", specimens: CLAUSE_QUOTE_SPECIMENS },
 ];
 
 function Gallery() {
@@ -62,6 +67,7 @@ function Gallery() {
 				<ButtonsSection />
 				<DisclosureSection />
 				<SourceBadgeSection />
+				<ClauseQuoteSection />
 			</main>
 		</div>
 	);
