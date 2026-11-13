@@ -57,6 +57,12 @@ export const ANSWER_CONTROL_SPECIMENS = [
 	{ id: "answercontrol-boolean-filled", title: "Yes or no, filled" },
 	{ id: "answercontrol-boolean-invalid", title: "Yes or no, invalid" },
 	{ id: "answercontrol-boolean-disabled", title: "Yes or no, disabled" },
+	{ id: "answercontrol-enum-2", title: "Choice of 2" },
+	{ id: "answercontrol-enum-6", title: "Choice of 6" },
+	{ id: "answercontrol-enum-10", title: "Choice of 10" },
+	{ id: "answercontrol-enum-filled", title: "Choice, filled" },
+	{ id: "answercontrol-enum-invalid", title: "Choice, invalid" },
+	{ id: "answercontrol-enum-disabled", title: "Choice, disabled" },
 ];
 
 export function AnswerControlSection() {
@@ -99,6 +105,49 @@ export function AnswerControlSection() {
 				note="Disabled while the answer cannot change."
 			>
 				<Live fact="video_under_3_minutes" start={true} disabled />
+			</Specimen>
+
+			<Specimen
+				id="answercontrol-enum-2"
+				title="Choice of 2"
+				note="One card per option, labelled in words. The digit on each card is its shortcut."
+			>
+				<Live fact="claim_route" />
+			</Specimen>
+			<Specimen
+				id="answercontrol-enum-6"
+				title="Choice of 6"
+				note="With focus on the group, 1 to 6 pick by position. Digits outside the group do nothing."
+			>
+				<Live fact="room_type" />
+			</Specimen>
+			<Specimen
+				id="answercontrol-enum-10"
+				title="Choice of 10"
+				note="Only the first nine have a digit. The tenth is reached with arrow keys or a click."
+			>
+				<Live fact="treating_specialty" />
+			</Specimen>
+			<Specimen
+				id="answercontrol-enum-filled"
+				title="Choice, filled"
+				note="The chosen card is filled and carries a check mark."
+			>
+				<Live fact="room_type" start="semi_private" />
+			</Specimen>
+			<Specimen
+				id="answercontrol-enum-invalid"
+				title="Choice, invalid"
+				note="The message sits under the cards and is read as the group's description."
+			>
+				<Live fact="room_type" error={ANSWER_MESSAGES.chooseOne} />
+			</Specimen>
+			<Specimen
+				id="answercontrol-enum-disabled"
+				title="Choice, disabled"
+				note="Disabled cards keep the chosen one marked, with a dashed border."
+			>
+				<Live fact="claim_route" start="cashless" disabled />
 			</Specimen>
 		</section>
 	);
