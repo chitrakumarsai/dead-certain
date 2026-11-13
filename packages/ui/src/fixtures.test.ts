@@ -1,6 +1,8 @@
 import type { ProofNode } from "@dead-certain/engine/types";
 import { expect, test } from "vitest";
 import {
+	alternativesFixture,
+	alternativesNoMoneyFixture,
 	CLAIMED_AMOUNT,
 	claimVerdictFixture,
 	clauseFixtures,
@@ -38,7 +40,12 @@ test.each([
 	},
 );
 
+const ALTERNATIVE_VERDICTS = Object.fromEntries(
+	alternativesFixture.map((alt) => [`alternative ${alt.fact}`, alt.verdict]),
+);
+
 const CLAIM_VERDICTS = {
+	...ALTERNATIVE_VERDICTS,
 	claimVerdictFixture,
 	paidInFullVerdictFixture,
 	deniedVerdictFixture,
@@ -228,5 +235,18 @@ test("fact definitions cover all five types, and check facts are boolean", () =>
 	}
 	for (const { fact } of preFlightVerdictFixture.lineItems) {
 		expect(factDefFixtures[fact]?.role, fact).toBe("check");
+	}
+});
+
+test("each alternative changes one answer and alters the verdict", () => {
+	for (const alt of alternativesFixture) {
+		expect(alt.verdict.goals.payable_amount, alt.fact).not.toBe(
+			claimVerdictFixture.goals.payable_amount,
+		);
+	}
+	for (const alt of alternativesNoMoneyFixture) {
+		expect(alt.verdict.goals.verdict, alt.fact).not.toBe(
+			preFlightAllPassFixture.goals.verdict,
+		);
 	}
 });

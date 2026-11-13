@@ -9,3 +9,10 @@ export function humanize(fact: string): string {
 	const head = String.fromCodePoint(first);
 	return head.toUpperCase() + spaced.slice(head.length);
 }
+
+/** "Room rent per day" to "room rent per day" mid-sentence; "GST on…" stays. */
+export function lowerFirst(text: string): string {
+	return /^[A-Z][a-z]/.test(text)
+		? `${text[0]?.toLowerCase()}${text.slice(1)}`
+		: text;
+}

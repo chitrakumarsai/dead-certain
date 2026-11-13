@@ -37,6 +37,7 @@ import {
 	VERDICT_HEADLINE_SPECIMENS,
 	VerdictHeadlineSection,
 } from "./VerdictHeadlineSection";
+import { WHAT_IF_LIST_SPECIMENS, WhatIfListSection } from "./WhatIfListSection";
 
 const SECTIONS = [
 	{ title: "Tokens", specimens: TOKEN_SPECIMENS },
@@ -53,6 +54,7 @@ const SECTIONS = [
 	{ title: "ProportionBar", specimens: PROPORTION_BAR_SPECIMENS },
 	{ title: "Ledger", specimens: LEDGER_SPECIMENS },
 	{ title: "CheckRow", specimens: CHECK_ROW_SPECIMENS },
+	{ title: "WhatIfList", specimens: WHAT_IF_LIST_SPECIMENS },
 ];
 
 function Gallery() {
@@ -116,6 +118,7 @@ function Gallery() {
 				<ProportionBarSection />
 				<LedgerSection />
 				<CheckRowSection />
+				<WhatIfListSection />
 			</main>
 		</div>
 	);

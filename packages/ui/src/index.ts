@@ -45,8 +45,9 @@ export {
 	VerdictHeadline,
 	type VerdictHeadlineProps,
 } from "./components/VerdictHeadline";
+export { WhatIfList, type WhatIfListProps } from "./components/WhatIfList";
 export { formatEntries } from "./format/entries";
-export { humanize } from "./format/label";
+export { humanize, lowerFirst } from "./format/label";
 export { formatMoney, parseMoney } from "./format/money";
 export { formatDate, formatValue } from "./format/value";
 export {
@@ -68,4 +69,4 @@ export type {
 	Surface,
 	VerdictState,
 } from "./types";
-export { verdictStateFrom } from "./verdictState";
+export { VERDICT_WORDS, verdictStateFrom } from "./verdictState";

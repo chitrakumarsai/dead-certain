@@ -10,6 +10,16 @@ export const GOAL_TO_STATE: Readonly<Record<string, VerdictState>> = {
 	not_ready: "not_ready",
 };
 
+/** The word for each state, shared by every component that names a verdict. */
+export const VERDICT_WORDS: Readonly<Record<VerdictState, string>> = {
+	paid: "Paid in full",
+	reduced: "Paid in part",
+	denied: "Not paid",
+	ready: "Ready",
+	not_ready: "Not ready",
+	undecided: "More answers needed",
+};
+
 /**
  * The headline state for a verdict goal. Total: any value outside the table,
  * or no value yet, is "undecided". `needed` is the count of questions still

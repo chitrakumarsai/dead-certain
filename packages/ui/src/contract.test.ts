@@ -1,11 +1,13 @@
 import type { ErrorCode } from "@dead-certain/engine";
 import type {
+	Alternative,
 	Clause,
 	FactDef,
 	FactSource,
 	FactValue,
 	LineItem,
 	Question,
+	Verdict,
 } from "@dead-certain/engine/types";
 import { expectTypeOf, test } from "vitest";
 import type { AnswerControlProps } from "./components/AnswerControl";
@@ -27,6 +29,7 @@ import type { QuestionCardProps } from "./components/QuestionCard";
 import type { SheetProps } from "./components/Sheet";
 import type { SourceBadgeProps } from "./components/SourceBadge";
 import type { VerdictHeadlineProps } from "./components/VerdictHeadline";
+import type { WhatIfListProps } from "./components/WhatIfList";
 import type {
 	AnswerEntry,
 	FormatContext,
@@ -162,5 +165,18 @@ test("CheckRow takes LineItem, Question and FactDef unchanged", () => {
 	>();
 	expectTypeOf<CheckRowProps["onOpen"]>().toEqualTypeOf<
 		(item: LineItem, opener: HTMLElement) => void
+	>();
+});
+
+test("WhatIfList takes Verdict and Alternative unchanged", () => {
+	expectTypeOf<WhatIfListProps["current"]>().toEqualTypeOf<Verdict>();
+	expectTypeOf<WhatIfListProps["alternatives"]>().toEqualTypeOf<
+		readonly Alternative[]
+	>();
+	expectTypeOf<WhatIfListProps["defFor"]>().toEqualTypeOf<
+		(fact: string) => FactDef | undefined
+	>();
+	expectTypeOf<WhatIfListProps["amountGoal"]>().toEqualTypeOf<
+		string | undefined
 	>();
 });

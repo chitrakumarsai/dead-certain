@@ -8,6 +8,7 @@ import {
 	QuestionCircle,
 } from "../icons";
 import type { VerdictState } from "../types";
+import { VERDICT_WORDS } from "../verdictState";
 
 export interface VerdictHeadlineProps {
 	state: VerdictState;
@@ -22,13 +23,25 @@ export interface VerdictHeadlineProps {
 const STATES: Readonly<
 	Record<VerdictState, { word: string; Icon: typeof CheckCircle; tone: string }>
 > = {
-	paid: { word: "Paid in full", Icon: CheckCircle, tone: "text-paid" },
-	reduced: { word: "Paid in part", Icon: MinusCircle, tone: "text-reduced" },
-	denied: { word: "Not paid", Icon: CrossCircle, tone: "text-denied" },
-	ready: { word: "Ready", Icon: CheckCircle, tone: "text-paid" },
-	not_ready: { word: "Not ready", Icon: CrossCircle, tone: "text-denied" },
+	paid: { word: VERDICT_WORDS.paid, Icon: CheckCircle, tone: "text-paid" },
+	reduced: {
+		word: VERDICT_WORDS.reduced,
+		Icon: MinusCircle,
+		tone: "text-reduced",
+	},
+	denied: {
+		word: VERDICT_WORDS.denied,
+		Icon: CrossCircle,
+		tone: "text-denied",
+	},
+	ready: { word: VERDICT_WORDS.ready, Icon: CheckCircle, tone: "text-paid" },
+	not_ready: {
+		word: VERDICT_WORDS.not_ready,
+		Icon: CrossCircle,
+		tone: "text-denied",
+	},
 	undecided: {
-		word: "More answers needed",
+		word: VERDICT_WORDS.undecided,
 		Icon: QuestionCircle,
 		tone: "text-text-soft",
 	},

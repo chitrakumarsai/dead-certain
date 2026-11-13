@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { lowerFirst } from "../format/label";
 import { formatMoney } from "../format/money";
 import type { FormatContext } from "../types";
 import { partitionBar } from "./partitionBar";
@@ -17,10 +18,6 @@ export interface ProportionBarProps {
 	parts: readonly ProportionPart[];
 	format: FormatContext;
 }
-
-/** "Room rent above…" to "room rent above…", leaving "GST on…" alone. */
-const lowerFirst = (label: string): string =>
-	/^[A-Z][a-z]/.test(label) ? label[0]?.toLowerCase() + label.slice(1) : label;
 
 function spoken(
 	parts: readonly ProportionPart[],

@@ -1,6 +1,7 @@
 // Fixture data shaped like engine output, so the interface can be built before the engine exists.
 // Sample amounts from BUILD_PLAN section 8, in paise.
 import type {
+	Alternative,
 	Clause,
 	FactDef,
 	ProofNode,
@@ -554,3 +555,45 @@ export const preFlightUnknownFixture: Verdict = {
 	),
 	needed: preFlightVerdictFixture.needed,
 };
+
+const [ROOM_RENT_LINE, COPAY_LINE] = claimVerdictFixture.lineItems;
+
+/** One-answer changes to the claim verdict, each removing one deduction. */
+export const alternativesFixture: readonly Alternative[] = [
+	{
+		fact: "room_rent_per_day",
+		value: 5_000_00,
+		verdict: {
+			kind: "verdict",
+			goals: { payable_amount: 180_500_00, verdict: "reduced" },
+			lineItems: COPAY_LINE ? [COPAY_LINE] : [],
+			needed: [],
+		},
+	},
+	{
+		fact: "age",
+		value: 60,
+		verdict: {
+			kind: "verdict",
+			goals: { payable_amount: 172_000_00, verdict: "reduced" },
+			lineItems: ROOM_RENT_LINE ? [ROOM_RENT_LINE] : [],
+			needed: [],
+		},
+	},
+];
+
+/** One-answer changes to the all-pass Pre-Flight verdict: no money goal. */
+export const alternativesNoMoneyFixture: readonly Alternative[] = [
+	"is_public",
+	"has_detectable_license",
+].map((fact) => ({
+	fact,
+	value: false,
+	verdict: {
+		...preFlightAllPassFixture,
+		goals: { verdict: "not_ready" },
+		lineItems: preFlightAllPassFixture.lineItems.map((item) =>
+			item.fact === fact ? { ...item, value: false } : item,
+		),
+	},
+}));
