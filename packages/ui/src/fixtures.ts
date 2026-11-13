@@ -597,3 +597,49 @@ export const alternativesNoMoneyFixture: readonly Alternative[] = [
 		),
 	},
 }));
+
+/** Pre-Flight: a failed check whose facts the collector read from GitHub. */
+export const collectedProofFixture: ProofNode = {
+	fact: "has_detectable_license",
+	value: false,
+	source: "derived",
+	rule: "R-02",
+	clause: "1.2",
+	because: "No licence file sits at the root of the repository.",
+	children: [
+		{
+			fact: "root_files",
+			value: "README.md, package.json, .gitignore",
+			source: "collected",
+			children: [],
+		},
+		{
+			fact: "license_spdx",
+			value: "NOASSERTION",
+			source: "collected",
+			children: [],
+		},
+	],
+};
+
+/** A deduction that cannot be worked out yet: the age is not answered. */
+export const unknownValueProofFixture: ProofNode = {
+	fact: "copay_deduction",
+	value: undefined,
+	source: "derived",
+	rule: "COPAY-01",
+	clause: "6.1",
+	because: "A co-payment of 20% applies at age 61 or over.",
+	children: [
+		{ fact: "age", value: undefined, source: "answered", children: [] },
+		{
+			fact: "admissible_amount",
+			value: 147_500_00,
+			source: "derived",
+			rule: "PAY-02",
+			because:
+				"The admissible amount is the claim less the room rent deduction.",
+			children: [],
+		},
+	],
+};

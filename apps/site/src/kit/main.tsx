@@ -19,6 +19,7 @@ import {
 import { DISCLOSURE_SPECIMENS, DisclosureSection } from "./DisclosureSection";
 import { LEDGER_SPECIMENS, LedgerSection } from "./LedgerSection";
 import { PRIMITIVE_SPECIMENS, PrimitivesSection } from "./PrimitivesSection";
+import { PROOF_TREE_SPECIMENS, ProofTreeSection } from "./ProofTreeSection";
 import {
 	PROPORTION_BAR_SPECIMENS,
 	ProportionBarSection,
@@ -55,6 +56,7 @@ const SECTIONS = [
 	{ title: "Ledger", specimens: LEDGER_SPECIMENS },
 	{ title: "CheckRow", specimens: CHECK_ROW_SPECIMENS },
 	{ title: "WhatIfList", specimens: WHAT_IF_LIST_SPECIMENS },
+	{ title: "ProofTree", specimens: PROOF_TREE_SPECIMENS },
 ];
 
 function Gallery() {
@@ -119,6 +121,7 @@ function Gallery() {
 				<LedgerSection />
 				<CheckRowSection />
 				<WhatIfListSection />
+				<ProofTreeSection />
 			</main>
 		</div>
 	);

@@ -6,6 +6,7 @@ import {
 	CLAIMED_AMOUNT,
 	claimVerdictFixture,
 	clauseFixtures,
+	collectedProofFixture,
 	deepProofFixture,
 	deniedVerdictFixture,
 	factDefFixtures,
@@ -19,6 +20,7 @@ import {
 	questionFixtures,
 	undecidedVerdictFixture,
 	unknownLineWithKnownPayableFixture,
+	unknownValueProofFixture,
 	zeroDeductionFixture,
 } from "./fixtures";
 
@@ -139,6 +141,7 @@ test("every clause a Claim Check fixture cites has a clause fixture", () => {
 		),
 		...proofClauses(proofFixture),
 		...proofClauses(deepProofFixture),
+		...proofClauses(unknownValueProofFixture),
 	];
 
 	expect(cited.length).toBeGreaterThan(0);
@@ -166,11 +169,16 @@ test("Pre-Flight edge fixtures: all pass is ready; unknown is undecided and asks
 });
 
 test("every clause a Pre-Flight fixture cites has a clause fixture", () => {
-	for (const { clause } of [
-		preFlightVerdictFixture,
-		preFlightAllPassFixture,
-		preFlightUnknownFixture,
-	].flatMap((verdict) => verdict.lineItems)) {
+	const cited = [
+		...[
+			preFlightVerdictFixture,
+			preFlightAllPassFixture,
+			preFlightUnknownFixture,
+		].flatMap((verdict) => verdict.lineItems.map((item) => item.clause)),
+		...proofClauses(collectedProofFixture),
+	];
+
+	for (const clause of cited) {
 		expect(preFlightClauseFixtures[clause]?.id, `clause ${clause}`).toBe(
 			clause,
 		);
@@ -249,4 +257,22 @@ test("each alternative changes one answer and alters the verdict", () => {
 			preFlightAllPassFixture.goals.verdict,
 		);
 	}
+});
+
+const proofNodes = (node: ProofNode): ProofNode[] => [
+	node,
+	...node.children.flatMap(proofNodes),
+];
+
+test("collected proof has collected leaves; unknown proof has an unknown value", () => {
+	const leaves = proofNodes(collectedProofFixture).filter(
+		(node) => node.children.length === 0,
+	);
+	expect(leaves.length).toBeGreaterThan(0);
+	expect(leaves.every((node) => node.source === "collected")).toBe(true);
+	expect(
+		proofNodes(unknownValueProofFixture).some(
+			(node) => node.value === undefined,
+		),
+	).toBe(true);
 });

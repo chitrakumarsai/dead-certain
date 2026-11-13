@@ -30,11 +30,16 @@ export {
 export { Disclosure, type DisclosureProps } from "./components/Disclosure";
 export { Film, type FilmProps } from "./components/Film";
 export { Ledger, type LedgerProps } from "./components/Ledger";
+export { ProofTree, type ProofTreeProps } from "./components/ProofTree";
 export {
 	ProportionBar,
 	type ProportionBarProps,
 	type ProportionPart,
 } from "./components/ProportionBar";
+export {
+	initialTreeState,
+	type TreeState,
+} from "./components/proofTreeState";
 export {
 	QuestionCard,
 	type QuestionCardProps,

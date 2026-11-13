@@ -6,6 +6,7 @@ import type {
 	FactSource,
 	FactValue,
 	LineItem,
+	ProofNode,
 	Question,
 	Verdict,
 } from "@dead-certain/engine/types";
@@ -21,10 +22,12 @@ import type {
 import type { DisclosureProps } from "./components/Disclosure";
 import type { FilmProps } from "./components/Film";
 import type { LedgerProps } from "./components/Ledger";
+import type { ProofTreeProps } from "./components/ProofTree";
 import type {
 	ProportionBarProps,
 	ProportionPart,
 } from "./components/ProportionBar";
+import type { TreeState } from "./components/proofTreeState";
 import type { QuestionCardProps } from "./components/QuestionCard";
 import type { SheetProps } from "./components/Sheet";
 import type { SourceBadgeProps } from "./components/SourceBadge";
@@ -178,5 +181,19 @@ test("WhatIfList takes Verdict and Alternative unchanged", () => {
 	>();
 	expectTypeOf<WhatIfListProps["amountGoal"]>().toEqualTypeOf<
 		string | undefined
+	>();
+});
+
+test("ProofTree takes the engine's ProofNode and Clause unchanged", () => {
+	expectTypeOf<ProofTreeProps["root"]>().toEqualTypeOf<ProofNode>();
+	expectTypeOf<ProofTreeProps["clauseFor"]>().toEqualTypeOf<
+		((clauseId: string) => Clause | undefined) | undefined
+	>();
+	expectTypeOf<ProofTreeProps["formatValue"]>().toEqualTypeOf<
+		(fact: string, value: FactValue | undefined) => string
+	>();
+	expectTypeOf<ProofTreeProps["onEscape"]>().toEqualTypeOf<() => void>();
+	expectTypeOf<ProofTreeProps["initialState"]>().toEqualTypeOf<
+		TreeState | undefined
 	>();
 });
