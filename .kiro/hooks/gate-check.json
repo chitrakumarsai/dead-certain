@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Gate check",
+      "trigger": "Stop",
+      "description": "Run changed-file checks when agent stops",
+      "action": {
+        "type": "command",
+        "command": "pnpm -s check:changed"
+      }
+    }
+  ]
+}

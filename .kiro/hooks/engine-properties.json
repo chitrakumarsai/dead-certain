@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Engine properties",
+      "trigger": "PostFileSave",
+      "description": "Run property tests on engine save",
+      "matcher": "packages/engine/src/.*",
+      "action": {
+        "type": "command",
+        "command": "pnpm -s test:props"
+      }
+    }
+  ]
+}

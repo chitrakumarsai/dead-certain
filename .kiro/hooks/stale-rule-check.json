@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Stale rule check",
+      "trigger": "PostFileSave",
+      "description": "Find rules citing changed rulebook clauses",
+      "matcher": "apps/[^/]+/rulebook/.*",
+      "action": {
+        "type": "agent",
+        "prompt": "A rulebook file was saved. List the rules in the matching apps/*/kb that cite the changed clauses, and propose updates to keep them in sync with the rulebook."
+      }
+    }
+  ]
+}
