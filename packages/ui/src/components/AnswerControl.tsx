@@ -18,7 +18,7 @@ import {
 } from "../format/money";
 import { CheckCircle } from "../icons";
 import type { FormatContext } from "../types";
-import { moneyAnswer, numberAnswer } from "./answerMessages";
+import { dateAnswer, moneyAnswer, numberAnswer } from "./answerMessages";
 
 export type AnswerControlProps = {
 	fact: string;
@@ -358,6 +358,47 @@ function NumberBody({
 	);
 }
 
+/** A native date picker. It emits an ISO YYYY-MM-DD string, or undefined with a reason. */
+function DateBody({
+	value,
+	onChange,
+	onEnter,
+	labelledBy,
+	error,
+	errorId,
+	autoFocus,
+	disabled,
+}: Omit<NumberBodyProps, "unit">) {
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		if (autoFocus) inputRef.current?.focus();
+	}, [autoFocus]);
+
+	return (
+		<div className={FIELD_FRAME}>
+			<input
+				ref={inputRef}
+				type="date"
+				data-focus-ring="frame"
+				value={typeof value === "string" ? value : ""}
+				disabled={disabled}
+				aria-labelledby={labelledBy}
+				aria-invalid={error ? true : undefined}
+				aria-describedby={error ? errorId : undefined}
+				onChange={(event) => {
+					const answer = dateAnswer(event.target.value);
+					onChange(answer.value, answer.problem);
+				}}
+				onKeyDown={(event) => {
+					if (event.key === "Enter") onEnter?.();
+				}}
+				className={TEXT_FIELD}
+			/>
+		</div>
+	);
+}
+
 const YES_NO: readonly Choice[] = [
 	{ key: "yes", label: "Yes", emit: true },
 	{ key: "no", label: "No", emit: false },
@@ -386,8 +427,8 @@ function choicesFor(
 }
 
 /**
- * One answer field whose body follows the fact's type. Boolean, enum, money
- * and number are built; task 6.5 adds date.
+ * One answer field whose body follows the fact's type: yes or no, a choice,
+ * money, a number or a date.
  */
 export function AnswerControl(props: AnswerControlProps) {
 	const errorId = useId();
@@ -409,6 +450,8 @@ export function AnswerControl(props: AnswerControlProps) {
 		body = <MoneyBody {...props} errorId={errorId} />;
 	} else if (def.type === "number") {
 		body = <NumberBody {...props} errorId={errorId} />;
+	} else if (def.type === "date") {
+		body = <DateBody {...props} errorId={errorId} />;
 	} else {
 		// Never throws: a type without a body yet renders a plain line.
 		body = (

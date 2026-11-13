@@ -74,3 +74,36 @@ export function numberAnswer(raw: string): {
 	}
 	return { value: Number(bare) };
 }
+
+/** Reads a date field's value. A real calendar day in ISO form is accepted. */
+export function dateAnswer(raw: string): {
+	readonly value: string | undefined;
+	readonly problem?: string;
+} {
+	const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(raw);
+	if (!match) return { value: undefined, problem: ANSWER_MESSAGES.pickDate };
+	// The UTC round trip rejects days that do not exist, such as 30 February.
+	const day = new Date(`${raw}T00:00:00Z`);
+	const isReal =
+		!Number.isNaN(day.getTime()) && day.toISOString().startsWith(raw);
+	return isReal
+		? { value: raw }
+		: { value: undefined, problem: ANSWER_MESSAGES.pickDate };
+}
+
+/** The message for a fact that has no answer yet, by fact type. */
+export function emptyAnswerMessage(
+	type: "boolean" | "enum" | "money" | "number" | "date",
+): string {
+	switch (type) {
+		case "boolean":
+		case "enum":
+			return ANSWER_MESSAGES.chooseOne;
+		case "money":
+			return ANSWER_MESSAGES.enterAmount;
+		case "number":
+			return ANSWER_MESSAGES.enterNumber;
+		case "date":
+			return ANSWER_MESSAGES.pickDate;
+	}
+}

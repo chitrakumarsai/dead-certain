@@ -1,6 +1,8 @@
 import { expect, test } from "vitest";
 import {
 	ANSWER_MESSAGES,
+	dateAnswer,
+	emptyAnswerMessage,
 	moneyAnswer,
 	numberAnswer,
 } from "./components/answerMessages";
@@ -51,4 +53,24 @@ test.each([
 	["0", { value: 0 }],
 ])("numberAnswer(%j)", (raw, expected) => {
 	expect(numberAnswer(raw)).toEqual(expected);
+});
+
+test.each([
+	["", { value: undefined, problem: "Pick a date." }],
+	["2026-02-30", { value: undefined, problem: "Pick a date." }],
+	["13/11/2026", { value: undefined, problem: "Pick a date." }],
+	["2026-11-13", { value: "2026-11-13" }],
+	["2024-02-29", { value: "2024-02-29" }],
+])("dateAnswer(%j)", (raw, expected) => {
+	expect(dateAnswer(raw)).toEqual(expected);
+});
+
+test.each([
+	["boolean", "Choose one answer."],
+	["enum", "Choose one answer."],
+	["money", "Enter an amount."],
+	["number", "Enter a number."],
+	["date", "Pick a date."],
+] as const)("an unanswered %s fact says %j", (type, message) => {
+	expect(emptyAnswerMessage(type)).toBe(message);
 });

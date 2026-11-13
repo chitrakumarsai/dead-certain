@@ -3,6 +3,8 @@ import {
 	AnswerControl,
 	type AnswerControlProps,
 	decimalsMessage,
+	emptyAnswerMessage,
+	formatDate,
 } from "@dead-certain/ui";
 import { factDefFixtures, questionFixtures } from "@dead-certain/ui/fixtures";
 import { useId, useState } from "react";
@@ -55,7 +57,11 @@ function Live({
 				}}
 				onEnter={() => {
 					setEnters((n) => n + 1);
-					setShown(problem);
+					// An untouched empty field has reported nothing yet.
+					setShown(
+						problem ??
+							(value === undefined ? emptyAnswerMessage(def.type) : undefined),
+					);
 				}}
 				labelledBy={headingId}
 				error={shown}
@@ -73,6 +79,11 @@ function Live({
 				<span data-enters className="font-mono text-mono">
 					{enters}
 				</span>
+				{def.type === "date" && typeof value === "string" && (
+					<>
+						. Reads as <span data-reads-as>{formatDate(value)}</span>
+					</>
+				)}
 			</p>
 		</div>
 	);
@@ -112,6 +123,15 @@ export const ANSWER_CONTROL_SPECIMENS = [
 		["disabled", "Number, disabled"],
 	].map(([state, title]) => ({
 		id: `answercontrol-number-${state}`,
+		title: title as string,
+	})),
+	...[
+		["empty", "Date, empty"],
+		["filled", "Date, filled"],
+		["invalid", "Date, invalid"],
+		["disabled", "Date, disabled"],
+	].map(([state, title]) => ({
+		id: `answercontrol-date-${state}`,
 		title: title as string,
 	})),
 ];
@@ -306,6 +326,35 @@ export function AnswerControlSection() {
 				note="Disabled while the answer cannot change."
 			>
 				<Live fact="stay_days" unit="days" start={4} disabled />
+			</Specimen>
+
+			<Specimen
+				id="answercontrol-date-empty"
+				title="Date, empty"
+				note="The browser's own date picker. It emits an ISO date; text shown to people uses formatDate."
+			>
+				<Live fact="admission_date" />
+			</Specimen>
+			<Specimen
+				id="answercontrol-date-filled"
+				title="Date, filled"
+				note="Holds 2026-11-10, which reads as 10 Nov 2026 in any time zone."
+			>
+				<Live fact="admission_date" start="2026-11-10" />
+			</Specimen>
+			<Specimen
+				id="answercontrol-date-invalid"
+				title="Date, invalid"
+				note="Shown when Enter is pressed with no date picked."
+			>
+				<Live fact="admission_date" error={ANSWER_MESSAGES.pickDate} />
+			</Specimen>
+			<Specimen
+				id="answercontrol-date-disabled"
+				title="Date, disabled"
+				note="Disabled while the answer cannot change."
+			>
+				<Live fact="admission_date" start="2026-11-10" disabled />
 			</Specimen>
 		</section>
 	);
