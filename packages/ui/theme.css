@@ -8,6 +8,12 @@
 @source "./src";
 
 /*
+ * Tailwind reads class names from any text it scans, prose included. The word
+ * "uppercase" in a comment or a test would emit a class the design refuses.
+ */
+@source not inline("uppercase");
+
+/*
  * inline: classes read the token directly, so they follow data-surface.
  * reference: Tailwind emits no theme variables of its own. Several share a
  * name with a token (--radius-paper) and would otherwise define themselves
