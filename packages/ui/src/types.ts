@@ -14,3 +14,9 @@ export type VerdictState =
 	| "ready"
 	| "not_ready" // Pre-Flight
 	| "undecided"; // goals unknown, questions still needed
+
+/** The three replay failures a verdict link can hit. A subset of the engine's ErrorCode. */
+export type ReplayFailure =
+	| "KB_MISMATCH"
+	| "MALFORMED_TOKEN"
+	| "UNSUPPORTED_VERSION";
