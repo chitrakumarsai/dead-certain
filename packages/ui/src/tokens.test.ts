@@ -57,6 +57,8 @@ const ROOT = {
 	"--column-max": "680px",
 	"--rail-width": "240px",
 	"--touch-min": "44px",
+	"--bar-gap": "2px",
+	"--bar-part-min": "2px",
 	"--ease": "cubic-bezier(0.2, 0, 0, 1)",
 	"--dur-press": "120ms",
 	"--dur-panel": "200ms",

@@ -16,6 +16,10 @@ import type {
 } from "./components/ClauseQuote";
 import type { DisclosureProps } from "./components/Disclosure";
 import type { FilmProps } from "./components/Film";
+import type {
+	ProportionBarProps,
+	ProportionPart,
+} from "./components/ProportionBar";
 import type { QuestionCardProps } from "./components/QuestionCard";
 import type { SheetProps } from "./components/Sheet";
 import type { SourceBadgeProps } from "./components/SourceBadge";
@@ -117,4 +121,13 @@ test("VerdictHeadline takes a VerdictState, a statement and two sizes", () => {
 	expectTypeOf<VerdictHeadlineProps["headingLevel"]>().toEqualTypeOf<
 		1 | 2 | undefined
 	>();
+});
+
+test("ProportionBar takes a total, paid and cut parts, and a format", () => {
+	expectTypeOf<ProportionBarProps["total"]>().toEqualTypeOf<number>();
+	expectTypeOf<ProportionBarProps["parts"]>().toEqualTypeOf<
+		readonly ProportionPart[]
+	>();
+	expectTypeOf<ProportionPart["kind"]>().toEqualTypeOf<"paid" | "cut">();
+	expectTypeOf<ProportionBarProps["format"]>().toEqualTypeOf<FormatContext>();
 });

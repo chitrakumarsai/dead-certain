@@ -31,6 +31,8 @@ test.each([
 	["rounded-control", "border-radius: var(--radius-control)"],
 	["max-w-column", "max-width: var(--column-max)"],
 	["min-h-touch", "min-height: var(--touch-min)"],
+	["gap-(--bar-gap)", "gap: var(--bar-gap)"],
+	["min-w-(--bar-part-min)", "min-width: var(--bar-part-min)"],
 	["font-doc", "font-family: var(--font-doc)"],
 	["text-verdict", "font-size: var(--text-verdict)"],
 	["text-verdict", "var(--leading-verdict)"],

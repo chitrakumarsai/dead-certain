@@ -18,6 +18,10 @@ import {
 import { DISCLOSURE_SPECIMENS, DisclosureSection } from "./DisclosureSection";
 import { PRIMITIVE_SPECIMENS, PrimitivesSection } from "./PrimitivesSection";
 import {
+	PROPORTION_BAR_SPECIMENS,
+	ProportionBarSection,
+} from "./ProportionBarSection";
+import {
 	QUESTION_CARD_SPECIMENS,
 	QuestionCardSection,
 } from "./QuestionCardSection";
@@ -44,6 +48,7 @@ const SECTIONS = [
 	{ title: "QuestionCard", specimens: QUESTION_CARD_SPECIMENS },
 	{ title: "AnswersRail", specimens: ANSWERS_RAIL_SPECIMENS },
 	{ title: "VerdictHeadline", specimens: VERDICT_HEADLINE_SPECIMENS },
+	{ title: "ProportionBar", specimens: PROPORTION_BAR_SPECIMENS },
 ];
 
 function Gallery() {
@@ -104,6 +109,7 @@ function Gallery() {
 				<QuestionCardSection />
 				<AnswersRailSection />
 				<VerdictHeadlineSection />
+				<ProportionBarSection />
 			</main>
 		</div>
 	);

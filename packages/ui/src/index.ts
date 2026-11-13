@@ -29,6 +29,11 @@ export {
 export { Disclosure, type DisclosureProps } from "./components/Disclosure";
 export { Film, type FilmProps } from "./components/Film";
 export {
+	ProportionBar,
+	type ProportionBarProps,
+	type ProportionPart,
+} from "./components/ProportionBar";
+export {
 	QuestionCard,
 	type QuestionCardProps,
 } from "./components/QuestionCard";
