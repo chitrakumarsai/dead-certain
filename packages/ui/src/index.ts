@@ -20,6 +20,7 @@ export {
 	numberAnswer,
 } from "./components/answerMessages";
 export { Button, type ButtonProps } from "./components/Button";
+export { CheckRow, type CheckRowProps } from "./components/CheckRow";
 export {
 	ClauseQuote,
 	type ClauseQuoteProps,

@@ -11,6 +11,7 @@ import { expectTypeOf, test } from "vitest";
 import type { AnswerControlProps } from "./components/AnswerControl";
 import type { AnswersRailProps } from "./components/AnswersRail";
 import type { ButtonProps } from "./components/Button";
+import type { CheckRowProps } from "./components/CheckRow";
 import type {
 	ClauseQuoteProps,
 	ClauseRefProps,
@@ -147,4 +148,19 @@ test("Ledger takes LineItem unchanged and hands back the item and its opener", (
 		string | undefined
 	>();
 	expectTypeOf<LedgerProps["format"]>().toEqualTypeOf<FormatContext>();
+});
+
+test("CheckRow takes LineItem, Question and FactDef unchanged", () => {
+	expectTypeOf<CheckRowProps["item"]>().toEqualTypeOf<LineItem>();
+	expectTypeOf<CheckRowProps["question"]>().toEqualTypeOf<
+		Question | undefined
+	>();
+	expectTypeOf<CheckRowProps["def"]>().toEqualTypeOf<FactDef | undefined>();
+	expectTypeOf<CheckRowProps["detail"]>().toEqualTypeOf<string | undefined>();
+	expectTypeOf<CheckRowProps["onAnswer"]>().toEqualTypeOf<
+		((fact: string, value: FactValue) => void) | undefined
+	>();
+	expectTypeOf<CheckRowProps["onOpen"]>().toEqualTypeOf<
+		(item: LineItem, opener: HTMLElement) => void
+	>();
 });

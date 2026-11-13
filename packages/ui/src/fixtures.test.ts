@@ -9,7 +9,9 @@ import {
 	factDefFixtures,
 	manyDeductionsFixture,
 	paidInFullVerdictFixture,
+	preFlightAllPassFixture,
 	preFlightClauseFixtures,
+	preFlightUnknownFixture,
 	preFlightVerdictFixture,
 	proofFixture,
 	questionFixtures,
@@ -138,8 +140,30 @@ test("every clause a Claim Check fixture cites has a clause fixture", () => {
 	}
 });
 
-test("every clause the Pre-Flight fixture cites has a clause fixture", () => {
-	for (const { clause } of preFlightVerdictFixture.lineItems) {
+test("Pre-Flight edge fixtures: all pass is ready; unknown is undecided and asks", () => {
+	expect(preFlightAllPassFixture.goals.verdict).toBe("ready");
+	expect(preFlightAllPassFixture.needed).toEqual([]);
+	for (const item of preFlightAllPassFixture.lineItems) {
+		expect(item.value, item.fact).toBe(true);
+	}
+	expect(preFlightUnknownFixture.goals.verdict).toBeUndefined();
+	expect(
+		preFlightUnknownFixture.lineItems.some((item) => item.value === undefined),
+	).toBe(true);
+	for (const question of preFlightUnknownFixture.needed) {
+		const item = preFlightUnknownFixture.lineItems.find(
+			(line) => line.fact === question.fact,
+		);
+		expect(item?.value, question.fact).toBeUndefined();
+	}
+});
+
+test("every clause a Pre-Flight fixture cites has a clause fixture", () => {
+	for (const { clause } of [
+		preFlightVerdictFixture,
+		preFlightAllPassFixture,
+		preFlightUnknownFixture,
+	].flatMap((verdict) => verdict.lineItems)) {
 		expect(preFlightClauseFixtures[clause]?.id, `clause ${clause}`).toBe(
 			clause,
 		);

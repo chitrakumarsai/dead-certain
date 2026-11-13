@@ -11,6 +11,7 @@ import {
 	AnswersRailSection,
 } from "./AnswersRailSection";
 import { BUTTON_SPECIMENS, ButtonsSection } from "./ButtonsSection";
+import { CHECK_ROW_SPECIMENS, CheckRowSection } from "./CheckRowSection";
 import {
 	CLAUSE_QUOTE_SPECIMENS,
 	ClauseQuoteSection,
@@ -51,6 +52,7 @@ const SECTIONS = [
 	{ title: "VerdictHeadline", specimens: VERDICT_HEADLINE_SPECIMENS },
 	{ title: "ProportionBar", specimens: PROPORTION_BAR_SPECIMENS },
 	{ title: "Ledger", specimens: LEDGER_SPECIMENS },
+	{ title: "CheckRow", specimens: CHECK_ROW_SPECIMENS },
 ];
 
 function Gallery() {
@@ -113,6 +115,7 @@ function Gallery() {
 				<VerdictHeadlineSection />
 				<ProportionBarSection />
 				<LedgerSection />
+				<CheckRowSection />
 			</main>
 		</div>
 	);

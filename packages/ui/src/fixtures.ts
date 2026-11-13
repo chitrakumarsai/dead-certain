@@ -533,3 +533,24 @@ export const zeroDeductionFixture: Verdict = {
 	],
 	needed: [],
 };
+
+/** Every check passes. */
+export const preFlightAllPassFixture: Verdict = {
+	kind: "verdict",
+	goals: { verdict: "ready" },
+	lineItems: preFlightVerdictFixture.lineItems.map((item) => ({
+		...item,
+		value: true,
+	})),
+	needed: [],
+};
+
+/** The collector could not see two facts; one of them is asked. */
+export const preFlightUnknownFixture: Verdict = {
+	kind: "verdict",
+	goals: { verdict: undefined },
+	lineItems: preFlightVerdictFixture.lineItems.map((item) =>
+		item.fact === "is_public" ? item : { ...item, value: undefined },
+	),
+	needed: preFlightVerdictFixture.needed,
+};
