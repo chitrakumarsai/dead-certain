@@ -8,10 +8,12 @@
 @source "./src";
 
 /*
- * Tailwind reads class names from any text it scans, prose included. The word
- * "uppercase" in a comment or a test would emit a class the design refuses.
+ * Tailwind reads class names from any text it scans, prose included. Plain
+ * words such as "uppercase", "ring" or "shadow" in a comment, a label or a
+ * test would each emit a class the design refuses, so they are blocked here.
+ * refusals.test.ts scans the built CSS and catches any other.
  */
-@source not inline("uppercase");
+@source not inline("{uppercase,ring,inset-ring,shadow,inset-shadow}");
 
 /*
  * inline: classes read the token directly, so they follow data-surface.

@@ -1,2 +1,2 @@
 // Components are exported here as each task adds them.
-export {};
+export { contrast } from "./tokens/contrast";
