@@ -190,3 +190,76 @@ test("forced colors keeps the focus ring as an outline", async ({ page }) => {
 	await expect(skipLink).toHaveCSS("outline-style", "solid");
 	await expect(skipLink).toHaveCSS("outline-width", "2px");
 });
+
+const FACES = [
+	{ family: "IBM Plex Sans", weight: 400, fallback: "monospace" },
+	{ family: "IBM Plex Sans", weight: 600, fallback: "monospace" },
+	{ family: "IBM Plex Serif", weight: 400, fallback: "monospace" },
+	{ family: "IBM Plex Serif", weight: 600, fallback: "monospace" },
+	{ family: "IBM Plex Mono", weight: 400, fallback: "serif" },
+];
+
+for (const { family, weight, fallback } of FACES) {
+	test(`${family} ${weight} draws the rupee sign with its own glyph`, async ({
+		page,
+	}) => {
+		await page.goto("./kit/");
+
+		const widths = await page.evaluate(
+			async ({ family, weight, fallback }) => {
+				const loaded = await document.fonts.load(
+					`${weight} 48px "${family}"`,
+					"\u20B9A",
+				);
+				const measure = (font: string) => {
+					const span = document.createElement("span");
+					span.style.cssText = `position:absolute;font:${weight} 48px ${font}`;
+					span.textContent = "\u20B9\u20B9\u20B9\u20B9";
+					document.body.append(span);
+					const width = span.getBoundingClientRect().width;
+					span.remove();
+					return width;
+				};
+				return {
+					loaded: loaded.length,
+					plex: measure(`"${family}", ${fallback}`),
+					fallback: measure(fallback),
+				};
+			},
+			{ family, weight, fallback },
+		);
+
+		// Both subsets load: latin for "A", latin-ext for the rupee sign.
+		expect(widths.loaded).toBe(2);
+		// A missing glyph would fall through and match the fallback width.
+		expect(widths.plex).not.toBe(widths.fallback);
+	});
+}
+
+test("the three voices use IBM Plex and every font comes from this origin", async ({
+	page,
+}) => {
+	const fontRequests: string[] = [];
+	page.on("request", (request) => {
+		if (request.resourceType() === "font") fontRequests.push(request.url());
+	});
+	await page.goto("./kit/");
+	await page.evaluate(() => document.fonts.ready);
+
+	await expect(page.getByRole("heading", { level: 1 })).toHaveCSS(
+		"font-family",
+		/^"IBM Plex Sans"/,
+	);
+	await expect(page.locator('[data-type-style="verdict"] p').first()).toHaveCSS(
+		"font-family",
+		/^"IBM Plex Serif"/,
+	);
+	await expect(page.locator('[data-type-style="mono"] p').first()).toHaveCSS(
+		"font-family",
+		/^"IBM Plex Mono"/,
+	);
+	expect(fontRequests.length).toBeGreaterThan(0);
+	for (const url of fontRequests) {
+		expect(new URL(url).origin).toBe("http://localhost:4173");
+	}
+});

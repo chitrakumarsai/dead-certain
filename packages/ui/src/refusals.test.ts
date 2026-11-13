@@ -85,6 +85,16 @@ test("the site build emits the kit stylesheet", () => {
 	expect(builtCss).toContain("--lightbox");
 });
 
+test("the built CSS loads every font from this origin", () => {
+	const urls = matches(withoutComments(builtCss), /url\(([^)]+)\)/g);
+	const fonts = urls.filter((url) => url.includes(".woff"));
+
+	expect(fonts).toHaveLength(10);
+	for (const url of urls) {
+		expect(url).not.toMatch(/url\(["']?(https?:)?\/\//);
+	}
+});
+
 test.each(CSS_REFUSALS)("the built CSS has no $name", ({ found }) => {
 	expect(found(builtCss)).toEqual([]);
 });

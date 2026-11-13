@@ -57,10 +57,10 @@
 	--dur-xray: 500ms;
 	--dur-reduced: 120ms;
 
-	/* Type: one family, three voices. fonts.css puts IBM Plex in front of these. */
-	--font-doc: Georgia, "Times New Roman", serif;
-	--font-sys: system-ui, -apple-system, "Segoe UI", sans-serif;
-	--font-mono: ui-monospace, Menlo, Consolas, monospace;
+	/* Type: one family, three voices. fonts.css loads the faces. */
+	--font-doc: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+	--font-sys: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
 
 	--text-doc-body: 17px;
 	--leading-doc-body: 28px;

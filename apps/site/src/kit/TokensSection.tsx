@@ -160,7 +160,7 @@ export const TOKEN_SPECIMENS = [
 export function TokensSection() {
 	return (
 		<section aria-labelledby="tokens-heading">
-			<h2 id="tokens-heading" className="font-doc text-verdict">
+			<h2 id="tokens-heading" className="font-doc text-verdict font-semibold">
 				Tokens
 			</h2>
 
