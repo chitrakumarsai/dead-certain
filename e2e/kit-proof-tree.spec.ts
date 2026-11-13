@@ -143,3 +143,58 @@ test("a fact under two rules gets two ids, and the 200-node tree has unique ids"
 	expect(ids).toHaveLength(200);
 	expect(new Set(ids).size).toBe(200);
 });
+
+test("a closed parent shows a closed chevron and its hidden count, unheard", async ({
+	page,
+}) => {
+	await page.goto("./kit/#prooftree-collapsed");
+	const collapsed = tree(page, "collapsed");
+	const closed = collapsed.locator('[data-node-id="0.0.0"]');
+	const open = collapsed.locator('[data-node-id="0.0"]');
+
+	await expect(closed.locator("[data-toggle]").first()).toHaveAttribute(
+		"data-toggle",
+		"closed",
+	);
+	await expect(open.locator("[data-toggle]").first()).toHaveAttribute(
+		"data-toggle",
+		"open",
+	);
+	await expect(closed.locator("[data-hidden-count]")).toHaveText("1 hidden");
+	await expect(closed.locator("[data-hidden-count]")).toHaveCSS(
+		"font-family",
+		/IBM Plex Mono/,
+	);
+	await expect(
+		open.locator(":scope > [data-row] [data-hidden-count]"),
+	).toHaveCount(0);
+	// The count is for sighted users; aria-expanded already tells screen readers.
+	await expect(closed).toHaveAccessibleName(
+		"ROOM-01 The room rent limit is 1% of the sum insured per day.",
+	);
+	await expect(
+		collapsed.locator('[data-node-id="0.0.0.0"] [data-toggle]'),
+	).toHaveCount(0);
+});
+
+test("clicking the chevron opens and closes a branch, with a 44 px target", async ({
+	page,
+}) => {
+	await page.goto("./kit/#prooftree-collapsed");
+	const collapsed = tree(page, "collapsed");
+	const closed = collapsed.locator('[data-node-id="0.0.0"]');
+	const toggle = closed.locator(":scope > [data-row] [data-toggle]");
+
+	const box = await toggle.boundingBox();
+	expect(box?.width ?? 0).toBeGreaterThanOrEqual(44);
+	expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+	await toggle.click();
+	await expect(closed).toHaveAttribute("aria-expanded", "true");
+	await expect(collapsed.locator('[data-node-id="0.0.0.0"]')).toHaveCount(1);
+	await expect(closed).toHaveAttribute("tabindex", "0");
+	await toggle.click();
+	await expect(closed).toHaveAttribute("aria-expanded", "false");
+	await expect(
+		collapsed.locator('[role="treeitem"][tabindex="0"]'),
+	).toHaveCount(1);
+});

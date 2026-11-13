@@ -1,7 +1,13 @@
 import type { Clause, FactValue, ProofNode } from "@dead-certain/engine/types";
-import { memo, useState } from "react";
+import { memo, useCallback, useState } from "react";
+import { Chevron } from "../icons";
 import { ClauseQuote } from "./ClauseQuote";
-import { initialTreeState, type TreeState } from "./proofTreeState";
+import {
+	initialTreeState,
+	normalizeTreeState,
+	type TreeState,
+	toggleNode,
+} from "./proofTreeState";
 import { SourceBadge } from "./SourceBadge";
 
 export interface ProofTreeProps {
@@ -18,8 +24,9 @@ export interface ProofTreeProps {
 	/** XrayStage restores focus. */
 	onEscape: () => void;
 	/**
-	 * Where the tree starts. Defaults to the root and its children open, so an
-	 * app can open the path to a selected row and the gallery can show states.
+	 * Where the tree starts, read on mount only (like defaultOpen). Unknown ids
+	 * are dropped and ancestors of open or active nodes open. To show another
+	 * proof, remount the tree, for example with key={target}.
 	 */
 	initialState?: TreeState;
 }
@@ -27,7 +34,12 @@ export interface ProofTreeProps {
 type RowProps = Pick<
 	ProofTreeProps,
 	"labelFor" | "formatValue" | "clauseFor" | "decidingClause"
-> & { node: ProofNode };
+> & {
+	node: ProofNode;
+	id: string;
+	isOpen: boolean;
+	onToggle: (id: string) => void;
+};
 
 const isJoint = (node: ProofNode): boolean =>
 	node.source === "derived" && node.rule !== undefined;
@@ -65,13 +77,35 @@ function Marker({ joint }: { joint: boolean }) {
 }
 
 /** One node's own content, without its children. Memoised by id upstream. */
-const Row = memo(function Row({ node, labelFor, formatValue }: RowProps) {
+const Row = memo(function Row({
+	node,
+	id,
+	isOpen,
+	onToggle,
+	labelFor,
+	formatValue,
+}: RowProps) {
+	const isParent = node.children.length > 0;
 	const value =
 		node.value === undefined
 			? "Not known yet"
 			: formatValue(node.fact, node.value);
 	return (
-		<div data-row className="flex items-start gap-3 py-1">
+		<div data-row className="flex items-start gap-1 py-1">
+			{isParent ? (
+				// The pointer route only: keyboard users open branches with the tree
+				// keys, and aria-expanded tells screen readers.
+				<span
+					aria-hidden="true"
+					data-toggle={isOpen ? "open" : "closed"}
+					onClick={() => onToggle(id)}
+					className="-my-2 flex size-touch shrink-0 cursor-pointer items-center justify-center rounded-control text-text-soft hover:bg-text/10"
+				>
+					<Chevron direction={isOpen ? "down" : "right"} />
+				</span>
+			) : (
+				<span className="w-touch shrink-0" />
+			)}
 			<Marker joint={isJoint(node)} />
 			{isJoint(node) ? (
 				<span className="flex min-w-0 flex-wrap items-baseline gap-x-3">
@@ -79,6 +113,16 @@ const Row = memo(function Row({ node, labelFor, formatValue }: RowProps) {
 						{node.rule}
 					</span>
 					<span className="text-sys-body text-text">{node.because}</span>
+					{isParent && !isOpen && (
+						// Sighted users see the hidden branch; aria-expanded already says it.
+						<span
+							aria-hidden="true"
+							data-hidden-count
+							className="font-mono text-mono text-text-soft"
+						>
+							{node.children.length} hidden
+						</span>
+					)}
 				</span>
 			) : (
 				<span className="flex min-w-0 flex-wrap items-baseline gap-x-3">
@@ -93,7 +137,7 @@ const Row = memo(function Row({ node, labelFor, formatValue }: RowProps) {
 	);
 });
 
-interface NodeProps extends RowProps {
+interface NodeProps extends Omit<RowProps, "id" | "isOpen"> {
 	id: string;
 	level: number;
 	posinset: number;
@@ -124,9 +168,9 @@ function TreeNode({ id, level, posinset, setsize, state, ...row }: NodeProps) {
 			data-focus-ring="frame"
 			className="[&:focus-visible>[data-row]]:outline-2 [&:focus-visible>[data-row]]:outline-offset-2 [&:focus-visible>[data-row]]:outline-focus [&:focus-visible>[data-row]]:outline-solid"
 		>
-			<Row {...row} />
+			<Row {...row} id={id} isOpen={isOpen} />
 			{clause && (
-				<div data-deciding className="pb-2 pl-7">
+				<div data-deciding className="pb-2 pl-16">
 					<ClauseQuote clause={clause} variant="deciding" />
 				</div>
 			)}
@@ -165,7 +209,13 @@ export function ProofTree({
 	decidingClause,
 	initialState,
 }: ProofTreeProps) {
-	const [state] = useState(() => initialState ?? initialTreeState(root));
+	const [state, setState] = useState(() =>
+		normalizeTreeState(root, initialState ?? initialTreeState(root)),
+	);
+	const onToggle = useCallback(
+		(id: string) => setState((prev) => toggleNode(root, prev, id)),
+		[root],
+	);
 
 	return (
 		<div role="tree" aria-label="Proof" className="max-w-column">
@@ -176,6 +226,7 @@ export function ProofTree({
 				posinset={1}
 				setsize={1}
 				state={state}
+				onToggle={onToggle}
 				labelFor={labelFor}
 				formatValue={formatValue}
 				clauseFor={clauseFor}
