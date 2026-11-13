@@ -1,0 +1,20 @@
+id: toy-money
+currency: INR
+goals: [payable]
+facts:
+  sum_insured:
+    type: money
+    ask: What is the sum insured?
+  payable:
+    type: money
+    derived: true
+rules:
+  - id: R-1
+    cite: "4.2"
+    set: payable
+    to: round(sum_insured * 0.01)
+    because: One percent of the sum insured, rounded to whole minor units.
+clauses:
+  "4.2":
+    title: Room rent
+    text: Room rent is capped at one percent of the sum insured.

@@ -537,3 +537,48 @@ These notes record what the engine assumes about a knowledge base, so the `kb-to
 2. The validator warns when a fact with `role: deduction` has no unguarded fallback rule. The engine reports `undefined` for such a fact when every guard is false.
 3. The `kb-tools` tests fail on any `money` rule that lacks an explicit `round(...)`, so `NON_INTEGER_MONEY` is caught at build time.
 4. Every `cite` must name a clause. The engine assumes this and does not check it at run time.
+
+## Diagnostic codes
+
+`pnpm dc validate` and `pnpm dc build` report problems as diagnostics. Each diagnostic has a `severity`, a `code`, the `file`, and a `message`. It may also have an `id` (the rule id, fact name or clause id it is about) and a `field` (`to` or `when` for an expression, or the offending key for a schema problem). There are 22 codes. 20 are errors and 2 are warnings.
+
+- An error means the knowledge base is not valid. `pnpm dc build` writes no output while any error is present.
+- A warning does not stop a build. It points at something that is probably a mistake.
+- Diagnostics are sorted by their place in the file: top level, goals, facts, rules, clauses. Quoted source text in a message is clipped to 200 characters, with a trailing `…`.
+
+The `id` column says what the `id` of the diagnostic holds. "none" means the diagnostic has no `id`. The example messages show the form of each message. The names and values in them change from file to file.
+
+| Code | Severity | `id` | Example message |
+| --- | --- | --- | --- |
+| `READ_ERROR` | error | none | `Cannot read 'apps/x/kb/y.yaml': ENOENT (no such file or directory).` |
+| `YAML_SYNTAX` | error | none | `YAML syntax error at line 3, column 1: BAD_INDENT: Flow sequence in block collection must be sufficiently indented and end with a ]` |
+| `SCHEMA_INVALID` | error | entity id | `The 'cite' of rule 'ROOM-01' is a number. Quote it, for example cite: "4.2".` |
+| `PARSE_ERROR` | error | rule id | `Rule 'ROOM-02' field 'to' does not parse (UNEXPECTED_END at position 3): Unexpected end of input Source: '1 +'` |
+| `DUPLICATE_FACT` | error | fact name | `Fact 'sum_insured' (line 12, column 3) is defined more than once. The first definition is used.` |
+| `DUPLICATE_RULE` | error | rule id | `Rule id 'ROOM-01' is used by more than one rule.` |
+| `DUPLICATE_CLAUSE` | error | clause id | `Clause '4.2' (line 40, column 3) is defined more than once. The first definition is used.` |
+| `UNKNOWN_FACT` | error | rule id | `Fact 'gold' is not defined — did you mean the enum literal 'gold'? Corrected YAML: "'gold'"` |
+| `UNKNOWN_GOAL` | error | goal | `Goal 'payable' is not a fact.` |
+| `UNKNOWN_SET_FACT` | error | rule id | `Rule 'ROOM-01' sets 'room_cap', which is not a fact.` |
+| `UNKNOWN_CLAUSE` | error | rule id | `Rule 'ROOM-01' cites clause '4.3', which is not in clauses.` |
+| `UNKNOWN_PLACEHOLDER` | error | rule id | `The 'because' text of rule 'ROOM-01' uses {rent}, which is not a fact.` |
+| `CYCLE` | error | first fact | `Dependency cycle: a -> b -> a.` |
+| `GOAL_UNSET` | error | goal | `Goal 'payable' is not set by any rule.` |
+| `MISSING_ASK` | error | fact | `Fact 'sum_insured' is not derived and has no 'ask' text.` |
+| `ENUM_VALUE_NOT_IN_OPTIONS` | error | rule id | `Rule 'TIER-01' field 'to': 'platinum' is not an option of enum fact 'tier' (options: gold, silver).` |
+| `SET_NON_DERIVED` | error | rule id | `Rule 'ROOM-01' sets 'sum_insured', which is not marked derived: true.` |
+| `TYPE_MISMATCH` | error | rule id | `Rule 'ROOM-02' field 'when': '==' compares date with enum in 'admit_date == 'gold''.` |
+| `NOT_BOOLEAN` | error | rule id | `Rule 'ROOM-03' field 'when' must be boolean but has type number.` |
+| `MONEY_NOT_ROUNDED` | error | rule id | `Rule 'ROOM-03' sets money fact 'room_rent_excess' from 'sum_insured * 0.01', which can produce a fraction. Wrap the expression in round(...).` |
+| `NO_FALLBACK_RULE` | warning | fact | `Deduction fact 'room_rent_excess' has no rule without a 'when' guard, so the engine reports it as undefined whenever every guard is false. Add an unguarded default rule.` |
+| `DEAD_GUARD` | warning | rule id | `Rule 'ROOM-04' has a guard that can never be true: 'rent_over_cap and not rent_over_cap'. The rule never fires.` |
+
+Notes on specific codes:
+
+- `READ_ERROR` has two messages. When the operating system cannot read the file, the message gives the system's reason: `Cannot read 'apps/x/kb/y.yaml': ENOENT (no such file or directory).` When the bytes are not valid UTF-8, the message gives no system reason: `Cannot read 'apps/x/kb/y.yaml': the file is not valid UTF-8.`
+- A file larger than 1 MiB is reported as `SCHEMA_INVALID`, with no `id`: `File 'apps/x/kb/y.yaml' is larger than the 1 MiB limit (1048576 bytes).`
+- `SCHEMA_INVALID` also covers a missing required field, a field of the wrong type, an unknown field, a value outside an allowed set, and a mapping key that YAML does not read as a string. The `id` is the id of the rule, fact or clause that holds the problem, when there is one.
+- `YAML_SYNTAX` also covers a duplicate key outside `facts` and `clauses`. Its `id` is absent and its `field` is the repeated key. A duplicate key inside `facts` or `clauses` is `DUPLICATE_FACT` or `DUPLICATE_CLAUSE`. For all three, the first definition is the one used.
+- `UNKNOWN_FACT` adds the hint about an enum literal only when the whole expression is a bare identifier, which is what YAML leaves of a quoted literal (see "Validator note: quoted literals that YAML strips"). In any other expression the message is `Fact 'x' is not defined.`
+- `CYCLE` is reported once for each group of facts that depend on each other. The path starts at the alphabetically first fact. A fact that reads itself gets a message of the form `Fact 'a' depends on itself: rule 'R-1' sets it from an expression that reads it.`
+- `PARSE_ERROR` is also used when a number literal is too large to be finite, and when an expression is nested too deeply to parse or to type-check.
