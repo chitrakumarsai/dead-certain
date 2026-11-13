@@ -2,12 +2,14 @@ import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "@dead-certain/ui/styles.css";
 import { LiveRegion } from "@dead-certain/ui";
+import { BUTTON_SPECIMENS, ButtonsSection } from "./ButtonsSection";
 import { PRIMITIVE_SPECIMENS, PrimitivesSection } from "./PrimitivesSection";
 import { TOKEN_SPECIMENS, TokensSection } from "./TokensSection";
 
 const SECTIONS = [
 	{ title: "Tokens", specimens: TOKEN_SPECIMENS },
 	{ title: "Icons and accessibility helpers", specimens: PRIMITIVE_SPECIMENS },
+	{ title: "Button", specimens: BUTTON_SPECIMENS },
 ];
 
 function Gallery() {
@@ -50,6 +52,7 @@ function Gallery() {
 			<main id="content" tabIndex={-1} className="pt-12">
 				<TokensSection />
 				<PrimitivesSection />
+				<ButtonsSection />
 			</main>
 		</div>
 	);

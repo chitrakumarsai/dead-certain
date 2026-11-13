@@ -20,3 +20,6 @@ export type ReplayFailure =
 	| "KB_MISMATCH"
 	| "MALFORMED_TOKEN"
 	| "UNSUPPORTED_VERSION";
+
+/** The two materials. Paper asks and answers; film shows proof. */
+export type Surface = "paper" | "film";

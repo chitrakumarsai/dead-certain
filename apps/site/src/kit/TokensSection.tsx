@@ -1,4 +1,4 @@
-import { contrast, useReducedMotion } from "@dead-certain/ui";
+import { Button, contrast, useReducedMotion } from "@dead-certain/ui";
 import { useState } from "react";
 import { Specimen } from "./Specimen";
 
@@ -125,14 +125,9 @@ function Replay({ name, ms, use }: (typeof DURATIONS)[number]) {
 	const [isOn, setIsOn] = useState(false);
 	return (
 		<li className="flex items-center gap-4">
-			<button
-				type="button"
-				aria-pressed={isOn}
-				onClick={() => setIsOn(!isOn)}
-				className="min-h-touch shrink-0 rounded-control border border-control-border bg-paper px-4 text-sys-small font-semibold"
-			>
+			<Button aria-pressed={isOn} onClick={() => setIsOn(!isOn)}>
 				Replay {ms} ms
-			</button>
+			</Button>
 			<div className="h-2 grow bg-divider" aria-hidden="true">
 				<div
 					className="h-full origin-left bg-ink transition-transform ease-kit"

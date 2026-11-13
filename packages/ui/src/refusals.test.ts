@@ -110,3 +110,29 @@ test("kit source has no raw HTML injection, storage or network call", () => {
 
 	expect(offenders).toEqual([]);
 });
+
+// Property 12, button-label part. The Playwright suite checks every rendered
+// label in the gallery; this scan stops an arrow reaching any kit or gallery
+// source at all.
+const ARROWS = /[→←↑↓➜»«]/u;
+
+test("the arrow scan recognises each refused arrow", () => {
+	for (const arrow of ["→", "←", "↑", "↓", "➜", "»", "«"]) {
+		expect(ARROWS.test(`Continue ${arrow}`)).toBe(true);
+	}
+	expect(ARROWS.test("Continue")).toBe(false);
+});
+
+test("no kit or gallery component source contains an arrow", () => {
+	const roots = [
+		new URL("./", import.meta.url),
+		new URL("../../../apps/site/src/", import.meta.url),
+	];
+	const offenders = roots.flatMap((root) =>
+		(readdirSync(root, { recursive: true }) as string[])
+			.filter((file) => file.endsWith(".tsx"))
+			.filter((file) => ARROWS.test(readFileSync(new URL(file, root), "utf8"))),
+	);
+
+	expect(offenders).toEqual([]);
+});

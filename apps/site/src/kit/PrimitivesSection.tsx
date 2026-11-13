@@ -1,4 +1,5 @@
 import {
+	Button,
 	CheckCircle,
 	Chevron,
 	Close,
@@ -37,20 +38,12 @@ function IconGrid() {
 	);
 }
 
-// Native buttons until Button lands in task 5.2.
-const DEMO_BUTTON =
-	"min-h-touch rounded-control border border-control-border bg-paper px-4 text-sys-small font-semibold";
-
 function AnnounceDemo() {
 	const announce = useAnnounce();
 	return (
-		<button
-			type="button"
-			className={DEMO_BUTTON}
-			onClick={() => announce("Question 3. Up to 6 more.")}
-		>
+		<Button onClick={() => announce("Question 3. Up to 6 more.")}>
 			Announce a sample message
-		</button>
+		</Button>
 	);
 }
 
@@ -63,15 +56,13 @@ function FocusDemo() {
 	const [index, setIndex] = useState<number | null>(null);
 	return (
 		<div className="space-y-4">
-			<button
-				type="button"
-				className={DEMO_BUTTON}
+			<Button
 				onClick={() =>
 					setIndex((i) => (i === null ? 0 : (i + 1) % QUESTIONS.length))
 				}
 			>
 				Show the next question
-			</button>
+			</Button>
 			{index !== null && (
 				<FocusedHeading key="heading" text={QUESTIONS[index] as string} />
 			)}
