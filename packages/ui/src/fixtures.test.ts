@@ -80,6 +80,20 @@ test("every question fixture asks about a fact with a definition", () => {
 	}
 });
 
+test("question fixtures cover all five control types", () => {
+	const types = new Set(
+		Object.values(questionFixtures).map((q) => factDefFixtures[q.fact]?.type),
+	);
+
+	expect([...types].sort()).toEqual([
+		"boolean",
+		"date",
+		"enum",
+		"money",
+		"number",
+	]);
+});
+
 test("fact definitions cover all five types, and check facts are boolean", () => {
 	const defs = Object.values(factDefFixtures);
 	const types = new Set(defs.map((def) => def.type));

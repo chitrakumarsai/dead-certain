@@ -4,6 +4,7 @@ import type {
 	FactDef,
 	FactSource,
 	FactValue,
+	Question,
 } from "@dead-certain/engine/types";
 import { expectTypeOf, test } from "vitest";
 import type { AnswerControlProps } from "./components/AnswerControl";
@@ -14,6 +15,7 @@ import type {
 } from "./components/ClauseQuote";
 import type { DisclosureProps } from "./components/Disclosure";
 import type { FilmProps } from "./components/Film";
+import type { QuestionCardProps } from "./components/QuestionCard";
 import type { SheetProps } from "./components/Sheet";
 import type { SourceBadgeProps } from "./components/SourceBadge";
 import type { FormatContext, ReplayFailure, Surface } from "./types";
@@ -66,4 +68,18 @@ test("AnswerControl takes FactDef and FactValue unchanged, and has no allowZero"
 	>();
 	expectTypeOf<AnswerControlProps["format"]>().toEqualTypeOf<FormatContext>();
 	expectTypeOf<AnswerControlProps>().not.toHaveProperty("allowZero");
+});
+
+test("QuestionCard takes Question, FactDef and Clause unchanged", () => {
+	expectTypeOf<QuestionCardProps["question"]>().toEqualTypeOf<Question>();
+	expectTypeOf<QuestionCardProps["def"]>().toEqualTypeOf<FactDef>();
+	expectTypeOf<QuestionCardProps["clause"]>().toEqualTypeOf<
+		Clause | undefined
+	>();
+	expectTypeOf<QuestionCardProps["onSubmit"]>().toEqualTypeOf<
+		(fact: string, value: FactValue) => void
+	>();
+	expectTypeOf<QuestionCardProps["onBack"]>().toEqualTypeOf<
+		(() => void) | undefined
+	>();
 });

@@ -328,8 +328,36 @@ export const factDefFixtures: Readonly<Record<string, FactDef>> = {
 	},
 };
 
-/** Questions keyed by fact. Task 7.1 adds one for every control type. */
+/** Questions keyed by fact, covering every control type. */
 export const questionFixtures: Readonly<Record<string, Question>> = {
+	room_rent_per_day: questionFixture,
+	age: {
+		kind: "question",
+		fact: "age",
+		text: "How old is the patient?",
+		why: "A policyholder aged 61 or over pays part of every claim.",
+		clause: "6.1",
+	},
+	stay_days: {
+		kind: "question",
+		fact: "stay_days",
+		text: "How many days was the hospital stay?",
+		why: "The room rent limit applies to each day of the stay.",
+		clause: "4.2",
+	},
+	room_type: {
+		kind: "question",
+		fact: "room_type",
+		text: "Which room did the patient stay in?",
+		why: "The room decides the rent the policy compares with its limit.",
+		clause: "4.2",
+	},
+	admission_date: {
+		kind: "question",
+		fact: "admission_date",
+		text: "When was the patient admitted?",
+		why: "The policy pays only for a stay that starts while it is in force.",
+	},
 	is_emergency: {
 		kind: "question",
 		fact: "is_emergency",

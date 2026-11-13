@@ -1,7 +1,7 @@
 import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "@dead-certain/ui/styles.css";
-import { LiveRegion } from "@dead-certain/ui";
+import { LiveRegion, useAnnounce } from "@dead-certain/ui";
 import {
 	ANSWER_CONTROL_SPECIMENS,
 	AnswerControlSection,
@@ -13,6 +13,10 @@ import {
 } from "./ClauseQuoteSection";
 import { DISCLOSURE_SPECIMENS, DisclosureSection } from "./DisclosureSection";
 import { PRIMITIVE_SPECIMENS, PrimitivesSection } from "./PrimitivesSection";
+import {
+	QUESTION_CARD_SPECIMENS,
+	QuestionCardSection,
+} from "./QuestionCardSection";
 import { SHEET_FILM_SPECIMENS, SheetFilmSection } from "./SheetFilmSection";
 import {
 	SOURCE_BADGE_SPECIMENS,
@@ -29,14 +33,24 @@ const SECTIONS = [
 	{ title: "ClauseQuote", specimens: CLAUSE_QUOTE_SPECIMENS },
 	{ title: "Sheet and Film", specimens: SHEET_FILM_SPECIMENS },
 	{ title: "AnswerControl", specimens: ANSWER_CONTROL_SPECIMENS },
+	{ title: "QuestionCard", specimens: QUESTION_CARD_SPECIMENS },
 ];
 
 function Gallery() {
+	const announce = useAnnounce();
 	// The specimens render after the browser has handled the fragment.
 	useEffect(() => {
+		// Every QuestionCard focuses its heading and announces its progress on
+		// mount, and the gallery shows many at once. The page starts at the top,
+		// with focus on the body and a quiet live region.
+		document.body.tabIndex = -1;
+		document.body.focus({ preventScroll: true });
+		document.body.removeAttribute("tabindex");
+		announce("");
 		const id = decodeURIComponent(location.hash.slice(1));
 		if (id) document.getElementById(id)?.scrollIntoView();
-	}, []);
+		else scrollTo(0, 0);
+	}, [announce]);
 
 	return (
 		<div className="p-4 md:p-6">
@@ -77,6 +91,7 @@ function Gallery() {
 				<ClauseQuoteSection />
 				<SheetFilmSection />
 				<AnswerControlSection />
+				<QuestionCardSection />
 			</main>
 		</div>
 	);

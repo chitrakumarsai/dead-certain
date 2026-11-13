@@ -24,6 +24,10 @@ export {
 } from "./components/ClauseQuote";
 export { Disclosure, type DisclosureProps } from "./components/Disclosure";
 export { Film, type FilmProps } from "./components/Film";
+export {
+	QuestionCard,
+	type QuestionCardProps,
+} from "./components/QuestionCard";
 export { Sheet, type SheetProps } from "./components/Sheet";
 export { SourceBadge, type SourceBadgeProps } from "./components/SourceBadge";
 export { humanize } from "./format/label";

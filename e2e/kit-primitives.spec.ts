@@ -74,16 +74,20 @@ test("a heading that mounts takes focus, and again when its key changes", async 
 	page,
 }) => {
 	await page.goto("./kit/#a11y-focus");
+	// Question cards elsewhere on the page use the same question text.
+	const focusSpecimen = page.locator('[data-specimen="a11y-focus"]');
 	const next = page.getByRole("button", { name: "Show the next question" });
 
 	await next.click();
 	await expect(
-		page.getByRole("heading", { name: "What was the room rent per day?" }),
+		focusSpecimen.getByRole("heading", {
+			name: "What was the room rent per day?",
+		}),
 	).toBeFocused();
 
 	await next.click();
 	await expect(
-		page.getByRole("heading", {
+		focusSpecimen.getByRole("heading", {
 			name: "What is the sum insured on the policy?",
 		}),
 	).toBeFocused();
