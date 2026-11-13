@@ -16,6 +16,7 @@ export interface CheckRowProps {
 	detail?: string;
 	/** Present while the value is unknown and the engine needs an answer. */
 	question?: Question;
+	/** The question is asked inline only when this is a boolean fact. */
 	def?: FactDef;
 	answerValue?: FactValue;
 	onAnswer?: (fact: string, value: FactValue) => void;
@@ -37,9 +38,6 @@ const STATES: Readonly<
 		tone: "text-text-soft",
 	},
 };
-
-/** The inline answer is always yes or no, whatever def the app has. */
-const BOOLEAN_DEF: FactDef = { type: "boolean" };
 
 // A value that is not a boolean is shown as unknown, so a malformed check stays visible.
 const stateOf = (value: FactValue | undefined): CheckState =>
@@ -63,7 +61,10 @@ export function CheckRow({
 	const questionId = useId();
 	const state = stateOf(item.value);
 	const { word, Icon, tone } = STATES[state];
-	const isAsking = state === "unknown" && question !== undefined;
+	// Only a yes/no fact is asked inline. Any other type would get a true/false
+	// answer it cannot take, so it stays "Needs your answer" for the QuestionCard.
+	const isAsking =
+		state === "unknown" && question !== undefined && def?.type === "boolean";
 
 	return (
 		<li data-check={state} className="flex items-start gap-3 py-3">
@@ -91,7 +92,7 @@ export function CheckRow({
 						<div className="pt-2">
 							<AnswerControl
 								fact={item.fact}
-								def={def?.type === "boolean" ? def : BOOLEAN_DEF}
+								def={def}
 								value={answerValue}
 								onChange={(next) => {
 									if (next !== undefined) onAnswer?.(item.fact, next);

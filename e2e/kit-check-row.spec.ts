@@ -89,3 +89,43 @@ test("the inline question shows only while unknown, and answering emits once", a
 	await expect(specimen(page, "fail").getByRole("radio")).toHaveCount(0);
 	await expect(specimen(page, "non-boolean").getByRole("radio")).toHaveCount(0);
 });
+
+test("a question for a non-boolean fact is not asked inline", async ({
+	page,
+}) => {
+	await page.goto("./kit/#checkrow-unknown-not-boolean");
+	const row = specimen(page, "unknown-not-boolean").locator("[data-check]");
+
+	await expect(row.locator("[data-check-word]")).toHaveText(
+		"Needs your answer",
+	);
+	await expect(row.getByRole("radio")).toHaveCount(0);
+	await expect(row.getByRole("textbox")).toHaveCount(0);
+	await expect(row).not.toContainText("Is the demo video under 3 minutes?");
+	await expectNoAxeViolations(
+		page,
+		'[data-specimen="checkrow-unknown-not-boolean"]',
+	);
+});
+
+test("the rule button's hit area stays clear of the label and the word", async ({
+	page,
+}) => {
+	await page.goto("./kit/#checkrow-pass");
+
+	for (const [id] of ROWS) {
+		const row = specimen(page, id).locator("[data-check]");
+		const button = await row
+			.getByRole("button", { name: /See why$/ })
+			.boundingBox();
+		for (const part of ["p", "[data-check-word]"]) {
+			const box = await row.locator(part).first().boundingBox();
+			const overlaps =
+				button &&
+				box &&
+				button.x < box.x + box.width &&
+				box.x < button.x + button.width;
+			expect(overlaps, `${id} ${part}`).toBeFalsy();
+		}
+	}
+});

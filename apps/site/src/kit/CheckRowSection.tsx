@@ -91,6 +91,16 @@ const ROWS: readonly {
 		},
 	},
 	{
+		id: "checkrow-unknown-not-boolean",
+		title: "Unknown, question for a non-boolean fact",
+		note: "Only yes/no facts are asked inline. This one is a number, so the row waits for the QuestionCard.",
+		row: {
+			item: itemOf(preFlightUnknownFixture, "video_under_3_minutes"),
+			question: preFlightUnknownFixture.needed[0],
+			def: { type: "number", ask: "How long is the demo video, in seconds?" },
+		},
+	},
+	{
 		id: "checkrow-evidence",
 		title: "With evidence",
 		note: "The evidence line is in the Machine voice and wraps on phones.",
