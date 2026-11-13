@@ -1,4 +1,41 @@
-import { expect, test } from "@playwright/test";
+import { expect, expectNoAxeViolations, test } from "./kit-fixtures";
+
+test("kit page has a clean console and no axe violations", async ({
+	page,
+}, testInfo) => {
+	await page.goto("./kit/");
+	await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+
+	await expectNoAxeViolations(page);
+	// Evidence for the pull request. test-results/ is git-ignored.
+	await page.screenshot({
+		path: testInfo.outputPath("kit.png"),
+		fullPage: true,
+	});
+});
+
+for (const level of ["warn", "error"] as const) {
+	test(`the console gate fails a test that logs console.${level}`, async ({
+		page,
+	}) => {
+		test.fail(true, "the gate must turn this test red");
+		await page.goto("./kit/");
+
+		await page.evaluate((method) => console[method]("gate probe"), level);
+	});
+}
+
+test("the reduced-motion project, and only it, reduces motion", async ({
+	page,
+}, testInfo) => {
+	await page.goto("./kit/");
+
+	const reduced = await page.evaluate(
+		() => matchMedia("(prefers-reduced-motion: reduce)").matches,
+	);
+
+	expect(reduced).toBe(testInfo.project.name === "reduced-motion");
+});
 
 test("kit gallery shell has a heading, a skip link and an empty main", async ({
 	page,
