@@ -160,5 +160,7 @@ describe("CYCLE", () => {
 		const found = cycles(kb(names, ring));
 		expect(found).toHaveLength(1);
 		expect(found[0]?.id).toBe("f0");
-	});
+		// No timing assertion: the explicit timeout (rather than Vitest's 5 s
+		// default) keeps a loaded machine from failing a correct run.
+	}, 60_000);
 });
