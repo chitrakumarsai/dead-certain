@@ -4,7 +4,7 @@ import {
 	claimVerdictFixture,
 	manyDeductionsFixture,
 	paidInFullVerdictFixture,
-	unknownLineFixture,
+	unknownLineWithKnownPayableFixture,
 	zeroDeductionFixture,
 } from "@dead-certain/ui/fixtures";
 import { useState } from "react";
@@ -85,7 +85,7 @@ const LEDGERS = [
 		id: "ledger-unknown",
 		title: "Unknown value",
 		note: "A deduction not known yet says so, and still opens its proof.",
-		verdict: unknownLineFixture,
+		verdict: unknownLineWithKnownPayableFixture,
 	},
 	{
 		id: "ledger-many",

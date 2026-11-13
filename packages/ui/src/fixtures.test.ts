@@ -14,7 +14,7 @@ import {
 	proofFixture,
 	questionFixtures,
 	undecidedVerdictFixture,
-	unknownLineFixture,
+	unknownLineWithKnownPayableFixture,
 	zeroDeductionFixture,
 } from "./fixtures";
 
@@ -42,26 +42,58 @@ const CLAIM_VERDICTS = {
 	deniedVerdictFixture,
 	undecidedVerdictFixture,
 	manyDeductionsFixture,
-	unknownLineFixture,
+	unknownLineWithKnownPayableFixture,
 	zeroDeductionFixture,
+};
+
+/**
+ * Fixtures exempt from engine-faithful arithmetic, each with its reason. Do not
+ * add to this list without the same: an exemption must be written down.
+ */
+const NOT_ENGINE_FAITHFUL: Readonly<Record<string, string>> = {
+	unknownLineWithKnownPayableFixture:
+		"payable is known while a deduction is not, to show the Ledger's unknown row",
 };
 
 test.each(
 	Object.entries(CLAIM_VERDICTS).filter(
-		([, verdict]) => typeof verdict.goals.payable_amount === "number",
+		([name, verdict]) =>
+			!(name in NOT_ENGINE_FAITHFUL) &&
+			typeof verdict.goals.payable_amount === "number",
 	),
-)("%s: claimed minus known deductions equals payable", (_, verdict) => {
-	const deductions = verdict.lineItems
-		.filter((item) => item.role === "deduction")
-		.reduce((sum, item) => sum + Number(item.value ?? 0), 0);
+)("%s: claimed minus deductions equals payable", (_, verdict) => {
+	const deductions = verdict.lineItems.filter(
+		(item) => item.role === "deduction",
+	);
+	// A decided payable means every deduction is known.
+	for (const item of deductions) {
+		expect(item.value, item.fact).toEqual(expect.any(Number));
+	}
+	const sum = deductions.reduce((total, item) => total + Number(item.value), 0);
 
-	expect(CLAIMED_AMOUNT - deductions).toBe(verdict.goals.payable_amount);
+	expect(CLAIMED_AMOUNT - sum).toBe(verdict.goals.payable_amount);
+});
+
+test("the exempt fixture still adds up over its known deductions", () => {
+	const known = unknownLineWithKnownPayableFixture.lineItems.filter(
+		(item) => typeof item.value === "number",
+	);
+	const sum = known.reduce((total, item) => total + Number(item.value), 0);
+
+	expect(Object.keys(NOT_ENGINE_FAITHFUL)).toEqual([
+		"unknownLineWithKnownPayableFixture",
+	]);
+	expect(CLAIMED_AMOUNT - sum).toBe(
+		unknownLineWithKnownPayableFixture.goals.payable_amount,
+	);
 });
 
 test("ledger edge fixtures have their edge: 30 lines, one unknown, one zero", () => {
 	expect(manyDeductionsFixture.lineItems).toHaveLength(30);
 	expect(
-		unknownLineFixture.lineItems.filter((item) => item.value === undefined),
+		unknownLineWithKnownPayableFixture.lineItems.filter(
+			(item) => item.value === undefined,
+		),
 	).toHaveLength(1);
 	expect(
 		zeroDeductionFixture.lineItems.filter((item) => item.value === 0),

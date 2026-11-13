@@ -479,8 +479,13 @@ export const manyDeductionsFixture: Verdict = {
 	needed: [],
 };
 
-/** One deduction is not known yet; the known one alone sets payable. */
-export const unknownLineFixture: Verdict = {
+/**
+ * Deliberately NOT engine-faithful. One deduction is not known yet, yet payable
+ * is known: a real engine would leave payable unknown too. It exists only to
+ * show the Ledger's "Not known yet" row, since `LedgerProps.payable.value` is a
+ * number. fixtures.test.ts exempts it from the arithmetic check by name.
+ */
+export const unknownLineWithKnownPayableFixture: Verdict = {
 	kind: "verdict",
 	goals: { payable_amount: 172_000_00, verdict: "reduced" },
 	lineItems: [
