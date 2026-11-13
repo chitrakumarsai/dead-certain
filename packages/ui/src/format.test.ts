@@ -6,6 +6,7 @@ import {
 	formatMoney,
 	minorDigits,
 	parseMoney,
+	reformatMoneyInput,
 } from "./format/money";
 import { formatDate, formatValue } from "./format/value";
 
@@ -118,4 +119,36 @@ test("text is passed through with no placeholder substitution and no markup", ()
 test("formatValue falls back to plain text when the value does not fit the type", () => {
 	expect(formatValue({ type: "money" }, "n/a", INR)).toBe("n/a");
 	expect(formatValue({ type: "money" }, 500, {})).toBe("500");
+});
+
+test.each([
+	["142500", 6, "1,42,500", 8],
+	// Typing 9 in the middle of 1,42,500: the caret stays after the 9.
+	["1,429,500", 5, "14,29,500", 5],
+	// Typing a decimal point at the end.
+	["1,425.", 6, "1,425.", 6],
+	["1,425.5", 7, "1,425.5", 7],
+	// Deleting the first separator of 1,42,500 puts it back, caret unmoved.
+	["142,500", 1, "1,42,500", 1],
+	// Deleting a digit before a separator.
+	["1,4,500", 3, "14,500", 2],
+	["", 0, "", 0],
+	[".5", 1, ".5", 1],
+	// Leading zeros are the user's digits and are kept.
+	["007", 3, "007", 3],
+	["12a3", 4, "123", 3],
+	["1.2.3", 5, "1.23", 4],
+])(
+	"reformatMoneyInput(%j, %d) is %j with the caret at %d",
+	(raw, caret, text, at) => {
+		expect(reformatMoneyInput(raw, caret, "en-IN")).toEqual({
+			text,
+			caret: at,
+		});
+	},
+);
+
+test("reformatMoneyInput groups by the locale", () => {
+	expect(reformatMoneyInput("1425000", 7, "en").text).toBe("1,425,000");
+	expect(reformatMoneyInput("1425000", 7, "en-IN").text).toBe("14,25,000");
 });

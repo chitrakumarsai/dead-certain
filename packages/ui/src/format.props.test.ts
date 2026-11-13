@@ -5,6 +5,7 @@ import {
 	formatMoney,
 	minorDigits,
 	parseMoney,
+	reformatMoneyInput,
 } from "./format/money";
 
 const RUNS = { numRuns: 300 };
@@ -63,6 +64,52 @@ test("parse never invents precision", () => {
 			// Formatting then parsing again gives the same amount back.
 			expect(parseMoney(printed, currency, locale)).toEqual(parsed);
 		}),
+		RUNS,
+	);
+});
+
+/** The characters that carry the amount: digits and the first decimal point. */
+function significant(text: string): string {
+	const firstDot = text.indexOf(".");
+	return [...text]
+		.filter((ch, i) => /\d/.test(ch) || (ch === "." && i === firstDot))
+		.join("");
+}
+
+/** How many significant characters of `text` sit left of `caret`. */
+function significantBefore(text: string, caret: number): number {
+	const firstDot = text.indexOf(".");
+	return [...text.slice(0, caret)].filter(
+		(ch, i) => /\d/.test(ch) || (ch === "." && i === firstDot),
+	).length;
+}
+
+const rawArb = fc
+	.array(fc.constantFrom(..."0123456789.,, x"), { maxLength: 20 })
+	.map((chars) => chars.join(""));
+
+test("reformat keeps the digits", () => {
+	// Feature: ui-kit, Property 3: Reformat keeps the digits
+	fc.assert(
+		fc.property(
+			rawArb,
+			fc.nat({ max: 20 }),
+			fc.constantFrom("en-IN", "en"),
+			(raw, at, locale) => {
+				const caret = Math.min(at, raw.length);
+
+				const out = reformatMoneyInput(raw, caret, locale);
+
+				expect(significant(out.text)).toBe(significant(raw));
+				expect(significantBefore(out.text, out.caret)).toBe(
+					significantBefore(raw, caret),
+				);
+				expect(out.caret).toBeGreaterThanOrEqual(0);
+				expect(out.caret).toBeLessThanOrEqual(out.text.length);
+				// Already-grouped text is left alone.
+				expect(reformatMoneyInput(out.text, out.caret, locale)).toEqual(out);
+			},
+		),
 		RUNS,
 	);
 });

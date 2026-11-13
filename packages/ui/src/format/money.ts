@@ -75,3 +75,63 @@ export function parseMoney(
 		? { ok: true, minor }
 		: { ok: false, reason: "format" };
 }
+
+/** Digits, and the decimal point when it is the first one in the text. */
+function isSignificant(ch: string, index: number, firstDot: number): boolean {
+	return (ch >= "0" && ch <= "9") || (ch === "." && index === firstDot);
+}
+
+function countDigits(text: string, firstDot: number): number {
+	return [...text].filter((ch, i) => isSignificant(ch, i, firstDot)).length;
+}
+
+/** Keeps digits and the first decimal point; drops separators and stray keys. */
+function stripGroupSeparators(raw: string): string {
+	const firstDot = raw.indexOf(".");
+	return [...raw].filter((ch, i) => isSignificant(ch, i, firstDot)).join("");
+}
+
+function splitAtFirstDecimal(bare: string): [string, string | undefined] {
+	const dot = bare.indexOf(".");
+	return dot < 0
+		? [bare, undefined]
+		: [bare.slice(0, dot), bare.slice(dot + 1)];
+}
+
+/** "142500" is "1,42,500" under en-IN. Every digit is kept, leading zeros too. */
+function groupInteger(intPart: string, locale: string): string {
+	if (intPart === "") return "";
+	// A leading 1 stops Intl from dropping the user's leading zeros.
+	const grouped = new Intl.NumberFormat(locale, { useGrouping: true }).format(
+		BigInt(`1${intPart}`),
+	);
+	return grouped.slice(1).replace(/^\D+/, "");
+}
+
+/** The index in `text` just after its first `count` significant characters. */
+function indexAfterNDigits(text: string, count: number): number {
+	if (count === 0) return 0;
+	const firstDot = text.indexOf(".");
+	let seen = 0;
+	for (let i = 0; i < text.length; i++) {
+		if (isSignificant(text[i] as string, i, firstDot)) seen++;
+		if (seen === count) return i + 1;
+	}
+	return text.length;
+}
+
+/**
+ * Regroups a money field as the user types. The caret stays after the same
+ * count of digits it followed before, so editing mid-number does not jump.
+ */
+export function reformatMoneyInput(
+	raw: string,
+	caret: number,
+	locale: string,
+): { text: string; caret: number } {
+	const digitsBefore = countDigits(raw.slice(0, caret), raw.indexOf("."));
+	const [intPart, frac] = splitAtFirstDecimal(stripGroupSeparators(raw));
+	const grouped = groupInteger(intPart, locale);
+	const text = frac === undefined ? grouped : `${grouped}.${frac}`;
+	return { text, caret: indexAfterNDigits(text, digitsBefore) };
+}
