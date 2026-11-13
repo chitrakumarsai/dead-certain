@@ -18,7 +18,7 @@ import {
 } from "../format/money";
 import { CheckCircle } from "../icons";
 import type { FormatContext } from "../types";
-import { moneyAnswer } from "./answerMessages";
+import { moneyAnswer, numberAnswer } from "./answerMessages";
 
 export type AnswerControlProps = {
 	fact: string;
@@ -292,6 +292,72 @@ function MoneyBody({
 	);
 }
 
+type NumberBodyProps = Omit<MoneyBodyProps, "min" | "format"> &
+	Pick<AnswerControlProps, "unit">;
+
+/** A number field with an optional unit after it. Emits a number, or undefined with a reason. */
+function NumberBody({
+	value,
+	onChange,
+	onEnter,
+	labelledBy,
+	error,
+	errorId,
+	autoFocus,
+	disabled,
+	unit,
+}: NumberBodyProps) {
+	const unitId = useId();
+	const inputRef = useRef<HTMLInputElement>(null);
+	const lastEmitted = useRef<FactValue | undefined>(value);
+	const toText = (v: FactValue | undefined) =>
+		typeof v === "number" ? String(v) : "";
+	const [text, setText] = useState(() => toText(value));
+
+	// A value set from outside (not typed here) replaces the text.
+	if (value !== lastEmitted.current) {
+		lastEmitted.current = value;
+		const next = toText(value);
+		if (next !== text) setText(next);
+	}
+
+	useEffect(() => {
+		if (autoFocus) inputRef.current?.focus();
+	}, [autoFocus]);
+
+	return (
+		<div className={FIELD_FRAME}>
+			<input
+				ref={inputRef}
+				type="text"
+				inputMode="decimal"
+				autoComplete="off"
+				data-focus-ring="frame"
+				value={text}
+				disabled={disabled}
+				aria-labelledby={unit ? `${labelledBy} ${unitId}` : labelledBy}
+				aria-invalid={error ? true : undefined}
+				aria-describedby={error ? errorId : undefined}
+				onChange={(event) => {
+					setText(event.target.value);
+					const answer = numberAnswer(event.target.value);
+					lastEmitted.current = answer.value;
+					onChange(answer.value, answer.problem);
+				}}
+				onKeyDown={(event) => {
+					if (event.key === "Enter") onEnter?.();
+				}}
+				className={`figures ${TEXT_FIELD}`}
+			/>
+			{unit && (
+				<span id={unitId} className="pr-3 text-sys-body text-text-soft">
+					{unit}
+				</span>
+			)}
+		</div>
+	);
+}
+
 const YES_NO: readonly Choice[] = [
 	{ key: "yes", label: "Yes", emit: true },
 	{ key: "no", label: "No", emit: false },
@@ -320,8 +386,8 @@ function choicesFor(
 }
 
 /**
- * One answer field whose body follows the fact's type. Boolean, enum and
- * money are built; tasks 6.4 and 6.5 add number and date.
+ * One answer field whose body follows the fact's type. Boolean, enum, money
+ * and number are built; task 6.5 adds date.
  */
 export function AnswerControl(props: AnswerControlProps) {
 	const errorId = useId();
@@ -341,6 +407,8 @@ export function AnswerControl(props: AnswerControlProps) {
 		);
 	} else if (def.type === "money") {
 		body = <MoneyBody {...props} errorId={errorId} />;
+	} else if (def.type === "number") {
+		body = <NumberBody {...props} errorId={errorId} />;
 	} else {
 		// Never throws: a type without a body yet renders a plain line.
 		body = (

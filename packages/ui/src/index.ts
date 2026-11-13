@@ -11,6 +11,7 @@ export {
 	decimalsMessage,
 	type MoneyAnswer,
 	moneyAnswer,
+	numberAnswer,
 } from "./components/answerMessages";
 export { Button, type ButtonProps } from "./components/Button";
 export {

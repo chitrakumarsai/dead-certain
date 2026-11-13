@@ -23,12 +23,14 @@ function Live({
 	error,
 	disabled,
 	min,
+	unit,
 }: {
 	fact: string;
 	start?: Value;
 	error?: string;
 	disabled?: boolean;
 	min?: number;
+	unit?: string;
 }) {
 	const headingId = useId();
 	const [value, setValue] = useState<Value>(start);
@@ -59,6 +61,7 @@ function Live({
 				error={shown}
 				disabled={disabled}
 				min={min}
+				unit={unit}
 				format={FORMAT}
 			/>
 			<p className="text-sys-small text-text-soft">
@@ -99,6 +102,16 @@ export const ANSWER_CONTROL_SPECIMENS = [
 		["disabled", "Money, disabled"],
 	].map(([state, title]) => ({
 		id: `answercontrol-money-${state}`,
+		title: title as string,
+	})),
+	...[
+		["unit", "Number with a unit"],
+		["plain", "Number without a unit"],
+		["typing", "Number, typing"],
+		["invalid", "Number, invalid"],
+		["disabled", "Number, disabled"],
+	].map(([state, title]) => ({
+		id: `answercontrol-number-${state}`,
 		title: title as string,
 	})),
 ];
@@ -257,6 +270,42 @@ export function AnswerControlSection() {
 				note="Disabled while the answer cannot change."
 			>
 				<Live fact="room_rent_per_day" start={600000} disabled />
+			</Specimen>
+
+			<Specimen
+				id="answercontrol-number-unit"
+				title="Number with a unit"
+				note="The unit sits after the field as visible text and is read with the question."
+			>
+				<Live fact="stay_days" unit="days" />
+			</Specimen>
+			<Specimen
+				id="answercontrol-number-plain"
+				title="Number without a unit"
+				note="The field brings up the decimal keypad on phones."
+			>
+				<Live fact="age" />
+			</Specimen>
+			<Specimen
+				id="answercontrol-number-typing"
+				title="Number, typing"
+				note="Type here. Enter shows a problem if the text is not a number."
+			>
+				<Live fact="stay_days" unit="days" start={4} />
+			</Specimen>
+			<Specimen
+				id="answercontrol-number-invalid"
+				title="Number, invalid"
+				note="Shown for an empty field or text that is not a number."
+			>
+				<Live fact="age" error={ANSWER_MESSAGES.enterNumber} />
+			</Specimen>
+			<Specimen
+				id="answercontrol-number-disabled"
+				title="Number, disabled"
+				note="Disabled while the answer cannot change."
+			>
+				<Live fact="stay_days" unit="days" start={4} disabled />
 			</Specimen>
 		</section>
 	);

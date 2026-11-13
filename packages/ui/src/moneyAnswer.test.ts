@@ -1,5 +1,9 @@
 import { expect, test } from "vitest";
-import { ANSWER_MESSAGES, moneyAnswer } from "./components/answerMessages";
+import {
+	ANSWER_MESSAGES,
+	moneyAnswer,
+	numberAnswer,
+} from "./components/answerMessages";
 
 const INR = { currency: "INR" };
 
@@ -33,4 +37,18 @@ test("the decimals message takes its number from the currency", () => {
 	expect(moneyAnswer("1.234", { currency: "USD" }).problem).toBe(
 		"Use at most 2 decimal places.",
 	);
+});
+
+test.each([
+	["", { value: undefined, problem: "Enter a number." }],
+	["abc", { value: undefined, problem: "Enter a number." }],
+	["4.", { value: undefined, problem: "Enter a number." }],
+	["1e3", { value: undefined, problem: "Enter a number." }],
+	["4", { value: 4 }],
+	[" 4.5 ", { value: 4.5 }],
+	["1,200", { value: 1200 }],
+	["-2", { value: -2 }],
+	["0", { value: 0 }],
+])("numberAnswer(%j)", (raw, expected) => {
+	expect(numberAnswer(raw)).toEqual(expected);
 });

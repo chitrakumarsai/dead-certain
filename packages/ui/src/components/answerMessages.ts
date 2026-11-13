@@ -62,3 +62,15 @@ export function moneyAnswer(
 	}
 	return { value: parsed.minor };
 }
+
+/** Reads typed number text. Spaces and commas are ignored; anything else must be a plain decimal. */
+export function numberAnswer(raw: string): {
+	readonly value: number | undefined;
+	readonly problem?: string;
+} {
+	const bare = raw.replace(/[\s,]/g, "");
+	if (!/^-?\d+(\.\d+)?$/.test(bare)) {
+		return { value: undefined, problem: ANSWER_MESSAGES.enterNumber };
+	}
+	return { value: Number(bare) };
+}
