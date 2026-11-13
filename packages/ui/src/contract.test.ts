@@ -1,6 +1,7 @@
 import type { ErrorCode } from "@dead-certain/engine";
 import { expectTypeOf, test } from "vitest";
 import type { ButtonProps } from "./components/Button";
+import type { DisclosureProps } from "./components/Disclosure";
 import type { ReplayFailure, Surface } from "./types";
 
 // Each component task adds one expectTypeOf line here for its props, proving
@@ -16,4 +17,12 @@ test("Button props: three variants, an optional surface, plain children", () => 
 	>();
 	expectTypeOf<ButtonProps["surface"]>().toEqualTypeOf<Surface | undefined>();
 	expectTypeOf<"Continue">().toExtend<ButtonProps["children"]>();
+});
+
+test("Disclosure props: a title, and controlled or uncontrolled open state", () => {
+	expectTypeOf<DisclosureProps["title"]>().toEqualTypeOf<string>();
+	expectTypeOf<DisclosureProps["open"]>().toEqualTypeOf<boolean | undefined>();
+	expectTypeOf<DisclosureProps["onOpenChange"]>().toEqualTypeOf<
+		((open: boolean) => void) | undefined
+	>();
 });

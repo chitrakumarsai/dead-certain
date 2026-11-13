@@ -117,3 +117,25 @@
 		--focus: Highlight;
 	}
 }
+
+/*
+ * Disclosure panels grow to the height Radix measures. --dur-panel is 0 ms
+ * under reduced motion, so the change is instant there.
+ */
+@keyframes dc-panel-open {
+	from {
+		height: 0;
+	}
+	to {
+		height: var(--radix-collapsible-content-height);
+	}
+}
+
+@keyframes dc-panel-close {
+	from {
+		height: var(--radix-collapsible-content-height);
+	}
+	to {
+		height: 0;
+	}
+}
