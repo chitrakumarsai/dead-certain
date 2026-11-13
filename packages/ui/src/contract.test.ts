@@ -1,6 +1,12 @@
 import type { ErrorCode } from "@dead-certain/engine";
-import type { Clause, FactSource } from "@dead-certain/engine/types";
+import type {
+	Clause,
+	FactDef,
+	FactSource,
+	FactValue,
+} from "@dead-certain/engine/types";
 import { expectTypeOf, test } from "vitest";
+import type { AnswerControlProps } from "./components/AnswerControl";
 import type { ButtonProps } from "./components/Button";
 import type {
 	ClauseQuoteProps,
@@ -10,7 +16,7 @@ import type { DisclosureProps } from "./components/Disclosure";
 import type { FilmProps } from "./components/Film";
 import type { SheetProps } from "./components/Sheet";
 import type { SourceBadgeProps } from "./components/SourceBadge";
-import type { ReplayFailure, Surface } from "./types";
+import type { FormatContext, ReplayFailure, Surface } from "./types";
 
 // Each component task adds one expectTypeOf line here for its props, proving
 // they take the engine's contract types without conversion.
@@ -51,4 +57,13 @@ test("Sheet and Film props", () => {
 	>();
 	expectTypeOf<FilmProps["presentation"]>().toEqualTypeOf<"side" | "sheet">();
 	expectTypeOf<FilmProps["onClose"]>().toEqualTypeOf<() => void>();
+});
+
+test("AnswerControl takes FactDef and FactValue unchanged, and has no allowZero", () => {
+	expectTypeOf<AnswerControlProps["def"]>().toEqualTypeOf<FactDef>();
+	expectTypeOf<AnswerControlProps["value"]>().toEqualTypeOf<
+		FactValue | undefined
+	>();
+	expectTypeOf<AnswerControlProps["format"]>().toEqualTypeOf<FormatContext>();
+	expectTypeOf<AnswerControlProps>().not.toHaveProperty("allowZero");
 });

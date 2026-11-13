@@ -1,6 +1,11 @@
 export { LiveRegion, useAnnounce } from "./a11y/LiveRegion";
 export { useFocusOnMount } from "./a11y/useFocusOnMount";
 export { useReducedMotion } from "./a11y/useReducedMotion";
+export {
+	AnswerControl,
+	type AnswerControlProps,
+} from "./components/AnswerControl";
+export { ANSWER_MESSAGES } from "./components/answerMessages";
 export { Button, type ButtonProps } from "./components/Button";
 export {
 	ClauseQuote,

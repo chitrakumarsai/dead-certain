@@ -5,9 +5,11 @@ import {
 	claimVerdictFixture,
 	clauseFixtures,
 	deepProofFixture,
+	factDefFixtures,
 	preFlightClauseFixtures,
 	preFlightVerdictFixture,
 	proofFixture,
+	questionFixtures,
 } from "./fixtures";
 
 test("claim fixture ledger adds up: claimed minus deductions equals payable", () => {
@@ -67,3 +69,33 @@ function proofClauses(node: ProofNode): string[] {
 		...node.children.flatMap(proofClauses),
 	];
 }
+
+test("every question fixture asks about a fact with a definition", () => {
+	const questions = Object.values(questionFixtures);
+
+	expect(questions.length).toBeGreaterThan(0);
+	for (const question of questions) {
+		expect(factDefFixtures[question.fact], question.fact).toBeDefined();
+		expect(questionFixtures[question.fact]).toBe(question);
+	}
+});
+
+test("fact definitions cover all five types, and check facts are boolean", () => {
+	const defs = Object.values(factDefFixtures);
+	const types = new Set(defs.map((def) => def.type));
+
+	expect([...types].sort()).toEqual([
+		"boolean",
+		"date",
+		"enum",
+		"money",
+		"number",
+	]);
+	for (const def of defs) {
+		if (def.type === "enum") expect(def.options?.length).toBeGreaterThan(1);
+		if (def.role === "check") expect(def.type).toBe("boolean");
+	}
+	for (const { fact } of preFlightVerdictFixture.lineItems) {
+		expect(factDefFixtures[fact]?.role, fact).toBe("check");
+	}
+});

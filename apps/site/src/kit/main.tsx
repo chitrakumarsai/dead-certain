@@ -2,6 +2,10 @@ import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "@dead-certain/ui/styles.css";
 import { LiveRegion } from "@dead-certain/ui";
+import {
+	ANSWER_CONTROL_SPECIMENS,
+	AnswerControlSection,
+} from "./AnswerControlSection";
 import { BUTTON_SPECIMENS, ButtonsSection } from "./ButtonsSection";
 import {
 	CLAUSE_QUOTE_SPECIMENS,
@@ -24,6 +28,7 @@ const SECTIONS = [
 	{ title: "SourceBadge", specimens: SOURCE_BADGE_SPECIMENS },
 	{ title: "ClauseQuote", specimens: CLAUSE_QUOTE_SPECIMENS },
 	{ title: "Sheet and Film", specimens: SHEET_FILM_SPECIMENS },
+	{ title: "AnswerControl", specimens: ANSWER_CONTROL_SPECIMENS },
 ];
 
 function Gallery() {
@@ -71,6 +76,7 @@ function Gallery() {
 				<SourceBadgeSection />
 				<ClauseQuoteSection />
 				<SheetFilmSection />
+				<AnswerControlSection />
 			</main>
 		</div>
 	);

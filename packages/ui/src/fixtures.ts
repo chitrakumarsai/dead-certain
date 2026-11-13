@@ -2,6 +2,7 @@
 // Sample amounts from BUILD_PLAN section 8, in paise.
 import type {
 	Clause,
+	FactDef,
 	ProofNode,
 	Question,
 	Verdict,
@@ -260,5 +261,56 @@ export const preFlightClauseFixtures: Readonly<Record<string, Clause>> = {
 		id: "4.1",
 		title: "Demo video",
 		text: "The demo video runs for less than 3 minutes.",
+	},
+};
+
+/** Definitions for every fact the fixtures ask about or list, all five types. */
+export const factDefFixtures: Readonly<Record<string, FactDef>> = {
+	room_rent_per_day: {
+		type: "money",
+		ask: "What was the room rent per day?",
+		why: "The policy caps room rent, and a higher rent reduces other charges too.",
+	},
+	sum_insured: { type: "money", ask: "What is the sum insured on the policy?" },
+	age: { type: "number", ask: "How old is the patient?" },
+	stay_days: { type: "number", ask: "How many days was the hospital stay?" },
+	room_type: {
+		type: "enum",
+		ask: "Which room did the patient stay in?",
+		options: ["general_ward", "semi_private", "private", "single_ac"],
+	},
+	admission_date: { type: "date", ask: "When was the patient admitted?" },
+	is_emergency: { type: "boolean", ask: "Was it an emergency admission?" },
+	is_public: { type: "boolean", role: "check", label: "Public repository" },
+	has_detectable_license: {
+		type: "boolean",
+		role: "check",
+		label: "License file GitHub can detect",
+	},
+	kiro_not_ignored: {
+		type: "boolean",
+		role: "check",
+		label: ".kiro is not ignored",
+	},
+	video_under_3_minutes: {
+		type: "boolean",
+		role: "check",
+		label: "Demo video under 3 minutes",
+		ask: "Is the demo video under 3 minutes?",
+	},
+};
+
+/** Questions keyed by fact. Task 7.1 adds one for every control type. */
+export const questionFixtures: Readonly<Record<string, Question>> = {
+	is_emergency: {
+		kind: "question",
+		fact: "is_emergency",
+		text: "Was it an emergency admission?",
+		why: "An emergency admission is covered from the first day of the policy.",
+	},
+	video_under_3_minutes: {
+		kind: "question",
+		fact: "video_under_3_minutes",
+		text: "Is the demo video under 3 minutes?",
 	},
 };
