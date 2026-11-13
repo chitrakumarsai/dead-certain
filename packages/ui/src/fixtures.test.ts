@@ -5,22 +5,46 @@ import {
 	claimVerdictFixture,
 	clauseFixtures,
 	deepProofFixture,
+	deniedVerdictFixture,
 	factDefFixtures,
+	paidInFullVerdictFixture,
 	preFlightClauseFixtures,
 	preFlightVerdictFixture,
 	proofFixture,
 	questionFixtures,
+	undecidedVerdictFixture,
 } from "./fixtures";
 
-test("claim fixture ledger adds up: claimed minus deductions equals payable", () => {
-	const deductions = claimVerdictFixture.lineItems.reduce(
-		(sum, item) => sum + Number(item.value),
-		0,
-	);
+test.each([
+	["claim", claimVerdictFixture, "reduced"],
+	["paid in full", paidInFullVerdictFixture, "paid"],
+	["denied", deniedVerdictFixture, "denied"],
+])(
+	"%s fixture ledger adds up: claimed minus deductions equals payable",
+	(_, verdict, goal) => {
+		const deductions = verdict.lineItems.reduce(
+			(sum, item) => sum + Number(item.value),
+			0,
+		);
 
-	expect(CLAIMED_AMOUNT - deductions).toBe(
-		claimVerdictFixture.goals.payable_amount,
-	);
+		expect(CLAIMED_AMOUNT - deductions).toBe(verdict.goals.payable_amount);
+		expect(verdict.goals.verdict).toBe(goal);
+		expect(verdict.needed).toEqual([]);
+	},
+);
+
+test("paid in full has no deductions; denied pays nothing", () => {
+	expect(paidInFullVerdictFixture.lineItems).toEqual([]);
+	expect(deniedVerdictFixture.goals.payable_amount).toBe(0);
+});
+
+test("undecided fixture has no goal values and questions still needed", () => {
+	expect(undecidedVerdictFixture.goals.verdict).toBeUndefined();
+	expect(undecidedVerdictFixture.goals.payable_amount).toBeUndefined();
+	expect(undecidedVerdictFixture.needed.length).toBeGreaterThan(0);
+	for (const item of undecidedVerdictFixture.lineItems) {
+		expect(item.value, item.fact).toBeUndefined();
+	}
 });
 
 test("proof fixture explains a line item of the claim fixture", () => {
@@ -34,7 +58,12 @@ test("proof fixture explains a line item of the claim fixture", () => {
 
 test("every clause a Claim Check fixture cites has a clause fixture", () => {
 	const cited = [
-		...claimVerdictFixture.lineItems.map((item) => item.clause),
+		...[
+			claimVerdictFixture,
+			paidInFullVerdictFixture,
+			deniedVerdictFixture,
+			undecidedVerdictFixture,
+		].flatMap((verdict) => verdict.lineItems.map((item) => item.clause)),
 		...proofClauses(proofFixture),
 		...proofClauses(deepProofFixture),
 	];

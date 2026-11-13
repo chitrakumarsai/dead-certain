@@ -68,6 +68,9 @@
 	--leading-doc-fine: 22px;
 	--text-verdict: 36px;
 	--leading-verdict: 44px;
+	/* The Pre-Flight summary headline: 36/44 at every width. */
+	--text-summary: 36px;
+	--leading-summary: 44px;
 	--text-sys-body: 17px;
 	--leading-sys-body: 26px;
 	--text-question: 21px;

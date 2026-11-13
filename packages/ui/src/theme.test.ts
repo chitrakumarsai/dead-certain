@@ -34,6 +34,8 @@ test.each([
 	["font-doc", "font-family: var(--font-doc)"],
 	["text-verdict", "font-size: var(--text-verdict)"],
 	["text-verdict", "var(--leading-verdict)"],
+	["text-summary", "font-size: var(--text-summary)"],
+	["text-summary", "var(--leading-summary)"],
 	["ease-kit", "transition-timing-function: var(--ease)"],
 	["figures", "font-variant-numeric: tabular-nums lining-nums"],
 ])("%s compiles to %s", async (className, declaration) => {

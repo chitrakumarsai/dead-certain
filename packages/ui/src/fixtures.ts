@@ -238,6 +238,11 @@ export const clauseFixtures: Readonly<Record<string, Clause>> = {
 		title: "Co-payment",
 		text: "A policyholder aged 61 or over pays 20% of every admissible claim.",
 	},
+	"3.1": {
+		id: "3.1",
+		title: "Waiting period",
+		text: "An illness that begins in the first 30 days of the policy is not covered. Accidents are covered from the first day.",
+	},
 };
 
 // Sample checklist text written for this project, in our own words.
@@ -398,3 +403,45 @@ export const skippedFixture: readonly SkippedNote[] = [
 			"Pre-existing condition no longer matters. The answers so far decide this without it.",
 	},
 ];
+
+/** Every charge admitted: nothing is deducted. */
+export const paidInFullVerdictFixture: Verdict = {
+	kind: "verdict",
+	goals: { payable_amount: CLAIMED_AMOUNT, verdict: "paid" },
+	lineItems: [],
+	needed: [],
+};
+
+/** One deduction takes the whole claim. */
+export const deniedVerdictFixture: Verdict = {
+	kind: "verdict",
+	goals: { payable_amount: 0, verdict: "denied" },
+	lineItems: [
+		{
+			fact: "waiting_period_deduction",
+			role: "deduction",
+			label: "Illness began in the waiting period",
+			value: CLAIMED_AMOUNT,
+			rule: "WAIT-01",
+			clause: "3.1",
+		},
+	],
+	needed: [],
+};
+
+/** No goal is decided yet: two questions still matter, and no line has a value. */
+export const undecidedVerdictFixture: Verdict = {
+	kind: "verdict",
+	goals: { payable_amount: undefined, verdict: undefined },
+	lineItems: [
+		{
+			fact: "room_rent_deduction",
+			role: "deduction",
+			label: "Room rent above the limit",
+			value: undefined,
+			rule: "ROOM-03",
+			clause: "4.2",
+		},
+	],
+	needed: [questionFixture, questionFixtures.age as Question],
+};

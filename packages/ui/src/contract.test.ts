@@ -19,12 +19,14 @@ import type { FilmProps } from "./components/Film";
 import type { QuestionCardProps } from "./components/QuestionCard";
 import type { SheetProps } from "./components/Sheet";
 import type { SourceBadgeProps } from "./components/SourceBadge";
+import type { VerdictHeadlineProps } from "./components/VerdictHeadline";
 import type {
 	AnswerEntry,
 	FormatContext,
 	ReplayFailure,
 	SkippedNote,
 	Surface,
+	VerdictState,
 } from "./types";
 
 // Each component task adds one expectTypeOf line here for its props, proving
@@ -102,4 +104,17 @@ test("AnswersRail takes answer entries and calls back with the fact", () => {
 		(fact: string) => void
 	>();
 	expectTypeOf<AnswerEntry["value"]>().toEqualTypeOf<FactValue>();
+});
+
+test("VerdictHeadline takes a VerdictState, a statement and two sizes", () => {
+	expectTypeOf<VerdictHeadlineProps["state"]>().toEqualTypeOf<VerdictState>();
+	expectTypeOf<"₹1,42,500 of ₹2,10,000 will be paid">().toExtend<
+		VerdictHeadlineProps["statement"]
+	>();
+	expectTypeOf<VerdictHeadlineProps["size"]>().toEqualTypeOf<
+		"verdict" | "summary" | undefined
+	>();
+	expectTypeOf<VerdictHeadlineProps["headingLevel"]>().toEqualTypeOf<
+		1 | 2 | undefined
+	>();
 });

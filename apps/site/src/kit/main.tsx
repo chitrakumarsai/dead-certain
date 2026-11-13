@@ -27,6 +27,10 @@ import {
 	SourceBadgeSection,
 } from "./SourceBadgeSection";
 import { TOKEN_SPECIMENS, TokensSection } from "./TokensSection";
+import {
+	VERDICT_HEADLINE_SPECIMENS,
+	VerdictHeadlineSection,
+} from "./VerdictHeadlineSection";
 
 const SECTIONS = [
 	{ title: "Tokens", specimens: TOKEN_SPECIMENS },
@@ -39,14 +43,15 @@ const SECTIONS = [
 	{ title: "AnswerControl", specimens: ANSWER_CONTROL_SPECIMENS },
 	{ title: "QuestionCard", specimens: QUESTION_CARD_SPECIMENS },
 	{ title: "AnswersRail", specimens: ANSWERS_RAIL_SPECIMENS },
+	{ title: "VerdictHeadline", specimens: VERDICT_HEADLINE_SPECIMENS },
 ];
 
 function Gallery() {
 	const announce = useAnnounce();
 	// The specimens render after the browser has handled the fragment.
 	useEffect(() => {
-		// Every QuestionCard focuses its heading and announces its progress on
-		// mount, and the gallery shows many at once. The page starts at the top,
+		// Every QuestionCard and VerdictHeadline focuses its heading and
+		// announces on mount, and the gallery shows many at once. The page starts at the top,
 		// with focus on the body and a quiet live region.
 		document.body.tabIndex = -1;
 		document.body.focus({ preventScroll: true });
@@ -98,6 +103,7 @@ function Gallery() {
 				<AnswerControlSection />
 				<QuestionCardSection />
 				<AnswersRailSection />
+				<VerdictHeadlineSection />
 			</main>
 		</div>
 	);

@@ -83,6 +83,8 @@
 	--text-doc-fine--line-height: var(--leading-doc-fine);
 	--text-verdict: var(--text-verdict);
 	--text-verdict--line-height: var(--leading-verdict);
+	--text-summary: var(--text-summary);
+	--text-summary--line-height: var(--leading-summary);
 	--text-sys-body: var(--text-sys-body);
 	--text-sys-body--line-height: var(--leading-sys-body);
 	--text-question: var(--text-question);

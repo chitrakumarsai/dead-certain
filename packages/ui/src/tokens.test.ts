@@ -68,6 +68,8 @@ const ROOT = {
 	"--leading-doc-fine": "22px",
 	"--text-verdict": "36px",
 	"--leading-verdict": "44px",
+	"--text-summary": "36px",
+	"--leading-summary": "44px",
 	"--text-sys-body": "17px",
 	"--leading-sys-body": "26px",
 	"--text-question": "21px",
@@ -115,6 +117,8 @@ test("verdict and question type grow from 768 px", () => {
 
 	expect(wide).toMatch(/--text-verdict: 48px;\s*--leading-verdict: 56px;/);
 	expect(wide).toMatch(/--text-question: 24px;\s*--leading-question: 32px;/);
+	// The Pre-Flight summary stays 36/44 at every width.
+	expect(wide).not.toContain("--text-summary");
 });
 
 test("reduced motion sets the panel duration to zero", () => {

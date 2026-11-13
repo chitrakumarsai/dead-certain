@@ -34,6 +34,10 @@ export {
 } from "./components/QuestionCard";
 export { Sheet, type SheetProps } from "./components/Sheet";
 export { SourceBadge, type SourceBadgeProps } from "./components/SourceBadge";
+export {
+	VerdictHeadline,
+	type VerdictHeadlineProps,
+} from "./components/VerdictHeadline";
 export { formatEntries } from "./format/entries";
 export { humanize } from "./format/label";
 export { formatMoney, parseMoney } from "./format/money";
@@ -57,3 +61,4 @@ export type {
 	Surface,
 	VerdictState,
 } from "./types";
+export { verdictStateFrom } from "./verdictState";
