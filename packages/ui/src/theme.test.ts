@@ -25,6 +25,8 @@ test.each([
 	["text-text-soft", "color: var(--text-soft)"],
 	["border-control-border", "border-color: var(--control-border)"],
 	["p-4", "padding: var(--space-4)"],
+	["inset-x-0", "inset-inline: 0px"],
+	["bottom-0", "bottom: 0px"],
 	["gap-24", "gap: var(--space-24)"],
 	["rounded-control", "border-radius: var(--radius-control)"],
 	["max-w-column", "max-width: var(--column-max)"],

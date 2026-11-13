@@ -9,6 +9,7 @@ import {
 } from "./ClauseQuoteSection";
 import { DISCLOSURE_SPECIMENS, DisclosureSection } from "./DisclosureSection";
 import { PRIMITIVE_SPECIMENS, PrimitivesSection } from "./PrimitivesSection";
+import { SHEET_FILM_SPECIMENS, SheetFilmSection } from "./SheetFilmSection";
 import {
 	SOURCE_BADGE_SPECIMENS,
 	SourceBadgeSection,
@@ -22,6 +23,7 @@ const SECTIONS = [
 	{ title: "Disclosure", specimens: DISCLOSURE_SPECIMENS },
 	{ title: "SourceBadge", specimens: SOURCE_BADGE_SPECIMENS },
 	{ title: "ClauseQuote", specimens: CLAUSE_QUOTE_SPECIMENS },
+	{ title: "Sheet and Film", specimens: SHEET_FILM_SPECIMENS },
 ];
 
 function Gallery() {
@@ -68,6 +70,7 @@ function Gallery() {
 				<DisclosureSection />
 				<SourceBadgeSection />
 				<ClauseQuoteSection />
+				<SheetFilmSection />
 			</main>
 		</div>
 	);

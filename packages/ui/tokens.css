@@ -95,6 +95,16 @@
 	}
 }
 
+/* A paper sheet set inside film is paper again. */
+[data-surface="paper"] {
+	--surface: var(--paper);
+	--text: var(--ink);
+	--text-soft: var(--ink-soft);
+	--control-border: var(--ink-soft);
+	--divider: var(--hairline);
+	--focus: var(--focus-paper);
+}
+
 [data-surface="film"] {
 	--surface: var(--film);
 	--text: var(--bone);

@@ -7,6 +7,8 @@ import type {
 	ClauseRefProps,
 } from "./components/ClauseQuote";
 import type { DisclosureProps } from "./components/Disclosure";
+import type { FilmProps } from "./components/Film";
+import type { SheetProps } from "./components/Sheet";
 import type { SourceBadgeProps } from "./components/SourceBadge";
 import type { ReplayFailure, Surface } from "./types";
 
@@ -41,4 +43,12 @@ test("ClauseQuote takes the engine's Clause unchanged; ClauseRef may lack it", (
 	expectTypeOf<ClauseQuoteProps["clause"]>().toEqualTypeOf<Clause>();
 	expectTypeOf<ClauseRefProps["clause"]>().toEqualTypeOf<Clause | undefined>();
 	expectTypeOf<ClauseRefProps["id"]>().toEqualTypeOf<string>();
+});
+
+test("Sheet and Film props", () => {
+	expectTypeOf<SheetProps["as"]>().toEqualTypeOf<
+		"section" | "div" | "article" | undefined
+	>();
+	expectTypeOf<FilmProps["presentation"]>().toEqualTypeOf<"side" | "sheet">();
+	expectTypeOf<FilmProps["onClose"]>().toEqualTypeOf<() => void>();
 });

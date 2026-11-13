@@ -9,6 +9,8 @@ export {
 	type ClauseRefProps,
 } from "./components/ClauseQuote";
 export { Disclosure, type DisclosureProps } from "./components/Disclosure";
+export { Film, type FilmProps } from "./components/Film";
+export { Sheet, type SheetProps } from "./components/Sheet";
 export { SourceBadge, type SourceBadgeProps } from "./components/SourceBadge";
 export {
 	CheckCircle,

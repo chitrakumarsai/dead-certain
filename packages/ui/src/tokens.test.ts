@@ -88,6 +88,17 @@ test("root defines every token with the steering value", () => {
 	}
 });
 
+test("paper surface restores the paper context, for paper set inside film", () => {
+	expect(Object.fromEntries(block('[data-surface="paper"]'))).toEqual({
+		"--surface": "var(--paper)",
+		"--text": "var(--ink)",
+		"--text-soft": "var(--ink-soft)",
+		"--control-border": "var(--ink-soft)",
+		"--divider": "var(--hairline)",
+		"--focus": "var(--focus-paper)",
+	});
+});
+
 test("film surface swaps the surface-context properties", () => {
 	expect(Object.fromEntries(block('[data-surface="film"]'))).toEqual({
 		"--surface": "var(--film)",
