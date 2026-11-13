@@ -1,9 +1,14 @@
 import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "@dead-certain/ui/styles.css";
+import { LiveRegion } from "@dead-certain/ui";
+import { PRIMITIVE_SPECIMENS, PrimitivesSection } from "./PrimitivesSection";
 import { TOKEN_SPECIMENS, TokensSection } from "./TokensSection";
 
-const SECTIONS = [{ title: "Tokens", specimens: TOKEN_SPECIMENS }];
+const SECTIONS = [
+	{ title: "Tokens", specimens: TOKEN_SPECIMENS },
+	{ title: "Icons and accessibility helpers", specimens: PRIMITIVE_SPECIMENS },
+];
 
 function Gallery() {
 	// The specimens render after the browser has handled the fragment.
@@ -44,6 +49,7 @@ function Gallery() {
 			</nav>
 			<main id="content" tabIndex={-1} className="pt-12">
 				<TokensSection />
+				<PrimitivesSection />
 			</main>
 		</div>
 	);
@@ -53,6 +59,8 @@ const root = document.getElementById("root");
 if (!root) throw new Error("kit/index.html has no #root element");
 createRoot(root).render(
 	<StrictMode>
-		<Gallery />
+		<LiveRegion>
+			<Gallery />
+		</LiveRegion>
 	</StrictMode>,
 );

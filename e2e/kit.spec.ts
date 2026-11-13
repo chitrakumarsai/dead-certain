@@ -73,7 +73,9 @@ test("every token specimen has a heading, live content and a one-line note", asy
 		await expect(specimen.locator("figcaption"), id).not.toBeEmpty();
 	}
 	await expect(
-		page.getByRole("navigation", { name: "Contents" }).getByRole("link"),
+		page
+			.getByRole("navigation", { name: "Contents" })
+			.locator('a[href^="#tokens-"]'),
 	).toHaveCount(TOKEN_SPECIMENS.length);
 });
 

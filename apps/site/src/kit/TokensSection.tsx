@@ -1,4 +1,4 @@
-import { contrast } from "@dead-certain/ui";
+import { contrast, useReducedMotion } from "@dead-certain/ui";
 import { useState } from "react";
 import { Specimen } from "./Specimen";
 
@@ -158,6 +158,7 @@ export const TOKEN_SPECIMENS = [
 ];
 
 export function TokensSection() {
+	const reduced = useReducedMotion();
 	return (
 		<section aria-labelledby="tokens-heading">
 			<h2 id="tokens-heading" className="font-doc text-verdict font-semibold">
@@ -240,15 +241,18 @@ export function TokensSection() {
 				title="Motion"
 				note="One curve, three durations. Only the X-ray develop is choreographed."
 			>
-				<ul className="max-w-column space-y-3 motion-reduce:hidden">
-					{DURATIONS.map((duration) => (
-						<Replay key={duration.name} {...duration} />
-					))}
-				</ul>
-				<p className="hidden max-w-column motion-reduce:block">
-					Panels change in 0 ms. Presses and the film fade take 120 ms. Nothing
-					moves.
-				</p>
+				{reduced ? (
+					<p className="max-w-column">
+						Panels change in 0 ms. Presses and the film fade take 120 ms.
+						Nothing moves.
+					</p>
+				) : (
+					<ul className="max-w-column space-y-3">
+						{DURATIONS.map((duration) => (
+							<Replay key={duration.name} {...duration} />
+						))}
+					</ul>
+				)}
 			</Specimen>
 		</section>
 	);
