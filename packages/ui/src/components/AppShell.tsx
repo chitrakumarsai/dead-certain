@@ -116,7 +116,11 @@ function Frame({ appName, nav, rail, footer, children }: AppShellProps) {
 			</header>
 			{/* Below 1024 px the rail is a disclosure above the content. */}
 			<div className="flex flex-1 flex-col gap-6 px-4 py-6 md:px-6 lg:flex-row lg:items-start">
-				{rail && <div className="shrink-0">{rail}</div>}
+				{rail && (
+					<div data-rail-slot className="shrink-0">
+						{rail}
+					</div>
+				)}
 				<main
 					ref={mainRef}
 					id="content"

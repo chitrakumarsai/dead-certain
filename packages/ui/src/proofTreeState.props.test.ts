@@ -144,6 +144,7 @@ test("tree ids are unique", () => {
 });
 
 test("normalising any state gives a valid one, and is idempotent", () => {
+	// Feature: ui-kit, Property 18: Normalising a tree state gives a valid state, and is idempotent
 	fc.assert(
 		fc.property(treeAndStateArb, ([root, raw]) => {
 			const state = normalizeTreeState(root, raw);

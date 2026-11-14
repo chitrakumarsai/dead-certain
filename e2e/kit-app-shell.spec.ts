@@ -89,3 +89,23 @@ test("the gallery shows the shell framed at desktop and phone widths", async ({
 	// The shell page is checked with axe on its own above. Across iframes axe
 	// would read three pages' landmarks and headings as one.
 });
+
+test("the rail stacks above the content below 1024 px and sits beside it from 1024 px", async ({
+	page,
+}) => {
+	await page.goto(SHELL);
+	const rail = await page.locator("[data-rail-slot]").boundingBox();
+	const main = await page.locator("main#content").boundingBox();
+	if (!rail || !main) throw new Error("the shell page has no rail or main");
+	const width = page.viewportSize()?.width ?? 0;
+
+	if (width < 1024) {
+		// Above: the rail ends before the content begins, and both start at the left.
+		expect(rail.y + rail.height).toBeLessThanOrEqual(main.y);
+		expect(Math.abs(rail.x - main.x)).toBeLessThan(1);
+	} else {
+		// Beside: the rail ends before the content begins, on the same row.
+		expect(rail.x + rail.width).toBeLessThanOrEqual(main.x);
+		expect(Math.abs(rail.y - main.y)).toBeLessThan(1);
+	}
+});
