@@ -1281,6 +1281,7 @@ All questions are resolved. None of the decisions changes `packages/engine/src/t
 | Q12 | Skip jsdom and Testing Library, and cover component behaviour through Playwright on the gallery? | **Resolved: skip** |
 | Q13 | Film is a side panel from 1280 px and a modal bottom sheet below that. Is 1024 to 1279 px better served by a side panel? | **Resolved:** bottom sheet below 1280 |
 | Q14 | Pre-Flight checks are grouped but the contract has no group. | **Resolved:** the report screen groups by the clause id's first number and takes titles from an app-supplied map |
+| Q15 | A Pre-Flight check is a derived fact, and a needed `Question` asks for one of its inputs, so the contract does not say which check a question belongs to. | **Resolved:** the report screen shows each needed question only on the check whose input it asks for, through an app-supplied map from check fact to input fact. The two Pre-Flight apps supply the real map from their knowledge bases |
 
 ## Delivery order (input to the tasks phase)
 
