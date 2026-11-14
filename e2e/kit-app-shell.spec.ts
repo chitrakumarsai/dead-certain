@@ -8,9 +8,11 @@ test("the skip link is the first Tab stop and moves focus to main", async ({
 	page,
 }) => {
 	await page.goto(SHELL);
+	const skip = page.getByRole("link", { name: "Skip to the content" });
+	// Tab before React mounts lands nowhere; a slow CI runner showed it.
+	await expect(skip).toBeAttached();
 
 	await page.keyboard.press("Tab");
-	const skip = page.getByRole("link", { name: "Skip to the content" });
 	await expect(skip).toBeFocused();
 	await page.keyboard.press("Enter");
 	await expect(page.locator("main#content")).toBeFocused();
