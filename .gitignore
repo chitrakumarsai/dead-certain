@@ -38,3 +38,5 @@ __pycache__/
 !/apps/*/rulebook/**
 !/apps/*/kb/**
 !/docs/kb-format.md
+# Kiro's session log, versioned so the submission write-up has a public record.
+!/docs/kiro-log.md
