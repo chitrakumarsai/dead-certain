@@ -15,4 +15,4 @@ Read `docs/BUILD_PLAN.md` in full at the start of every session. Work one phase 
 - Do not run `/ecc:plan` or any other planner. Do not add Superpowers or more rule packs.
 - Use context7 before calling Vite, Tailwind, Radix, Motion, fast-check, Playwright or MCP SDK APIs.
 - Finish every task with evidence: test output, screenshots at 390, 768 and 1280 px, and a one-paragraph summary.
-- Markdown is gitignored by the owner's instruction, except the paths listed in `.gitignore`. Keep `docs/` out of git and do not force-add Markdown.
+- Markdown is gitignored by the owner's instruction, except the paths listed in `.gitignore`. Keep `docs/` out of git, except `docs/kb-format.md` and `docs/kiro-log.md`, and do not force-add Markdown.
