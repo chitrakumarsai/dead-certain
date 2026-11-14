@@ -538,6 +538,7 @@ interface LedgerProps {
 - A semantic `<table>` with a visually hidden caption ("Claim ledger"). Row headers are `<th scope="row">`.
 - Columns: label (`LineItem.label`), clause (`LineItem.clause`, Machine voice), amount (right aligned, `.figures`). Deductions print with U+2212 ("− ₹38,000").
 - Each item row holds a `<button>` in the label cell stretched over the row. Accessible name: "Room rent above the limit, clause 4.2, minus ₹38,000. See why". The selected row has `aria-current="true"`.
+- Each item row carries `data-hit-area`: the stretched button's hit area is the whole row, and the target-size sweep measures the row, not the button's own box.
 - `claimed` and `payable` rows are plain text, not buttons. They have a hairline rule between the deductions and the total.
 - Edge states: no deductions (only claimed and payable), a deduction of `0` (omitted), `value: undefined` (row reads "Not known yet" and is still openable), many rows (30), long label that wraps at 320 px while the amount never wraps.
 - `onOpen(item, element)` passes the row's button so the app can use it. `XrayStage` does not take it: the stage records `document.activeElement` itself (see XrayStage, Focus).
@@ -693,7 +694,7 @@ interface AppShellProps {
 ```
 
 - Landmarks: skip link ("Skip to the content") as the first focusable element, `<header>` with the "Dead Certain" wordmark and nav, `<main id="content" tabindex="-1">`, an optional rail slot and `<footer>`. The rail slot is a plain wrapper, because `AnswersRail` brings its own `<aside aria-label="Your answers">`.
-- The skip link moves focus to `<main>` without changing the URL hash. A shared `useMediaQuery` hook (`packages/ui/src/useMediaQuery.ts`) drives the responsive switches. Below 1024 px the rail stacks above the content.
+- The skip link is visually hidden until focused; focused, it is at least 44 px tall and wide. It moves focus to `<main>` without changing the URL hash. A shared `useMediaQuery` hook (`packages/ui/src/useMediaQuery.ts`) drives the responsive switches. Below 1024 px the rail stacks above the content.
 - The gallery shows the shell on its own page, `apps/site/kit/shell.html`, in three iframes (desktop with rail, phone with menu closed, phone with menu open). The shell page is axe-checked on its own at every width.
 - Phone: nav sits behind a menu button (Radix Collapsible) labelled "Menu". The menu closes on Escape and on navigation.
 - Hosts the single polite `LiveRegion` and the `useAnnounce()` hook.
@@ -1016,7 +1017,7 @@ catch (e) {
 
 ### `/kit` gallery (`apps/site/kit/index.html`)
 
-- One page. A table of contents (skip-linked), then one section per component. Each state is a **specimen**: `<figure data-specimen="ledger-many-rows">` with a heading in System voice, the live component, and a one-line note. A specimen id is `<component>-<state>` in kebab-case, and the page supports `#ledger-many-rows` deep links.
+- One page. A table of contents (skip-linked), then one section per component. Each state is a **specimen**: `<figure data-specimen="ledger-many-rows">` with a heading in System voice, the live component, and a one-line note. A specimen id is `<component>-<state>` in kebab-case, and the page supports `#ledger-many-rows` deep links. When the gallery has mounted and handed focus back to the body, it sets `data-kit-ready` on `<body>`; the e2e `page` fixture waits for it after every load of `/kit/`, so a test's Tab or `focus()` cannot race the hand-back. Table-of-contents links and the gallery's skip link are at least 44 px in both directions.
 - Paper specimens sit on `--lightbox`. Film specimens sit on `--film` inside a `Film`.
 - **Interactive states.** Hover, pressed and focus have no specimens and no forced-state markup. Playwright hovers, presses and focuses the real control and checks the result.
 - **Specimen matrix** (every cell is a specimen). The exact specimen ids are the ones listed in `e2e/kit-matrix.spec.ts`, which asserts each cell on every run; where the table below names a state, that file names its id:

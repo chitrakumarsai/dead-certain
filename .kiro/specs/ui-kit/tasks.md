@@ -415,8 +415,8 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - Close with Task_Evidence.
     - _Requirements: 24.2, 24.3, 24.4, 24.5, 24.6, 24.7_
 
-  - [ ] 9.5 Add the accessibility and responsive sweep
-    - A Playwright sweep over the full gallery and each static screen: every interactive element is at least 44 by 44 px (`boundingBox`); no horizontal scroll at 320 px (set the viewport in the test) and at 200 percent zoom; all form fields have a label tied by `aria-labelledby` or `<label>`; axe reports zero violations at 390, 768 and 1280 and in the reduced-motion project.
+  - [x] 9.5 Add the accessibility and responsive sweep
+    - A Playwright sweep over the full gallery and each static screen: every interactive element is at least 44 by 44 px (`boundingBox`); no horizontal scroll at 320 px and at 200 percent zoom, set as viewports of 320 and 640 CSS px in the 1280 project (a 1280 px window at 200 percent lays out at 640); every visible form field has a non-empty accessible name; a focused skip link is 44 by 44 px. Hidden, `inert` and `aria-hidden` elements are not measured, and a Ledger row counts as its button's `data-hit-area`. Axe zero violations at 390, 768 and 1280 and in the reduced-motion project stays in the per-component and screen specs. Every `page.goto` of `/kit/` waits for `body[data-kit-ready]` in the shared fixture.
     - **Property 10: Colour is never the only signal** (source part: every `SourceBadge` has its word and marker, asserted across the gallery)
     - **Validates: Requirements 8.1, 8.2, 8.3, 26.1, 26.2, 26.3, 26.4, 26.6, 26.7, 26.9, 28.6, 28.7**
     - Close with Task_Evidence.

@@ -20,7 +20,7 @@ Fixed behaviour: for every run with `testDuration <= 60 000 ms`, the test result
 | Option | Verdict |
 | --- | --- |
 | Shrink `numRuns` or the generator | Rejected. It weakens Property 5 and still leaves a fixed limit. |
-| Raise `testTimeout` in the root `vitest.config.ts` | Not done here. It is the Claude Code lane (root config) and would be the one-line fix for the other 23 `*.props.test.ts` files in kb-tools that carry the same exposure. Recommended to Claude Code on PR #4. |
+| Raise `testTimeout` in the root `vitest.config.ts` | Done by Claude Code in `e025301` (60 s), at Kiro's request on PR #4, since the root config is that lane. It covers the other 23 `*.props.test.ts` files in kb-tools. The explicit limits on this file's two tests now repeat the default, and stay so the file does not depend on the root setting. |
 | Explicit limit on this test | Chosen. In the Kiro lane, matches precedent, smallest change. |
 
 ## Testing strategy
