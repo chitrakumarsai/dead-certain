@@ -8,9 +8,12 @@ import type {
 	Question,
 	Verdict,
 } from "@dead-certain/engine/types";
-import type { AnswerEntry, SkippedNote } from "./types";
+import type { AnswerEntry, FormatContext, SkippedNote } from "./types";
 
-export const CLAIMED_AMOUNT = 210_000_00;
+export const CLAIMED_AMOUNT: number = 210_000_00;
+
+/** How Claim Check formats money: Indian rupees. */
+export const claimFormat: FormatContext = { currency: "INR" };
 
 export const questionFixture: Question = {
 	kind: "question",

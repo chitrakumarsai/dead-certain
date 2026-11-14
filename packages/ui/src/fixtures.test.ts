@@ -10,6 +10,7 @@ import {
 	deepProofFixture,
 	deniedVerdictFixture,
 	factDefFixtures,
+	hugeProofFixture,
 	manyDeductionsFixture,
 	paidInFullVerdictFixture,
 	preFlightAllPassFixture,
@@ -17,6 +18,7 @@ import {
 	preFlightUnknownFixture,
 	preFlightVerdictFixture,
 	proofFixture,
+	questionFixture,
 	questionFixtures,
 	undecidedVerdictFixture,
 	unknownLineWithKnownPayableFixture,
@@ -292,5 +294,64 @@ test("every check fact is derived with a boolean type, as dc validate requires",
 		expect(def.derived, fact).toBe(true);
 		expect(def.type, fact).toBe("boolean");
 		expect(def.ask, fact).toBeUndefined();
+	}
+});
+
+const PROOFS = {
+	proofFixture,
+	deepProofFixture,
+	hugeProofFixture,
+	collectedProofFixture,
+	unknownValueProofFixture,
+};
+
+test.each(Object.entries(PROOFS))(
+	"%s: every node's index path is unique",
+	(_, root) => {
+		const ids: string[] = [];
+		const walk = (node: ProofNode, id: string): void => {
+			ids.push(id);
+			node.children.forEach((child, i) => {
+				walk(child, `${id}.${i}`);
+			});
+		};
+		walk(root, "0");
+
+		expect(new Set(ids).size).toBe(ids.length);
+	},
+);
+
+test("where a proof fixture explains a line item, it names the line's rule", () => {
+	const lines = [
+		...Object.values(CLAIM_VERDICTS),
+		preFlightVerdictFixture,
+		preFlightAllPassFixture,
+		preFlightUnknownFixture,
+	].flatMap((verdict) => verdict.lineItems);
+	let claimed = 0;
+
+	for (const root of Object.values(PROOFS)) {
+		for (const line of lines.filter((item) => item.fact === root.fact)) {
+			claimed += 1;
+			expect(root.rule, `${line.fact} in ${root.rule}`).toBe(line.rule);
+			if (root.clause !== undefined) expect(root.clause).toBe(line.clause);
+		}
+	}
+	expect(claimed).toBeGreaterThan(0);
+});
+
+test("the 30-line verdict and the 200-node proof exist, with every original export", () => {
+	expect(manyDeductionsFixture.lineItems).toHaveLength(30);
+	const count = (node: ProofNode): number =>
+		1 + node.children.reduce((sum, child) => sum + count(child), 0);
+	expect(count(hugeProofFixture)).toBe(200);
+	for (const original of [
+		CLAIMED_AMOUNT,
+		questionFixture,
+		claimVerdictFixture,
+		proofFixture,
+		preFlightVerdictFixture,
+	]) {
+		expect(original).toBeDefined();
 	}
 });
