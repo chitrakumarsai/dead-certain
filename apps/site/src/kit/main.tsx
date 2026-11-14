@@ -39,6 +39,7 @@ import {
 	VerdictHeadlineSection,
 } from "./VerdictHeadlineSection";
 import { WHAT_IF_LIST_SPECIMENS, WhatIfListSection } from "./WhatIfListSection";
+import { XRAY_STAGE_SPECIMENS, XrayStageSection } from "./XrayStageSection";
 
 const SECTIONS = [
 	{ title: "Tokens", specimens: TOKEN_SPECIMENS },
@@ -57,6 +58,7 @@ const SECTIONS = [
 	{ title: "CheckRow", specimens: CHECK_ROW_SPECIMENS },
 	{ title: "WhatIfList", specimens: WHAT_IF_LIST_SPECIMENS },
 	{ title: "ProofTree", specimens: PROOF_TREE_SPECIMENS },
+	{ title: "XrayStage", specimens: XRAY_STAGE_SPECIMENS },
 ];
 
 function Gallery() {
@@ -122,6 +124,7 @@ function Gallery() {
 				<CheckRowSection />
 				<WhatIfListSection />
 				<ProofTreeSection />
+				<XrayStageSection />
 			</main>
 		</div>
 	);

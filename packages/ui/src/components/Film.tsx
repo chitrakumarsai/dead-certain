@@ -17,6 +17,8 @@ export interface FilmProps {
 	presentation: "side" | "sheet";
 	open: boolean;
 	onClose: () => void;
+	/** Lets a parent such as XrayStage move focus to the title. */
+	headingRef?: RefObject<HTMLHeadingElement | null>;
 	children: ReactNode;
 }
 
@@ -55,7 +57,8 @@ function FilmHeader({
 	);
 }
 
-const FILM_CLASS = "bg-surface p-4 text-text md:p-6";
+// The film is never printed: the verdict prints alone, with its ledger.
+const FILM_CLASS = "bg-surface p-4 text-text md:p-6 print:hidden";
 
 /**
  * The dark proof surface. The children are rendered once into a node that
@@ -67,10 +70,12 @@ export function Film({
 	presentation,
 	open,
 	onClose,
+	headingRef: outerHeadingRef,
 	children,
 }: FilmProps) {
 	const titleId = useId();
-	const headingRef = useRef<HTMLHeadingElement>(null);
+	const ownHeadingRef = useRef<HTMLHeadingElement>(null);
+	const headingRef = outerHeadingRef ?? ownHeadingRef;
 	// Where focus was when the sheet opened, so closing can put it back.
 	const openerRef = useRef<HTMLElement | null>(null);
 	const [host] = useState(() =>
@@ -102,6 +107,7 @@ export function Film({
 				<section
 					aria-labelledby={titleId}
 					data-surface="film"
+					data-film-panel
 					className={`rounded-film ${FILM_CLASS}`}
 				>
 					{header}
@@ -118,11 +124,12 @@ export function Film({
 				<Dialog.Portal>
 					<Dialog.Overlay
 						data-film-scrim
-						className="fixed inset-0 bg-film/70"
+						className="fixed inset-0 bg-film/70 print:hidden"
 					/>
 					<Dialog.Content
 						aria-describedby={undefined}
 						data-surface="film"
+						data-film-panel
 						onOpenAutoFocus={(event) => {
 							event.preventDefault();
 							openerRef.current =

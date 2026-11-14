@@ -33,6 +33,7 @@ import type { SheetProps } from "./components/Sheet";
 import type { SourceBadgeProps } from "./components/SourceBadge";
 import type { VerdictHeadlineProps } from "./components/VerdictHeadline";
 import type { WhatIfListProps } from "./components/WhatIfList";
+import type { XrayStageProps, XrayTarget } from "./components/XrayStage";
 import type {
 	AnswerEntry,
 	FormatContext,
@@ -196,4 +197,15 @@ test("ProofTree takes the engine's ProofNode and Clause unchanged", () => {
 	expectTypeOf<ProofTreeProps["initialState"]>().toEqualTypeOf<
 		TreeState | undefined
 	>();
+});
+
+test("XrayStage takes a verdict or line target, null when closed", () => {
+	expectTypeOf<XrayTarget>().toEqualTypeOf<
+		{ kind: "verdict" } | { kind: "line"; fact: string }
+	>();
+	expectTypeOf<XrayStageProps["target"]>().toEqualTypeOf<XrayTarget | null>();
+	expectTypeOf<XrayStageProps["title"]>().toEqualTypeOf<
+		(target: XrayTarget) => string
+	>();
+	expectTypeOf<XrayStageProps["onClose"]>().toEqualTypeOf<() => void>();
 });

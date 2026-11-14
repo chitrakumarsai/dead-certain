@@ -51,6 +51,11 @@ export {
 	type VerdictHeadlineProps,
 } from "./components/VerdictHeadline";
 export { WhatIfList, type WhatIfListProps } from "./components/WhatIfList";
+export {
+	XrayStage,
+	type XrayStageProps,
+	type XrayTarget,
+} from "./components/XrayStage";
 export { formatEntries } from "./format/entries";
 export { humanize, lowerFirst } from "./format/label";
 export { formatMoney, parseMoney } from "./format/money";

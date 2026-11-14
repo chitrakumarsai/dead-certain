@@ -23,10 +23,10 @@ import { Specimen } from "./Specimen";
 type Root = ProofTreeProps["root"];
 
 const format = { currency: "INR" } as const;
-const labelFor = (fact: string) =>
+export const labelFor = (fact: string) =>
 	factDefFixtures[fact]?.label ?? humanize(fact);
 /** Gallery only: a fact without a definition is money when it is a number, except age. */
-const valueFor = (
+export const valueFor = (
 	fact: string,
 	value: Parameters<ProofTreeProps["formatValue"]>[1],
 ) => {
@@ -40,7 +40,7 @@ const valueFor = (
 		format,
 	);
 };
-const clauseFor = (id: string) =>
+export const clauseFor = (id: string) =>
 	clauseFixtures[id] ?? preFlightClauseFixtures[id];
 
 /** Sample rule expressions, as an app would print them with the engine. */
@@ -50,7 +50,7 @@ const EXPRESSIONS: Readonly<Record<string, string>> = {
 	"ROOM-03":
 		"room_rent_deduction = round(other_charges * (1 - room_rent_cap / room_rent_per_day))",
 };
-const ruleExpression = (rule: string) => EXPRESSIONS[rule];
+export const ruleExpression = (rule: string) => EXPRESSIONS[rule];
 
 /** A tree with its actions wired to visible outputs. */
 function KeyedTree({ initialState }: { initialState: TreeState }) {
