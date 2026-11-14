@@ -19,7 +19,7 @@ const roleArb: fc.Arbitrary<Role> = fc.constantFrom<Role>(
 	undefined,
 );
 
-/** Three derived number facts, each with its own role and 0 to 3 rules. */
+/** Three derived facts, each with its own role and 0 to 3 rules. */
 const specsArb: fc.Arbitrary<DerivedSpec[]> = fc
 	.tuple(
 		fc.tuple(roleArb, fc.array(fc.boolean(), { maxLength: 3 })),
@@ -43,7 +43,14 @@ function render(specs: DerivedSpec[]): string {
 		"    ask: Is it ok?",
 	];
 	for (const s of specs) {
-		lines.push(`  ${s.name}:`, "    type: number", "    derived: true");
+		// A role fixes the type: a check is boolean and a deduction is money.
+		const type =
+			s.role === "check"
+				? "boolean"
+				: s.role === "deduction"
+					? "money"
+					: "number";
+		lines.push(`  ${s.name}:`, `    type: ${type}`, "    derived: true");
 		if (s.role !== undefined) lines.push(`    role: ${s.role}`);
 	}
 	lines.push(
@@ -60,7 +67,7 @@ function render(specs: DerivedSpec[]): string {
 				`  - id: R-${s.name}-${i}`,
 				'    cite: "4.2"',
 				`    set: ${s.name}`,
-				'    to: "1"',
+				`    to: "${s.role === "check" ? "true" : "1"}"`,
 				"    because: Because.",
 			);
 			if (guarded) lines.push('    when: "ok"');

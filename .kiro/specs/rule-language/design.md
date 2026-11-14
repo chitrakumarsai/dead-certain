@@ -14,7 +14,7 @@ The component also drives the authoring of `docs/kb-format.md`, a human-facing r
 
 ### Relationship to existing types
 
-`packages/engine/src/types.ts` currently declares `export type Expr = unknown`. Requirement 6 defines the concrete `Expr` union that replaces it. The replacement is the first task of this spec; every downstream file (the parser, printer, evaluator, and kb-tools) depends on the concrete type being in place.
+`packages/engine/src/types.ts` currently declares `export type Expr = unknown`. Requirement 6 defines the concrete `Expr` union that replaces it, with Claude Code's consent recorded in [PR #4, comment 6865345893](https://github.com/chitrakumarsai/dead-certain/pull/4#issuecomment-6865345893). The replacement is the first task of this spec; every downstream file (the parser, printer, evaluator, and kb-tools) depends on the concrete type being in place.
 
 ---
 

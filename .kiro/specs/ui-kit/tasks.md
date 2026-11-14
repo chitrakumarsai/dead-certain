@@ -148,16 +148,18 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - Close with Task_Evidence.
 
   - [ ] 4.6 Implement the proof-tree reducer and its property tests
-    - Create `components/proofTreeState.ts` with `Key`, `TreeState`, `visibleIds`, `nodeAt`, `parentId`, `treeReduce` and the immutable set helpers `withId`, `withoutId` and `toggled`. Node ids are index paths (`"0.1.0"`). Export a function `initialTreeState(root)` that opens the root and its direct children and puts `active` on the root.
+    - Create `components/proofTreeState.ts` with `Key`, `TreeState`, `visibleIds`, `nodeAt`, `parentId`, `treeReduce`, `toggleNode` (a pointer toggle: make the node active, then apply the Enter transition) and the immutable set helpers `withId`, `withoutId`, `withoutBranch` (closes an id and every descendant id) and `toggled` (uses `withoutBranch` when it closes). Node ids are index paths (`"0.1.0"`). Export `initialTreeState(root)`, which opens the root and its direct children and puts `active` on the root, and `normalizeTreeState(root, state)`, which drops ids that name no node, drops expanded ids that name a leaf, opens the ancestors of every open node and of the active node, and falls back to the root (`"0"`) when `active` is missing or unknown. `treeReduce` returns the normalised state without applying the key when its input is stale, and reuses a valid input as is.
     - Add fixtures `deepProofFixture` (4 levels, one fact under two rules) and `hugeProofFixture` (200 nodes), annotated with `ProofNode`.
-    - Write `proofTreeState.test.ts` for each key at the edges: Down at the last node, Up at the first, Right on a leaf, Left on the root, Enter on a leaf.
-    - **Property 5: Tree reducer stays on screen** (the result's `active` is in `visibleIds` and no leaf is ever in `expanded`)
-    - **Validates: Requirements 18.7, 18.8, 18.9, 18.10, 18.11, 18.15**
+    - Write `proofTreeState.test.ts` for each key at the edges: Down at the last node, Up at the first, Right on a leaf, Left on the root, Enter on a leaf. Add tests for `normalizeTreeState` (unknown ids, expanded leaves, ancestors opened, missing or unknown `active` falls back to `"0"`, no default root-and-children expansion on a supplied state) and for branch collapse (Left and Enter closing remove the id and every descendant id).
+    - **Property 5: Tree reducer stays on screen** (from arbitrary states mixing keys with `toggleNode` pointer toggles, the result's `active` is in `visibleIds`, no leaf is ever in `expanded`, and every ancestor of an expanded id is expanded)
+    - **Validates: Requirements 18.7, 18.8, 18.9, 18.10, 18.11, 18.15, 18.23**
     - **Property 6: Tree reducer is pure** (the input state is unchanged, deep-frozen in the test)
     - **Validates: Requirements 18.16**
     - **Property 7: Tree ids are unique** (everything expanded, including a fact under two rules)
     - **Validates: Requirements 18.13**
-    - Generate random `ProofNode` trees with a fast-check arbitrary kept in `src/testkit/proofArb.ts` (test-only, never exported from `index.ts`).
+- **Property 18: Normalisation is valid and idempotent** (from arbitrary states mixing keys with `toggleNode` pointer toggles, `normalizeTreeState` returns an `active` that names a node, expanded ids that name nodes with children, every ancestor of an expanded id and of `active` expanded, and normalising twice equals normalising once)
+    - **Validates: Requirements 18.14, 18.23**
+    - Generate random `ProofNode` trees with a fast-check arbitrary kept in `src/testkit/proofArb.ts` (test-only, never exported from `index.ts`). The arbitrary-state generator `rawStateArb` lives in `packages/ui/src/proofTreeState.props.test.ts`, not in `proofArb.ts`.
     - Close with Task_Evidence.
 
   - [ ] 4.7 Implement `partitionBar` and its property test
@@ -170,7 +172,7 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
   - [ ] 4.8 Add the contract and import-boundary tests
     - Create `packages/ui/src/contract.test.ts` using `expectTypeOf`: `ReplayFailure extends ErrorCode` (the one allowed type-only import from `@dead-certain/engine`). Add one `expectTypeOf` line per component prop in the task that builds that component; this task creates the file and the first assertion.
     - Create `packages/ui/src/boundary.test.ts`: scan every non-test file under `packages/ui/src` and fail on any value import from `@dead-certain/engine` (only `import type` from `@dead-certain/engine/types` is allowed), on any import of `motion` outside `components/XrayStage.tsx`, and on any `dangerouslySetInnerHTML`.
-    - State in the pull request description that packages/engine/src/types.ts is unchanged.
+    - State in the pull request description that packages/engine/src/types.ts is unchanged by the ui-kit lane.
     - **Property 13: No runtime engine import**
     - **Validates: Requirements 5.1, 5.2, 5.5, 5.6, 20.10, 29.9**
     - Close with Task_Evidence.
@@ -220,12 +222,12 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
 
   - [ ] 5.6 Build `Sheet` and `Film`
     - `Sheet`: paper fill, 1 px hairline border, 4 px radius, 16 px padding below 768 and 24 px from 768, `max-width: var(--column-max)`, `data-surface="paper"`, no shadow.
-    - `Film`: film fill, no border, 8 px radius, `data-surface="film"`, heading with `tabindex="-1"` and a Close button. `presentation: "side"` renders a non-modal `<section aria-labelledby>`. `presentation: "sheet"` renders a Radix Dialog anchored to the bottom (focus trapped, Escape closes, 85 vh maximum, inner scroll, flat scrim at fixed opacity). The same inner children render in both so they are not remounted.
+    - `Film`: film fill, no border, 8 px radius, `data-surface="film"`, heading with `tabindex="-1"` and a Close button. An optional `headingRef?: RefObject<HTMLHeadingElement | null>` prop attaches to the heading so a parent can focus the title. The panel and the scrim carry `print:hidden`. `presentation: "side"` renders a non-modal `<section aria-labelledby>`. `presentation: "sheet"` renders a Radix Dialog anchored to the bottom (focus trapped, Escape closes, 85 vh maximum, inner scroll, flat scrim at fixed opacity). The same inner children render in both so they are not remounted.
     - Gallery specimens: `sheet-paper`, `film-side`, `film-sheet`.
-    - Playwright: the sheet is at most 680 px wide; the film dialog traps focus and Escape closes it; a content node marked with a counter keeps its identity when `presentation` flips (resize 1279 to 1280).
+    - Playwright: the sheet is at most 680 px wide; the film dialog traps focus and Escape closes it; a content node marked with a counter keeps its identity when `presentation` flips (resize 1279 to 1280); `headingRef` points at the heading; the panel and the scrim have `print:hidden`.
     - Add the `expectTypeOf` lines for `SheetProps` and `FilmProps`.
     - Close with Task_Evidence.
-    - _Requirements: 19.1, 19.2, 19.3, 19.4, 19.5, 19.6, 19.7_
+    - _Requirements: 19.1, 19.2, 19.3, 19.4, 19.5, 19.6, 19.7, 19.8, 19.9_
 
 - [ ] 6. AnswerControl, one control type per task
   - [ ] 6.1 Build the `AnswerControl` shell and the boolean body
@@ -306,58 +308,63 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.8_
 
   - [ ] 7.5 Build `Ledger`
-    - A semantic `<table>` with a visually hidden caption "Claim ledger" and `<th scope="row">` headers. Columns: label (`LineItem.label` verbatim), clause (Machine voice) and amount (right aligned, `.figures`, never wraps). Deductions print with U+2212 as "− ₹38,000". Each item row has a row-sized button with the accessible name "Room rent above the limit, clause 4.2, minus ₹38,000. See why"; `selectedFact` sets `aria-current="true"`; `onOpen(item, element)` passes the row element. The claimed and payable rows are plain text with a hairline rule above the total. Zero-value deductions are omitted; an `undefined` value prints "Not known yet" and stays openable; labels wrap down to 320 px.
-    - Add `manyDeductionsFixture` (30 lines), `unknownLineFixture` and `zeroDeductionFixture`, all with claimed minus deductions equal to payable. Extend `fixtures.test.ts` to assert that for every verdict fixture.
+    - A semantic `<table>` with a visually hidden caption "Claim ledger" and `<th scope="row">` headers. Columns: label (`LineItem.label` verbatim), clause (Machine voice) and amount (right aligned, `.figures`, never wraps). Deductions print with U+2212 as "− ₹38,000". Each item row has a row-sized button with the accessible name "Room rent above the limit, clause 4.2, minus ₹38,000. See why"; `selectedFact` sets `aria-current="true"`; `onOpen(item, element)` passes the row's button so the app can use it (`XrayStage` does not take it). The claimed and payable rows are plain text with a hairline rule above the total. Zero-value deductions are omitted; an `undefined` value prints "Not known yet" and stays openable; labels wrap down to 320 px.
+    - Add `manyDeductionsFixture` (30 lines), `unknownLineWithKnownPayableFixture` and `zeroDeductionFixture`. `unknownLineWithKnownPayableFixture` is deliberately not engine-faithful (an unknown deduction beside a known payable), carries a comment that says why, and is exempt by name in `fixtures.test.ts` (constant `NOT_ENGINE_FAITHFUL`). Extend `fixtures.test.ts` to assert claimed minus deductions equals payable for every verdict fixture not named in `NOT_ENGINE_FAITHFUL`.
     - Gallery specimens: normal, no deductions, zero deduction, unknown value, 30 rows, selected row, 320 px wrap.
     - Playwright: the accessible name format; amounts never wrap at 320 px; no horizontal scroll.
-    - **Property 14: Ledger arithmetic is displayed, not computed** (fixtures test over every verdict fixture, plus a Playwright check that each rendered amount equals `formatMoney` of the fixture value)
+    - **Property 14: Ledger arithmetic is displayed, not computed** (fixtures test over every verdict fixture not named in `NOT_ENGINE_FAITHFUL`, plus a Playwright check that each rendered amount equals `formatMoney` of the fixture value)
     - **Validates: Requirements 15.1, 15.2, 15.3, 15.4, 15.5, 15.6, 15.7, 15.8, 15.9, 15.10, 15.11, 15.12, 15.13, 23.5**
     - Add the `expectTypeOf` line for `LedgerProps`.
     - Close with Task_Evidence.
 
   - [ ] 7.6 Build `CheckRow`
-    - Pass shows "Passed" with a green check; fail shows "Failed" with a cross; unknown or a non-boolean value shows "Needs your answer" with a question icon. The state word is part of the accessible name. Show `LineItem.label`, the rule id (a button that calls `onOpen(item, element)`), and the optional `detail` line in the Machine voice. While unknown and `question` is supplied, show `question.text` and an inline boolean `AnswerControl`; answering calls `onAnswer(fact, value)`.
+    - Pass shows "Passed" with a green check; fail shows "Failed" with a cross; unknown or a non-boolean value shows "Needs your answer" with a question icon. The state word is part of the accessible name. Show `LineItem.label`, the rule id (a button that calls `onOpen(item, element)`), and the optional `detail` line in the Machine voice. While unknown, `question` is supplied and `def.type === "boolean"` (`def` describes `question.fact`, the input the engine asks for, not `item.fact`, which is derived and never asked directly), show `question.text` and an inline boolean `AnswerControl`; answering calls `onAnswer(question.fact, value)`. While unknown and the asked fact is not boolean (no `def` counts as not boolean), show only the word "Needs your answer".
     - Add `preFlightAllPassFixture` and `preFlightUnknownFixture`.
-    - Gallery specimens: pass, fail, unknown with inline question, with evidence, non-boolean value.
-    - Playwright: the three words appear; the rule id opens via keyboard; answering the inline question emits once.
+    - Gallery specimens: pass, fail, unknown with inline question, unknown non-boolean fact, with evidence, non-boolean value.
+    - Playwright: the three words appear; the rule id opens via keyboard; answering the inline question emits once; the unknown non-boolean specimen shows no question text and no radio group.
     - **Property 10: Colour is never the only signal** (check part: each check state has a word and an icon)
-    - **Validates: Requirements 16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7, 16.8, 26.6, 26.9**
+    - **Validates: Requirements 16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7, 16.8, 16.9, 26.6, 26.9**
     - Add the `expectTypeOf` line for `CheckRowProps`.
     - Close with Task_Evidence.
 
   - [ ] 7.7 Build `WhatIfList`
-    - One plain-text row per `Alternative`: "If <label> were <value>: <delta>". With `amountGoal`, show the signed delta between `alt.verdict.goals[amountGoal]` and `current.goals[amountGoal]`; with only `stateGoal`, name the new verdict state; with no alternatives render nothing and no heading. No actions.
-    - Add `alternativesFixture` and `alternativesNoMoneyFixture`.
-    - Gallery specimens: money, no money, empty.
-    - Playwright: text of each row; the empty specimen has no heading element.
+    - One plain-text row per `Alternative`: "If <label> were <value>: <delta>", for example "If room rent per day were ₹5,000: + ₹38,000". The row text lives in `components/whatIfText.ts`. With `amountGoal` and both amounts known and different, show the signed delta. With only `stateGoal`, name the state change from the current to the new state. With a zero delta, name the state change when `stateGoal` is supplied and the state changes, else say "the verdict changes". With an unknown amount, print "amount not known yet", followed by the state change when there is one. If `stateGoal` is supplied but the state does not change, say "the verdict changes". With no alternatives render nothing and no heading. No actions.
+    - Add `lowerFirst(label)` to `format/label.ts` with a unit test ("Room rent per day" gives "room rent per day"; "ICU days" is unchanged). Labels go through `lowerFirst`. Only boolean values are lowercased mid-sentence (yes/no). Money, number, date and enum values print as formatted.
+    - Write `packages/ui/src/whatIfText.test.ts` for yes/no lowercase, enum "MIT" verbatim, zero delta with the same state, and unknown amount.
+    - Add `alternativesFixture` and `alternativesNoMoneyFixture`. Do not add a zero-delta or unknown-amount fixture; the edge cases are built inline.
+    - Gallery specimens: money, no money, `whatiflist-edges` (builds its alternatives inline), empty.
+    - Playwright: text of each row; the edges specimen shows the zero-delta and unknown-amount rows; the empty specimen has no heading element.
     - Add the `expectTypeOf` line for `WhatIfListProps`.
     - Close with Task_Evidence.
+    - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5, 17.6, 17.7, 17.8_
     - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5_
 
 - [ ] 8. Proof and application frame
   - [ ] 8.1 Build `ProofTree` rendering
-    - Render `role="tree"` named "Proof", each node `role="treeitem"` with `aria-level`, `aria-setsize` and `aria-posinset`, parents with a true `aria-expanded`, children in `role="group"`, and a roving `tabindex` with exactly one `0`. Joints (derived with a rule) show the rule id in the Machine voice and the `because` sentence as received; bone ends (answered or collected leaves) show label, value and `SourceBadge`. `undefined` prints "Not known yet". Strokes use `--text-soft`. Initial state comes from `initialTreeState`. Memoise rows by index-path id.
+    - Render `role="tree"` named "Proof", each node `role="treeitem"` with `aria-level`, `aria-setsize` and `aria-posinset`, parents with a true `aria-expanded`, children in `role="group"`, and a roving `tabindex` with exactly one `0`. Joints (derived with a rule) show the rule id in the Machine voice and the `because` sentence as received; bone ends (answered or collected leaves) show label, value and `SourceBadge`. `undefined` prints "Not known yet". Strokes use `--text-soft`. Initial state comes from `initialTreeState`, or, when the `initialState` prop is supplied, from `normalizeTreeState` (read on mount only; the caller remounts with `key={target}`). Memoise rows by index-path id.
     - A node whose clause equals `decidingClause` shows a deciding `ClauseQuote` under the rule sentence.
+    - Branch cue: every parent shows a `Chevron` (glyph swap closed/open, no rotation, no animation) in a 44 px pointer toggle that is not a tab stop; closed parents also show an `aria-hidden` "N hidden" count in the Machine voice, where N is the direct children count (`node.children.length`). Leaves show neither. The toggle calls `toggleNode`.
     - Add `collectedProofFixture` and `unknownValueProofFixture`.
-    - Gallery specimens (on Film): collapsed, expanded, deep, shared fact, collected, unknown value, deciding clause, 200 nodes.
-    - Playwright: ARIA attributes on a sample; one `tabindex="0"`; node ids are unique in the 200-node specimen.
+    - Gallery specimens (on Film): collapsed, expanded, deep, shared fact, collected, unknown value, deciding clause, 200 nodes. The branch cue shows in the existing `prooftree-collapsed` specimen. `initialState` is exercised in `prooftree-deep` and `prooftree-shared`.
+    - Playwright: ARIA attributes on a sample; one `tabindex="0"`; node ids are unique in the 200-node specimen; the pointer toggle is at least 44 by 44 px and is not a tab stop; the "N hidden" count is `aria-hidden` and equals the direct children count; a click on the toggle changes `aria-expanded` and makes that node active; leaves have no toggle and no count.
     - Add the `expectTypeOf` line for `ProofTreeProps`.
     - Close with Task_Evidence.
-    - _Requirements: 18.1, 18.2, 18.3, 18.4, 18.5, 18.6, 18.13, 18.14, 18.20, 18.21, 23.8_
+    - _Requirements: 18.1, 18.2, 18.3, 18.4, 18.5, 18.6, 18.13, 18.14, 18.20, 18.21, 18.22, 18.23, 23.8_
 
   - [ ] 8.2 Add `ProofTree` keyboard handling and node actions
     - Wire keys to `treeReduce`: Down, Up, Right, Left, Home, End and Enter. Escape calls `onEscape`. Focus follows the active node.
-    - Inside the active treeitem only, render the "Show the rule" `Disclosure` (when `ruleExpression` returns text, shown in the Machine voice) and the "Change this answer" button on answered facts (when `onChangeAnswer` is supplied). Their `tabindex` is `0` only while their node is active and `-1` otherwise.
+    - Render the "Show the rule" `Disclosure` (when `ruleExpression` returns text, shown in the Machine voice) and the "Change this answer" button on answered facts (when `onChangeAnswer` is supplied) only inside the active treeitem. Inactive treeitems render no actions and no `tabindex` toggling; moving the active node unmounts the previous node's actions.
+    - The tree ignores arrow keys, Home, End and Enter whose target is inside an action. Escape still calls `onEscape` from anywhere in the tree, including from inside an action.
     - Gallery specimens: keyboard focus on a joint, on a bone end, and with actions visible.
-    - Playwright: drive each key and assert the active node and `aria-expanded`; Tab from the active node reaches its actions and then leaves the tree; Escape fires `onEscape`.
+    - Playwright: drive each key and assert the active node and `aria-expanded`; an inactive treeitem has no action elements; Tab from the active node reaches its actions and then leaves the tree; keys from inside an action do not move or toggle; Escape fires `onEscape`, also from inside an action; collapsing closes the whole branch (reopening the parent shows its children closed).
     - Close with Task_Evidence.
-    - _Requirements: 18.7, 18.8, 18.9, 18.10, 18.11, 18.12, 18.15, 18.17, 18.18, 18.19_
+    - _Requirements: 18.7, 18.8, 18.9, 18.10, 18.11, 18.12, 18.15, 18.17, 18.18, 18.19, 18.24_
 
   - [ ] 8.3 Build `XrayStage`
-    - Compose `Sheet` and `Film` with the `XrayTarget` union. At 1280 px and up, lay out the Sheet (up to 680 px) beside a `side` Film and collapse the rail; below 1280, a full-width Sheet and a `sheet` Film. On first open run the develop: a 2 px `--film` scan line crossing once in 500 ms with `--ease` (left to right at 1280 and up, top to bottom below) with the Film revealed behind it by `clip-path`, using `LazyMotion` with `domAnimation` and `m` components. Under reduced motion render no scan line and fade the Film in over 120 ms. Changing target swaps content at once with no animation.
-    - Focus: store the opener; on open or target change focus the Film heading and announce the title; on close return focus to the opener, or to the Sheet heading if the opener left the DOM. Hide the Film in `print` media.
+    - Compose `Sheet` and `Film` with the `XrayTarget` union. At 1280 px and up, lay out the Sheet (up to 680 px) beside a `side` Film and collapse the rail; below 1280, a full-width Sheet and a `sheet` Film. On first open run the develop: a 2 px `--film` scan line crossing once over `--dur-xray` with `--ease`, both read from the tokens at run time and not hardcoded (left to right at 1280 and up, top to bottom below). The `clip-path` reveal applies to the proof content; the Film panel itself appears at once, because the bottom sheet is a Radix Dialog in a portal. Use `LazyMotion` with `domAnimation` and `m` components. Under reduced motion render no scan line and fade the Film in over 120 ms. Changing target swaps content at once with no animation.
+    - Focus: record `document.activeElement` as the opener when `target` goes from null to set, before Radix moves focus (the stage takes no opener from `onOpen`); on open or target change focus the Film heading and announce the title; on close return focus to the opener one task later, after the bottom sheet's focus trap releases. An opener that unmounted while the stage was open (focus on `<body>`) counts as gone, and focus goes to the Sheet heading. The Film is hidden in `print` media by its own `print:hidden`.
     - Gallery specimens: closed, open side (1280), open sheet (below 1280), reduced motion. Use `claimVerdictFixture` and `proofFixture` with a small stand-in `Sheet`.
-    - Playwright: scan line exists at 1280 (default project) and not in the reduced-motion project; the film's only transition under reduced motion is opacity over 120 ms; focus lands on the Film heading; closing returns focus to the opener; closing after removing the opener lands on the sheet heading; resizing across 1280 does not remount the tree.
+    - Playwright: the open-side state is shown and checked by the 1280 project, the open-sheet state by the 390 and 768 projects, and the reduced-motion state by the reduced-motion project. Rail collapse beside the film is covered by the task 7.2 AnswersRail test, not here. Scan line exists at 1280 (default project) and not in the reduced-motion project; the film's only transition under reduced motion is opacity over 120 ms; focus lands on the Film heading; closing returns focus to the opener; closing after removing the opener lands on the sheet heading; resizing across 1280 does not remount the tree.
     - **Property 15: Focus returns**
     - **Validates: Requirements 20.1, 20.2, 20.3, 20.4, 20.6, 20.7, 20.8, 20.9, 20.11, 20.12**
     - **Property 16: Reduced motion removes movement**
@@ -366,25 +373,25 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - Close with Task_Evidence.
 
   - [ ] 8.4 Build `AppShell`
-    - Skip link "Skip to the content" as the first focusable element; `<header>` with the "Dead Certain" wordmark and navigation (`aria-current` on the current item); `<main id="content" tabindex="-1">`; optional `<aside>` for the rail; `<footer>` that defaults to "No guesses were made in the production of this verdict." Below 768 px navigation sits behind a "Menu" button (Radix Collapsible) that closes on Escape and on navigation. Host the single `LiveRegion` and `useAnnounce()`.
-    - Gallery specimens: desktop with rail, phone with menu closed, phone with menu open.
-    - Playwright: the skip link is the first Tab stop and moves focus to `main`; Escape closes the menu; the footer text; one live region on the page.
+    - Skip link "Skip to the content" as the first focusable element; it moves focus to `<main>` without changing the URL hash. `<header>` with the "Dead Certain" wordmark and navigation (`aria-current` on the current item); `<main id="content" tabindex="-1">`; an optional rail slot that is a plain wrapper, because `AnswersRail` brings its own `<aside aria-label="Your answers">`; `<footer>` that defaults to "No guesses were made in the production of this verdict." Below 768 px navigation sits behind a "Menu" button (Radix Collapsible) that closes on Escape and on navigation. Below 1024 px the rail stacks above the content. Host the single `LiveRegion` and `useAnnounce()`. Add the shared `useMediaQuery` hook in `packages/ui/src/useMediaQuery.ts`.
+    - Gallery specimens: add `apps/site/kit/shell.html` (a second Vite entry) that shows the shell on its own page; the gallery embeds it in three iframes: desktop with rail, phone with menu closed, phone with menu open.
+    - Playwright: the skip link is the first Tab stop, moves focus to `main` and leaves the URL hash unchanged; Escape closes the menu; the footer text; one live region on the page; the rail stacks above the content below 1024 px; axe runs on `kit/shell.html` on its own at every width.
     - Add the `expectTypeOf` line for `AppShellProps`.
     - Close with Task_Evidence.
-    - _Requirements: 21.1, 21.2, 21.3, 21.4, 21.5, 21.6, 21.7, 2.14_
+    - _Requirements: 21.1, 21.2, 21.3, 21.4, 21.5, 21.6, 21.7, 21.8, 21.9, 21.10, 2.14_
 
   - [ ] 8.5 Build `StaleLinkNotice`
-    - A `Record<ReplayFailure, Copy>` with the exact headings and bodies from the design for `KB_MISMATCH`, `MALFORMED_TOKEN` and `UNSUPPORTED_VERSION`. Primary `Button` "Start the check" calls `onStart`; a quiet link "Read the rules" appears only for `KB_MISMATCH` with `rulebookHref`. Info icon in `--text-soft`, no `--denied` colour. The heading takes focus on mount and is announced. It renders as a state inside `<main>`, not a modal and not `role="alert"`, and never prints the engine's message.
-    - Gallery specimens: the three failures, and `KB_MISMATCH` with and without the rulebook link.
-    - Playwright: heading text for each failure; heading is focused; no element has `role="alert"` or `role="dialog"`.
+    - A `Record<ReplayFailure, Copy>` with the exact headings and bodies from the design for `KB_MISMATCH`, `MALFORMED_TOKEN` and `UNSUPPORTED_VERSION`. Primary `Button` "Start the check" calls `onStart`; a quiet link "Read the rules" appears only for `KB_MISMATCH` with `rulebookHref`. Info icon in `--text-soft`, no `--denied` colour. The heading takes focus on mount and is announced. It renders as a state inside `<main>`, not a modal and not `role="alert"`, and never prints the engine's message. The root is a plain `<section>` with no accessible name (no `aria-label`, no `aria-labelledby`), so it is not a landmark. The heading is an `h2`.
+    - Gallery specimens: the three failures, `KB_MISMATCH` with and without the rulebook link, and a fifth specimen "Appears" (`data-specimen="stalelinknotice-appears"`) for the focus-on-appear test.
+    - Playwright: heading text for each failure; heading is focused; no element has `role="alert"` or `role="dialog"`; the section has no accessible name and is not a landmark; the heading is `h2`; focus lands on the heading when the Appears specimen mounts.
     - **Property 17: Stale link exhaustive** (the compile-time `Record<ReplayFailure, Copy>` plus the `ReplayFailure extends ErrorCode` assertion from task 4.8, and a Playwright check over all three failures)
-    - **Validates: Requirements 22.1, 22.2, 22.3, 22.4, 22.5, 22.6, 22.7, 22.8, 22.9, 22.10, 5.6**
+    - **Validates: Requirements 22.1, 22.2, 22.3, 22.4, 22.5, 22.6, 22.7, 22.8, 22.9, 22.10, 22.11, 22.12, 5.6**
     - Add the `expectTypeOf` line for `StaleLinkNoticeProps`.
     - Close with Task_Evidence.
 
 - [ ] 9. Gallery completion and static screens
   - [ ] 9.1 Audit the fixtures
-    - Extend `fixtures.test.ts`: every export is annotated with a contract type (a type-level check where possible); every verdict fixture ledger adds up; every proof node index path is unique; every `LineItem.rule` and `LineItem.clause` used in a verdict fixture appears in a proof or clause fixture where claimed; the 30-line verdict fixture and the 200-node proof fixture exist; all existing exports (`CLAIMED_AMOUNT`, `questionFixture`, `claimVerdictFixture`, `proofFixture`, `preFlightVerdictFixture`) are still present.
+    - Extend `fixtures.test.ts`: every export is annotated with a contract type (a type-level check where possible); every verdict fixture ledger adds up, except fixtures named in `NOT_ENGINE_FAITHFUL`, which carry a comment saying why; every proof node index path is unique; every `LineItem.rule` and `LineItem.clause` used in a verdict fixture appears in a proof or clause fixture where claimed; the 30-line verdict fixture and the 200-node proof fixture exist; all existing exports (`CLAIMED_AMOUNT`, `questionFixture`, `claimVerdictFixture`, `proofFixture`, `preFlightVerdictFixture`) are still present.
     - Add `claimFormat` and any fixture still missing from the design's fixture table.
     - Close with Task_Evidence.
     - _Requirements: 23.1, 23.2, 23.3, 23.4, 23.5, 23.6, 23.7, 23.8_
@@ -422,7 +429,7 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
 
 - [ ] 10. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
-  - Confirm every task above is ticked, the pull request lists the pinned versions from task 1.1, and `packages/engine/src/types.ts` is unchanged.
+  - Confirm every task above is ticked, the pull request lists the pinned versions from task 1.1, and `packages/engine/src/types.ts` is unchanged by the ui-kit lane.
 
 - [ ] 11. Optional items (build last, drop first if time runs short)
   - [ ]* 11.1 Add the fallback font metric faces
@@ -432,8 +439,8 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - _Requirements: 31.1_
 
   - [ ]* 11.2 Add the print styles
-    - Create `packages/ui/print.css` and import it last in `styles.css`. A printed verdict is one page: verdict headline, ledger and clauses; the Film, rail, nav and buttons are hidden.
-    - Add a Playwright test using `page.emulateMedia({ media: "print" })` that checks the Film is hidden and the verdict, ledger and clauses are visible. Do not compare pixels.
+    - Create `packages/ui/print.css` and import it last in `styles.css`. A printed verdict is one page: verdict headline, ledger and clauses; the rail, nav and buttons are hidden. The Film hides itself through `print:hidden`, not through `print.css`.
+    - Add a Playwright test using `page.emulateMedia({ media: "print" })` that checks the Film is hidden (by its own `print:hidden`) and the verdict, ledger and clauses are visible. Do not compare pixels.
     - Close with Task_Evidence (screen screenshots at three widths, plus the print-emulated page).
     - _Requirements: 20.12, 31.3_
 
@@ -446,7 +453,7 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
 
 - Claude Code implements every task. Kiro does not execute any of them and creates no file under `packages/ui` or `apps/`.
 - Only the three tasks under item 11 are optional, as the user and the design require. Test sub-tasks are not marked optional in this plan, because each task closes with Task_Evidence and `pnpm check`.
-- Properties 1, 2, 3, 5, 6, 7, 8 and 9 are fast-check property tests (`*.props.test.ts`). Property 4 is a unit test plus a source scan. Properties 10 to 17 are checked by unit scans, type-level checks and Playwright, as the design's testing strategy says. Each is tied to a task above.
+- Properties 1, 2, 3, 5, 6, 7, 8, 9 and 18 are fast-check property tests (`*.props.test.ts`). Property 4 is a unit test plus a source scan. Properties 10 to 17 are checked by unit scans, type-level checks and Playwright, as the design's testing strategy says. Each is tied to a task above.
 - No visual-regression gate, no pixel baselines, no Lighthouse run and no forced-state markup anywhere in this plan.
 - Screenshots go to the pull request and are never committed.
 

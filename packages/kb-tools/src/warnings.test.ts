@@ -15,6 +15,7 @@ interface RuleSpec {
 	id: string;
 	set: string;
 	when?: string;
+	to?: string;
 }
 
 function rulesYaml(rules: RuleSpec[]): string {
@@ -26,7 +27,7 @@ function rulesYaml(rules: RuleSpec[]): string {
 				`  - id: ${r.id}`,
 				'    cite: "4.2"',
 				`    set: ${r.set}`,
-				'    to: "1"',
+				`    to: ${JSON.stringify(r.to ?? "1")}`,
 				"    because: Because.",
 				when,
 			].join("\n");
@@ -34,8 +35,21 @@ function rulesYaml(rules: RuleSpec[]): string {
 		.join("\n");
 }
 
-/** A knowledge base with number facts `m`, `n` and a derived fact `out`. */
+/**
+ * A knowledge base with number facts `m`, `n` and a derived fact `out`. A role fixes the
+ * type of `out`: a check is boolean and a deduction is money.
+ */
 function kb(opts: { role?: string; rules: RuleSpec[] }): string {
+	const outType =
+		opts.role === "check"
+			? "boolean"
+			: opts.role === "deduction"
+				? "money"
+				: "number";
+	const outTo = outType === "boolean" ? "true" : "1";
+	const rules = opts.rules.map((r) =>
+		r.set === "out" ? { ...r, to: outTo } : r,
+	);
 	const role = opts.role === undefined ? "" : `    role: ${opts.role}\n`;
 	return [
 		"id: demo",
@@ -45,9 +59,9 @@ function kb(opts: { role?: string; rules: RuleSpec[] }): string {
 		boolFacts(),
 		"  m:\n    type: number\n    ask: m?\n",
 		"  n:\n    type: number\n    ask: n?\n",
-		`  out:\n    type: number\n    derived: true\n${role}`,
+		`  out:\n    type: ${outType}\n    derived: true\n${role}`,
 		"rules:",
-		rulesYaml(opts.rules),
+		rulesYaml(rules),
 		"clauses:",
 		'  "4.2":',
 		"    title: Room",

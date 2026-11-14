@@ -27,6 +27,7 @@ const ALL_CODES: readonly DiagnosticCode[] = [
 	"TYPE_MISMATCH",
 	"NOT_BOOLEAN",
 	"MONEY_NOT_ROUNDED",
+	"ROLE_TYPE_MISMATCH",
 	"NO_FALLBACK_RULE",
 	"DEAD_GUARD",
 ];
@@ -55,6 +56,7 @@ const FACT_SCOPED: ReadonlySet<string> = new Set([
 	"DUPLICATE_FACT",
 	"GOAL_UNSET",
 	"MISSING_ASK",
+	"ROLE_TYPE_MISMATCH",
 	"ENUM_VALUE_NOT_IN_OPTIONS",
 	"NO_FALLBACK_RULE",
 ]);

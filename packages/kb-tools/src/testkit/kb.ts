@@ -100,14 +100,24 @@ const factSpecArb = (name: string, derived: boolean): fc.Arbitrary<FactSpec> =>
 				nil: undefined,
 			}),
 		)
-		.map(([type, options, why, label, role]) => ({
-			name,
-			type,
-			options,
-			why: derived ? undefined : why,
-			label: derived ? label : undefined,
-			role: derived ? role : undefined,
-		}));
+		.map(([drawnType, options, why, label, drawnRole]) => {
+			const role = derived ? drawnRole : undefined;
+			// A role fixes the type: a check is boolean and a deduction is money.
+			const type: FactType =
+				role === "check"
+					? "boolean"
+					: role === "deduction"
+						? "money"
+						: drawnType;
+			return {
+				name,
+				type,
+				options,
+				why: derived ? undefined : why,
+				label: derived ? label : undefined,
+				role,
+			};
+		});
 
 function defOf(spec: FactSpec, derived: boolean): FactDef {
 	const def: Record<string, unknown> = { type: spec.type };

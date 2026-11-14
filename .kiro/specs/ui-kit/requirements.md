@@ -307,7 +307,7 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 10. WHEN an item has a value of 0, THE Ledger SHALL omit its row.
 11. WHEN an item value is `undefined`, THE Ledger SHALL print "Not known yet" and keep the row openable.
 12. WHEN a label is long, THE Ledger SHALL wrap the label and keep the amount unwrapped, down to 320 px.
-13. FOR ALL Fixtures verdicts, claimed minus the sum of deductions SHALL equal payable.
+13. FOR ALL Fixtures verdicts other than fixtures marked as not engine-faithful, claimed minus the sum of deductions SHALL equal payable.
 
 ### Requirement 16: CheckRow
 
@@ -321,8 +321,9 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 4. THE CheckRow SHALL include the state word in the accessible name.
 5. THE CheckRow SHALL show `LineItem.label`, the rule id in the Machine voice and, WHERE `detail` is supplied, the evidence line in the Machine voice.
 6. WHEN the user activates the rule id, THE CheckRow SHALL call `onOpen(item, element)`.
-7. WHILE the value is unknown and `question` is supplied, THE CheckRow SHALL show `question.text` and an inline boolean AnswerControl.
-8. WHEN the user answers the inline question, THE CheckRow SHALL call `onAnswer(fact, value)`.
+7. WHILE the value is unknown, `question` is supplied and the asked fact `question.fact` is boolean per `def`, THE CheckRow SHALL show `question.text` and an inline boolean AnswerControl.
+8. WHEN the user answers the inline question, THE CheckRow SHALL call `onAnswer(question.fact, value)`, where `question.fact` is the input the engine asks for and not `item.fact`.
+9. WHILE the value is unknown and the asked fact is not boolean (a `question` with no `def` counts as not boolean), THE CheckRow SHALL show only the word "Needs your answer" and SHALL NOT show `question.text` or an inline AnswerControl.
 
 ### Requirement 17: WhatIfList
 
@@ -331,10 +332,13 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 #### Acceptance Criteria
 
 1. WHEN `alternatives` has entries, THE WhatIfList SHALL render one row per `Alternative` in the form "If <label> were <value>: <delta>".
-2. WHERE `amountGoal` is supplied, THE WhatIfList SHALL show the signed delta between `alt.verdict.goals[amountGoal]` and `current.goals[amountGoal]`.
-3. WHERE `amountGoal` is absent and `stateGoal` is supplied, THE WhatIfList SHALL name the new verdict state.
+2. WHERE `amountGoal` is supplied and both `alt.verdict.goals[amountGoal]` and `current.goals[amountGoal]` are known and differ, THE WhatIfList SHALL show the signed delta between them.
+3. WHERE `amountGoal` is absent and `stateGoal` is supplied, THE WhatIfList SHALL name the state change from the current state to the new state, and WHERE the state does not change THE WhatIfList SHALL say "the verdict changes".
 4. WHEN `alternatives` is empty, THE WhatIfList SHALL render nothing and no heading.
 5. THE WhatIfList SHALL render plain text with no actions.
+6. IF `amountGoal` is supplied and the delta is zero, THEN THE WhatIfList SHALL name the state change WHERE `stateGoal` is supplied and the state actually changes, and otherwise SHALL say "the verdict changes".
+7. IF `amountGoal` is supplied and either amount is unknown, THEN THE WhatIfList SHALL print "amount not known yet", followed by the state change WHERE there is one.
+8. THE WhatIfList SHALL pass each fact label through `lowerFirst`, which leaves acronym-led labels unchanged, and SHALL lowercase only boolean values mid-sentence ("yes" and "no"), printing money, number, date and enum values as formatted (an enum value such as "MIT" prints verbatim).
 
 ### Requirement 18: ProofTree
 
@@ -350,19 +354,22 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 6. WHEN a node value is `undefined`, THE ProofTree SHALL print "Not known yet".
 7. WHEN the user presses Down or Up, THE Proof_Tree_Reducer SHALL move the active node through the visible nodes, stopping at the first and last.
 8. WHEN the user presses Right on a closed parent, THE Proof_Tree_Reducer SHALL expand the parent, and on an open parent SHALL move to its first child.
-9. WHEN the user presses Left on an open parent, THE Proof_Tree_Reducer SHALL collapse the parent, and otherwise SHALL move to the parent.
+9. WHEN the user presses Left on an open parent, THE Proof_Tree_Reducer SHALL collapse the parent and its whole branch (the parent id and every descendant id), and otherwise SHALL move to the parent.
 10. WHEN the user presses Home or End, THE Proof_Tree_Reducer SHALL move to the first or last visible node.
-11. WHEN the user presses Enter on a parent, THE Proof_Tree_Reducer SHALL toggle its expansion.
+11. WHEN the user presses Enter on a parent, THE Proof_Tree_Reducer SHALL toggle its expansion, and WHEN the toggle closes the parent THE Proof_Tree_Reducer SHALL close its whole branch.
 12. WHEN the user presses Escape, THE ProofTree SHALL call `onEscape`.
 13. THE ProofTree SHALL identify nodes by index path, so a fact that appears under two rules gets two unique ids.
-14. THE ProofTree SHALL open the root and its direct children initially and close deeper nodes.
+14. WHERE `initialState` is absent, THE ProofTree SHALL open the root and its direct children initially and close deeper nodes.
 15. FOR ALL proof trees, states and keys, THE Proof_Tree_Reducer SHALL return an active id that is in the visible ids, and SHALL never place a leaf in the expanded set.
 16. FOR ALL inputs, THE Proof_Tree_Reducer SHALL leave the input state unchanged.
-17. THE ProofTree SHALL place the "Show the rule" Disclosure and the "Change this answer" Button inside the active treeitem and give them `tabindex="0"` only while that treeitem is active.
+17. THE ProofTree SHALL render the "Show the rule" Disclosure and the "Change this answer" Button only inside the active treeitem, so they are reachable by Tab only while that treeitem is active.
 18. WHERE `ruleExpression` is supplied, THE ProofTree SHALL show the expression behind a Disclosure titled "Show the rule".
 19. WHERE `onChangeAnswer` is supplied, THE ProofTree SHALL offer "Change this answer" on answered facts.
 20. WHEN a node's clause equals `decidingClause`, THE ProofTree SHALL show its ClauseQuote in the deciding variant under the rule sentence.
 21. THE ProofTree SHALL draw strokes in `--text-soft`.
+22. THE ProofTree SHALL show on every parent a Chevron (glyph swap between closed and open, with no rotation and no animation) inside a 44 px pointer toggle that is not a tab stop, SHALL show on every closed parent an `aria-hidden` count "N hidden" in the Machine voice where N is the number of direct children, and SHALL show neither on a leaf, and WHEN the pointer toggle is activated THE ProofTree SHALL make its node active and then apply the Enter transition.
+23. WHERE `initialState` is supplied, THE ProofTree SHALL read it on mount only, drop ids that name no node, drop expanded ids that name a leaf, open the ancestors of every open node and of the active node, use the supplied state with no default root-and-children expansion, and fall back to the root as the active node WHEN `active` is missing or names no node.
+24. THE ProofTree SHALL ignore arrow keys, Home, End and Enter whose target is inside an action, and WHEN Escape is pressed anywhere in the tree, including inside an action, THE ProofTree SHALL call `onEscape`.
 
 ### Requirement 19: Sheet and Film
 
@@ -377,6 +384,8 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 5. WHEN `presentation` is `sheet`, THE Film SHALL render a Radix Dialog anchored to the bottom, with focus trapped, Escape closing it, a maximum height of 85 vh, inner scrolling and a flat scrim with fixed opacity.
 6. THE Film SHALL keep the same inner content across both presentations so that a resize across 1280 px does not remount the ProofTree.
 7. THE Sheet and Film SHALL use zero shadows.
+8. WHERE `headingRef` is supplied, THE Film SHALL attach it to the Film heading so that a parent can focus the title.
+9. THE Film SHALL carry `print:hidden` on its panel and on its scrim.
 
 ### Requirement 20: XrayStage
 
@@ -386,16 +395,16 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 
 1. WHEN the viewport is 1280 px or wider and a target is open, THE XrayStage SHALL lay out the Sheet (up to 680 px) beside the Film with `presentation: "side"`.
 2. WHEN the viewport is below 1280 px and a target is open, THE XrayStage SHALL show the Sheet at full width and the Film with `presentation: "sheet"`.
-3. WHEN the stage opens for the first time and `prefers-reduced-motion` is not `reduce`, THE XrayStage SHALL cross the Sheet once with a 2 px `--film` scan line over 500 ms using `--ease`, left to right at 1280 px and above and top to bottom below it.
-4. WHEN the scan line crosses, THE XrayStage SHALL reveal the Film behind the line with an animated `clip-path` over the same 500 ms.
+3. WHEN the stage opens for the first time and `prefers-reduced-motion` is not `reduce`, THE XrayStage SHALL cross the Sheet once with a 2 px `--film` scan line over the duration of `--dur-xray` using `--ease`, both read from the tokens at run time, left to right at 1280 px and above and top to bottom below it.
+4. WHEN the scan line crosses, THE XrayStage SHALL reveal the proof content with an animated `clip-path` over the same duration, and the Film panel itself SHALL appear at once.
 5. WHILE `prefers-reduced-motion: reduce` applies, THE XrayStage SHALL render no scan line and SHALL fade the Film in over 120 ms.
 6. WHEN the target changes while the stage is open, THE XrayStage SHALL swap the Film content at once with no animation.
 7. WHEN the stage opens or the target changes, THE XrayStage SHALL move focus to the Film heading and announce the title through the Live_Region.
-8. WHEN the stage closes, THE XrayStage SHALL return focus to the opener element.
-9. IF the opener is no longer in the document when the stage closes, THEN THE XrayStage SHALL move focus to the Sheet heading.
+8. WHEN the stage closes, THE XrayStage SHALL return focus to the opener element, which is the `document.activeElement` that the stage recorded when `target` went from null to set, before Radix moved focus, and SHALL do so one task after the close, after the bottom sheet's focus trap releases.
+9. IF the opener is no longer in the document when the stage closes, or focus is on `<body>`, THEN THE XrayStage SHALL move focus to the Sheet heading.
 10. THE XrayStage SHALL import `motion` through `LazyMotion` with `domAnimation` and `m` components, and no other component SHALL import `motion`.
 11. THE XrayStage SHALL accept the targets `{ kind: "verdict" }` and `{ kind: "line", fact }`.
-12. WHEN `print` media applies, THE UI_Kit SHALL hide the Film.
+12. WHEN `print` media applies, THE XrayStage SHALL hide the Film through the Film's `print:hidden` panel and scrim.
 
 ### Requirement 21: AppShell
 
@@ -404,12 +413,15 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 #### Acceptance Criteria
 
 1. THE AppShell SHALL make the skip link "Skip to the content" the first focusable element.
-2. THE AppShell SHALL render a `<header>` with the "Dead Certain" wordmark and navigation, a `<main id="content" tabindex="-1">`, an optional `<aside>` for the rail and a `<footer>`.
+2. THE AppShell SHALL render a `<header>` with the "Dead Certain" wordmark and navigation, a `<main id="content" tabindex="-1">`, an optional rail slot and a `<footer>`, WHERE the rail slot is a plain wrapper and the `<aside aria-label="Your answers">` is the one that AnswersRail renders.
 3. WHEN the viewport is below 768 px, THE AppShell SHALL place navigation behind a button labelled "Menu".
 4. WHEN Escape is pressed or the user navigates, THE AppShell SHALL close the open menu.
 5. THE AppShell SHALL host the single polite Live_Region and expose the `useAnnounce()` hook.
 6. WHERE `footer` is not supplied, THE AppShell SHALL show "No guesses were made in the production of this verdict."
 7. THE AppShell SHALL mark the current navigation item with `aria-current`.
+8. WHEN the skip link is activated, THE AppShell SHALL move focus to `<main>` without changing the URL hash.
+9. WHILE the viewport is below 1024 px, THE AppShell SHALL stack the rail above the content.
+10. THE Gallery SHALL show the AppShell on its own page `apps/site/kit/shell.html` in three iframes, and THE Kit_Test_Suite SHALL run axe on that page on its own at every width.
 
 ### Requirement 22: Stale link notice
 
@@ -427,6 +439,8 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 8. WHEN the notice mounts, THE Stale_Link_Notice SHALL move focus to its heading and announce it through the Live_Region.
 9. THE Stale_Link_Notice SHALL render inside `<main>` as a state and SHALL not be a modal or `role="alert"`.
 10. THE Stale_Link_Notice SHALL show kit-owned copy and SHALL not show the engine's own message.
+11. THE Stale_Link_Notice SHALL render as a section with no accessible name (no `aria-label` and no `aria-labelledby`), so that it is not a page landmark.
+12. THE Stale_Link_Notice SHALL render its heading as a level 2 heading (`h2`).
 
 ### Requirement 23: Fixtures
 
@@ -438,7 +452,7 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 2. THE Fixtures SHALL extend the existing exports `CLAIMED_AMOUNT`, `questionFixture`, `claimVerdictFixture`, `proofFixture` and `preFlightVerdictFixture`, and SHALL not replace them.
 3. THE Fixtures SHALL provide `factDefFixtures`, `questionFixtures`, `clauseFixtures`, `answersFixture`, `skippedFixture`, the verdict edge fixtures, the Pre-Flight edge fixtures, the proof fixtures, the alternatives fixtures and `claimFormat`.
 4. THE Fixtures SHALL express every amount in integer minor units.
-5. THE Fixtures SHALL keep claimed minus deductions equal to payable in every verdict fixture.
+5. THE Fixtures SHALL keep claimed minus deductions equal to payable in every verdict fixture except fixtures marked as not engine-faithful, and each such fixture SHALL carry a comment that says why it is not engine-faithful.
 6. THE Fixtures SHALL provide a 30-line verdict fixture and a 200-node proof fixture.
 7. THE Fixtures SHALL mark the clause text in `clauseFixtures` as sample text in a comment.
 8. THE Kit_Test_Suite SHALL confirm that each proof node index path is unique and each referenced rule and clause appears in a fixture.
@@ -557,7 +571,7 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 
 1. WHERE the optional fallback font metric faces are built, THE UI_Kit SHALL define `Plex Sans Fallback`, `Plex Serif Fallback` and `Plex Mono Fallback` in `fonts.css` using `size-adjust`, `ascent-override`, `descent-override` and `line-gap-override`, and SHALL record the measured values in a code comment.
 2. WHERE the fallback font metric faces are not built, THE UI_Kit SHALL end the font stacks in plain system fonts.
-3. WHERE the optional print styles are built, THE UI_Kit SHALL provide `print.css` that gives a one-page verdict with its ledger and clauses and hides the Film.
+3. WHERE the optional print styles are built, THE UI_Kit SHALL provide `print.css` that gives a one-page verdict with its ledger and clauses.
 4. WHERE the optional ProofTree timing measurement is built, THE Kit_Test_Suite SHALL record a Playwright trace that shows an arrow-key press to paint in under 50 ms on the 200-node fixture.
 5. THE Gallery SHALL keep the 200-node ProofTree specimen whether or not the timing measurement is built.
 6. THE Claude_Code_Lane SHALL build the optional items last and in any order, and SHALL drop them first if time runs short.

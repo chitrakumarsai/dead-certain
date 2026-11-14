@@ -12,6 +12,11 @@ import type { ParsedClause, ParsedFact, ParsedKb, ParsedRule } from "./model";
 const FACT_TYPES = ["boolean", "number", "money", "date", "enum"] as const;
 const ROLES = ["deduction", "check"] as const;
 
+/** The fact type each role requires. */
+const ROLE_REQUIRED_TYPE: Readonly<
+	Record<(typeof ROLES)[number], (typeof FACT_TYPES)[number]>
+> = { check: "boolean", deduction: "money" };
+
 const TOP_FIELDS = [
 	"id",
 	"currency",
@@ -373,6 +378,27 @@ function checkFactFields(
 				{ id: name, field: "role", at },
 			),
 		);
+	}
+
+	const role = entity.role;
+	if (
+		typeof role === "string" &&
+		Object.hasOwn(ROLE_REQUIRED_TYPE, role) &&
+		typeof type === "string" &&
+		(FACT_TYPES as readonly string[]).includes(type)
+	) {
+		const required =
+			ROLE_REQUIRED_TYPE[role as keyof typeof ROLE_REQUIRED_TYPE];
+		if (type !== required) {
+			diags.push(
+				makeError(
+					"ROLE_TYPE_MISMATCH",
+					file,
+					`Fact '${name}' has role '${role}' but its type is '${type}'. A ${role} fact must have type ${required}. Change the type or remove the role.`,
+					{ id: name, field: "type", at },
+				),
+			);
+		}
 	}
 	return diags;
 }

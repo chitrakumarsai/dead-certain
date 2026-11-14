@@ -14,7 +14,7 @@ All work stays in the Kiro lane (`packages/engine`, plus `docs/kb-format.md` for
 - The engine has zero runtime dependencies. `packages/engine/package.json` keeps no `dependencies` entry. `fast-check` stays under `devDependencies` only.
 - Every property test file ends in `.props.test.ts`, and every fast-check property runs at least 100 times (`{ numRuns: 100 }` or more).
 - No non-test file under `packages/engine/src` may import a Node module (`node:*`, `fs`, `path`, `crypto`), use `process` or `Buffer`, read a clock, or import a path outside `packages/engine/src`. Only `consultation-step.perf.test.ts` reads the clock.
-- The only change allowed in `packages/engine/src/types.ts` is the optional `readonly label?: string` on `FactDef`. Any other change to it is written up as a proposal and not applied (Requirement 23, criterion 9).
+- The only change this spec allows in `packages/engine/src/types.ts` is the optional `readonly label?: string` on `FactDef`. The `Expr` union, `BinaryOp`, `BuiltinFn`, `Unknown` and `UNKNOWN` were added by the `rule-language` spec (Requirement 6) with Claude Code's consent ([PR #4, comment 6865345893](https://github.com/chitrakumarsai/dead-certain/pull/4#issuecomment-6865345893)) and are the baseline. Any other change to it is written up as a proposal and not applied (Requirement 23, criterion 9).
 - A task is done when `pnpm check` exits with 0 (Biome, `tsc --noEmit`, Vitest unit and property tests) and the task is ticked in this file.
 - Do not edit `requirements.md` or `design.md`.
 
@@ -234,7 +234,7 @@ All work stays in the Kiro lane (`packages/engine`, plus `docs/kb-format.md` for
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
   - [x] 11.2 Write `api-contract.test.ts`
-    - Assert the eight exports and the kept `lang` exports exist; the `satisfies EngineApi` type check compiles; `packages/engine/package.json` has no `dependencies` entry and `fast-check` is exactly `4.10.2` in `devDependencies`; a scan of `packages/engine/src` non-test files (excluding `testkit/`) finds no `node:` specifier, Node built-in import, `process`, `Buffer`, clock or random use, and no import resolving outside `packages/engine/src`; `types.ts` differs from the rule-language version only by the `label` property.
+    - Assert the eight exports and the kept `lang` exports exist; the `satisfies EngineApi` type check compiles; `packages/engine/package.json` has no `dependencies` entry and `fast-check` is exactly `4.10.2` in `devDependencies`; a scan of `packages/engine/src` non-test files (excluding `testkit/`) finds no `node:` specifier, Node built-in import, `process`, `Buffer`, clock or random use, and no import resolving outside `packages/engine/src`; `types.ts` differs from the version left by the rule-language spec (with its `Expr`, `BinaryOp`, `BuiltinFn`, `Unknown` and `UNKNOWN`) only by the `label` property.
     - Run with `pnpm vitest run packages/engine/src/api-contract.test.ts`.
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 23.1, 23.8, 23.10_
 
@@ -293,7 +293,7 @@ These items belong to the Claude Code lane. They are recorded here so nothing is
 5. **Pre-Flight relabelling.** The engine returns `source: "answered"` for every non-derived leaf. The Pre-Flight interface should relabel the facts its collector supplied as `"collected"` itself.
 6. **Interface use of `label`.** The Claim Check ledger can show `LineItem.label` directly; it falls back to a derived name when a knowledge base gives no `label`.
 7. **Replay links.** A replay link is tied to the exact rules version. When the rules change, `decode` throws `KB_MISMATCH` ("rules have changed"); the interface should show that message instead of a different verdict.
-8. **Types contract.** `packages/engine/src/types.ts` changes only by the approved optional `FactDef.label`. Any other change needs a written proposal and consent from both lanes.
+8. **Types contract.** `packages/engine/src/types.ts` changes only by the approved optional `FactDef.label`, on top of the `rule-language` additions approved in [PR #4, comment 6865345893](https://github.com/chitrakumarsai/dead-certain/pull/4#issuecomment-6865345893). Any other change needs a written proposal and consent from both lanes.
 
 ## Task Dependency Graph
 
