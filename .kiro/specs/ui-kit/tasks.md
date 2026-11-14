@@ -34,8 +34,8 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
 
 ## Tasks
 
-- [ ] 1. Dependencies and site wiring
-  - [ ] 1.1 Pick and pin the approved dependencies
+- [x] 1. Dependencies and site wiring
+  - [x] 1.1 Pick and pin the approved dependencies
     - Use `context7` to choose the current stable exact version of each package: `react`, `react-dom`, `@types/react`, `@types/react-dom`, `tailwindcss` (v4, CSS-first `@theme`), `@tailwindcss/vite`, `@vitejs/plugin-react`, `@radix-ui/react-radio-group`, `@radix-ui/react-collapsible`, `@radix-ui/react-dialog`, `motion`, `@fontsource/ibm-plex-serif`, `@fontsource/ibm-plex-sans`, `@fontsource/ibm-plex-mono` and `@axe-core/playwright`. `fast-check` is `4.10.2`. `axe-core` is already in the stack.
     - Add them to the right `package.json` (`packages/ui`, `apps/site`, root or `e2e` for the axe adapter) with exact versions and no range specifiers. Keep `@dead-certain/engine` as `workspace:*` in `packages/ui`.
     - Record each chosen version, and the `context7` source, in the pull request description. Report the `pnpm-lock.yaml` change.
@@ -339,7 +339,7 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5, 17.6, 17.7, 17.8_
     - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5_
 
-- [ ] 8. Proof and application frame
+- [x] 8. Proof and application frame
   - [x] 8.1 Build `ProofTree` rendering
     - Render `role="tree"` named "Proof", each node `role="treeitem"` with `aria-level`, `aria-setsize` and `aria-posinset`, parents with a true `aria-expanded`, children in `role="group"`, and a roving `tabindex` with exactly one `0`. Joints (derived with a rule) show the rule id in the Machine voice and the `because` sentence as received; bone ends (answered or collected leaves) show label, value and `SourceBadge`. `undefined` prints "Not known yet". Strokes use `--text-soft`. Initial state comes from `initialTreeState`, or, when the `initialState` prop is supplied, from `normalizeTreeState` (read on mount only; the caller remounts with `key={target}`). Memoise rows by index-path id.
     - When `decidingClause` names a clause that `clauseFor` returns and at least one node cites, show one deciding `ClauseQuote` after the tree, in a wrapper beside the `role="tree"` element and never inside a treeitem. It shows once however many nodes cite the clause, and stays visible when their branches are closed.
@@ -373,7 +373,7 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - Add the `expectTypeOf` line for `XrayStageProps`.
     - Close with Task_Evidence.
 
-  - [ ] 8.4 Build `AppShell`
+  - [x] 8.4 Build `AppShell`
     - Skip link "Skip to the content" as the first focusable element; it moves focus to `<main>` without changing the URL hash. `<header>` with the "Dead Certain" wordmark and navigation (`aria-current` on the current item); `<main id="content" tabindex="-1">`; an optional rail slot that is a plain wrapper, because `AnswersRail` brings its own `<aside aria-label="Your answers">`; `<footer>` that defaults to "No guesses were made in the production of this verdict." Below 768 px navigation sits behind a "Menu" button (Radix Collapsible) that closes on Escape and on navigation. Below 1024 px the rail stacks above the content. Host the single `LiveRegion` and `useAnnounce()`. Add the shared `useMediaQuery` hook in `packages/ui/src/useMediaQuery.ts`.
     - Gallery specimens: add `apps/site/kit/shell.html` (a second Vite entry) that shows the shell on its own page; the gallery embeds it in three iframes: desktop with rail, phone with menu closed, phone with menu open.
     - Playwright: the skip link is the first Tab stop, moves focus to `main` and leaves the URL hash unchanged; Escape closes the menu; the footer text; one live region on the page; the rail stacks above the content below 1024 px; axe runs on `kit/shell.html` on its own at every width.
@@ -428,7 +428,7 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - **Validates: Requirements 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 2.11, 2.13, 28.11, 28.12, 29.9**
     - Close with Task_Evidence, and include the measured gzipped size in the pull request.
 
-- [ ] 10. Checkpoint - Ensure all tests pass
+- [x] 10. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
   - Confirm every task above is ticked, the pull request lists the pinned versions from task 1.1, and `packages/engine/src/types.ts` is unchanged by the ui-kit lane.
 
