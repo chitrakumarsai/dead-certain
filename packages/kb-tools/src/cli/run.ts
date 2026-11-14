@@ -4,6 +4,7 @@ import { readKbFile, validateText } from "../index";
 import { parseArgs, USAGE } from "./args";
 import { discover } from "./discover";
 import { formatDiagnostic, formatSummary } from "./format";
+import { runGoldenCommand } from "./golden";
 import { type Host, HostError } from "./host";
 
 export interface CliResult {
@@ -34,6 +35,8 @@ export function runCli(argv: readonly string[], host: Host): CliResult {
 		return { exitCode: 0, stdout: USAGE, stderr: "" };
 	}
 	if (args.kind === "usage") return usageError(args.message);
+
+	if (args.command === "golden") return runGoldenCommand(args.paths, host);
 
 	const found = discover(args.paths, host);
 	if (!found.ok) {

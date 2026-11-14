@@ -69,7 +69,7 @@ function ioMessage(path: string, error: unknown): string {
 }
 
 /** `apps/<app>/kb/*.yaml` of one app, as root-relative paths. Missing directories give none. */
-function kbFilesOfApp(root: string, app: string, host: Host): string[] {
+export function kbFilesOfApp(root: string, app: string, host: Host): string[] {
 	const kbDir = `${root}/apps/${app}/kb`;
 	if (host.stat(kbDir) !== "dir") return [];
 	return host
@@ -130,4 +130,95 @@ export function discover(paths: readonly string[], host: Host): Discovery {
 		return { ok: false, kind: "io", message: ioMessage(root, error) };
 	}
 	return { ok: true, root, files: [...found].sort(compareUnits) };
+}
+
+const GOLDEN_FILE = /^apps\/[^/]+\/golden\/[^/]+\.yaml$/;
+
+export type GoldenDiscovery =
+	| {
+			readonly ok: true;
+			/** Absolute POSIX path of the repository root. */
+			readonly root: string;
+			/** Root-relative POSIX paths of the Golden_Files, deduplicated and sorted. */
+			readonly files: readonly string[];
+			/**
+			 * The apps for which the run holds every Golden_File: all apps when no
+			 * path was given, otherwise the `apps/<app>` directories that were passed.
+			 */
+			readonly wholeApps: readonly string[];
+	  }
+	| {
+			readonly ok: false;
+			readonly kind: "usage" | "io";
+			readonly message: string;
+	  };
+
+/** `apps/<app>/golden/*.yaml` of one app, as root-relative paths. Missing directories give none. */
+export function goldenFilesOfApp(
+	root: string,
+	app: string,
+	host: Host,
+): string[] {
+	const dir = `${root}/apps/${app}/golden`;
+	if (host.stat(dir) !== "dir") return [];
+	return host
+		.readDir(dir)
+		.filter((e) => e.kind === "file" && e.name.endsWith(".yaml"))
+		.map((e) => `apps/${app}/golden/${e.name}`);
+}
+
+/** Find the Golden_Files a `dc golden` run covers (Requirements 1.1, 8.1, 8.2, 8.5). */
+export function discoverGolden(
+	paths: readonly string[],
+	host: Host,
+): GoldenDiscovery {
+	const root = findRoot(host);
+	if (root === undefined) {
+		return {
+			ok: false,
+			kind: "usage",
+			message:
+				"dc: no repository root found (no pnpm-workspace.yaml in this or any parent directory).",
+		};
+	}
+	const found = new Set<string>();
+	const wholeApps = new Set<string>();
+	try {
+		if (paths.length === 0) {
+			for (const app of allApps(root, host)) {
+				wholeApps.add(app);
+				for (const file of goldenFilesOfApp(root, app, host)) found.add(file);
+			}
+		} else {
+			for (const arg of paths) {
+				const parts = segmentsOf(root, arg);
+				const rel = parts?.join("/") ?? "";
+				let matched: string[] = [];
+				if (parts !== undefined) {
+					if (parts.length === 2 && parts[0] === "apps") {
+						matched = goldenFilesOfApp(root, parts[1] as string, host);
+						if (matched.length > 0) wholeApps.add(parts[1] as string);
+					} else if (GOLDEN_FILE.test(rel)) {
+						matched = host.stat(`${root}/${rel}`) === "file" ? [rel] : [];
+					}
+				}
+				if (matched.length === 0) {
+					return {
+						ok: false,
+						kind: "usage",
+						message: `dc: '${arg}' matches no golden file (expected apps/<app>/golden/<name>.yaml or apps/<app>).`,
+					};
+				}
+				for (const file of matched) found.add(file);
+			}
+		}
+	} catch (error) {
+		return { ok: false, kind: "io", message: ioMessage(root, error) };
+	}
+	return {
+		ok: true,
+		root,
+		files: [...found].sort(compareUnits),
+		wholeApps: [...wholeApps].sort(compareUnits),
+	};
 }

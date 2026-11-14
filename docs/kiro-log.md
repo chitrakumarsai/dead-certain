@@ -230,3 +230,16 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - Two edits need the human's confirmation when their tasks run: the "Golden scenarios" section of the shared `docs/kb-format.md` (9.1), and the prompt in `.kiro/agents/knowledge-engineer.json` (9.3), which a permission rule may block as it did `mcp.json`.
 - Handoff notes for Claude Code: Playwright reads the exported loader and runner; add `dc golden` to CI after the first golden files exist; no root script change is expected.
 - Stopped before running any task, as the human asked.
+
+### `kb-golden`: tasks 1.1 to 8.2 run (2026-11-15)
+
+- The human approved the tasks and asked for all of them to be run one at a time, stopping for two confirmations: the `docs/kb-format.md` edit (9.1) and the agent prompt (9.3). Kiro ran 1.1 to 8.2, which is every task up to the first confirmation, and stopped before 9.1.
+- Built in `packages/kb-tools/src`: `golden/` (types, value checks, the strict Zod schema and loader, the checker with `duplicateIds`, `runScenario` and `runGolden`, `coverage`, the public index), `cli/golden.ts` (the `dc golden` command), the `golden` command in `args.ts`, `discover.ts`, `run.ts` and `format.ts`, and test support in `testkit/` (a fixture knowledge base with 11 rules, twelve recorded scenarios that cover all of them, `recordScenario`, `goldenSetArb`, `goldenYaml`). `pnpm check` passes 1,363 tests in 127 files. `pnpm dc golden` works through the unchanged root script, and `--json` exits 2.
+- All ten properties have tests. The value-agreement property (Property 9) caught a real mismatch on its first run: the engine accepts years 0001 to 9999, and the first draft of `isCalendarDate` accepted `0000-01-01`. It is fixed, with a unit case for it.
+- Departures from the written plan, none changing behaviour the human approved:
+  - Tasks 5.5 and 5.6 ran in the order 5.6, 5.5, because Property 3 runs `runGolden` (noted in `tasks.md`).
+  - A `null` in `facts` is let through by the loader so that `checkGolden` can report it as `BAD_VALUE` (Requirement 3.5); `Scenario.facts` is therefore typed `Record<string, GoldenValue>`, where the design's snippet says "no null values". The engine rejects a `null` answer as `INVALID_ANSWER` if an unchecked scenario reaches `runScenario`. `design.md` is untouched, so its snippet is now slightly behind; the human can have it amended.
+  - `loadText` and `loadTextLocated` take an optional third argument, the subject of the empty-file message, defaulting to the knowledge-base wording, so a golden file reads "A golden file is a YAML mapping". Every existing test passes unchanged.
+  - A line-item key that has no `role` is reported as `UNKNOWN_FACT` with its own message, since the design's table lists no code for it.
+  - An explicit golden file path that does not exist is a usage error (exit 2), as Requirement 8.5 says, where `dc validate` reports a missing explicit file as `READ_ERROR`.
+- Stopped for confirmation of task 9.1: the new "Golden scenarios" section of the shared `docs/kb-format.md`.

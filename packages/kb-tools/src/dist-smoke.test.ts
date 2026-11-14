@@ -132,6 +132,74 @@ describe("dist smoke test", () => {
 		expect(verdict.needed).toEqual([]);
 	}, 60_000);
 
+	it("runs golden scenarios like runCli on the source: a passing and a failing file", () => {
+		const passing = [
+			"kb: toy-money",
+			"scenarios:",
+			"  - id: G-1",
+			"    title: One percent of the sum insured",
+			"    mode: audit",
+			"    facts: { sum_insured: 100000 }",
+			"    expect:",
+			"      goals: { payable: 1000 }",
+			"      fires: [R-1]",
+			"",
+		].join("\n");
+		const failing = passing.replace("payable: 1000", "payable: 999");
+		const base = { "apps/demo/kb/toy.yaml": toyYaml };
+		const path = "apps/demo/golden/main.yaml";
+
+		const okFiles = { ...base, [path]: passing };
+		const okBundled = runBundle(bundlePath, makeTree(okFiles), [
+			"golden",
+			path,
+		]);
+		const okSource = runSource(makeTree(okFiles), ["golden", path]);
+		expect(okBundled.exitCode).toBe(0);
+		expect(okBundled.stdout).toBe(
+			"1 files, 1 scenarios run, 1 passed, 0 of 0 rules covered, 0 errors, 0 warnings\n",
+		);
+		expect(okBundled).toEqual(okSource);
+
+		// A whole-app run adds the coverage and the too-few warning: one rule, covered.
+		const whole = runBundle(bundlePath, makeTree(okFiles), ["golden"]);
+		expect(whole.exitCode).toBe(0);
+		expect(whole.stdout).toContain("TOO_FEW_SCENARIOS");
+		expect(whole.stdout).toContain("1 of 1 rules covered");
+
+		const badFiles = { ...base, [path]: failing };
+		const badBundled = runBundle(bundlePath, makeTree(badFiles), [
+			"golden",
+			path,
+		]);
+		const badSource = runSource(makeTree(badFiles), ["golden", path]);
+		expect(badBundled.exitCode).toBe(1);
+		expect(badBundled.stdout).toContain(
+			`${path}: error SCENARIO_FAILED [G-1] Scenario 'G-1' (One percent of the sum insured) failed: goals.payable expected 999, observed 1000`,
+		);
+		expect(badBundled).toEqual(badSource);
+	}, 60_000);
+
+	it("keeps dc validate and dc build blind to golden files", () => {
+		const files = {
+			"apps/demo/kb/toy.yaml": toyYaml,
+			"apps/demo/golden/main.yaml": "this: is not: a knowledge base\n",
+		};
+		const root = makeTree(files);
+		const validate = runBundle(bundlePath, root, ["validate"]);
+		const build = runBundle(bundlePath, root, ["build"]);
+
+		expect(validate.exitCode).toBe(0);
+		expect(validate.stdout).toBe("1 files checked, 0 errors, 0 warnings\n");
+		expect(build.exitCode).toBe(0);
+		expect(fs.existsSync(join(root, "apps", "demo", "golden", "dist"))).toBe(
+			false,
+		);
+		expect(
+			fs.existsSync(join(root, "apps", "demo", "kb", "dist", "toy.json")),
+		).toBe(true);
+	}, 60_000);
+
 	it("shim without dist/dc.mjs prints the build instruction and exits 2", () => {
 		const shimDir = makeTemp("shim");
 		fs.mkdirSync(join(shimDir, "bin"));
