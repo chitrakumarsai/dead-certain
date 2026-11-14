@@ -75,7 +75,7 @@ graph TD
 3. **Tokens are the only source of color, size and spacing.** Tailwind's default palette and off-scale spacing are removed from the theme, so a hardcoded value cannot compile into a class.
 4. **Surfaces set context, components inherit it.** `Sheet` sets `data-surface="paper"` and `Film` sets `data-surface="film"`. CSS custom properties (`--text`, `--text-soft`, `--focus`, `--rule`) change with the surface. A component never asks "am I on film?" in JavaScript.
 5. **State is never color alone.** Every verdict, check and source state has a word and a distinct icon shape.
-6. **Motion is rationed.** `motion` is imported by `XrayStage` only. Every other transition is CSS and uses the motion tokens.
+6. **Motion is rationed.** `motion` is imported by `components/xrayDevelop.tsx` only, which `XrayStage` loads on demand. Every other transition is CSS and uses the motion tokens.
 
 ### Package layout
 
@@ -675,7 +675,7 @@ Behaviour:
 | 1280 and up | Grid of `Sheet` (up to 680 px) and `Film` (rest). The rail collapses into the "Your answers" disclosure. | `presentation: "side"` |
 | below 1280 | Sheet only, full width | `presentation: "sheet"` (modal bottom sheet) |
 
-- **Develop.** On the first open, a 2 px `--film` scan line crosses the sheet once in `--dur-xray` (500 ms) with `--ease`, both read from the tokens at run time and not hardcoded. Left to right at 1280 and up, top to bottom below it. The `clip-path: inset(...)` reveal applies to the proof content and animates over the same duration. The film panel itself appears at once, because the bottom sheet is a Radix Dialog in a portal. The scan line's moving layer ends a full sheet past the sheet's edge, so it sits in a wrapper with `overflow: hidden` that is clipped to the sheet; without the clip it widened the page (1,384 px at 1280). A Playwright test asserts no horizontal scroll after the develop. Motion's `LazyMotion` with `domAnimation` and `m` components drives it. `strict` mode catches accidental full-bundle imports.
+- **Develop.** On the first open, a 2 px `--film` scan line crosses the sheet once in `--dur-xray` (500 ms) with `--ease`, both read from the tokens at run time and not hardcoded. Left to right at 1280 and up, top to bottom below it. The `clip-path: inset(...)` reveal applies to the proof content and animates over the same duration. The film panel itself appears at once, because the bottom sheet is a Radix Dialog in a portal. The scan line's moving layer ends a full sheet past the sheet's edge, so it sits in a wrapper with `overflow: hidden` that is clipped to the sheet; without the clip it widened the page (1,384 px at 1280). A Playwright test asserts no horizontal scroll after the develop. Motion's `LazyMotion` with `domAnimation` and `m` components drives it, from `components/xrayDevelop.tsx` (`ScanLine` and `ClipReveal`). `XrayStage` imports that module dynamically when it mounts and keeps it in state. Whether a reveal animates is fixed when the reveal mounts, so the proof never remounts (a `React.lazy` wrapper did remount it and the resize test caught it). If the film opens before the module has loaded, or under reduced motion, the proof shows with the 120 ms CSS fade and no scan line. `strict` mode catches accidental full-bundle imports.
 - **Reduced motion.** No scan line, no slide. The film fades in over `--dur-reduced` (120 ms).
 - **Switching target while open** (a different ledger row) swaps the film content at once. No animation, because the develop is the only choreographed motion. Focus moves to the film heading and the live region announces the new title.
 - **Focus.** When `target` goes from null to set, `XrayStage` records `document.activeElement` as the opener, before Radix moves focus. It takes no opener from `onOpen`. When it opens, focus goes to the film heading. When it closes (Escape in the tree, the Close button, or the Dialog's own Escape), focus returns to the opener one task later, after the bottom sheet's focus trap releases. An opener that unmounted while the stage was open (focus is on `<body>`) counts as gone, and focus then goes to the sheet heading.
@@ -1224,14 +1224,14 @@ Every task ends with: the three screenshots for what it built, the console read 
 
 ### Budgets
 
-- The kit's own JavaScript is **50 kB gzipped or less**, excluding React and React DOM, so each app keeps room. Measured by a script that gzips the built chunks. This is the only size gate in this spec.
+- The kit's own JavaScript is **50 kB gzipped or less**, excluding React and React DOM and the X-ray develop chunk, so each app keeps room. Measured by `packages/ui/src/bundle.test.ts`, which builds the kit as a minified library and gzips its chunks. This is the only size gate in this spec. Measured on 2026-11-14: main bundle 40.6 kB, X-ray develop chunk 37.5 kB (almost all of it Motion). The chunk loads when `XrayStage` mounts, so an app that shows the stage downloads both, about 78 kB, but not on the critical path. The test fails if Motion appears in any other chunk. The chunk has no cap of its own.
 - The section 10 performance budgets (load, CLS and the rest) are measured on the apps in Phase 3, not on the gallery, which is not a user-facing page.
 - **Optional, built last:** a timing measurement of `ProofTree` with 200 nodes (arrow key to paint under 50 ms in a Playwright trace). The 200-node specimen itself stays in the gallery and is not optional.
 
 ## Performance Considerations
 
 - No runtime CSS-in-JS. Styling is Tailwind utilities over CSS variables, so there is no style injection at run time.
-- `motion` loads through `LazyMotion` with `domAnimation` and `m` components, and only inside `XrayStage`.
+- `motion` loads through `LazyMotion` with `domAnimation` and `m` components, and only inside `components/xrayDevelop.tsx`, which `XrayStage` imports on demand.
 - Radix imports are per package (`react-radio-group`, `react-collapsible`, `react-dialog`) to stay inside the bundle budget.
 - Only Latin font subsets and six font files load. Critical files are preloaded by the host page.
 - `ProofTree` memoises per-node rows by index-path id so a key press re-renders the two nodes whose state changed.

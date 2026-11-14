@@ -30,7 +30,7 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 - **Replay_Failure**: One of `KB_MISMATCH`, `MALFORMED_TOKEN` or `UNSUPPORTED_VERSION`, each a member of the engine's `ErrorCode`.
 - **Kit_Test_Suite**: The Vitest unit and property tests in `packages/ui` and the Playwright tests in `e2e/kit.spec.ts`.
 - **Task_Evidence**: The per-task bundle of screenshots at 390, 768 and 1280 px, a clean browser console read, a zero-violation axe result and `pnpm check` output.
-- **Kit_Bundle**: The built JavaScript of the UI_Kit, excluding React and React DOM.
+- **Kit_Bundle**: The built JavaScript of the UI_Kit, excluding React and React DOM and excluding the X-ray develop chunk, which loads on demand. The chunk's size is reported beside the Kit_Bundle and is not part of it.
 - **Claude_Code_Lane**: The implementing lane for `packages/ui`, `apps/site` and `e2e`.
 - **Kiro_Lane**: The lane that owns `.kiro/**` and `packages/engine`.
 
@@ -402,9 +402,10 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 7. WHEN the stage opens or the target changes, THE XrayStage SHALL move focus to the Film heading and announce the title through the Live_Region.
 8. WHEN the stage closes, THE XrayStage SHALL return focus to the opener element, which is the `document.activeElement` that the stage recorded when `target` went from null to set, before Radix moved focus, and SHALL do so one task after the close, after the bottom sheet's focus trap releases.
 9. IF the opener is no longer in the document when the stage closes, or focus is on `<body>`, THEN THE XrayStage SHALL move focus to the Sheet heading.
-10. THE XrayStage SHALL import `motion` through `LazyMotion` with `domAnimation` and `m` components, and no other component SHALL import `motion`.
+10. THE X-ray develop module `components/xrayDevelop.tsx` SHALL import `motion` through `LazyMotion` with `domAnimation` and `m` components, XrayStage SHALL load that module on demand with a dynamic import and SHALL NOT import `motion` itself, and no other file SHALL import `motion`.
 11. THE XrayStage SHALL accept the targets `{ kind: "verdict" }` and `{ kind: "line", fact }`.
 12. WHEN `print` media applies, THE XrayStage SHALL hide the Film through the Film's `print:hidden` panel and scrim.
+13. THE XrayStage SHALL start loading the X-ray develop module when it mounts, and WHEN the Film opens before the module has loaded, or the user prefers reduced motion, THE XrayStage SHALL show the proof with the 120 ms fade and no scan line, and whether a reveal animates SHALL be fixed when the reveal mounts, so the proof never remounts.
 
 ### Requirement 21: AppShell
 
@@ -549,7 +550,7 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 6. THE UI_Kit SHALL add no icon package, no jsdom, no Testing Library and no Lighthouse dependency.
 7. IF a task needs a dependency outside the approved list, THEN THE Claude_Code_Lane SHALL ask the human before adding it.
 8. THE UI_Kit SHALL use no runtime CSS-in-JS.
-9. THE Kit_Bundle SHALL load `motion` only inside XrayStage.
+9. THE UI_Kit SHALL load `motion` only inside the X-ray develop chunk.
 
 ### Requirement 30: Lane boundaries and delivery order
 
