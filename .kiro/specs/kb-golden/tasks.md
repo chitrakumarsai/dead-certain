@@ -27,7 +27,7 @@ This plan writes no golden scenarios for the real apps. Those come in Phase 2, a
 
 ## Tasks
 
-- [ ] 1. Groundwork
+- [x] 1. Groundwork
   - [x] 1.1 Create the golden types and export `shown`
     - Create `src/golden/model.ts` with the types from the design's "Public API": `GoldenCode`, `GoldenDiagnostic`, `GoldenValue`, `Expectation`, `Scenario`, `GoldenSet`, `Difference`, `ScenarioResult`, `GoldenRun`, `LoadGoldenResult`. Types only, plus the constants `MINIMUM_SCENARIOS` (12) and `GOLDEN_ERROR_CODES` and `GOLDEN_WARNING_CODES` (the lists the design gives; `TOO_FEW_SCENARIOS` is the only warning), and `goldenSeverity(code)`.
     - Add a `makeGolden(code, file, message, parts?)` helper that sets `severity` from the code.
@@ -41,7 +41,7 @@ This plan writes no golden scenarios for the real apps. Those come in Phase 2, a
     - If the first test fails because `loadText` reads a nested `facts` as the top-level `facts` context, make the context depend on depth (or a parameter with the existing default) in `src/load/yaml-load.ts`, keep every existing test passing, and say what changed in the task's pull-request note. If it passes, change no source.
     - _Requirements: 2.5_
 
-- [ ] 2. Value checks
+- [x] 2. Value checks
   - [x] 2.1 Implement `golden/values.ts`
     - `isCalendarDate(text)`: matches `^\d{4}-\d{2}-\d{2}$`, month 1 to 12, day 1 to the month's length, with the Gregorian leap rule. No `Date`.
     - `checkValue(def, value)`: returns `undefined` when the value fits the fact's type, else the type phrase for the message: `a boolean`, `a number` (finite), `a whole number of minor units` (money: `Number.isSafeInteger`), `a date written YYYY-MM-DD` (`isCalendarDate`), or `one of a, b, c` (enum, the fact's `options`). `-0` fits `number` and `money`.
@@ -55,7 +55,7 @@ This plan writes no golden scenarios for the real apps. Those come in Phase 2, a
     - *For all* strings, `isCalendarDate` accepted implies the engine's `answer` on a `date` fact does not throw `INVALID_ANSWER`, and every ISO date the engine accepts is accepted. *For all* values and fact types, `checkValue` accepts only values that the engine's `answer` accepts for that type. Use a small knowledge base with one fact of each type, built with `compileText`.
     - **Validates: Requirements 3.3, 3.4**
 
-- [ ] 3. Loader
+- [x] 3. Loader
   - [x] 3.1 Implement `golden/schema.ts` and `golden/load.ts`
     - `schema.ts`: the strict Zod schema from the design's grammar: top level `kb` and `scenarios` (non-empty), each scenario `id` (pattern `[A-Za-z0-9][A-Za-z0-9_-]*`), `title` (non-empty), optional `mode` (`consult` or `audit`, default `consult`), `facts` (a mapping), `expect` (a union of `{ ask }` alone and `{ goals, line_items?, needed?, fires? }`). Use `z.strictObject` at every level. A `superRefine` on the scenario reports `needed` in a `consult` scenario, `ask` in an `audit` scenario, and `ask` beside any other `expect` field, each naming the field and the mode. A `facts` value that is `null` is left to the checker; here a `facts` value must be a boolean, a finite number or a string, and `expect.goals` and `expect.line_items` values must be those or `null`.
     - Translate Zod issues into `SCHEMA_INVALID` diagnostics with fixed English text and never use Zod's own message text (the approach of `src/schema.ts`): `Field 'x' of scenario 'G-01' must be a string.`, `Unknown field 'x' in scenario 'G-01'. Allowed fields: id, title, mode, facts, expect.`, `Scenario 'G-01' is missing the required field 'title'.`, and the mode and `ask` messages. Set `id` to the scenario id where it is known, and `field` to the first path step.
@@ -70,14 +70,14 @@ This plan writes no golden scenarios for the real apps. Those come in Phase 2, a
     - Also assert here that a seed replay of the BigInt counterexample `{ kb: "x", scenarios: [{ id: "a", title: "t", facts: { f: 0n }, expect: { goals: {} } }] }` returns diagnostics.
     - **Validates: Requirements 10.1, 10.2**
 
-- [ ] 4. Checker
+- [x] 4. Checker
   - [x] 4.1 Implement `golden/check.ts`
     - `checkGolden(set, kb, file)` returns `{ runnable, diagnostics }` and applies, per scenario in order, the fit checks of the design's table: `UNKNOWN_FACT` and `NOT_ASKABLE` for `facts`; `BAD_VALUE` through `checkValue` (and for a `null` in `facts`); `UNKNOWN_FACT` and `BAD_VALUE` for `expect.goals` and `expect.lineItems` (a line-item key must be a fact with a `role`); `SCHEMA_INVALID` on `expect.goals` naming the missing and the extra goals; `UNKNOWN_FACT` or `NOT_ASKABLE` for `ask` and for each name in `needed`; `UNKNOWN_RULE` for each id in `fires`. A scenario with any error is left out of `runnable`; the others are untouched. Give each diagnostic the scenario `id` and the `field` (`facts`, `expect.goals`, `expect.line_items`, `expect.ask`, `expect.needed`, `expect.fires`).
     - `duplicateIds(files)`: takes `{ file, set }[]` for one app in file path order and returns one `DUPLICATE_SCENARIO` diagnostic per later scenario, with the message `Scenario id 'G-01' is already used by scenario 3 of apps/x/golden/a.yaml.`; and the list of `(file, id)` pairs to drop from `runnable`.
     - Write `src/golden/check.test.ts` with one case per table row and exact messages, a scenario with two errors giving two diagnostics, the other scenario still runnable, and the `duplicateIds` cases (same file, two files, three uses).
     - _Requirements: 2.7, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 4.1, 4.2, 4.3, 4.6_
 
-- [ ] 5. Runner
+- [x] 5. Runner
   - [x] 5.1 Implement `runScenario` and `firedRules`
     - `golden/run.ts`: `runScenario(kb, scenario)` exactly as the design's pseudocode: fold `answer` over `facts` in both modes; `next` for consult and `audit` for audit; compare the outcome; the `outcome`, `ask`, `goals.<name>`, `line_items.<name>`, `needed` and `fires` differences with `describeValue` text; `firedRules(kb, session, facts)` walking `explain` trees; an `EngineError` becomes `status: "error"` with `engineError`. Compare `undefined` as `null`.
     - Write `src/golden/run.test.ts` with a small knowledge base compiled by `compileText` (a money fact with a rounded rule, a guarded rule and a fallback rule, a boolean check, an enum, and two goals): a passing consult scenario; a passing audit scenario with `needed`; a consult scenario that stops at a question (`ask`); a verdict where a question was expected and the reverse (`outcome`); a wrong goal; a missing and an extra line item; a wrong `needed` order; a `fires` id that did not fire; a scenario whose `answer` throws `INVALID_ANSWER` (status `error`, code and message kept); `-0` against `0`; a goal expected `null` that is unknown.
@@ -114,7 +114,7 @@ This plan writes no golden scenarios for the real apps. Those come in Phase 2, a
     - Write `src/golden/run-golden.test.ts`: the exact failure line from the design; two failures in one scenario; an error scenario and a passing one in one run; the order of differences.
     - _Requirements: 5.4, 5.5, 5.6, 9.5_
 
-- [ ] 6. Coverage
+- [x] 6. Coverage
   - [x] 6.1 Implement `golden/coverage.ts`
     - `coverage(kb, kbFile, results, scenarioCount)` as in the design: `covered` is the union of `fired` over passed results; `RULE_NOT_COVERED` for each uncovered rule in the knowledge base's rule order, with `file` the KB_File path and `id` the rule id; `TOO_FEW_SCENARIOS` (warning) when `scenarioCount` is below `MINIMUM_SCENARIOS`.
     - Write `src/golden/coverage.test.ts`: none, some and all rules covered; a failed scenario covers nothing; an `ask` scenario covers nothing; 11 scenarios give the warning with the exact message and 12 do not; the warning is not an error.
@@ -126,7 +126,7 @@ This plan writes no golden scenarios for the real apps. Those come in Phase 2, a
     - *For all* generated golden sets, a rule id is in the `RULE_NOT_COVERED` diagnostics if and only if it is in no passed scenario's `fired`; the diagnostics follow the order of `kb.rules`; and replacing a passed scenario by a failed copy never adds a covered rule.
     - **Validates: Requirements 7.1, 7.2, 11.5**
 
-- [ ] 7. The `dc golden` command
+- [x] 7. The `dc golden` command
   - [x] 7.1 Add the `golden` command to `args.ts` and `discover.ts`
     - `args.ts`: `Command` gains `"golden"`; `parseArgs` accepts it with the rules of `validate` (so `--json` and any `-x` argument are usage errors); `USAGE` gains `  dc golden [path...]     run golden scenarios against the compiled knowledge bases`, and its path lines gain `apps/<app>/golden/<name>.yaml`.
     - `discover.ts`: add `GOLDEN_FILE = /^apps\/[^/]+\/golden\/[^/]+\.yaml$/` and `discoverGolden(paths, host)` returning `{ ok: true, root, files, wholeApps }`, where `wholeApps` lists the apps for which the run holds every Golden_File (a run with no path, or the `apps/<app>` directories passed). A path that matches no Golden_File is a usage error naming the expected forms. Do not change `KB_FILE` or `discover`.
@@ -154,7 +154,7 @@ This plan writes no golden scenarios for the real apps. Those come in Phase 2, a
     - **Property 7: Total** (checker and runner part: *for all* generated knowledge bases and golden sets, including ones with faults injected into scenarios, `checkGolden`, `runGolden` and `runCli(["golden"])` do not throw, and the runner returns one result per runnable scenario)
     - **Validates: Requirements 10.3, 10.4**
 
-- [ ] 8. Public API and bundle
+- [x] 8. Public API and bundle
   - [x] 8.1 Export the golden API and prove it needs no Node
     - `src/index.ts`: export `loadGolden`, `loadGoldenRaw`, `checkGolden`, `duplicateIds`, `runScenario`, `runGolden`, `coverage`, `MINIMUM_SCENARIOS`, the golden codes and the types `GoldenSet`, `Scenario`, `Expectation`, `ScenarioResult`, `Difference`, `GoldenRun`, `GoldenDiagnostic`, `GoldenCode`, `GoldenValue`, `LoadGoldenResult`.
     - Write `src/golden/exports.test.ts`: `expectTypeOf` lines for the exported types and function signatures, and a runtime check that each named export exists.
@@ -166,7 +166,7 @@ This plan writes no golden scenarios for the real apps. Those come in Phase 2, a
     - Confirm that `pnpm dc golden` works through the existing root script (pnpm appends the argument, as it does for `validate`), by running it once on the repository root with no golden files, expecting the all-zero summary and exit 0. If it does not forward the argument, stop and write a handoff note instead of editing the root script.
     - _Requirements: 8.1, 8.3, 8.4, 13.3_
 
-- [ ] 9. Documentation and the agent prompt
+- [x] 9. Documentation and the agent prompt
   - [x] 9.1 Add "Golden scenarios" to `docs/kb-format.md`
     - Ask the user to confirm this edit before making it (shared documentation). Add a section "Golden scenarios" with: where a golden file lives and why it is outside `kb/`; the file shape and the scenario fields; the `expect` block in its two forms; the value rules per fact type (money in minor units, dates `YYYY-MM-DD`, `null` for unknown); how a consult scenario and an audit scenario run; what "fires" and coverage mean; one worked example (the design's example, corrected against the finished code); the table of the 15 golden codes with severity, `id` and an example message; the summary line.
     - _Requirements: 13.1_
@@ -175,12 +175,12 @@ This plan writes no golden scenarios for the real apps. Those come in Phase 2, a
     - `src/golden/catalogue.test.ts`: every code in `GOLDEN_ERROR_CODES` and `GOLDEN_WARNING_CODES` appears in the new section of `docs/kb-format.md` with its severity; the worked example in the document loads with `loadGolden`, passes `checkGolden` against the document's own knowledge-base example, and passes `runGolden`. Read the file through Vite's `?raw` glob, as `kb-format-notes.test.ts` does.
     - _Requirements: 13.1_
 
-  - [ ] 9.3 Update the knowledge-engineer agent and the `dc` usage line
+  - [x] 9.3 Update the knowledge-engineer agent and the `dc` usage line
     - In `.kiro/agents/knowledge-engineer.json`, change the prompt's last sentence to tell the agent to write golden scenarios in `apps/<app>/golden/`, to run `pnpm dc golden` until every scenario passes, and that every rule must fire in at least one scenario. Change nothing else in the file, and keep it valid JSON. Ask the user to confirm the edit first if a permission rule blocks it.
     - Confirm the `dc` usage text prints the `golden` line (done in task 7.1); add one line about `golden` to the kb-tools README section if the repository has one, and otherwise leave the usage text as the one-line description.
     - _Requirements: 13.2, 13.4_
 
-- [ ] 10. Final checkpoint - Ensure all tests pass
+- [x] 10. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise. Run `pnpm check` and `pnpm test:props` under Node 22 and confirm exit code 0. Run `pnpm dc validate` and `pnpm dc golden` on the repository and confirm each exits 0 (with no golden files yet, `dc golden` prints the all-zero summary).
 
 ## Notes
@@ -196,7 +196,7 @@ This plan writes no golden scenarios for the real apps. Those come in Phase 2, a
 
 These items belong to the Claude Code lane. They are recorded here so nothing is lost, and they are not tasks in this plan.
 
-1. **Root `dc` script.** `pnpm dc golden` needs no root change if pnpm appends the argument, as it does for `validate`. Task 8.2 checks it. If it fails, the root script needs to forward its arguments.
+1. **Root `dc` script.** No change needed. Task 8.2 ran `pnpm dc golden` through the existing script: it forwards the argument as it does for `validate`, prints the all-zero summary with no golden file and exits 0, and `--json` exits 2.
 2. **Playwright end-to-end tests.** For every golden scenario (build plan, Phase 3), import `loadGolden`, `checkGolden`, `duplicateIds` and `runScenario` from `@dead-certain/kb-tools`, or read the YAML directly. `ScenarioResult` and `GoldenRun` hold only strings, numbers and arrays, so they serialise. The scenarios do not exist until Phase 2.
 3. **CI.** Add `pnpm run --if-present dc golden` after `dc validate` in `.github/workflows/ci.yml` once the first golden files exist, so Gate G2's golden check runs on every push.
 4. **Git.** `apps/*/golden/*.yaml` must be committed. The Markdown-ignore rule does not touch YAML, so no `.gitignore` change is needed.
