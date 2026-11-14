@@ -111,7 +111,7 @@ apps/site/
 ├── kit/index.html            # NEW entry: /dead-certain/kit/
 ├── kit/shell.html            # NEW entry: the AppShell on its own page, shown in iframes
 ├── kit/screen.html           # NEW entry: one static screen per page, ?screen=<name>
-└── src/kit/                  # gallery: main.tsx, Specimen.tsx, sections/*, claimScreens.tsx, screen.tsx
+└── src/kit/                  # gallery: main.tsx, Specimen.tsx, sections/*, claimScreens.tsx, preflightScreens.tsx, screen.tsx
 ```
 
 The gallery uses a second HTML entry (Vite multi-page build) instead of a router. `/kit/` is a real path on GitHub Pages and needs no dependency. The apps keep their hash routing for verdict links.
@@ -674,7 +674,7 @@ Behaviour:
 | 1280 and up | Grid of `Sheet` (up to 680 px) and `Film` (rest). The rail collapses into the "Your answers" disclosure. | `presentation: "side"` |
 | below 1280 | Sheet only, full width | `presentation: "sheet"` (modal bottom sheet) |
 
-- **Develop.** On the first open, a 2 px `--film` scan line crosses the sheet once in `--dur-xray` (500 ms) with `--ease`, both read from the tokens at run time and not hardcoded. Left to right at 1280 and up, top to bottom below it. The `clip-path: inset(...)` reveal applies to the proof content and animates over the same duration. The film panel itself appears at once, because the bottom sheet is a Radix Dialog in a portal. Motion's `LazyMotion` with `domAnimation` and `m` components drives it. `strict` mode catches accidental full-bundle imports.
+- **Develop.** On the first open, a 2 px `--film` scan line crosses the sheet once in `--dur-xray` (500 ms) with `--ease`, both read from the tokens at run time and not hardcoded. Left to right at 1280 and up, top to bottom below it. The `clip-path: inset(...)` reveal applies to the proof content and animates over the same duration. The film panel itself appears at once, because the bottom sheet is a Radix Dialog in a portal. The scan line's moving layer ends a full sheet past the sheet's edge, so it sits in a wrapper with `overflow: hidden` that is clipped to the sheet; without the clip it widened the page (1,384 px at 1280). A Playwright test asserts no horizontal scroll after the develop. Motion's `LazyMotion` with `domAnimation` and `m` components drives it. `strict` mode catches accidental full-bundle imports.
 - **Reduced motion.** No scan line, no slide. The film fades in over `--dur-reduced` (120 ms).
 - **Switching target while open** (a different ledger row) swaps the film content at once. No animation, because the develop is the only choreographed motion. Focus moves to the film heading and the live region announces the new title.
 - **Focus.** When `target` goes from null to set, `XrayStage` records `document.activeElement` as the opener, before Radix moves focus. It takes no opener from `onOpen`. When it opens, focus goes to the film heading. When it closes (Escape in the tree, the Close button, or the Dialog's own Escape), focus returns to the opener one task later, after the bottom sheet's focus trap releases. An opener that unmounted while the stage was open (focus is on `<body>`) counts as gone, and focus then goes to the sheet heading.
