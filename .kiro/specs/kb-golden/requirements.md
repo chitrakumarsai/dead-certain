@@ -96,7 +96,7 @@ Boundary rules that shape every requirement:
 
 #### Acceptance Criteria
 
-1. THE Golden_Loader SHALL require, in every Expectation that has no `ask`, `expect.goals`, a mapping with exactly one entry for each goal of the knowledge base, so that a scenario cannot leave a goal unchecked. A value is a fact value or `null`.
+1. THE Golden_Loader SHALL require, in every Expectation that has no `ask`, `expect.goals`, a mapping from goal names to values, where a value is a fact value or `null`. THE Golden_Runner SHALL then require the mapping to hold exactly one entry for each goal of the knowledge base, so that a scenario cannot leave a goal unchecked, and SHALL report `SCHEMA_INVALID` on the field `expect.goals`, naming the missing and the extra goals, when it does not.
 2. WHERE `expect.line_items` is present, THE Golden_Loader SHALL require a mapping from the fact name of a line item to its expected value or `null`, and THE Golden_Runner SHALL require it to match the Verdict's line items exactly: the same fact names, no more and no fewer.
 3. WHERE `expect.needed` is present in an `audit` Scenario, THE Golden_Loader SHALL require a list of fact names, and THE Golden_Runner SHALL require it to equal the facts of the Verdict's `needed` questions, in order. WHERE it is absent, THE Golden_Runner SHALL require the Verdict's `needed` to be empty.
 4. WHERE `expect.ask` is present in a `consult` Scenario, THE Golden_Loader SHALL require a fact name, and it SHALL mean that the Engine's `next` must return a Question for that fact. THE Golden_Loader SHALL then require `ask` to be the only field of `expect`, because an undecided consultation has no verdict to compare.
@@ -114,7 +114,7 @@ Boundary rules that shape every requirement:
 1. WHEN a `consult` Scenario runs, THE Golden_Runner SHALL call `start` on the compiled Knowledge_Base, then `answer` once for each entry of `facts` in the order written, then `next` once, and SHALL compare the Outcome with the Expectation.
 2. WHEN an `audit` Scenario runs, THE Golden_Runner SHALL call `audit` with the Scenario's `facts` and SHALL compare the Verdict with the Expectation.
 3. WHEN a Scenario has a Verdict Outcome, THE Golden_Runner SHALL call `explain` for every goal and every line-item fact, on the Session the run built or, in `audit` Mode, on a Session whose `answers` are the Scenario's `facts`, and SHALL record the Fired_Rules.
-4. WHEN a Scenario fails, THE Golden_Runner SHALL report `SCENARIO_FAILED` naming the Scenario, and for each difference the field (`goals.<name>`, `line_items.<name>`, `needed`, `ask` or `fires`), the expected value and the observed value, so that the message alone says what changed.
+4. WHEN a Scenario fails, THE Golden_Runner SHALL report `SCENARIO_FAILED` naming the Scenario, and for each difference the field (`outcome`, `ask`, `goals.<name>`, `line_items.<name>`, `needed` or `fires`), the expected value and the observed value, so that the message alone says what changed. The field `outcome` SHALL be used when a verdict was expected and a question was observed, or the reverse.
 5. IF the Engine throws an Engine_Error while a Scenario runs, THEN THE Golden_Runner SHALL report `ENGINE_ERROR` naming the Scenario and the Engine's error code and message, and SHALL carry on with the next Scenario.
 6. THE Golden_Runner SHALL run each Scenario on its own Session, so that no Scenario's result depends on another Scenario or on the order of Scenarios.
 7. THE Golden_Runner SHALL be deterministic: running the same Golden_Set against the same Knowledge_Base twice SHALL return deep-equal results.
@@ -138,11 +138,11 @@ Boundary rules that shape every requirement:
 
 #### Acceptance Criteria
 
-1. WHEN `dc golden` has run every Golden_File of an app, THE Dc_Command SHALL report `RULE_NOT_COVERED` for each rule of each knowledge base that is not a Covered_Rule, naming the rule id, in the order the rules appear in the KB_File.
+1. WHEN `dc golden` has run every Golden_File of an app, which is the case for a run with no path argument or with an `apps/<app>` directory and not for a run with explicit Golden_File paths, THE Dc_Command SHALL report `RULE_NOT_COVERED` for each rule of each knowledge base that has a Golden_File and is not a Covered_Rule, with `file` the KB_File path and `id` the rule id, in the order the rules appear in the KB_File.
 2. THE Dc_Command SHALL compute coverage only from Scenarios that ran and passed, so that a failed Scenario covers nothing.
-3. WHEN a knowledge base has fewer than Minimum_Scenarios Scenarios in total, THE Dc_Command SHALL report `TOO_FEW_SCENARIOS` with severity `warning`, naming the count and Minimum_Scenarios, and SHALL not count it toward a failing exit status.
+3. WHEN a knowledge base has fewer than Minimum_Scenarios Scenarios in total, in a run that computes coverage, THE Dc_Command SHALL report `TOO_FEW_SCENARIOS` with severity `warning` and `file` the KB_File path, naming the count and Minimum_Scenarios, and SHALL not count it toward a failing exit status.
 4. WHEN a knowledge base has no Golden_File, THE Dc_Command SHALL report nothing about it, so that an app without scenarios yet does not fail `dc golden`.
-5. THE Dc_Command SHALL list in its summary the number of rules, the number covered and the number of Scenarios.
+5. THE Dc_Command SHALL count in its summary the rules of the knowledge bases whose coverage was computed, and the number of them covered.
 
 ### Requirement 8: The `dc golden` command
 
@@ -151,11 +151,11 @@ Boundary rules that shape every requirement:
 #### Acceptance Criteria
 
 1. WHEN the user runs `dc golden` with no path argument, THE Dc_Command SHALL run every Golden_File under `apps/*/golden/` relative to the repository root.
-2. WHERE the user passes one or more Golden_File paths or `apps/<app>` directories, THE Dc_Command SHALL run only those files, and for a directory SHALL run every Golden_File of that app and compute coverage for that app.
+2. WHERE the user passes one or more Golden_File paths or `apps/<app>` directories, THE Dc_Command SHALL run only those files, and for a directory SHALL run every Golden_File of that app and compute coverage for that app. WHERE the user passes a Golden_File path, THE Dc_Command SHALL run that file and compute no coverage for its app, unless the same run also passes the app's directory.
 3. WHEN every Scenario passes and no Error_Diagnostic exists, THE Dc_Command SHALL exit with status 0, even when a Warning_Diagnostic exists.
 4. IF one or more Error_Diagnostics exist, including a `READ_ERROR`, a `SCENARIO_FAILED` or a `RULE_NOT_COVERED`, THEN THE Dc_Command SHALL exit with status 1.
 5. IF the subcommand is malformed, an argument is unknown, or an explicitly passed path matches no Golden_File, THEN THE Dc_Command SHALL print a usage message to standard error and exit with status 2.
-6. WHEN the user runs `dc golden` with no path argument and no Golden_File is found, THE Dc_Command SHALL print the summary line with 0 files, 0 scenarios, 0 errors and 0 warnings, and exit with status 0.
+6. WHEN the user runs `dc golden` with no path argument and no Golden_File is found, THE Dc_Command SHALL print the summary line `0 files, 0 scenarios run, 0 passed, 0 of 0 rules covered, 0 errors, 0 warnings`, and exit with status 0.
 7. THE Dc_Command SHALL contain no network call and SHALL write nothing.
 8. THE `dc` usage text SHALL list `golden` beside `validate` and `build`.
 
@@ -168,8 +168,8 @@ Boundary rules that shape every requirement:
 1. THE Dc_Command SHALL print each Golden_Diagnostic on its own line in the form `<file>: <severity> <code> [<id>] <message>`, as `dc validate` does, where `[<id>]` is the Scenario id or rule id and appears only when there is one.
 2. THE Dc_Command SHALL print a passing Scenario as nothing, so that the output of a clean run is the summary line alone.
 3. THE Dc_Command SHALL print the Golden_Diagnostics in an order that depends only on the content of the files: by file path, then by the order of the Scenarios in the file, then by code, with `RULE_NOT_COVERED` after the Scenario diagnostics of its app and in rule order.
-4. THE Dc_Command SHALL end the run with one summary line giving the number of files, scenarios run, scenarios passed, errors and warnings.
-5. THE Dc_Command SHALL print a Scenario failure on one line, with the differences joined by `; ` in the fixed order `ask`, `goals`, `line_items`, `needed`, `fires`, each goal and line item in the order the knowledge base lists it.
+4. THE Dc_Command SHALL end the run with one summary line of the fixed form `<F> files, <S> scenarios run, <P> passed, <C> of <R> rules covered, <E> errors, <W> warnings`.
+5. THE Dc_Command SHALL print a Scenario failure on one line, with the differences joined by `; ` in the fixed order `outcome`, `ask`, `goals`, `line_items`, `needed`, `fires`, each goal and line item in the order the knowledge base lists it.
 6. THE Dc_Command SHALL print no color, timestamp, duration or absolute path.
 
 ### Requirement 10: Totality

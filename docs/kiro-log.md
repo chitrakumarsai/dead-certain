@@ -221,3 +221,12 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - Five departures from the requirements text are marked "Open? Yes" for the human: the goal-set check moves from loader to checker, coverage is computed only on whole-app runs, one fixed summary line replaces three partial ones, an `outcome` difference is added for question-versus-verdict mismatches, and coverage diagnostics point at the knowledge-base file. Decisions 1 to 10 hold the rest.
 - Checked while designing: kb-tools' source scan already covers a new `golden/` directory (no Node API, no `Date`, no network), and `pnpm dc` appends its arguments, so `dc golden` needs no root change.
 - Stopped after the design phase, as the human asked. Tasks wait for review.
+
+### `kb-golden`: departures approved, tasks written (2026-11-15)
+
+- The human approved all five design departures. Kiro marked them "Approved" in `design.md` (the status column replaces "Open?") and amended the requirements to match, so spec and design agree: the goal-set check is in the Golden_Runner's fit check (4.1), `outcome` joins the failure fields (5.4, 9.5), coverage and the too-few warning belong to whole-app runs and name the KB file (7.1, 7.3, 8.2), and the summary line has one fixed form (7.5, 8.6, 9.4).
+- Pulled `kiro/2-golden-spec`: the human's commit `023c439` is there, and `.kiro/settings/mcp.json` has `"disabled": true` for `dead-certain` (`context7` is still enabled). Kiro's earlier note that the edit was missing was right at that time; the commit arrived after.
+- Tasks written in `.kiro/specs/kb-golden/tasks.md`: 10 sections, 23 sub-tasks, one task per wave. The order is types and `shown` export, YAML loader check, value checks, loader, checker, runner (with the record-and-replay, mutation and order properties), coverage, the `dc golden` command, exports and the dist smoke test, documentation and the agent prompt, then the checkpoint. All ten correctness properties are assigned to a task, each with a `// Feature: kb-golden, Property N` rule.
+- Two edits need the human's confirmation when their tasks run: the "Golden scenarios" section of the shared `docs/kb-format.md` (9.1), and the prompt in `.kiro/agents/knowledge-engineer.json` (9.3), which a permission rule may block as it did `mcp.json`.
+- Handoff notes for Claude Code: Playwright reads the exported loader and runner; add `dc golden` to CI after the first golden files exist; no root script change is expected.
+- Stopped before running any task, as the human asked.
