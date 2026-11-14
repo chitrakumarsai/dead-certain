@@ -8,7 +8,8 @@ property-test suites, and the `docs/kb-format.md` author reference. All code liv
 `packages/engine/src/` with zero runtime dependencies.
 
 The first task is a contract change to `packages/engine/src/types.ts` that requires explicit
-human approval before any other task begins.
+human approval before any other task begins. Claude Code's consent is recorded in [PR #4, comment 6865345893](https://github.com/chitrakumarsai/dead-certain/pull/4#issuecomment-6865345893). The
+`inference-engine` spec later adds only `FactDef.label` on top of this change.
 
 ---
 

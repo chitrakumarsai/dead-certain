@@ -95,12 +95,13 @@ packages/ui/
     ├── tokens.contrast.test.ts
     ├── format/               # money.ts, value.ts, label.ts (+ tests)
     ├── a11y/                 # LiveRegion.tsx, useFocusOnMount.ts, useReducedMotion.ts
+    ├── useMediaQuery.ts      # shared media-query hook
     ├── icons/                # hand-drawn inline SVG (see Q4)
     ├── components/
     │   ├── Button.tsx  Disclosure.tsx  SourceBadge.tsx  ClauseQuote.tsx
     │   ├── Sheet.tsx  Film.tsx  AnswerControl.tsx  QuestionCard.tsx
     │   ├── AnswersRail.tsx  VerdictHeadline.tsx  ProportionBar.tsx
-    │   ├── Ledger.tsx  CheckRow.tsx  WhatIfList.tsx
+    │   ├── Ledger.tsx  CheckRow.tsx  WhatIfList.tsx  whatIfText.ts
     │   ├── ProofTree.tsx  proofTreeState.ts   # pure reducer, unit tested
     │   ├── XrayStage.tsx  AppShell.tsx  StaleLinkNotice.tsx
     └── verdictState.ts       # goal value -> VerdictState mapping
@@ -108,6 +109,7 @@ packages/ui/
 apps/site/
 ├── index.html                # EXISTS, placeholder, untouched
 ├── kit/index.html            # NEW entry: /dead-certain/kit/
+├── kit/shell.html            # NEW entry: the AppShell on its own page, shown in iframes
 └── src/kit/                  # gallery: main.tsx, Specimen.tsx, sections/*, screens/*
 ```
 
@@ -161,7 +163,7 @@ sequenceDiagram
     participant LR as LiveRegion
     U->>L: activate
     L->>X: onOpen(target)
-    X->>X: remember opener element
+    X->>X: record document.activeElement as opener
     alt reduced motion
         X->>F: fade in 120 ms
     else viewport 1280 and up
@@ -537,7 +539,7 @@ interface LedgerProps {
 - Each item row holds a `<button>` in the label cell stretched over the row. Accessible name: "Room rent above the limit, clause 4.2, minus ₹38,000. See why". The selected row has `aria-current="true"`.
 - `claimed` and `payable` rows are plain text, not buttons. They have a hairline rule between the deductions and the total.
 - Edge states: no deductions (only claimed and payable), a deduction of `0` (omitted), `value: undefined` (row reads "Not known yet" and is still openable), many rows (30), long label that wraps at 320 px while the amount never wraps.
-- `onOpen` passes the row element so `XrayStage` can restore focus to it.
+- `onOpen(item, element)` passes the row's button so the app can use it. `XrayStage` does not take it: the stage records `document.activeElement` itself (see XrayStage, Focus).
 
 ### CheckRow
 
@@ -545,8 +547,8 @@ interface LedgerProps {
 interface CheckRowProps {
   item: LineItem;                         // role "check"; value true = pass, false = fail, undefined = unknown
   detail?: string;                        // evidence line, e.g. ".gitignore line 12: .kiro/"
-  question?: Question;                    // present while value is unknown and the engine needs an answer
-  def?: FactDef;
+  question?: Question;                    // present while value is unknown; question.fact is the input the engine asks for, not item.fact
+  def?: FactDef;                          // the definition of question.fact (a check fact is derived and never asked directly)
   answerValue?: FactValue;
   onAnswer?: (fact: string, value: FactValue) => void;
   onOpen: (item: LineItem, opener: HTMLElement) => void;
@@ -561,7 +563,8 @@ interface CheckRowProps {
 | `undefined` | Needs your answer | QuestionCircle, `--text-soft` |
 
 - Row content: icon, `LineItem.label`, rule id in the Machine voice (opens the proof), then the optional evidence line in the Machine voice.
-- Unknown state: shows `question.text` and a boolean `AnswerControl` inline. Answering calls `onAnswer`. The row then re-renders from the new verdict.
+- Unknown state, boolean asked fact (`def.type === "boolean"` for `question.fact` decides): shows `question.text` and a boolean `AnswerControl` inline. Answering calls `onAnswer(question.fact, value)`. The row then re-renders from the new verdict. A check fact is derived (`dc validate` requires role facts to be derived and boolean, `ROLE_TYPE_MISMATCH`), so `item.fact` is never the asked fact.
+- Unknown state, asked fact that is not boolean (a `question` with no `def` counts as not boolean): shows only the word "Needs your answer". It shows no `question.text` and no inline `AnswerControl`.
 - A `value` that is not a boolean is rendered as unknown. This keeps a malformed check visible, not hidden.
 
 ### WhatIfList
@@ -573,12 +576,20 @@ interface WhatIfListProps {
   labelFor: (fact: string) => string;
   defFor: (fact: string) => FactDef | undefined;
   amountGoal?: string;               // money goal; when set, show a signed delta
-  stateGoal?: string;                // verdict goal; when set and no amountGoal, show "Not ready to Ready"
+  stateGoal?: string;                // verdict goal; when set, names the state change ("Not ready to Ready")
   format: FormatContext;
 }
 ```
 
-Each row reads "If room rent per day were ₹5,000: + ₹38,000". The delta is `alt.verdict.goals[amountGoal] − current.goals[amountGoal]`. When there is no money goal, the row names the new verdict state. The list is plain text, with no actions in this version. Empty list renders nothing and no heading.
+Each row reads "If room rent per day were ₹5,000: + ₹38,000". The row text is built by a pure function in `components/whatIfText.ts`.
+
+- **Delta.** With `amountGoal`, when both amounts are known and differ, the row shows the signed delta `alt.verdict.goals[amountGoal] − current.goals[amountGoal]`.
+- **No money goal.** With `stateGoal` and no `amountGoal`, the row names the state change from the current state to the new state. If `stateGoal` is supplied but the state does not change, the row says "the verdict changes".
+- **Zero delta.** With `amountGoal` and a delta of zero, the row names the state change when `stateGoal` is supplied and the state actually changes. Otherwise it says "the verdict changes".
+- **Unknown amount.** With `amountGoal` and either amount unknown, the row prints "amount not known yet", followed by the state change when there is one.
+- **Wording.** Fact labels go through `lowerFirst` (in `format/label.ts`), which leaves acronym-led labels such as "ICU days" alone. Only boolean values are lowercased mid-sentence ("yes", "no"). Money, number, date and enum values print as formatted, so an enum value "MIT" prints verbatim.
+
+The list is plain text, with no actions in this version. Empty list renders nothing and no heading.
 
 ### ProofTree
 
@@ -591,6 +602,7 @@ interface ProofTreeProps {
   clauseFor?: (clauseId: string) => Clause | undefined;
   decidingClause?: string;                                    // clause id to mark with wax
   onChangeAnswer?: (fact: string) => void;                    // offered on answered facts
+  initialState?: TreeState;                                   // the reducer's own type; read on mount only
   onEscape: () => void;                                       // XrayStage restores focus
 }
 ```
@@ -603,10 +615,14 @@ ARIA tree pattern:
 
 - Container `role="tree"` with an accessible name ("Proof"). Every node `role="treeitem"` with `aria-level`, `aria-setsize`, `aria-posinset`. Parents add `aria-expanded`. Children sit in `role="group"`.
 - Roving tabindex. Exactly one treeitem has `tabindex="0"`.
-- Keys: Down and Up move through visible nodes. Right expands a closed parent, or moves to its first child when open. Left collapses an open parent, or moves to the parent. Home and End go to the first and last visible node. Enter toggles expansion of a parent. Escape calls `onEscape`.
-- The "Show the rule" `Disclosure` and the "Change this answer" `Button` live inside the active treeitem. They are in the tab order **only while that treeitem is the active one** (`tabindex` is `0` for the active node's actions and `-1` otherwise), so Tab reaches the actions of the focused node and then leaves the tree.
+- Keys: Down and Up move through visible nodes. Right expands a closed parent, or moves to its first child when open. Left collapses an open parent and its whole branch (`withoutBranch`: the id and every descendant id), or moves to the parent. Home and End go to the first and last visible node. Enter toggles expansion of a parent, and a toggle that closes the parent closes its whole branch. Escape calls `onEscape`.
+- The tree ignores arrow keys, Home, End and Enter whose target is inside an action (the "Show the rule" Disclosure or the "Change this answer" Button). Escape still calls `onEscape` from anywhere in the tree, including from inside an action.
+- The "Show the rule" `Disclosure` and the "Change this answer" `Button` are rendered **only inside the active treeitem**. Inactive treeitems render no actions and no `tabindex` toggling is used. Moving the active node unmounts the previous node's actions, so Tab reaches the actions of the focused node and then leaves the tree.
 - Node ids are index paths (`"0.1.0"`). A fact can appear under two rules, so a fact name is not unique.
-- Initial expansion: the root and its direct children are open. Deeper nodes start closed. `aria-expanded` always reflects the true state.
+- Initial state, without `initialState`: `initialTreeState(root)` opens the root and its direct children and puts `active` on the root. Deeper nodes start closed. `aria-expanded` always reflects the true state.
+- Initial state, with `initialState`: it is read on mount only and goes through `normalizeTreeState(root, state)`. Normalising drops ids that name no node, drops expanded ids that name a leaf, opens the ancestors of every open node and of the active node, and falls back to the root (`"0"`) when `active` is missing or unknown. A supplied state is used as given plus those ancestors, with **no** default root-and-children expansion. The caller remounts the tree with `key={target}` to restore a different state.
+
+**Branch cue.** Every parent shows a `Chevron` (glyph swap between closed and open, no rotation, no animation) inside a 44 px pointer toggle that is not a tab stop. A closed parent also shows an `aria-hidden` count "N hidden" in the Machine voice, where N is the number of **direct** children (`node.children.length`), not all descendants. Leaves show neither. A pointer toggle (`toggleNode`) makes its node active and then applies the Enter transition.
 
 Value `undefined` prints "Not known yet". A `collected` fact prints the value and "Collected". A node whose clause equals `decidingClause` shows its `ClauseQuote` (deciding variant) under the rule sentence.
 
@@ -623,13 +639,14 @@ interface FilmProps {
   presentation: "side" | "sheet";
   open: boolean;
   onClose: () => void;
+  headingRef?: RefObject<HTMLHeadingElement | null>;   // lets a parent focus the title
   children: React.ReactNode;
 }
 ```
 
 - `Sheet`: `--paper` fill, 1 px `--hairline` border, 4 px radius, padding 16 (phone) or 24 (768 and up), `max-width: var(--column-max)`, `data-surface="paper"`. No shadow.
 - `Film`: `--film` fill, no border, 8 px radius, `data-surface="film"`. Its heading is the `title`, `tabindex="-1"`, and a Close button sits beside it.
-- `presentation: "side"` renders a non-modal `<section aria-labelledby>` in the layout. `presentation: "sheet"` renders a Radix Dialog (modal, focus trapped, Escape closes, scrim is a flat `--film` tint at fixed opacity, not a gradient) anchored to the bottom, max height 85 vh, scrollable inside.
+- `presentation: "side"` renders a non-modal `<section aria-labelledby>` in the layout. `presentation: "sheet"` renders a Radix Dialog (modal, focus trapped, Escape closes, scrim is a flat `--film` tint at fixed opacity, not a gradient) anchored to the bottom, max height 85 vh, scrollable inside. The panel and the scrim carry `print:hidden`. An optional `headingRef` gives the parent the title element to focus.
 - Both presentations keep the same inner content so a window resize across 1280 px does not remount the proof tree. `XrayStage` picks the presentation.
 
 ### XrayStage
@@ -656,11 +673,11 @@ Behaviour:
 | 1280 and up | Grid of `Sheet` (up to 680 px) and `Film` (rest). The rail collapses into the "Your answers" disclosure. | `presentation: "side"` |
 | below 1280 | Sheet only, full width | `presentation: "sheet"` (modal bottom sheet) |
 
-- **Develop.** On the first open, a 2 px `--film` scan line crosses the sheet once in `--dur-xray` (500 ms) with `--ease`. Left to right at 1280 and up, top to bottom below it. The film is revealed behind the line: `clip-path: inset(...)` animates in the same 500 ms. Motion's `LazyMotion` with `domAnimation` and `m` components drives it. `strict` mode catches accidental full-bundle imports.
+- **Develop.** On the first open, a 2 px `--film` scan line crosses the sheet once in `--dur-xray` (500 ms) with `--ease`, both read from the tokens at run time and not hardcoded. Left to right at 1280 and up, top to bottom below it. The `clip-path: inset(...)` reveal applies to the proof content and animates over the same duration. The film panel itself appears at once, because the bottom sheet is a Radix Dialog in a portal. Motion's `LazyMotion` with `domAnimation` and `m` components drives it. `strict` mode catches accidental full-bundle imports.
 - **Reduced motion.** No scan line, no slide. The film fades in over `--dur-reduced` (120 ms).
 - **Switching target while open** (a different ledger row) swaps the film content at once. No animation, because the develop is the only choreographed motion. Focus moves to the film heading and the live region announces the new title.
-- **Focus.** `XrayStage` stores the opener element passed to `onOpen`. When it opens, focus goes to the film heading. When it closes (Escape in the tree, the Close button, or the Dialog's own Escape), focus returns to the opener. If the opener has left the DOM, focus goes to the sheet heading.
-- **Print.** The film is hidden by `print.css`.
+- **Focus.** When `target` goes from null to set, `XrayStage` records `document.activeElement` as the opener, before Radix moves focus. It takes no opener from `onOpen`. When it opens, focus goes to the film heading. When it closes (Escape in the tree, the Close button, or the Dialog's own Escape), focus returns to the opener one task later, after the bottom sheet's focus trap releases. An opener that unmounted while the stage was open (focus is on `<body>`) counts as gone, and focus then goes to the sheet heading.
+- **Print.** The film is hidden with `print:hidden` on the panel and on the scrim.
 
 ### AppShell
 
@@ -674,7 +691,9 @@ interface AppShellProps {
 }
 ```
 
-- Landmarks: skip link ("Skip to the content") as the first focusable element, `<header>` with the "Dead Certain" wordmark and nav, `<main id="content" tabindex="-1">`, optional `<aside>` for the rail, `<footer>`.
+- Landmarks: skip link ("Skip to the content") as the first focusable element, `<header>` with the "Dead Certain" wordmark and nav, `<main id="content" tabindex="-1">`, an optional rail slot and `<footer>`. The rail slot is a plain wrapper, because `AnswersRail` brings its own `<aside aria-label="Your answers">`.
+- The skip link moves focus to `<main>` without changing the URL hash. A shared `useMediaQuery` hook (`packages/ui/src/useMediaQuery.ts`) drives the responsive switches. Below 1024 px the rail stacks above the content.
+- The gallery shows the shell on its own page, `apps/site/kit/shell.html`, in three iframes (desktop with rail, phone with menu closed, phone with menu open). The shell page is axe-checked on its own at every width.
 - Phone: nav sits behind a menu button (Radix Collapsible) labelled "Menu". The menu closes on Escape and on navigation.
 - Hosts the single polite `LiveRegion` and the `useAnnounce()` hook.
 - The footer joke is the only humor in the kit besides a 404 page (not in this spec). The verdict area never jokes.
@@ -700,6 +719,9 @@ Replaces the verdict area when `decode` rejects a link. The component is exhaust
 - Primary button "Start the check". With `rulebookHref`, a quiet link "Read the rules".
 - Icon `InfoCircle` in `--text-soft`. The tone is neutral: a stale link is not a denial, so no `--denied` colour.
 - The heading takes focus on mount and the live region announces the heading. The component is a state inside `<main>`, not a modal and not `role="alert"`.
+- The root is a plain `<section>` with no accessible name (no `aria-label`, no `aria-labelledby`), so it is not a landmark. A named section is a landmark, and the gallery's two "older rules" specimens (`KB_MISMATCH` with and without the rulebook link) would clash on axe's unique-landmark rule. In an app only one notice shows at a time, and the spec asks for a state, not a landmark.
+- The heading is an `h2`.
+- The gallery adds a fifth specimen, "Appears" (`data-specimen="stalelinknotice-appears"`), so the focus-on-appear behaviour can be tested, as for `VerdictHeadline`. The other four stay: the three failures, plus `KB_MISMATCH` with and without the rulebook link.
 - The engine's own message is **not** shown. The kit owns the copy so it stays consistent with the copy rules (no apology, says what to do next).
 
 ## Data Models
@@ -715,13 +737,15 @@ The file exists and is owned by Claude Code. Tasks extend it. Each export is ann
 | `questionFixtures: Record<"money"\|"number"\|"date"\|"boolean"\|"enum", Question>` | One question per control, with and without `why` and `clause` | New |
 | `clauseFixtures: Record<string, Clause>` | Clause 4.2, 6.1, 1.2, 2.2 with short fictional text. The sample policy does not exist until Phase 2, so the text is written here and marked "sample" in a comment | New |
 | `answersFixture: AnswerEntry[]`, `skippedFixture: SkippedNote[]` | Rail states | New |
-| `undecidedVerdictFixture`, `paidInFullVerdictFixture`, `deniedVerdictFixture`, `manyDeductionsFixture` (30 lines), `unknownLineFixture`, `zeroDeductionFixture` | Verdict edge states. Each keeps claimed − deductions = payable. | New |
+| `undecidedVerdictFixture`, `paidInFullVerdictFixture`, `deniedVerdictFixture`, `manyDeductionsFixture` (30 lines), `unknownLineWithKnownPayableFixture`, `zeroDeductionFixture` | Verdict edge states. Each keeps claimed − deductions = payable, except `unknownLineWithKnownPayableFixture`, which is deliberately not engine-faithful (see below). | New |
 | `preFlightAllPassFixture`, `preFlightUnknownFixture` | Pre-Flight edge states | New |
 | `deepProofFixture` (4 levels, shared fact under two rules), `collectedProofFixture`, `unknownValueProofFixture`, `hugeProofFixture` (200 nodes) | ProofTree states and performance | New |
 | `alternativesFixture: Alternative[]`, `alternativesNoMoneyFixture` | WhatIfList | New |
 | `claimFormat: FormatContext` = `{ currency: "INR" }` | Formatting | New |
 
-`fixtures.test.ts` gains checks: every fixture ledger adds up, every `LineItem.rule`/`clause` appears in a proof or clause fixture where claimed, and every proof node id path is unique.
+`unknownLineWithKnownPayableFixture` is deliberately not engine-faithful: it shows an unknown deduction beside a known payable amount, which the engine would not produce. It is exempt by name in `fixtures.test.ts` (the constant `NOT_ENGINE_FAITHFUL`) and carries a comment that says why.
+
+`fixtures.test.ts` gains checks: every verdict fixture not named in `NOT_ENGINE_FAITHFUL` adds up (claimed − deductions = payable), every `LineItem.rule`/`clause` appears in a proof or clause fixture where claimed, and every proof node id path is unique.
 
 ### Verdict state mapping
 
@@ -828,7 +852,30 @@ function visibleIds(root: ProofNode, expanded: ReadonlySet<string>): string[] {
   return out;
 }
 
+/** Ancestors of "0.1.0" are ["0", "0.1"]. */
+function normalizeTreeState(root: ProofNode, s: TreeState): TreeState {
+  const open = new Set<string>();
+  for (const id of s.expanded) {
+    const n = nodeAtOrUndefined(root, id);
+    if (n !== undefined && n.children.length > 0) open.add(id);   // drops unknown ids and leaves
+  }
+  const active = nodeAtOrUndefined(root, s.active) !== undefined ? s.active : "0";
+  for (const id of [...open, active]) for (const a of ancestorsOf(id)) open.add(a);
+  return { active, expanded: open };
+}
+
+/** Closes the id and every descendant id. `toggled` uses it when the toggle closes a node. */
+function withoutBranch(expanded: ReadonlySet<string>, id: string): ReadonlySet<string> {
+  return new Set([...expanded].filter((e) => e !== id && !e.startsWith(id + ".")));
+}
+
+/** Pointer toggle: make the node active, then apply the Enter transition. */
+function toggleNode(root: ProofNode, s: TreeState, id: string): TreeState {
+  return treeReduce(root, { ...s, active: id }, "Enter");
+}
+
 function treeReduce(root: ProofNode, s: TreeState, key: Key): TreeState {
+  if (!isNormalised(root, s)) return normalizeTreeState(root, s);   // stale input: key not applied
   const vis = visibleIds(root, s.expanded);
   const at = vis.indexOf(s.active);
   const node = nodeAt(root, s.active);
@@ -844,7 +891,7 @@ function treeReduce(root: ProofNode, s: TreeState, key: Key): TreeState {
         : { ...s, expanded: withId(s.expanded, s.active) };
     case "ArrowLeft":
       return s.expanded.has(s.active)
-        ? { ...s, expanded: withoutId(s.expanded, s.active) }
+        ? { ...s, expanded: withoutBranch(s.expanded, s.active) }
         : { ...s, active: parentId(s.active) ?? s.active };
     case "Enter":
       if (node.children.length === 0) return s;
@@ -853,8 +900,8 @@ function treeReduce(root: ProofNode, s: TreeState, key: Key): TreeState {
 }
 ```
 
-**Preconditions:** `s.active` is the id of an existing node. Every id in `s.expanded` names a node with children.
-**Postconditions:** the result's `active` is in `visibleIds(root, result.expanded)`. A leaf is never added to `expanded`. The function does not mutate `s`.
+**Preconditions:** none on `s`. A state with an unknown `active`, unknown expanded ids, expanded leaves or expanded ids with a closed ancestor is accepted and normalised.
+**Postconditions:** if `s` is not normalised, the result is `normalizeTreeState(root, s)` and the key is not applied. If `s` is normalised, it is reused as is. The result's `active` is in `visibleIds(root, result.expanded)`. A leaf is never in `expanded`. Every ancestor of an expanded id is expanded. A closing toggle (Left on an open parent, Enter closing) removes the id and every descendant id. `normalizeTreeState` is idempotent. No function mutates its input.
 
 ### Verdict state
 
@@ -870,10 +917,10 @@ function verdictStateFrom(goal: FactValue | undefined, needed: number): VerdictS
 ### Opening and closing the X-ray
 
 ```pascal
-PROCEDURE open(target, opener)
+PROCEDURE open(target)
   SEQUENCE
     IF stage.target IS NULL THEN
-      stage.opener ← opener
+      stage.opener ← document.activeElement   // read before Radix moves focus
       IF reducedMotion THEN
         film.fadeIn(120 ms)
       ELSE
@@ -892,7 +939,8 @@ END PROCEDURE
 PROCEDURE close()
   SEQUENCE
     stage.target ← NULL
-    IF stage.opener IS attached to the document THEN focus(stage.opener)
+    // runs one task later, after the bottom sheet's focus trap releases
+    IF stage.opener IS attached to the document AND stage.opener IS NOT body THEN focus(stage.opener)
     ELSE focus(sheet.heading)
     END IF
   END SEQUENCE
@@ -947,7 +995,7 @@ function contrast(a: string, b: string): number {
       <Ledger claimed={{ label: "Claimed", value: CLAIMED_AMOUNT }} items={v.lineItems}
         payable={{ label: "Payable", value: 142_500_00 }} format={claimFormat}
         selectedFact={target?.kind === "line" ? target.fact : undefined}
-        onOpen={(item, el) => open({ kind: "line", fact: item.fact }, el)} />
+        onOpen={(item) => open({ kind: "line", fact: item.fact })} />
     </Sheet>
   }
   film={(t) => <ProofTree root={explain(session, factFor(t))} labelFor={labelFor}
@@ -986,11 +1034,11 @@ catch (e) {
 | ProportionBar | all paid, one cut, many cuts, all cut, zero parts |
 | Ledger | normal, no deductions, zero deduction, unknown value, 30 rows, selected row, 320 px wrap |
 | CheckRow | pass, fail, unknown with inline question, with evidence, non-boolean value |
-| WhatIfList | money, no money, empty |
+| WhatIfList | money, no money, edges, empty |
 | ProofTree | collapsed, expanded, deep, shared fact, collected, unknown value, deciding clause, 200 nodes, keyboard focus on each node kind |
 | Sheet, Film | paper, film side, film sheet |
-| XrayStage | closed, open side (1280), open sheet (below 1280), reduced motion |
-| AppShell | desktop with rail, phone with menu closed and open |
+| XrayStage | closed, open side (1280), open sheet (below 1280), reduced motion. Side is shown by the 1280 project, sheet by the 390 and 768 projects, reduced motion by the reduced-motion project. Rail collapse beside the film is covered by the AnswersRail test |
+| AppShell | desktop with rail, phone with menu closed, phone with menu open (three iframes of `kit/shell.html`) |
 | StaleLinkNotice | `KB_MISMATCH`, `MALFORMED_TOKEN`, `UNSUPPORTED_VERSION`, with and without rulebook link |
 
 ### Static screens (built on fixtures, no engine)
@@ -1036,9 +1084,9 @@ Date formatting builds its `Date` from a UTC timestamp and formats with `timeZon
 
 ### Property 5: Tree reducer stays on screen
 
-For every proof tree, state and key, `treeReduce(...).active` is in `visibleIds`, and no leaf is ever in `expanded`.
+For every proof tree and every state reached from arbitrary states by mixing keys with `toggleNode` pointer toggles, `treeReduce(...).active` is in `visibleIds`, no leaf is ever in `expanded`, and every ancestor of an expanded id is expanded.
 
-**Validates: Requirements 18.7, 18.8, 18.9, 18.10, 18.11, 18.15**
+**Validates: Requirements 18.7, 18.8, 18.9, 18.10, 18.11, 18.15, 18.23**
 
 ### Property 6: Tree reducer is pure
 
@@ -1090,7 +1138,7 @@ No file under `packages/ui/src` (tests excepted) imports a value from `@dead-cer
 
 ### Property 14: Ledger arithmetic is displayed, not computed
 
-For every fixture verdict, `claimed − sum(deductions) = payable` (the existing fixture test), and the ledger renders each value exactly as `formatMoney` returns it.
+For every fixture verdict not named in `NOT_ENGINE_FAITHFUL` (a fixture marked as not engine-faithful, with a comment saying why), `claimed − sum(deductions) = payable` (the existing fixture test), and the ledger renders each value exactly as `formatMoney` returns it.
 
 **Validates: Requirements 15.2, 15.3, 15.4, 15.13, 23.5**
 
@@ -1111,6 +1159,12 @@ Under `prefers-reduced-motion: reduce`, no scan line element exists and the film
 `StaleLinkNotice` has copy for every member of `ReplayFailure`, and every member is assignable to the engine's `ErrorCode` (compile-time).
 
 **Validates: Requirements 22.1, 22.2, 22.3, 22.4, 5.6**
+
+### Property 18: Normalisation is valid and idempotent
+
+For every proof tree and every arbitrary state, including states reached by mixing keys with `toggleNode` pointer toggles, `normalizeTreeState` returns a state whose `active` names a node, whose expanded ids name nodes with children and whose expanded set contains every ancestor of its members and of `active`, and `normalizeTreeState(normalizeTreeState(s))` equals `normalizeTreeState(s)`.
+
+**Validates: Requirements 18.14, 18.23**
 
 
 ## Error Handling
@@ -1152,7 +1206,7 @@ Pure logic only: `format/*`, `verdictStateFrom`, `treeReduce` and `visibleIds`, 
 
 ### Property-based testing
 
-**Library:** fast-check (already pinned for the engine at 4.10.2; the kit reuses that version). Files are named `*.props.test.ts` so `pnpm test:props` picks them up. Properties 1 to 3 and 5 to 9 are property tests. Property 4 is a plain unit test plus a source scan, not a property test, and needs no child process.
+**Library:** fast-check (already pinned for the engine at 4.10.2; the kit reuses that version). Files are named `*.props.test.ts` so `pnpm test:props` picks them up. Properties 1 to 3, 5 to 9 and 18 are property tests. Property 4 is a plain unit test plus a source scan, not a property test, and needs no child process.
 
 ### Browser testing (Playwright against the gallery, lane: Claude Code)
 

@@ -8,7 +8,7 @@ What I read before designing, and what it implies:
 
 | Source | Finding | Consequence for the design |
 | --- | --- | --- |
-| `types.ts` | `FactDef` has no `label`; `Session`, `Question`, `LineItem`, `Verdict`, `ProofNode`, `Alternative` are fixed. | The single approved change is `readonly label?: string` on `FactDef` (Requirement 23, criteria 8 and 12). Everything else is untouched. |
+| `types.ts` | `FactDef` has no `label`; `Session`, `Question`, `LineItem`, `Verdict`, `ProofNode`, `Alternative` are fixed. | The single change this spec makes is `readonly label?: string` on `FactDef` (Requirement 23, criteria 8 and 12). The `Expr` union, `BinaryOp`, `BuiltinFn`, `Unknown` and `UNKNOWN` came from the `rule-language` spec with Claude Code's consent ([PR #4, comment 6865345893](https://github.com/chitrakumarsai/dead-certain/pull/4#issuecomment-6865345893)). Everything else is untouched. |
 | `lang/evaluate.ts` | `evaluate(expr, env)` is total and never throws. A name missing from `env` reads as `UNKNOWN`. `and`/`or` short-circuit with Kleene logic. `if` evaluates only the selected branch. Comparisons accept two valid dates. Errors come back as `{ ok: false }` with `DIVISION_BY_ZERO`, `TYPE_MISMATCH`, `NUMERIC_OVERFLOW` or `UNKNOWN_ERROR`. | The engine never re-implements expression semantics. It builds an environment and calls `evaluate`. An env built from lazy getters keeps `if` and short-circuit laziness for derived facts. |
 | `lang/dates.ts` | `isValidDate` accepts years 1 to 9999 and real calendar days. `compareDates` is plain string comparison. | Threshold probing reuses `isValidDate` for validity and sorts dates as strings. |
 | `index.ts` | Exports the lang functions, the types and `UNKNOWN`. | The new exports are added next to them. Nothing is removed or renamed (Requirement 1, criterion 3). |
@@ -47,7 +47,7 @@ All files live under `packages/engine/src`. Nothing outside `src` is imported (R
 ```text
 src/
 ├── index.ts              public exports (existing exports kept, new ones added)
-├── types.ts              contract; only change: FactDef.label?
+├── types.ts              contract; this spec's only change: FactDef.label? (rule-language additions are the baseline)
 ├── api.ts                the eight functions; `satisfies EngineApi` type check
 ├── errors.ts             EngineError, ErrorCode
 ├── check.ts              validateKb, validateAnswers, checkValue, normalise

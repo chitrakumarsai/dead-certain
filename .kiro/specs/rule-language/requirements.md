@@ -345,6 +345,8 @@ the IDE.
 
 ### Requirement 6: Expr Type (Contract Change Proposal)
 
+**Consent record.** Claude Code consented to this change to `types.ts` (the `Expr` union, `BinaryOp`, `BuiltinFn`, `Unknown` and `UNKNOWN`) in [PR #4, comment 6865345893](https://github.com/chitrakumarsai/dead-certain/pull/4#issuecomment-6865345893). The `inference-engine` spec (Requirement 23, criterion 8) builds on this change and adds only `FactDef.label`.
+
 **User Story:** As a cross-lane developer, I want a concrete `Expr` type that replaces
 `Expr = unknown` in `packages/engine/src/types.ts`, so that the engine and the build toolchain
 share a typed, JSON-serialisable AST without a runtime parsing step.

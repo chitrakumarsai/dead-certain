@@ -29,7 +29,7 @@ Two boundary rules shape every requirement:
 
 The Engine uses `FactDef.label` when it is present and falls back to the Derived_Label otherwise, so existing knowledge bases keep working unchanged. The Derived_Label turns underscores into spaces and capitalises the first letter, so `room_rent_excess` becomes `Room rent excess`. The Derived_Label is deterministic and needs no clause title, because several facts can cite one clause and a clause title describes the rulebook section, not the line the user sees.
 
-This is the only change to `types.ts` that this spec allows. Any other change needs a written proposal and both lanes' consent (Requirement 23, criteria 8 and 9). Requirement 7 specifies the label behaviour. Requirement 23 specifies the tasks that apply the change.
+This is the only change to `types.ts` that this spec allows. The earlier `rule-language` spec (Requirement 6) also changed `types.ts`: it replaced the `Expr = unknown` placeholder with the concrete `Expr` union and added `BinaryOp`, `BuiltinFn`, `Unknown` and `UNKNOWN`. Claude Code consented to that change, recorded in [PR #4, comment 6865345893](https://github.com/chitrakumarsai/dead-certain/pull/4#issuecomment-6865345893). That change is already applied and is the baseline for this spec. Any other change needs a written proposal and both lanes' consent (Requirement 23, criteria 8 and 9). Requirement 7 specifies the label behaviour. Requirement 23 specifies the tasks that apply the change.
 
 ---
 
@@ -486,7 +486,7 @@ The comparison operators in the Rule_Language (`BinaryOp` in `packages/engine/sr
 5. WHEN a task runs tests, THE task SHALL use only single-run commands (`pnpm vitest run <path>`, `pnpm test:props` or `pnpm check`), and SHALL NOT start Vitest in watch mode or any other long-running process.
 6. WHILE a task in the task list is in progress, THE task list SHALL start no other task, and SHALL start tasks in the order listed.
 7. WHEN a task runs a command, THE task SHALL run it under Node major version 22, as pinned in `.nvmrc`.
-8. THE Engine SHALL leave `packages/engine/src/types.ts` unchanged by this spec, except for adding the single optional property `readonly label?: string` to `FactDef`.
+8. THE Engine SHALL leave `packages/engine/src/types.ts` unchanged by this spec, except for adding the single optional property `readonly label?: string` to `FactDef`. The `Expr` union, `BinaryOp`, `BuiltinFn`, `Unknown` and `UNKNOWN` come from the `rule-language` spec (Requirement 6) and are the baseline, not changes made by this spec.
 9. IF any change to `packages/engine/src/types.ts` other than the `label` property of criterion 8 is needed, THEN THE task list SHALL record it as a written proposal for approval by both lanes and SHALL NOT apply it.
 10. THE Engine SHALL contain no import in any non-test source file under `packages/engine/src` that resolves to a path outside `packages/engine/src`.
 11. THE Engine SHALL set `LineItem.label` to `FactDef.label` when it is present, and to the Derived_Label of the Fact name when it is absent (Requirement 7, criteria 5 and 6).

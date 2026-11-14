@@ -13,7 +13,7 @@ inclusion: always
 | TypeScript | 7.0.2 |
 | Vite | 8.3.8 |
 | Vitest | 5.1.0 |
-| fast-check | (add when installed) |
+| fast-check | 4.10.2 |
 | Biome | 2.6.7 |
 | Playwright | 1.65.0 |
 | `@modelcontextprotocol/sdk` | (add when installed) |
