@@ -26,6 +26,16 @@ jobs:
       - run: pnpm run --if-present dc validate
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm e2e
+      # Screenshots for the pull request: every static screen and gallery
+      # section at 390, 768 and 1280 px, from e2e/evidence.spec.ts. Uploaded
+      # even when a test fails, so a failure can be seen.
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: evidence/
+          if-no-files-found: warn
+          retention-days: 30
       - run: pnpm build
       - if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3

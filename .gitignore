@@ -7,6 +7,8 @@ dist/
 # Test output
 test-results/
 playwright-report/
+# Screenshots made by e2e/evidence.spec.ts; CI uploads them as an artifact.
+evidence/
 coverage/
 
 # Python (managed with uv)
