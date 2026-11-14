@@ -584,3 +584,206 @@ Notes on specific codes:
 - `CYCLE` is reported once for each group of facts that depend on each other. The path starts at the alphabetically first fact. A fact that reads itself gets a message of the form `Fact 'a' depends on itself: rule 'R-1' sets it from an expression that reads it.`
 - A fact with a `role` that is not derived gets `SCHEMA_INVALID`. When its type is also wrong for the role, it gets both `SCHEMA_INVALID` and `ROLE_TYPE_MISMATCH`, once each, with `ROLE_TYPE_MISMATCH` first. An invalid `role` or `type` value gets only `SCHEMA_INVALID`.
 - `PARSE_ERROR` is also used when a number literal is too large to be finite, and when an expression is nested too deeply to parse or to type-check.
+
+## Golden scenarios
+
+A golden scenario is a regression test for a knowledge base. It states the facts given and the verdict the engine must reach. If a rule is misread from its clause, or edited later, a scenario's result changes and `pnpm dc golden` fails.
+
+### Where a golden file lives
+
+A golden file is a YAML file at `apps/<app>/golden/<name>.yaml`. It sits outside `kb/` on purpose: `pnpm dc validate` and `pnpm dc build` read only `apps/<app>/kb/*.yaml`, so they never see a golden file and never report a problem in one.
+
+`pnpm dc golden` runs the scenarios. It compiles each knowledge base in memory, exactly as `pnpm dc build` would, and runs every scenario against the result. It writes no file. With no path it runs every `apps/*/golden/*.yaml`. It also accepts golden files and `apps/<app>` directories, relative to the repository root. The exit status is 0 when there is no error, 1 when there is an error, and 2 for a usage problem (an unknown option such as `--json`, or a path that matches no golden file).
+
+### The file
+
+| Field | Required | What it holds |
+| --- | --- | --- |
+| `kb` | yes | The `id` of the knowledge base the file runs against. It must name exactly one knowledge base in `apps/<app>/kb/`. |
+| `scenarios` | yes | A list of at least one scenario. |
+
+Any other field is an error. A scenario is a mapping with these fields:
+
+| Field | Required | What it holds |
+| --- | --- | --- |
+| `id` | yes | Letters, digits, `_` and `-`, starting with a letter or a digit. Unique across all the golden files of one app. |
+| `title` | yes | Plain words that say what the scenario shows. It is printed when the scenario fails. |
+| `mode` | no | `consult` (the default) or `audit`. |
+| `facts` | yes | A mapping from fact name to value, possibly empty. Only facts that are not derived. |
+| `expect` | yes | What the engine must return. |
+
+`expect` takes one of two forms. The first has a single field, `ask`, and is only for `consult`:
+
+| Form | Fields | Meaning |
+| --- | --- | --- |
+| Question | `ask: <fact>` | The engine must still be asking, and its next question must be for that fact. `ask` is the only field of `expect`. |
+| Verdict | `goals` (required), `line_items`, `needed`, `fires` | The engine must reach a verdict that matches. |
+
+The fields of a verdict:
+
+- `goals` lists every goal of the knowledge base, each with its expected value, or `null` for unknown. A goal left out is an error, so a scenario cannot leave a goal unchecked.
+- `line_items` is optional. When present it must match the verdict's line items exactly: the same facts, no more and no fewer, each with its expected value or `null`. Only facts that have a `role` are line items.
+- `needed` is only for `audit`. It lists, in order, the facts of the questions still needed. When it is left out, no question may be needed.
+- `fires` is optional. It lists rule ids that must have fired. Other rules may have fired too.
+
+### Values
+
+| Fact type | In `facts` and `expect` |
+| --- | --- |
+| `boolean` | `true` or `false` |
+| `number` | A finite number |
+| `money` | A whole number of minor units, such as `595000` for 5,950.00. Never a decimal. |
+| `date` | `YYYY-MM-DD`, a real day from year 0001 to 9999. YAML reads `2024-01-01` without quotes as a string, which is what is wanted. |
+| `enum` | One of the fact's `options` |
+
+`null` means unknown. It is allowed only in `expect.goals` and `expect.line_items`. A `null` in `facts` is a `BAD_VALUE` error: to leave a fact unanswered, leave it out.
+
+### How a scenario runs
+
+A scenario runs on its own, with no state from another scenario.
+
+- A `consult` scenario starts a session, answers each fact in `facts` in the order written, and then asks the engine for its next step. That step is a question or a verdict. The order of the answers does not change the result.
+- An `audit` scenario gives all of `facts` to the engine at once and takes the verdict. Facts left out are unknown, and the questions they would need are listed in the verdict's `needed`.
+
+Collected facts, such as those that Pre-Flight reads from GitHub, go in `facts` like any other fact that is not derived.
+
+### What "fires" means, and coverage
+
+A rule fires in a scenario when its id appears as the deciding rule on any node of the proof of a goal or of a line item. A rule whose guard was false, and a rule that was never reached, did not fire.
+
+A rule is covered when at least one passing scenario fires it. `pnpm dc golden` reports each uncovered rule as an error, `RULE_NOT_COVERED`, so that every rule is tested at least once. A scenario that fails or stops with an engine error covers nothing. Coverage and the scenario count are checked only on a run that holds every golden file of the app: a run with no path, or with an `apps/<app>` directory. A run given single golden file paths reports scenario results only.
+
+The build plan asks for at least 12 scenarios per knowledge base. With fewer, `pnpm dc golden` prints a warning, `TOO_FEW_SCENARIOS`, which does not change the exit status.
+
+### Example
+
+This knowledge base applies a room-rent limit of 1% of the sum insured:
+
+```yaml
+id: claim-check
+currency: INR
+goals: [room_rent_excess]
+
+facts:
+  room_rent_per_day:
+    type: money
+    ask: What was the room rent per day?
+  sum_insured: { type: money, ask: What is the sum insured on the policy? }
+  room_rent_cap: { type: money, derived: true }
+  room_rent_excess:
+    type: money
+    derived: true
+    role: deduction
+    label: Room rent over the limit
+
+rules:
+  - id: ROOM-01
+    cite: "4.2"
+    set: room_rent_cap
+    to: round(sum_insured * 0.01)
+    because: The room rent limit is 1% of the sum insured per day.
+  - id: ROOM-02
+    cite: "4.2"
+    set: room_rent_excess
+    when: room_rent_per_day > room_rent_cap
+    to: room_rent_per_day - room_rent_cap
+    because: The part of the rent above the limit, {room_rent_cap}, is not covered.
+  - id: ROOM-03
+    cite: "4.2"
+    set: room_rent_excess
+    to: 0
+    because: Rent within the limit has no deduction.
+
+clauses:
+  "4.2":
+    title: Room rent limit
+    text: Room rent is covered up to 1% of the sum insured per day.
+```
+
+And this golden file, at `apps/claim-check/golden/room-rent.yaml`, runs it four ways: a consult run that reaches a verdict, an audit run, a consult run that stops at a question, and an audit run with an unknown goal:
+
+```yaml
+kb: claim-check
+scenarios:
+  - id: G-01
+    title: Room rent over the limit
+    facts:
+      sum_insured: 500000
+      room_rent_per_day: 600000
+    expect:
+      goals:
+        room_rent_excess: 595000
+      line_items:
+        room_rent_excess: 595000
+      fires: [ROOM-01, ROOM-02]
+
+  - id: G-02
+    title: Room rent within the limit
+    mode: audit
+    facts:
+      sum_insured: 500000
+      room_rent_per_day: 4000
+    expect:
+      goals:
+        room_rent_excess: 0
+      fires: [ROOM-03]
+
+  - id: G-03
+    title: Nothing answered yet, so the first question
+    facts: {}
+    expect:
+      ask: room_rent_per_day
+
+  - id: G-04
+    title: Only the rent is known
+    mode: audit
+    facts:
+      room_rent_per_day: 600000
+    expect:
+      goals:
+        room_rent_excess: null
+      needed: [sum_insured]
+```
+
+Run on its own, this file passes all four scenarios, covers `ROOM-01`, `ROOM-02` and `ROOM-03`, and gives one warning: it has 4 scenarios, not 12.
+
+### The summary line
+
+Every `pnpm dc golden` run ends with one line of this form, and a clean run prints nothing else:
+
+```text
+<F> files, <S> scenarios run, <P> passed, <C> of <R> rules covered, <E> errors, <W> warnings
+```
+
+`<C> of <R>` counts the rules of the knowledge bases whose coverage was checked. It reads `0 of 0` when the run was given single files or had no golden file. A run with nothing to do prints `0 files, 0 scenarios run, 0 passed, 0 of 0 rules covered, 0 errors, 0 warnings` and exits 0.
+
+### Golden codes
+
+`pnpm dc golden` prints each problem as `<file>: <severity> <code> [<id>] <message>`, with `[<id>]` only when the problem has an id. Lines are sorted by app, then by golden file path and the position of the scenario in the file, then by code. The lines about rule coverage come last and name the knowledge-base file. The messages below show the form. The names and values in them change from case to case.
+
+| Code | Severity | `id` | Example message |
+| --- | --- | --- | --- |
+| `READ_ERROR` | error | none | `Cannot read 'apps/x/golden/y.yaml': ENOENT (no such file or directory).` |
+| `YAML_SYNTAX` | error | none | `YAML syntax error at line 3, column 1: BAD_INDENT: Flow sequence in block collection must be sufficiently indented and end with a ]` |
+| `SCHEMA_INVALID` | error | scenario id | `Unknown field 'colour' in scenario 'G-01'. Allowed fields: id, title, mode, facts, expect.` |
+| `UNKNOWN_FACT` | error | scenario id | `Fact 'nope' is not in the knowledge base 'claim-check'.` |
+| `KB_NOT_FOUND` | error | none | `No knowledge base with id 'claim-check' in apps/claim-check/kb.` |
+| `KB_AMBIGUOUS` | error | none | `More than one knowledge base in apps/claim-check/kb has id 'claim-check': a.yaml, b.yaml.` |
+| `KB_INVALID` | error | none | `The knowledge base 'apps/claim-check/kb/policy.yaml' has errors. Run dc validate first.` |
+| `DUPLICATE_SCENARIO` | error | scenario id | `Scenario id 'G-01' is already used by scenario 1 of apps/claim-check/golden/a.yaml.` |
+| `NOT_ASKABLE` | error | scenario id | `Fact 'room_rent_cap' is worked out by rules, so a scenario cannot give it. Give the facts it depends on.` |
+| `BAD_VALUE` | error | scenario id | `Value 1.5 for fact 'sum_insured' is not a whole number of minor units.` |
+| `UNKNOWN_RULE` | error | scenario id | `Rule 'R-9' is not in the knowledge base.` |
+| `SCENARIO_FAILED` | error | scenario id | `Scenario 'G-01' (Room rent over the limit) failed: goals.room_rent_excess expected 595000, observed 0` |
+| `ENGINE_ERROR` | error | scenario id | `Scenario 'G-01' (Room rent over the limit) stopped: the engine threw INVALID_ANSWER: Value for fact "age" is not a valid number.` |
+| `RULE_NOT_COVERED` | error | rule id | `No passing scenario fires rule 'ROOM-03'.` |
+| `TOO_FEW_SCENARIOS` | warning | none | `Knowledge base 'claim-check' has 4 scenarios; the build plan asks for at least 12.` |
+
+Notes on specific codes:
+
+- `READ_ERROR`, `YAML_SYNTAX` and `SCHEMA_INVALID` mean what they mean for a knowledge base. A golden file larger than 1 MiB is `SCHEMA_INVALID`, and a file that is not valid UTF-8 is `READ_ERROR`. `SCHEMA_INVALID` also reports a missing, extra or misspelled field, a wrong type, and an `expect.goals` that does not list exactly the goals of the knowledge base (`expect.goals must list exactly the goals of the knowledge base. Missing: a. Not a goal: b.`).
+- `UNKNOWN_FACT` also covers a name in `expect.goals`, `expect.line_items`, `expect.ask` or `expect.needed` that is not a fact, and a line-item name that has no `role`. `NOT_ASKABLE` covers a derived fact given in `facts`, or named in `ask` or `needed`.
+- A scenario with a `UNKNOWN_FACT`, `NOT_ASKABLE`, `BAD_VALUE`, `UNKNOWN_RULE`, `DUPLICATE_SCENARIO` or fit-time `SCHEMA_INVALID` error is not run. The other scenarios of the file still run.
+- `KB_NOT_FOUND`, `KB_AMBIGUOUS` and `KB_INVALID` stop the whole file: none of its scenarios run.
+- `SCENARIO_FAILED` lists each difference as `<field> expected <x>, observed <y>`, joined by `; `. The fields are `outcome` (a verdict was expected and a question came, or the reverse), `ask`, `goals.<name>`, `line_items.<name>`, `needed` and `fires`, in that order. A line item that is missing or extra reads `no such line item`. An unknown value reads `unknown`.
+- `RULE_NOT_COVERED` and `TOO_FEW_SCENARIOS` name the knowledge-base file and not the golden file.

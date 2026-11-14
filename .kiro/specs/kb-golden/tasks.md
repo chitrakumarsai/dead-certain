@@ -167,11 +167,11 @@ This plan writes no golden scenarios for the real apps. Those come in Phase 2, a
     - _Requirements: 8.1, 8.3, 8.4, 13.3_
 
 - [ ] 9. Documentation and the agent prompt
-  - [ ] 9.1 Add "Golden scenarios" to `docs/kb-format.md`
+  - [x] 9.1 Add "Golden scenarios" to `docs/kb-format.md`
     - Ask the user to confirm this edit before making it (shared documentation). Add a section "Golden scenarios" with: where a golden file lives and why it is outside `kb/`; the file shape and the scenario fields; the `expect` block in its two forms; the value rules per fact type (money in minor units, dates `YYYY-MM-DD`, `null` for unknown); how a consult scenario and an audit scenario run; what "fires" and coverage mean; one worked example (the design's example, corrected against the finished code); the table of the 15 golden codes with severity, `id` and an example message; the summary line.
     - _Requirements: 13.1_
 
-  - [ ] 9.2 Write the golden catalogue test
+  - [x] 9.2 Write the golden catalogue test
     - `src/golden/catalogue.test.ts`: every code in `GOLDEN_ERROR_CODES` and `GOLDEN_WARNING_CODES` appears in the new section of `docs/kb-format.md` with its severity; the worked example in the document loads with `loadGolden`, passes `checkGolden` against the document's own knowledge-base example, and passes `runGolden`. Read the file through Vite's `?raw` glob, as `kb-format-notes.test.ts` does.
     - _Requirements: 13.1_
 

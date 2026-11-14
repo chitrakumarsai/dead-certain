@@ -11,7 +11,7 @@ What I read before designing, and what it implies:
 | `packages/kb-tools/src/index.ts` | Exports `validateText`, `validateRaw`, `compileText`, `loadText`, `readKbFile`, `runCli`, the `Host` interface and the diagnostic types. `Diagnostic.code` is a closed union, `DiagnosticCode`. | Golden gets its own `GoldenDiagnostic` and `GoldenCode` types with the same fields. The KB code list, its catalogue test and its table in `kb-format.md` stay untouched. |
 | `src/cli/run.ts`, `args.ts`, `discover.ts` | `runCli(argv, host)` is pure apart from the `Host`. `Command` is `"validate" \| "build"`. Discovery matches `^apps/[^/]+/kb/[^/]+\.yaml$` and rejects every other path with exit 2. | `golden` is a third command with its own discovery regex. The KB regex is not loosened, so `dc validate` can never read `golden/` (Requirement 1). |
 | `src/cli/host.ts` | `Host` has `readFile`, `readDir`, `stat`, `writeFile`, `makeDir`, `cwd`. | `dc golden` uses only the three read methods. A test passes a `Host` whose `writeFile` and `makeDir` throw (Requirement 1, criterion 5). |
-| `src/load/yaml-load.ts` | `loadText` parses YAML with `yaml`, enforces the 1 MiB limit, alias and depth limits, duplicate keys and non-string keys, and returns `YAML_SYNTAX` or `SCHEMA_INVALID` with a location. It is shaped by the knowledge-base file (a `facts` and a `clauses` context). | The golden loader reuses it for the YAML stage, so the limits and messages are the same. Task 1 checks that a golden `facts` mapping nested inside `scenarios` is not read as the top-level `facts` context. If it is, the context becomes a parameter. |
+| `src/load/yaml-load.ts` | `loadText` parses YAML with `yaml`, enforces the 1 MiB limit, alias and depth limits, duplicate keys and non-string keys, and returns `YAML_SYNTAX` or `SCHEMA_INVALID` with a location. It is shaped by the knowledge-base file (a `facts` and a `clauses` context). | The golden loader reuses it for the YAML stage, so the limits and messages are the same. A golden `facts` mapping nested inside `scenarios` is not read as the top-level `facts` context (a test pins it). The empty-file message names its subject through an optional third parameter, which defaults to the knowledge-base wording, so a golden file reads "A golden file is a YAML mapping". |
 | `src/schema.ts` | `shown(value)` turns a bad value into message text and, after the `kb-validate-never-throws` fix, never throws. It is not exported. | Export it and use it for every value a golden message prints, so one function owns "never throws". |
 | `src/compile.ts` | `compileText(text, file)` returns `{ ok: true, kb, json, diagnostics }` or `{ ok: false, diagnostics }`. | `dc golden` calls it for each KB_File. `kb-tools` Requirement 17 says a compiled knowledge base is accepted by `start`. |
 | `packages/engine/src/types.ts`, `explain.ts` | `start`, `answer`, `next`, `audit`, `explain` are public. `next` returns a `Question` or a `Verdict` whose `needed` is empty. `audit` returns a `Verdict` whose `needed` lists the questions for unknown facts. `explain(session, fact)` returns a `ProofNode` tree whose `rule` is the deciding rule, and throws the same `EngineError` codes `next` would. | A scenario's session is built by folding `answer` over `facts`, in both modes, so `explain` is always called on a real session. The Fired_Rules are read from the `rule` fields of those trees. |
@@ -40,7 +40,7 @@ Rows marked "Approved" departed from the requirements text. The human approved a
 | 6 | **A failure difference may have the field `outcome`.** It says `a verdict` was expected and `a question for '<fact>'` was observed, or the reverse. In the printed order it comes first: `outcome`, `ask`, `goals`, `line_items`, `needed`, `fires`. | The requirements list the fields but not the case where the kind of Outcome differs, which is the most common failure of a consult scenario that asks one question too many or too few. | Approved |
 | 7 | **A knowledge base is found by the `id` text in its YAML**, read with `loadText` from `raw.id`, even when the file has other errors. | Requirement 6.4 must say `KB_INVALID` for a knowledge base with errors, so the match cannot depend on a successful compile. A file with no readable string `id` matches nothing. | Decided |
 | 8 | **`facts` is an ordered record.** Its key order is the order of answers in a consult run. | The engine is order independent (Property 4), so the order only decides which error shows first. A record is simpler for Playwright than a list of pairs. Fact names never look like integers, so JavaScript keeps their order. | Decided |
-| 9 | **Dates are checked by arithmetic.** `isCalendarDate(text)` matches `YYYY-MM-DD` and checks the month length, with leap years. It uses no `Date`. | The source scan forbids `Date` outside the host files, and the engine's own calendar helper is not exported. A property test shows every date it accepts is also accepted by the engine's `answer`. | Decided |
+| 9 | **Dates are checked by arithmetic.** `isCalendarDate(text)` matches `YYYY-MM-DD` and checks the month length, with leap years, in years 0001 to 9999, the range the engine accepts (Property 9 found that the first draft accepted year 0000). It uses no `Date`. | The source scan forbids `Date` outside the host files, and the engine's own calendar helper is not exported. A property test shows every date it accepts is also accepted by the engine's `answer`. | Decided |
 | 10 | **`safe integer` for money.** A `money` value must satisfy `Number.isSafeInteger`. | The engine's `answer` rejects other values with `INVALID_ANSWER`, and a scenario must not claim a value the engine refuses. | Decided |
 
 ---
@@ -124,8 +124,12 @@ export interface Scenario {
 	readonly id: string;
 	readonly title: string;
 	readonly mode: "consult" | "audit";
-	/** Order is the order of answers in a consult run. No null values. */
-	readonly facts: Readonly<Record<string, FactValue>>;
+	/**
+	 * Order is the order of answers in a consult run. The loader lets `null`
+	 * through so that `checkGolden` can report it (BAD_VALUE, Requirement 3,
+	 * criterion 5); a scenario that passed the check holds none.
+	 */
+	readonly facts: Readonly<Record<string, GoldenValue>>;
 	readonly expect: Expectation;
 }
 
@@ -254,7 +258,7 @@ For each scenario, in order. A scenario with an error here is dropped from `runn
 | A value has the wrong type | `BAD_VALUE` | `Value 7 for fact 'x' is not a boolean.` The type phrase is `a boolean`, `a number`, `a whole number of minor units` (money), `a date written YYYY-MM-DD`, or `one of a, b, c` (enum). A `null` in `facts` is `BAD_VALUE` with `is not allowed in facts; null means unknown only in expect`. |
 | A key of `expect.goals` or `expect.lineItems` is not a fact or goal | `UNKNOWN_FACT` | as above, with `field` `expect.goals` or `expect.line_items` |
 | `expect.goals` misses or adds a goal | `SCHEMA_INVALID` | `expect.goals must list exactly the goals of the knowledge base. Missing: a, b. Not a goal: c.` |
-| A line-item key is not a `role` fact, or an expected value has the wrong type | `UNKNOWN_FACT`, `BAD_VALUE` | as above |
+| A line-item key has no `role`, or an expected value has the wrong type | `UNKNOWN_FACT`, `BAD_VALUE` | `Fact 'x' is not a line item of the knowledge base 'claim-check': it has no role.`, then as above |
 | `ask` or a name in `needed` is not an askable fact | `UNKNOWN_FACT`, `NOT_ASKABLE` | as above |
 | A rule id in `fires` is not a rule | `UNKNOWN_RULE` | `Rule 'R-9' is not in the knowledge base.` |
 
@@ -279,7 +283,7 @@ The constant `MINIMUM_SCENARIOS = 12` is exported. A scenario that passed with o
 `dc golden [path...]`:
 
 1. `parseArgs` accepts `golden` with the same rules as `validate` (no flag starts with `-`; so `--json` is a usage error, which is decision 4 of the human).
-2. `discoverGolden(paths, host)` returns the root, the Golden_Files (root-relative, sorted) and whether the run is a **whole-app run** (no path, or only `apps/<app>` directories). An explicit path that matches no Golden_File is a usage error (exit 2).
+2. `discoverGolden(paths, host)` returns the root, the Golden_Files (root-relative, sorted) and `wholeApps`, the apps for which the run holds every Golden_File: all apps when no path is given, otherwise the `apps/<app>` directories that were passed (a **whole-app run** of that app). An explicit path that matches no Golden_File is a usage error (exit 2).
 3. For each app in the run, list `apps/<app>/kb/*.yaml`, read each, and `compileText` it. Index the files by `raw.id` (decision 7).
 4. For each Golden_File, in path order: `readKbFile`-style read (same size and UTF-8 checks, same `READ_ERROR`); `loadGolden`; find the knowledge base by `kb` (`KB_NOT_FOUND`, `KB_AMBIGUOUS`, `KB_INVALID`); `checkGolden`; collect `runnable`.
 5. After all files of an app: `duplicateIds`; then `runGolden` per file.
