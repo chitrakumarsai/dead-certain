@@ -100,7 +100,7 @@ function Frame({ appName, nav, rail, footer, children }: AppShellProps) {
 					event.preventDefault();
 					mainRef.current?.focus();
 				}}
-				className="sr-only rounded-control bg-surface px-3 py-2 text-sys-body text-text focus:not-sr-only focus:absolute focus:top-2 focus:left-2"
+				className="sr-only rounded-control bg-surface text-sys-body text-text focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:inline-flex focus:min-h-touch focus:items-center focus:px-3"
 			>
 				Skip to the content
 			</a>

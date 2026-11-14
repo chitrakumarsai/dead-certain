@@ -67,6 +67,8 @@ export function Ledger({
 						<tr
 							key={item.fact}
 							aria-current={item.fact === selectedFact ? "true" : undefined}
+							// The row is the button's hit area, through its stretched overlay.
+							data-hit-area
 							className="relative transition-colors duration-(--dur-press) ease-kit hover:bg-text/10 has-focus-visible:outline-2 has-focus-visible:outline-focus has-focus-visible:outline-solid aria-[current=true]:bg-text/10 aria-[current=true]:font-semibold"
 						>
 							<th scope="row" className={LABEL}>

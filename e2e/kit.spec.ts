@@ -1,4 +1,9 @@
-import { expect, expectNoAxeViolations, test } from "./kit-fixtures";
+import {
+	expect,
+	expectNoAxeViolations,
+	test,
+	waitForKit,
+} from "./kit-fixtures";
 
 test("kit page has a clean console and no axe violations", async ({
 	page,
@@ -45,6 +50,7 @@ test("the skip link is the first stop and moves focus to the content", async ({
 	await expect(page.getByRole("heading", { level: 1 })).toHaveText(
 		"Component kit",
 	);
+	await waitForKit(page);
 	await page.keyboard.press("Tab");
 	await expect(
 		page.getByRole("link", { name: "Skip to the content" }),
@@ -160,6 +166,7 @@ test("kit page loads the tokens: lightbox background and a token focus ring", as
 		"background-color",
 		"rgb(237, 242, 243)",
 	);
+	await waitForKit(page);
 	await page.keyboard.press("Tab");
 	const skipLink = page.getByRole("link", { name: "Skip to the content" });
 	await expect(skipLink).toHaveCSS("outline-color", "rgb(31, 111, 235)");
@@ -186,6 +193,7 @@ test("kit page uses the Tailwind theme: token type and spacing classes apply", a
 test("forced colors keeps the focus ring as an outline", async ({ page }) => {
 	await page.emulateMedia({ forcedColors: "active" });
 	await page.goto("./kit/");
+	await waitForKit(page);
 
 	await page.keyboard.press("Tab");
 	const skipLink = page.getByRole("link", { name: "Skip to the content" });
