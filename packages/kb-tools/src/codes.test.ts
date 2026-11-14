@@ -250,6 +250,16 @@ const TABLE: Record<DiagnosticCode, Row> = {
 		"R-1",
 		kb({ rules: rule({ to: "round(rent * 0.01)" }) }),
 	),
+	ROLE_TYPE_MISMATCH: row(
+		"error",
+		kb({
+			facts: `${FACTS}  rent_check:\n    type: number\n    derived: true\n    role: check\n`,
+		}),
+		"rent_check",
+		kb({
+			facts: `${FACTS}  rent_check:\n    type: boolean\n    derived: true\n    role: check\n`,
+		}),
+	),
 	NO_FALLBACK_RULE: row(
 		"warning",
 		kb({
@@ -289,9 +299,9 @@ function declaredCodes(): string[] {
 }
 
 describe("diagnostic code table", () => {
-	it("has a row for every code in DiagnosticCode, and 22 of them", () => {
+	it("has a row for every code in DiagnosticCode, and 23 of them", () => {
 		const declared = declaredCodes();
-		expect(declared).toHaveLength(22);
+		expect(declared).toHaveLength(23);
 		expect(Object.keys(TABLE).sort()).toEqual([...declared].sort());
 	});
 

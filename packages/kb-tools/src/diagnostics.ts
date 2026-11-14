@@ -22,7 +22,8 @@ export type ErrorCode =
 	| "SET_NON_DERIVED"
 	| "TYPE_MISMATCH"
 	| "NOT_BOOLEAN"
-	| "MONEY_NOT_ROUNDED";
+	| "MONEY_NOT_ROUNDED"
+	| "ROLE_TYPE_MISMATCH";
 
 export type WarningCode = "NO_FALLBACK_RULE" | "DEAD_GUARD";
 

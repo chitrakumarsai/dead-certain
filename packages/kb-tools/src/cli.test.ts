@@ -39,7 +39,7 @@ const WARN = [
 	"    type: boolean",
 	"    ask: Is a true?",
 	"  out:",
-	"    type: number",
+	"    type: money",
 	"    derived: true",
 	"    role: deduction",
 	"rules:",

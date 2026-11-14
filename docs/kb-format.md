@@ -38,7 +38,7 @@ Each key is a fact name. Each value is a fact definition. Fact names are the bar
 | `why` | string | optional | Why the question matters. Shown with the question. |
 | `derived` | boolean | optional | Marks a fact that rules compute, rather than one the user answers or an app collects. |
 | `options` | array of strings | optional | The allowed values. Used when `type` is `enum`. |
-| `role` | `deduction` or `check` | optional | Marks facts the interface lists as line items. |
+| `role` | `deduction` or `check` | optional | Marks facts the interface lists as line items. A `deduction` fact must have type `money`. A `check` fact must have type `boolean`. Any other type is reported as `ROLE_TYPE_MISMATCH`. |
 | `label` | string | optional | Display name shown on ledger lines. When absent, the engine derives one from the fact name: underscores become spaces and the first letter is capitalised. |
 
 ## The `rules` array
@@ -540,7 +540,7 @@ These notes record what the engine assumes about a knowledge base, so the `kb-to
 
 ## Diagnostic codes
 
-`pnpm dc validate` and `pnpm dc build` report problems as diagnostics. Each diagnostic has a `severity`, a `code`, the `file`, and a `message`. It may also have an `id` (the rule id, fact name or clause id it is about) and a `field` (`to` or `when` for an expression, or the offending key for a schema problem). There are 22 codes. 20 are errors and 2 are warnings.
+`pnpm dc validate` and `pnpm dc build` report problems as diagnostics. Each diagnostic has a `severity`, a `code`, the `file`, and a `message`. It may also have an `id` (the rule id, fact name or clause id it is about) and a `field` (`to` or `when` for an expression, or the offending key for a schema problem). There are 23 codes. 21 are errors and 2 are warnings.
 
 - An error means the knowledge base is not valid. `pnpm dc build` writes no output while any error is present.
 - A warning does not stop a build. It points at something that is probably a mistake.
@@ -570,6 +570,7 @@ The `id` column says what the `id` of the diagnostic holds. "none" means the dia
 | `TYPE_MISMATCH` | error | rule id | `Rule 'ROOM-02' field 'when': '==' compares date with enum in 'admit_date == 'gold''.` |
 | `NOT_BOOLEAN` | error | rule id | `Rule 'ROOM-03' field 'when' must be boolean but has type number.` |
 | `MONEY_NOT_ROUNDED` | error | rule id | `Rule 'ROOM-03' sets money fact 'room_rent_excess' from 'sum_insured * 0.01', which can produce a fraction. Wrap the expression in round(...).` |
+| `ROLE_TYPE_MISMATCH` | error | fact name | `Fact 'room_rent_excess' has role 'deduction' but its type is 'number'. A deduction fact must have type money. Change the type or remove the role.` |
 | `NO_FALLBACK_RULE` | warning | fact | `Deduction fact 'room_rent_excess' has no rule without a 'when' guard, so the engine reports it as undefined whenever every guard is false. Add an unguarded default rule.` |
 | `DEAD_GUARD` | warning | rule id | `Rule 'ROOM-04' has a guard that can never be true: 'rent_over_cap and not rent_over_cap'. The rule never fires.` |
 
@@ -581,4 +582,5 @@ Notes on specific codes:
 - `YAML_SYNTAX` also covers a duplicate key outside `facts` and `clauses`. Its `id` is absent and its `field` is the repeated key. A duplicate key inside `facts` or `clauses` is `DUPLICATE_FACT` or `DUPLICATE_CLAUSE`. For all three, the first definition is the one used.
 - `UNKNOWN_FACT` adds the hint about an enum literal only when the whole expression is a bare identifier, which is what YAML leaves of a quoted literal (see "Validator note: quoted literals that YAML strips"). In any other expression the message is `Fact 'x' is not defined.`
 - `CYCLE` is reported once for each group of facts that depend on each other. The path starts at the alphabetically first fact. A fact that reads itself gets a message of the form `Fact 'a' depends on itself: rule 'R-1' sets it from an expression that reads it.`
+- A fact with a `role` that is not derived gets `SCHEMA_INVALID`. When its type is also wrong for the role, it gets both `SCHEMA_INVALID` and `ROLE_TYPE_MISMATCH`, once each, with `ROLE_TYPE_MISMATCH` first. An invalid `role` or `type` value gets only `SCHEMA_INVALID`.
 - `PARSE_ERROR` is also used when a number literal is too large to be finite, and when an expression is nested too deeply to parse or to type-check.

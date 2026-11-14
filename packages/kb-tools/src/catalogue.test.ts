@@ -65,16 +65,16 @@ describe("Diagnostic codes catalogue in docs/kb-format.md", () => {
 	]);
 	const rows = catalogueRows();
 
-	it("diagnostics.ts declares 22 codes: 20 errors and 2 warnings", () => {
-		expect(errors).toHaveLength(20);
+	it("diagnostics.ts declares 23 codes: 21 errors and 2 warnings", () => {
+		expect(errors).toHaveLength(21);
 		expect(warnings).toHaveLength(2);
-		expect(expected.size).toBe(22);
+		expect(expected.size).toBe(23);
 	});
 
 	it("lists exactly the codes of diagnostics.ts, each once", () => {
 		const listed = rows.map((r) => r.code);
-		expect(listed).toHaveLength(22);
-		expect(new Set(listed).size).toBe(22);
+		expect(listed).toHaveLength(23);
+		expect(new Set(listed).size).toBe(23);
 		expect([...listed].sort()).toEqual([...expected.keys()].sort());
 	});
 

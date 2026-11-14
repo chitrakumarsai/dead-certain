@@ -84,7 +84,7 @@ function warningOnlyKb(deductions: number): string {
 	for (let i = 0; i < deductions; i++) {
 		lines.push(
 			`  d${i}:`,
-			"    type: number",
+			"    type: money",
 			"    derived: true",
 			"    role: deduction",
 		);

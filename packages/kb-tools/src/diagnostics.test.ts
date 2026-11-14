@@ -32,11 +32,12 @@ const ERRORS: readonly DiagnosticCode[] = [
 	"TYPE_MISMATCH",
 	"NOT_BOOLEAN",
 	"MONEY_NOT_ROUNDED",
+	"ROLE_TYPE_MISMATCH",
 ];
 
 describe("severity of each code", () => {
-	it("has 20 error codes", () => {
-		expect(ERRORS).toHaveLength(20);
+	it("has 21 error codes", () => {
+		expect(ERRORS).toHaveLength(21);
 		for (const code of ERRORS) {
 			expect(severityOf(code)).toBe("error");
 			expect(makeDiagnostic(code, "f.yaml", "m").severity).toBe("error");
