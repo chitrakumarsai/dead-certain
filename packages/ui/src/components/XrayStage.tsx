@@ -1,5 +1,3 @@
-import { domAnimation, LazyMotion } from "motion/react";
-import * as m from "motion/react-m";
 import {
 	type ReactNode,
 	useEffect,
@@ -29,30 +27,10 @@ export interface XrayStageProps {
 
 const WIDE = "(min-width: 1280px)";
 
-type Timing = { duration: number; ease: [number, number, number, number] };
-
-/** The develop's timing, read from the motion tokens so CSS stays the source. */
-function developTiming(): Timing {
-	const style = getComputedStyle(document.documentElement);
-	// The built CSS minifies "500ms" to ".5s", so the unit must be read.
-	const raw = style.getPropertyValue("--dur-xray").trim();
-	const value = Number.parseFloat(raw);
-	const ms = Number.isFinite(value)
-		? raw.endsWith("ms")
-			? value
-			: value * 1000
-		: 500;
-	const curve = style
-		.getPropertyValue("--ease")
-		.match(/cubic-bezier\(([^)]+)\)/)?.[1]
-		?.split(",")
-		.map(Number);
-	const isCurve = curve?.length === 4 && curve.every(Number.isFinite);
-	return {
-		duration: ms / 1000,
-		ease: isCurve ? (curve as Timing["ease"]) : [0.2, 0, 0, 1],
-	};
-}
+// The develop is the kit's only use of Motion, so it loads on demand and Motion
+// stays out of the main bundle. The stage starts the load when it mounts.
+type Develop = typeof import("./xrayDevelop");
+const loadDevelop = (): Promise<Develop> => import("./xrayDevelop");
 
 /** Where focus goes on close: the opener, else the sheet's first heading. */
 function returnFocus(opener: HTMLElement | null, sheet: HTMLElement | null) {
@@ -67,78 +45,32 @@ function returnFocus(opener: HTMLElement | null, sheet: HTMLElement | null) {
 }
 
 /**
- * The develop: a 2 px film-coloured line crosses the sheet once. Left to
- * right beside the sheet, top to bottom below 1280 px.
- */
-function ScanLine({ isWide }: { isWide: boolean }) {
-	const [isDone, setDone] = useState(false);
-	const [timing] = useState(developTiming);
-	return (
-		// The moving layer ends a full sheet past its edge; the clip keeps it from
-		// widening the page.
-		<div
-			aria-hidden="true"
-			className="pointer-events-none absolute inset-0 overflow-hidden"
-		>
-			<m.div
-				data-scan-line
-				data-direction={isWide ? "across" : "down"}
-				initial={isWide ? { x: "0%" } : { y: "0%" }}
-				animate={isWide ? { x: "100%" } : { y: "100%" }}
-				transition={timing}
-				onAnimationComplete={() => setDone(true)}
-				className={`absolute inset-0 ${isDone ? "invisible" : ""}`}
-			>
-				<div
-					className={
-						isWide
-							? "absolute inset-y-0 left-0 w-0.5 bg-film"
-							: "absolute inset-x-0 top-0 h-0.5 bg-film"
-					}
-				/>
-			</m.div>
-		</div>
-	);
-}
-
-/**
- * Reveals the proof behind the line with clip-path, or fades it in over
- * 120 ms under reduced motion. Mounted once per open, so a new target swaps in
- * with no animation.
+ * Reveals the proof: behind the scan line with clip-path, or a 120 ms CSS fade
+ * under reduced motion. Mounted once per open, so a new target swaps in with
+ * no animation. Whether to animate is fixed at mount: a wrapper that changed
+ * later would remount the proof and lose its state. Opened before the develop
+ * has loaded, the proof simply shows.
  */
 function Reveal({
+	develop,
 	isWide,
 	isReduced,
 	children,
 }: {
+	develop: Develop | null;
 	isWide: boolean;
 	isReduced: boolean;
 	children: ReactNode;
 }) {
-	const [timing] = useState(developTiming);
-	// The direction is fixed when the develop starts; a later resize changes nothing.
-	const [from] = useState(() =>
-		isWide ? "inset(0 100% 0 0)" : "inset(0 0 100% 0)",
-	);
-	if (isReduced) {
-		return (
-			<div
-				data-film-reveal
-				className="transition-opacity duration-(--dur-reduced) ease-kit starting:opacity-0"
-			>
-				{children}
-			</div>
-		);
-	}
+	const [Clip] = useState(() => (isReduced ? null : develop?.ClipReveal));
+	if (Clip) return <Clip isWide={isWide}>{children}</Clip>;
 	return (
-		<m.div
+		<div
 			data-film-reveal
-			initial={{ clipPath: from }}
-			animate={{ clipPath: "inset(0 0% 0% 0)" }}
-			transition={timing}
+			className="transition-opacity duration-(--dur-reduced) ease-kit starting:opacity-0"
 		>
 			{children}
-		</m.div>
+		</div>
 	);
 }
 
@@ -185,6 +117,20 @@ export function XrayStage({
 		wasOpen.current = isOpen;
 	}, [isOpen]);
 
+	const [develop, setDevelop] = useState<Develop | null>(null);
+	useEffect(() => {
+		// Load the develop now, so it is ready before the first open.
+		let isCurrent = true;
+		loadDevelop().then(
+			(module) => isCurrent && setDevelop(module),
+			// Without it the proof still opens, only without the sweep.
+			() => undefined,
+		);
+		return () => {
+			isCurrent = false;
+		};
+	}, []);
+
 	useEffect(() => {
 		if (!heading) return;
 		headingRef.current?.focus();
@@ -192,36 +138,36 @@ export function XrayStage({
 	}, [heading, announce]);
 
 	return (
-		<LazyMotion features={domAnimation} strict>
-			<div
-				data-xray-stage
-				data-film={isOpen && isWide ? "side" : undefined}
-				className="flex flex-col gap-6 lg:flex-row lg:items-start lg:data-[film=side]:flex-col"
-			>
-				{rail && <div className="shrink-0">{rail}</div>}
-				<div className="flex min-w-0 flex-1 items-start gap-6">
-					<div ref={sheetRef} className="relative w-full max-w-column min-w-0">
-						{sheet}
-						{isOpen && !isReduced && <ScanLine isWide={isWide} />}
-					</div>
-					{/* Empty below 1280 px: the bottom sheet renders in a portal. */}
-					<div className="min-w-0 flex-1 empty:hidden">
-						<Film
-							title={heading}
-							presentation={isWide ? "side" : "sheet"}
-							open={isOpen}
-							onClose={onClose}
-							headingRef={headingRef}
-						>
-							{target && (
-								<Reveal isWide={isWide} isReduced={isReduced}>
-									{film(target)}
-								</Reveal>
-							)}
-						</Film>
-					</div>
+		<div
+			data-xray-stage
+			data-film={isOpen && isWide ? "side" : undefined}
+			className="flex flex-col gap-6 lg:flex-row lg:items-start lg:data-[film=side]:flex-col"
+		>
+			{rail && <div className="shrink-0">{rail}</div>}
+			<div className="flex min-w-0 flex-1 items-start gap-6">
+				<div ref={sheetRef} className="relative w-full max-w-column min-w-0">
+					{sheet}
+					{isOpen && !isReduced && develop && (
+						<develop.ScanLine isWide={isWide} />
+					)}
+				</div>
+				{/* Empty below 1280 px: the bottom sheet renders in a portal. */}
+				<div className="min-w-0 flex-1 empty:hidden">
+					<Film
+						title={heading}
+						presentation={isWide ? "side" : "sheet"}
+						open={isOpen}
+						onClose={onClose}
+						headingRef={headingRef}
+					>
+						{target && (
+							<Reveal develop={develop} isWide={isWide} isReduced={isReduced}>
+								{film(target)}
+							</Reveal>
+						)}
+					</Film>
 				</div>
 			</div>
-		</LazyMotion>
+		</div>
 	);
 }

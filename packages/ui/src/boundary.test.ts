@@ -30,7 +30,8 @@ const isEngine = (from: string): boolean =>
 const isMotion = (from: string): boolean =>
 	from === "motion" || from.startsWith("motion/");
 
-const XRAY_STAGE = "components/XrayStage.tsx";
+// The X-ray develop is the kit's only use of Motion; XrayStage loads it on demand.
+const XRAY_STAGE = "components/xrayDevelop.tsx";
 
 /** Why a file breaks the kit's import boundary, one line per breach. */
 function breaches(file: string, source: string): string[] {
@@ -74,7 +75,7 @@ test.each([
 	expect(breaches("components/Ledger.tsx", source).join()).toContain(reason);
 });
 
-test("the scan allows a type import from engine/types and motion in XrayStage", () => {
+test("the scan allows a type import from engine/types and motion in the X-ray develop", () => {
 	expect(
 		breaches(
 			"components/Ledger.tsx",

@@ -122,3 +122,32 @@ test("every SourceBadge shows its word and its shape marker", async ({
 		await expect(badge.locator("svg[data-marker]")).toHaveCount(1);
 	}
 });
+
+for (const url of PAGES) {
+	test(`${url}: scrolling starts no animation`, async ({ page }) => {
+		await page.goto(url);
+		await page.evaluate(() => document.fonts.ready);
+		// Let anything started by the page's own load (the X-ray develop) finish.
+		const line = page.locator("[data-scan-line]");
+		if ((await line.count()) > 0)
+			await expect(line).toHaveClass(/\binvisible\b/);
+		const running = () =>
+			page.evaluate(
+				() =>
+					document
+						.getAnimations()
+						.filter((animation) => animation.playState === "running").length,
+			);
+		const before = await running();
+
+		await page.evaluate(async () => {
+			const step = innerHeight / 2;
+			for (let y = 0; y <= document.documentElement.scrollHeight; y += step) {
+				scrollTo(0, y);
+				await new Promise((resolve) => requestAnimationFrame(resolve));
+			}
+		});
+
+		expect(await running()).toBeLessThanOrEqual(before);
+	});
+}
