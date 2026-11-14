@@ -342,11 +342,12 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
 - [ ] 8. Proof and application frame
   - [ ] 8.1 Build `ProofTree` rendering
     - Render `role="tree"` named "Proof", each node `role="treeitem"` with `aria-level`, `aria-setsize` and `aria-posinset`, parents with a true `aria-expanded`, children in `role="group"`, and a roving `tabindex` with exactly one `0`. Joints (derived with a rule) show the rule id in the Machine voice and the `because` sentence as received; bone ends (answered or collected leaves) show label, value and `SourceBadge`. `undefined` prints "Not known yet". Strokes use `--text-soft`. Initial state comes from `initialTreeState`, or, when the `initialState` prop is supplied, from `normalizeTreeState` (read on mount only; the caller remounts with `key={target}`). Memoise rows by index-path id.
-    - A node whose clause equals `decidingClause` shows a deciding `ClauseQuote` under the rule sentence.
+    - When `decidingClause` names a clause that `clauseFor` returns and at least one node cites, show one deciding `ClauseQuote` after the tree, in a wrapper beside the `role="tree"` element and never inside a treeitem. It shows once however many nodes cite the clause, and stays visible when their branches are closed.
     - Branch cue: every parent shows a `Chevron` (glyph swap closed/open, no rotation, no animation) in a 44 px pointer toggle that is not a tab stop; closed parents also show an `aria-hidden` "N hidden" count in the Machine voice, where N is the direct children count (`node.children.length`). Leaves show neither. The toggle calls `toggleNode`.
     - Add `collectedProofFixture` and `unknownValueProofFixture`.
     - Gallery specimens (on Film): collapsed, expanded, deep, shared fact, collected, unknown value, deciding clause, 200 nodes. The branch cue shows in the existing `prooftree-collapsed` specimen. `initialState` is exercised in `prooftree-deep` and `prooftree-shared`.
     - Playwright: ARIA attributes on a sample; one `tabindex="0"`; node ids are unique in the 200-node specimen; the pointer toggle is at least 44 by 44 px and is not a tab stop; the "N hidden" count is `aria-hidden` and equals the direct children count; a click on the toggle changes `aria-expanded` and makes that node active; leaves have no toggle and no count.
+    - Playwright: with the deciding-clause specimen, exactly one deciding `ClauseQuote` exists, it is outside `role="tree"`, no treeitem contains one even when three nodes cite the clause, and it stays visible after the citing branches are closed; with no `decidingClause`, none shows.
     - Add the `expectTypeOf` line for `ProofTreeProps`.
     - Close with Task_Evidence.
     - _Requirements: 18.1, 18.2, 18.3, 18.4, 18.5, 18.6, 18.13, 18.14, 18.20, 18.21, 18.22, 18.23, 23.8_
@@ -397,14 +398,14 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - _Requirements: 23.1, 23.2, 23.3, 23.4, 23.5, 23.6, 23.7, 23.8_
 
   - [ ] 9.2 Build static screens 1 to 3
-    - Under "Screens" in the gallery, each with its own deep link: Claim Check start, Claim Check question (money) and Claim Check verdict (reduced, with ledger, proportion bar and what-if). Use only Component_Set components and fixtures, wrapped in `AppShell`. No engine import at run time.
+    - Under "Screens" in the gallery, each with its own deep link, `kit/screen.html?screen=<name>`, shown in the gallery in an inert iframe (`&preview=1`, where `focus()` is a no-op): Claim Check start, Claim Check question (money) and Claim Check verdict (reduced, with ledger, proportion bar and what-if). Use only Component_Set components and fixtures, wrapped in `AppShell`. No engine import at run time.
     - Playwright: each deep link loads at the three widths with a clean console and zero axe violations; the verdict screen heading is focusable.
     - Close with Task_Evidence (screenshots of all three screens at all three widths).
     - _Requirements: 25.1, 25.2, 25.3, 24.9_
 
   - [ ] 9.3 Build static screens 4 to 6
     - Claim Check verdict with the X-ray open (side panel at 1280, bottom sheet at 390 and 768); Pre-Flight report (not ready, with an inline question, checks grouped by the first number of the clause id with titles from an app-supplied map); stale link (`KB_MISMATCH`).
-    - Playwright: the X-ray screen presents `side` at 1280 and `sheet` at 390 and 768; the Pre-Flight groups are in clause-number order; each deep link passes console and axe at the three widths.
+    - Playwright: the X-ray screen presents `side` at 1280 and `sheet` at 390 and 768; the Pre-Flight groups are in clause-number order; each deep link passes console and axe at the three widths. Add each screen to `SCREENS` in `screen.tsx` and to the gallery's "Screens" section.
     - Close with Task_Evidence (screenshots of all three screens at all three widths).
     - _Requirements: 25.1, 25.2, 25.3, 25.4, 25.5_
 

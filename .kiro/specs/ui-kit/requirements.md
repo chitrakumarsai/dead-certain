@@ -365,7 +365,7 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 17. THE ProofTree SHALL render the "Show the rule" Disclosure and the "Change this answer" Button only inside the active treeitem, so they are reachable by Tab only while that treeitem is active.
 18. WHERE `ruleExpression` is supplied, THE ProofTree SHALL show the expression behind a Disclosure titled "Show the rule".
 19. WHERE `onChangeAnswer` is supplied, THE ProofTree SHALL offer "Change this answer" on answered facts.
-20. WHEN a node's clause equals `decidingClause`, THE ProofTree SHALL show its ClauseQuote in the deciding variant under the rule sentence.
+20. WHEN a node's clause equals `decidingClause`, THE ProofTree SHALL show that clause's ClauseQuote in the deciding variant once, after the tree and outside the element with `role="tree"`, however many nodes cite the clause and whether or not their branches are open, and SHALL show no ClauseQuote inside any treeitem.
 21. THE ProofTree SHALL draw strokes in `--text-soft`.
 22. THE ProofTree SHALL show on every parent a Chevron (glyph swap between closed and open, with no rotation and no animation) inside a 44 px pointer toggle that is not a tab stop, SHALL show on every closed parent an `aria-hidden` count "N hidden" in the Machine voice where N is the number of direct children, and SHALL show neither on a leaf, and WHEN the pointer toggle is activated THE ProofTree SHALL make its node active and then apply the Enter transition.
 23. WHERE `initialState` is supplied, THE ProofTree SHALL read it on mount only, drop ids that name no node, drop expanded ids that name a leaf, open the ancestors of every open node and of the active node, use the supplied state with no default root-and-children expansion, and fall back to the root as the active node WHEN `active` is missing or names no node.
@@ -481,7 +481,7 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 #### Acceptance Criteria
 
 1. THE Gallery SHALL render six Static_Screens: Claim Check start, Claim Check question (money), Claim Check verdict (reduced, with ledger and what-if), Claim Check verdict with the X-ray open, Pre-Flight report (not ready, with an inline question) and stale link (`KB_MISMATCH`).
-2. THE Gallery SHALL expose each Static_Screen as its own deep link.
+2. THE Gallery SHALL expose each Static_Screen as its own deep link, a page `apps/site/kit/screen.html?screen=<name>`, and SHALL show it in an inert iframe that does not take focus.
 3. THE Static_Screens SHALL use only Component_Set components and Fixtures.
 4. THE Static_Screens SHALL render the X-ray as a side panel at 1280 px and as a bottom sheet at 390 and 768 px.
 5. THE Static_Screens SHALL group Pre-Flight checks by the first number of the clause id, with titles from an app-supplied map.
