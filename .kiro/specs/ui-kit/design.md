@@ -1019,7 +1019,7 @@ catch (e) {
 - One page. A table of contents (skip-linked), then one section per component. Each state is a **specimen**: `<figure data-specimen="ledger-many-rows">` with a heading in System voice, the live component, and a one-line note. A specimen id is `<component>-<state>` in kebab-case, and the page supports `#ledger-many-rows` deep links.
 - Paper specimens sit on `--lightbox`. Film specimens sit on `--film` inside a `Film`.
 - **Interactive states.** Hover, pressed and focus have no specimens and no forced-state markup. Playwright hovers, presses and focuses the real control and checks the result.
-- **Specimen matrix** (every cell is a specimen):
+- **Specimen matrix** (every cell is a specimen). The exact specimen ids are the ones listed in `e2e/kit-matrix.spec.ts`, which asserts each cell on every run; where the table below names a state, that file names its id:
 
 | Component | States rendered |
 | --- | --- |

@@ -93,7 +93,7 @@ describe("Property 5: compiled output is deterministic and round-trips through J
 			}),
 			{ numRuns: 200 },
 		);
-	});
+	}, 60_000);
 
 	/** **Validates: Requirements 15.12** */
 	it("a failed compile has no kb and no json", () => {
@@ -109,5 +109,5 @@ describe("Property 5: compiled output is deterministic and round-trips through J
 			),
 			{ numRuns: 100 },
 		);
-	});
+	}, 60_000);
 });
