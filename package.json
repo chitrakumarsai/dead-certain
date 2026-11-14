@@ -11,9 +11,11 @@
 		"check:changed": "biome check --changed --no-errors-on-unmatched . && tsc --noEmit && vitest run --changed --passWithNoTests",
 		"test:props": "vitest run .props. --passWithNoTests",
 		"build": "pnpm -r --if-present build",
-		"e2e": "playwright test"
+		"e2e": "playwright test",
+		"dc": "pnpm -s --filter @dead-certain/kb-tools exec vite build --logLevel warn && node packages/kb-tools/bin/dc.mjs"
 	},
 	"devDependencies": {
+		"@axe-core/playwright": "4.14.0",
 		"@biomejs/biome": "2.6.7",
 		"@playwright/test": "1.65.0",
 		"typescript": "7.0.2",

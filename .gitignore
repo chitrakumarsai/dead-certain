@@ -7,6 +7,8 @@ dist/
 # Test output
 test-results/
 playwright-report/
+# Screenshots made by e2e/evidence.spec.ts; CI uploads them as an artifact.
+evidence/
 coverage/
 
 # Python (managed with uv)
@@ -27,5 +29,8 @@ __pycache__/
 !/CLAUDE.md
 !/.kiro/**
 !/.claude/**
+# The line above re-includes everything under .claude; keep machine-local settings out.
+/.claude/settings.local.json
 !/apps/*/rulebook/**
 !/apps/*/kb/**
+!/docs/kb-format.md

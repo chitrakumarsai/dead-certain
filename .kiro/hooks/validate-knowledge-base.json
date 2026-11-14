@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Validate knowledge base",
+      "trigger": "PostFileSave",
+      "description": "Validate KB on save",
+      "matcher": "apps/[^/]+/kb/.*",
+      "action": {
+        "type": "command",
+        "command": "pnpm -s dc validate"
+      }
+    }
+  ]
+}

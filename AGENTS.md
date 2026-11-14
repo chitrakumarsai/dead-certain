@@ -27,6 +27,8 @@ Node 22 (`.nvmrc`) and pnpm. Every gate is a package script, so hooks, agents an
 | `e2e`, `scripts`, `.github`, `.claude`, `templates`, root config | Claude Code |
 
 - Stay in your lane, even when crossing it would be faster. Each tool reviews the other's lane.
+- After each Claude Code task, Kiro reviews it against its spec and posts the review on the gate's pull request. Where Kiro accepts a deviation, it amends its own spec so spec and code never drift. Fixes in Kiro's lane go through Bugfix specs.
+- At the end of every session, Kiro appends a dated entry to `docs/kiro-log.md`: which spec or hook ran, what it caught, what changed.
 - `packages/engine/src/types.ts` is the contract between the lanes. It changes only with both lanes' consent.
 - Branches: `kiro/*` and `cc/<phase>-<topic>`. Lanes merge at gates, one pull request per gate.
 - Plans come from `.kiro/specs/*/tasks.md`. Do not create a second plan.

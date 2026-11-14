@@ -1,0 +1,141 @@
+/*
+ * Design tokens. Values are copied from .kiro/steering/design-system.md.
+ * This is the only file that may contain a hex colour.
+ */
+:root {
+	color-scheme: light;
+
+	/* Colour */
+	--lightbox: #edf2f3;
+	--paper: #fcfefe;
+	--ink: #13222c;
+	--ink-soft: #4a5a64;
+	--hairline: #c9d5d9;
+	--film: #0b1c26;
+	--bone: #dce8eb;
+	--bone-soft: #8fa6ae;
+	--wax: #f2c12e;
+	--paid: #1b6e46;
+	--reduced: #8a5200;
+	--denied: #a8261c;
+	--focus-paper: #1f6feb;
+	--focus-film: var(--wax);
+
+	/* Surface context. Paper is the default. */
+	--surface: var(--paper);
+	--text: var(--ink);
+	--text-soft: var(--ink-soft);
+	--control-border: var(--ink-soft);
+	--divider: var(--hairline);
+	--focus: var(--focus-paper);
+
+	/* Spacing, 4 px base. The suffix matches the Tailwind key, so p-4 is 16 px. */
+	--space-1: 4px;
+	--space-2: 8px;
+	--space-3: 12px;
+	--space-4: 16px;
+	--space-6: 24px;
+	--space-8: 32px;
+	--space-12: 48px;
+	--space-16: 64px;
+	--space-24: 96px;
+
+	/* Radius marks the material. */
+	--radius-paper: 4px;
+	--radius-control: 6px;
+	--radius-film: 8px;
+
+	/* Layout */
+	--column-max: 680px;
+	--rail-width: 240px;
+	--touch-min: 44px;
+	/* ProportionBar: the paper gap between segments, and the narrowest visible part. */
+	--bar-gap: 2px;
+	--bar-part-min: 2px;
+
+	/* Motion */
+	--ease: cubic-bezier(0.2, 0, 0, 1);
+	--dur-press: 120ms;
+	--dur-panel: 200ms;
+	--dur-xray: 500ms;
+	--dur-reduced: 120ms;
+
+	/* Type: one family, three voices. fonts.css loads the faces. */
+	--font-doc: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+	--font-sys: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+
+	--text-doc-body: 17px;
+	--leading-doc-body: 28px;
+	--text-doc-fine: 14px;
+	--leading-doc-fine: 22px;
+	--text-verdict: 36px;
+	--leading-verdict: 44px;
+	/* The Pre-Flight summary headline: 36/44 at every width. */
+	--text-summary: 36px;
+	--leading-summary: 44px;
+	--text-sys-body: 17px;
+	--leading-sys-body: 26px;
+	--text-question: 21px;
+	--leading-question: 28px;
+	--text-sys-small: 14px;
+	--leading-sys-small: 20px;
+	--text-mono: 14px;
+	--leading-mono: 22px;
+}
+
+/* Breakpoints: 390 (base, holds to 320), 768, 1024, 1280. */
+@media (min-width: 768px) {
+	:root {
+		--text-verdict: 48px;
+		--leading-verdict: 56px;
+		--text-question: 24px;
+		--leading-question: 32px;
+	}
+}
+
+/* Panels stop moving. The 120 ms press stays: a colour change is not movement. */
+@media (prefers-reduced-motion: reduce) {
+	:root {
+		--dur-panel: 0ms;
+	}
+}
+
+/* A paper sheet set inside film is paper again. */
+[data-surface="paper"] {
+	--surface: var(--paper);
+	--text: var(--ink);
+	--text-soft: var(--ink-soft);
+	--control-border: var(--ink-soft);
+	--divider: var(--hairline);
+	--focus: var(--focus-paper);
+}
+
+[data-surface="film"] {
+	--surface: var(--film);
+	--text: var(--bone);
+	--text-soft: var(--bone-soft);
+	--control-border: var(--bone-soft);
+	--divider: var(--bone-soft);
+	--focus: var(--focus-film);
+}
+
+:focus-visible {
+	outline: 2px solid var(--focus);
+	outline-offset: 2px;
+}
+
+/* A field inside a framed control hands its ring to the frame, so there is one ring. */
+[data-focus-ring="frame"]:focus-visible {
+	outline: none;
+}
+
+/* The page is the lightbox. Sheets and films paint their own surface. */
+body {
+	margin: 0;
+	background: var(--lightbox);
+	color: var(--text);
+	font-family: var(--font-sys);
+	font-size: var(--text-sys-body);
+	line-height: var(--leading-sys-body);
+}

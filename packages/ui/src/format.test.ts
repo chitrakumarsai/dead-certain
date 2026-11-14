@@ -1,0 +1,169 @@
+import type { FactDef } from "@dead-certain/engine/types";
+import { expect, test } from "vitest";
+import { humanize, lowerFirst } from "./format/label";
+import {
+	defaultLocale,
+	formatMoney,
+	minorDigits,
+	parseMoney,
+	reformatMoneyInput,
+} from "./format/money";
+import { formatDate, formatValue } from "./format/value";
+
+const INR = { currency: "INR" };
+
+test("formats INR minor units with Indian grouping", () => {
+	expect(formatMoney(14250000, "INR")).toBe("₹1,42,500");
+	expect(formatMoney(21000000, "INR", "en-IN")).toBe("₹2,10,000");
+});
+
+test("whole amounts omit fraction digits and others print all of them", () => {
+	expect(formatMoney(600000, "INR")).toBe("₹6,000");
+	expect(formatMoney(600050, "INR")).toBe("₹6,000.50");
+	expect(formatMoney(5, "USD")).toBe("$0.05");
+	expect(formatMoney(0, "INR")).toBe("₹0");
+	expect(formatMoney(1500, "JPY")).toBe("¥1,500");
+});
+
+test("currencies carry their own fraction digits and default locale", () => {
+	expect(minorDigits("INR", "en-IN")).toBe(2);
+	expect(minorDigits("JPY", "en")).toBe(0);
+	expect(defaultLocale("INR")).toBe("en-IN");
+	expect(defaultLocale("USD")).toBe("en");
+});
+
+test("parses typed amounts into integer minor units", () => {
+	expect(parseMoney("6,000", "INR", "en-IN")).toEqual({
+		ok: true,
+		minor: 600000,
+	});
+	expect(parseMoney(" 1 42 500 ", "INR", "en-IN")).toEqual({
+		ok: true,
+		minor: 14250000,
+	});
+	expect(parseMoney("0.1", "INR", "en-IN")).toEqual({ ok: true, minor: 10 });
+	expect(parseMoney("12.", "INR", "en-IN")).toEqual({ ok: true, minor: 1200 });
+	expect(parseMoney("0", "INR", "en-IN")).toEqual({ ok: true, minor: 0 });
+	expect(parseMoney("1500", "JPY", "en")).toEqual({ ok: true, minor: 1500 });
+});
+
+test("parses its own formatted output, currency symbol included", () => {
+	expect(parseMoney("₹1,42,500", "INR", "en-IN")).toEqual({
+		ok: true,
+		minor: 14250000,
+	});
+	expect(parseMoney("$0.05", "USD", "en")).toEqual({ ok: true, minor: 5 });
+});
+
+test("0.1 + 0.2 style amounts never pick up float error", () => {
+	expect(parseMoney("0.07", "USD", "en")).toEqual({ ok: true, minor: 7 });
+	expect(parseMoney("1.15", "USD", "en")).toEqual({ ok: true, minor: 115 });
+	expect(parseMoney("4.35", "USD", "en")).toEqual({ ok: true, minor: 435 });
+});
+
+test.each([
+	["", "empty"],
+	["   ", "empty"],
+	["abc", "format"],
+	["-5", "format"],
+	["1.2.3", "format"],
+	[".5", "format"],
+	["1e5", "format"],
+	["$5", "format"],
+	["1.234", "decimals"],
+	["99999999999999999999", "format"],
+])("rejects %j with reason %s", (text, reason) => {
+	expect(parseMoney(text, "INR", "en-IN")).toEqual({ ok: false, reason });
+});
+
+test("JPY allows no decimal digits", () => {
+	expect(parseMoney("1500.5", "JPY", "en")).toEqual({
+		ok: false,
+		reason: "decimals",
+	});
+});
+
+test("humanize follows the engine rule", () => {
+	expect(humanize("room_rent_per_day")).toBe("Room rent per day");
+	expect(humanize("verdict")).toBe("Verdict");
+	expect(humanize("")).toBe("");
+	expect(humanize("ICU_days")).toBe("ICU days");
+});
+
+test("formatDate prints the named calendar day", () => {
+	expect(formatDate("2026-11-13")).toBe("13 Nov 2026");
+	expect(formatDate("2024-02-29", "en-US")).toBe("Feb 29, 2024");
+});
+
+test.each<[FactDef, boolean | number | string | undefined, string]>([
+	[{ type: "money" }, 14250000, "₹1,42,500"],
+	[{ type: "number" }, 4, "4"],
+	[{ type: "number" }, 1234567.5, "12,34,567.5"],
+	[{ type: "boolean" }, true, "Yes"],
+	[{ type: "boolean" }, false, "No"],
+	[{ type: "enum", options: ["semi_private"] }, "semi_private", "Semi private"],
+	[{ type: "date" }, "2026-01-31", "31 Jan 2026"],
+	[{ type: "money" }, undefined, "Not known yet"],
+	[{ type: "boolean" }, undefined, "Not known yet"],
+])("formatValue(%j, %j) is %j", (def, value, expected) => {
+	expect(formatValue(def, value, INR)).toBe(expected);
+});
+
+test("text is passed through with no placeholder substitution and no markup", () => {
+	expect(formatValue({ type: "enum" }, "above {x} <b>limit</b>", INR)).toBe(
+		"Above {x} <b>limit</b>",
+	);
+	expect(formatValue({ type: "date" }, "not a date", INR)).toBe("not a date");
+});
+
+test("formatValue falls back to plain text when the value does not fit the type", () => {
+	expect(formatValue({ type: "money" }, "n/a", INR)).toBe("n/a");
+	expect(formatValue({ type: "money" }, 500, {})).toBe("500");
+});
+
+test.each([
+	["142500", 6, "1,42,500", 8],
+	// Typing 9 in the middle of 1,42,500: the caret stays after the 9.
+	["1,429,500", 5, "14,29,500", 5],
+	// Typing a decimal point at the end.
+	["1,425.", 6, "1,425.", 6],
+	["1,425.5", 7, "1,425.5", 7],
+	// Deleting the first separator of 1,42,500 puts it back, caret unmoved.
+	["142,500", 1, "1,42,500", 1],
+	// Deleting a digit before a separator.
+	["1,4,500", 3, "14,500", 2],
+	["", 0, "", 0],
+	[".5", 1, ".5", 1],
+	// Leading zeros are the user's digits and are kept.
+	["007", 3, "007", 3],
+	["12a3", 4, "123", 3],
+	["1.2.3", 5, "1.23", 4],
+])(
+	"reformatMoneyInput(%j, %d) is %j with the caret at %d",
+	(raw, caret, text, at) => {
+		expect(reformatMoneyInput(raw, caret, "en-IN")).toEqual({
+			text,
+			caret: at,
+		});
+	},
+);
+
+test("reformatMoneyInput groups by the locale", () => {
+	expect(reformatMoneyInput("1425000", 7, "en").text).toBe("1,425,000");
+	expect(reformatMoneyInput("1425000", 7, "en-IN").text).toBe("14,25,000");
+});
+
+test.each([
+	["Room rent per day", "room rent per day"],
+	["Age", "age"],
+	["ICU days", "ICU days"],
+	["MIT licence type", "MIT licence type"],
+	["GitHub Actions", "gitHub Actions"],
+	["already lower", "already lower"],
+	["", ""],
+])(
+	"lowerFirst(%j) is %j: a capitalised first word lowers, an acronym stays",
+	(text, expected) => {
+		expect(lowerFirst(text)).toBe(expected);
+	},
+);

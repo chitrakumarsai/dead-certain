@@ -1,15 +1,130 @@
+import type { ProofNode } from "@dead-certain/engine/types";
 import { expect, test } from "vitest";
-import { CLAIMED_AMOUNT, claimVerdictFixture, proofFixture } from "./fixtures";
+import {
+	alternativesFixture,
+	alternativesNoMoneyFixture,
+	CLAIMED_AMOUNT,
+	claimVerdictFixture,
+	clauseFixtures,
+	collectedProofFixture,
+	deepProofFixture,
+	deniedVerdictFixture,
+	factDefFixtures,
+	hugeProofFixture,
+	manyDeductionsFixture,
+	paidInFullVerdictFixture,
+	preFlightAllPassFixture,
+	preFlightClauseFixtures,
+	preFlightUnknownFixture,
+	preFlightVerdictFixture,
+	proofFixture,
+	questionFixture,
+	questionFixtures,
+	undecidedVerdictFixture,
+	unknownLineWithKnownPayableFixture,
+	unknownValueProofFixture,
+	zeroDeductionFixture,
+} from "./fixtures";
 
-test("claim fixture ledger adds up: claimed minus deductions equals payable", () => {
-	const deductions = claimVerdictFixture.lineItems.reduce(
-		(sum, item) => sum + Number(item.value),
-		0,
-	);
+test.each([
+	["claim", claimVerdictFixture, "reduced"],
+	["paid in full", paidInFullVerdictFixture, "paid"],
+	["denied", deniedVerdictFixture, "denied"],
+])(
+	"%s fixture ledger adds up: claimed minus deductions equals payable",
+	(_, verdict, goal) => {
+		const deductions = verdict.lineItems.reduce(
+			(sum, item) => sum + Number(item.value),
+			0,
+		);
 
-	expect(CLAIMED_AMOUNT - deductions).toBe(
-		claimVerdictFixture.goals.payable_amount,
+		expect(CLAIMED_AMOUNT - deductions).toBe(verdict.goals.payable_amount);
+		expect(verdict.goals.verdict).toBe(goal);
+		expect(verdict.needed).toEqual([]);
+	},
+);
+
+const ALTERNATIVE_VERDICTS = Object.fromEntries(
+	alternativesFixture.map((alt) => [`alternative ${alt.fact}`, alt.verdict]),
+);
+
+const CLAIM_VERDICTS = {
+	...ALTERNATIVE_VERDICTS,
+	claimVerdictFixture,
+	paidInFullVerdictFixture,
+	deniedVerdictFixture,
+	undecidedVerdictFixture,
+	manyDeductionsFixture,
+	unknownLineWithKnownPayableFixture,
+	zeroDeductionFixture,
+};
+
+/**
+ * Fixtures exempt from engine-faithful arithmetic, each with its reason. Do not
+ * add to this list without the same: an exemption must be written down.
+ */
+const NOT_ENGINE_FAITHFUL: Readonly<Record<string, string>> = {
+	unknownLineWithKnownPayableFixture:
+		"payable is known while a deduction is not, to show the Ledger's unknown row",
+};
+
+test.each(
+	Object.entries(CLAIM_VERDICTS).filter(
+		([name, verdict]) =>
+			!(name in NOT_ENGINE_FAITHFUL) &&
+			typeof verdict.goals.payable_amount === "number",
+	),
+)("%s: claimed minus deductions equals payable", (_, verdict) => {
+	const deductions = verdict.lineItems.filter(
+		(item) => item.role === "deduction",
 	);
+	// A decided payable means every deduction is known.
+	for (const item of deductions) {
+		expect(item.value, item.fact).toEqual(expect.any(Number));
+	}
+	const sum = deductions.reduce((total, item) => total + Number(item.value), 0);
+
+	expect(CLAIMED_AMOUNT - sum).toBe(verdict.goals.payable_amount);
+});
+
+test("the exempt fixture still adds up over its known deductions", () => {
+	const known = unknownLineWithKnownPayableFixture.lineItems.filter(
+		(item) => typeof item.value === "number",
+	);
+	const sum = known.reduce((total, item) => total + Number(item.value), 0);
+
+	expect(Object.keys(NOT_ENGINE_FAITHFUL)).toEqual([
+		"unknownLineWithKnownPayableFixture",
+	]);
+	expect(CLAIMED_AMOUNT - sum).toBe(
+		unknownLineWithKnownPayableFixture.goals.payable_amount,
+	);
+});
+
+test("ledger edge fixtures have their edge: 30 lines, one unknown, one zero", () => {
+	expect(manyDeductionsFixture.lineItems).toHaveLength(30);
+	expect(
+		unknownLineWithKnownPayableFixture.lineItems.filter(
+			(item) => item.value === undefined,
+		),
+	).toHaveLength(1);
+	expect(
+		zeroDeductionFixture.lineItems.filter((item) => item.value === 0),
+	).toHaveLength(1);
+});
+
+test("paid in full has no deductions; denied pays nothing", () => {
+	expect(paidInFullVerdictFixture.lineItems).toEqual([]);
+	expect(deniedVerdictFixture.goals.payable_amount).toBe(0);
+});
+
+test("undecided fixture has no goal values and questions still needed", () => {
+	expect(undecidedVerdictFixture.goals.verdict).toBeUndefined();
+	expect(undecidedVerdictFixture.goals.payable_amount).toBeUndefined();
+	expect(undecidedVerdictFixture.needed.length).toBeGreaterThan(0);
+	for (const item of undecidedVerdictFixture.lineItems) {
+		expect(item.value, item.fact).toBeUndefined();
+	}
 });
 
 test("proof fixture explains a line item of the claim fixture", () => {
@@ -19,4 +134,224 @@ test("proof fixture explains a line item of the claim fixture", () => {
 
 	expect(item?.value).toBe(proofFixture.value);
 	expect(item?.rule).toBe(proofFixture.rule);
+});
+
+test("every clause a Claim Check fixture cites has a clause fixture", () => {
+	const cited = [
+		...Object.values(CLAIM_VERDICTS).flatMap((verdict) =>
+			verdict.lineItems.map((item) => item.clause),
+		),
+		...proofClauses(proofFixture),
+		...proofClauses(deepProofFixture),
+		...proofClauses(unknownValueProofFixture),
+	];
+
+	expect(cited.length).toBeGreaterThan(0);
+	for (const id of cited) {
+		expect(clauseFixtures[id]?.id, `clause ${id}`).toBe(id);
+	}
+});
+
+test("Pre-Flight edge fixtures: all pass is ready; unknown is undecided and asks", () => {
+	expect(preFlightAllPassFixture.goals.verdict).toBe("ready");
+	expect(preFlightAllPassFixture.needed).toEqual([]);
+	for (const item of preFlightAllPassFixture.lineItems) {
+		expect(item.value, item.fact).toBe(true);
+	}
+	expect(preFlightUnknownFixture.goals.verdict).toBeUndefined();
+	expect(
+		preFlightUnknownFixture.lineItems.some((item) => item.value === undefined),
+	).toBe(true);
+	// Check facts are derived, so the engine asks for the inputs behind them.
+	for (const question of preFlightUnknownFixture.needed) {
+		const def = factDefFixtures[question.fact];
+		expect(def?.ask, question.fact).toBeDefined();
+		expect(def?.derived, question.fact).not.toBe(true);
+		expect(
+			preFlightUnknownFixture.lineItems.some(
+				(line) => line.fact === question.fact,
+			),
+		).toBe(false);
+	}
+});
+
+test("every clause a Pre-Flight fixture cites has a clause fixture", () => {
+	const cited = [
+		...[
+			preFlightVerdictFixture,
+			preFlightAllPassFixture,
+			preFlightUnknownFixture,
+		].flatMap((verdict) => verdict.lineItems.map((item) => item.clause)),
+		...proofClauses(collectedProofFixture),
+	];
+
+	for (const clause of cited) {
+		expect(preFlightClauseFixtures[clause]?.id, `clause ${clause}`).toBe(
+			clause,
+		);
+	}
+});
+
+test("each clause fixture is keyed by its own id and has a title and text", () => {
+	for (const set of [clauseFixtures, preFlightClauseFixtures]) {
+		for (const [key, clause] of Object.entries(set)) {
+			expect(clause.id).toBe(key);
+			expect(clause.title).not.toBe("");
+			expect(clause.text).not.toBe("");
+		}
+	}
+});
+
+function proofClauses(node: ProofNode): string[] {
+	return [
+		...(node.clause ? [node.clause] : []),
+		...node.children.flatMap(proofClauses),
+	];
+}
+
+test("every question fixture asks about a fact with a definition", () => {
+	const questions = Object.values(questionFixtures);
+
+	expect(questions.length).toBeGreaterThan(0);
+	for (const question of questions) {
+		expect(factDefFixtures[question.fact], question.fact).toBeDefined();
+		expect(questionFixtures[question.fact]).toBe(question);
+	}
+});
+
+test("question fixtures cover all five control types", () => {
+	const types = new Set(
+		Object.values(questionFixtures).map((q) => factDefFixtures[q.fact]?.type),
+	);
+
+	expect([...types].sort()).toEqual([
+		"boolean",
+		"date",
+		"enum",
+		"money",
+		"number",
+	]);
+});
+
+test("fact definitions cover all five types, and check facts are boolean", () => {
+	const defs = Object.values(factDefFixtures);
+	const types = new Set(defs.map((def) => def.type));
+
+	expect([...types].sort()).toEqual([
+		"boolean",
+		"date",
+		"enum",
+		"money",
+		"number",
+	]);
+	for (const def of defs) {
+		if (def.type === "enum") expect(def.options?.length).toBeGreaterThan(1);
+		if (def.role === "check") expect(def.type).toBe("boolean");
+	}
+	for (const { fact } of preFlightVerdictFixture.lineItems) {
+		expect(factDefFixtures[fact]?.role, fact).toBe("check");
+	}
+});
+
+test("each alternative changes one answer and alters the verdict", () => {
+	for (const alt of alternativesFixture) {
+		expect(alt.verdict.goals.payable_amount, alt.fact).not.toBe(
+			claimVerdictFixture.goals.payable_amount,
+		);
+	}
+	for (const alt of alternativesNoMoneyFixture) {
+		expect(alt.verdict.goals.verdict, alt.fact).not.toBe(
+			preFlightAllPassFixture.goals.verdict,
+		);
+	}
+});
+
+const proofNodes = (node: ProofNode): ProofNode[] => [
+	node,
+	...node.children.flatMap(proofNodes),
+];
+
+test("collected proof has collected leaves; unknown proof has an unknown value", () => {
+	const leaves = proofNodes(collectedProofFixture).filter(
+		(node) => node.children.length === 0,
+	);
+	expect(leaves.length).toBeGreaterThan(0);
+	expect(leaves.every((node) => node.source === "collected")).toBe(true);
+	expect(
+		proofNodes(unknownValueProofFixture).some(
+			(node) => node.value === undefined,
+		),
+	).toBe(true);
+});
+
+test("every check fact is derived with a boolean type, as dc validate requires", () => {
+	const checks = Object.entries(factDefFixtures).filter(
+		([, def]) => def.role === "check",
+	);
+
+	expect(checks.length).toBeGreaterThan(0);
+	for (const [fact, def] of checks) {
+		expect(def.derived, fact).toBe(true);
+		expect(def.type, fact).toBe("boolean");
+		expect(def.ask, fact).toBeUndefined();
+	}
+});
+
+const PROOFS = {
+	proofFixture,
+	deepProofFixture,
+	hugeProofFixture,
+	collectedProofFixture,
+	unknownValueProofFixture,
+};
+
+test.each(Object.entries(PROOFS))(
+	"%s: every node's index path is unique",
+	(_, root) => {
+		const ids: string[] = [];
+		const walk = (node: ProofNode, id: string): void => {
+			ids.push(id);
+			node.children.forEach((child, i) => {
+				walk(child, `${id}.${i}`);
+			});
+		};
+		walk(root, "0");
+
+		expect(new Set(ids).size).toBe(ids.length);
+	},
+);
+
+test("where a proof fixture explains a line item, it names the line's rule", () => {
+	const lines = [
+		...Object.values(CLAIM_VERDICTS),
+		preFlightVerdictFixture,
+		preFlightAllPassFixture,
+		preFlightUnknownFixture,
+	].flatMap((verdict) => verdict.lineItems);
+	let claimed = 0;
+
+	for (const root of Object.values(PROOFS)) {
+		for (const line of lines.filter((item) => item.fact === root.fact)) {
+			claimed += 1;
+			expect(root.rule, `${line.fact} in ${root.rule}`).toBe(line.rule);
+			if (root.clause !== undefined) expect(root.clause).toBe(line.clause);
+		}
+	}
+	expect(claimed).toBeGreaterThan(0);
+});
+
+test("the 30-line verdict and the 200-node proof exist, with every original export", () => {
+	expect(manyDeductionsFixture.lineItems).toHaveLength(30);
+	const count = (node: ProofNode): number =>
+		1 + node.children.reduce((sum, child) => sum + count(child), 0);
+	expect(count(hugeProofFixture)).toBe(200);
+	for (const original of [
+		CLAIMED_AMOUNT,
+		questionFixture,
+		claimVerdictFixture,
+		proofFixture,
+		preFlightVerdictFixture,
+	]) {
+		expect(original).toBeDefined();
+	}
 });

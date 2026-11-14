@@ -1,0 +1,24 @@
+{
+	"name": "@dead-certain/kb-tools",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"bin": {
+		"dc": "./bin/dc.mjs"
+	},
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"scripts": {
+		"build": "vite build"
+	},
+	"dependencies": {
+		"@dead-certain/engine": "workspace:*",
+		"yaml": "2.9.1",
+		"zod": "4.6.7"
+	},
+	"devDependencies": {
+		"fast-check": "4.10.2",
+		"vite": "8.3.8"
+	}
+}
