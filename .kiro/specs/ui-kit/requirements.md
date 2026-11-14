@@ -485,6 +485,7 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 3. THE Static_Screens SHALL use only Component_Set components and Fixtures.
 4. THE Static_Screens SHALL render the X-ray as a side panel at 1280 px and as a bottom sheet at 390 and 768 px.
 5. THE Static_Screens SHALL group Pre-Flight checks by the first number of the clause id, with titles from an app-supplied map.
+6. THE Pre-Flight Static_Screen SHALL show each needed question only on the check whose input it asks for, using an app-supplied map from check fact to input fact, and SHALL show no question on any other check.
 
 ### Requirement 26: Accessibility floor
 
