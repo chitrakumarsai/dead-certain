@@ -81,11 +81,16 @@ function Gallery() {
 		const id = decodeURIComponent(location.hash.slice(1));
 		if (id) document.getElementById(id)?.scrollIntoView();
 		else scrollTo(0, 0);
+		// Tests press Tab only after this: earlier, the hand-back would take the focus.
+		document.body.dataset.kitReady = "";
 	}, [announce]);
 
 	return (
 		<div className="p-4 md:p-6">
-			<a href="#content" className="text-sys-small underline">
+			<a
+				href="#content"
+				className="inline-flex min-h-touch items-center text-sys-small underline"
+			>
 				Skip to the content
 			</a>
 			<header className="pt-4">
@@ -103,7 +108,7 @@ function Gallery() {
 								<li key={specimen.id}>
 									<a
 										href={`#${specimen.id}`}
-										className="inline-flex min-h-touch items-center underline"
+										className="inline-flex min-h-touch min-w-touch items-center justify-center underline"
 									>
 										{specimen.title}
 									</a>

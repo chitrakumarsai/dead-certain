@@ -22,6 +22,19 @@ export const test = base.extend<{ consoleGate: undefined }>({
 		},
 		{ auto: true },
 	],
+	// Every load of the gallery waits until it has handed focus back to the
+	// body. Before that, a test's Tab or focus() can be undone by the hand-back,
+	// which made CI fail now and then on slower machines.
+	page: async ({ page }, use) => {
+		const goto = page.goto.bind(page);
+		page.goto = async (url, options) => {
+			const response = await goto(url, options);
+			if (new URL(page.url()).pathname.endsWith("/kit/"))
+				await waitForKit(page);
+			return response;
+		};
+		await use(page);
+	},
 });
 
 /** Zero axe violations on the page, or inside `scope` when given. */
@@ -46,3 +59,11 @@ export async function expectNoAxeViolations(
 }
 
 export { expect };
+
+/**
+ * Waits until the gallery has mounted and handed focus back to the body.
+ * Press Tab only after this, or the hand-back can take the focus away.
+ */
+export async function waitForKit(page: Page): Promise<void> {
+	await expect(page.locator("body[data-kit-ready]")).toHaveCount(1);
+}
