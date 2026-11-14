@@ -8,7 +8,11 @@ export default defineConfig({
 	plugins: [react(), tailwindcss()],
 	build: {
 		rolldownOptions: {
-			input: { main: "index.html", kit: "kit/index.html" },
+			input: {
+				main: "index.html",
+				kit: "kit/index.html",
+				shell: "kit/shell.html",
+			},
 		},
 	},
 });

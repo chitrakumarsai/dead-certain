@@ -13,6 +13,7 @@ import type {
 import { expectTypeOf, test } from "vitest";
 import type { AnswerControlProps } from "./components/AnswerControl";
 import type { AnswersRailProps } from "./components/AnswersRail";
+import type { AppShellProps } from "./components/AppShell";
 import type { ButtonProps } from "./components/Button";
 import type { CheckRowProps } from "./components/CheckRow";
 import type {
@@ -208,4 +209,13 @@ test("XrayStage takes a verdict or line target, null when closed", () => {
 		(target: XrayTarget) => string
 	>();
 	expectTypeOf<XrayStageProps["onClose"]>().toEqualTypeOf<() => void>();
+});
+
+test("AppShell takes an app name, navigation and optional rail and footer", () => {
+	expectTypeOf<AppShellProps["appName"]>().toEqualTypeOf<string>();
+	expectTypeOf<AppShellProps["nav"]>().toEqualTypeOf<
+		readonly { label: string; href: string; current?: boolean }[]
+	>();
+	expectTypeOf<"No guesses">().toExtend<AppShellProps["footer"]>();
+	expectTypeOf<AppShellProps["rail"]>().not.toBeNever();
 });

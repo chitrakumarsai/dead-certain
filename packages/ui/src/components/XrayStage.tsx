@@ -6,10 +6,10 @@ import {
 	useLayoutEffect,
 	useRef,
 	useState,
-	useSyncExternalStore,
 } from "react";
 import { useAnnounce } from "../a11y/LiveRegion";
 import { useReducedMotion } from "../a11y/useReducedMotion";
+import { useMediaQuery } from "../useMediaQuery";
 import { Film } from "./Film";
 
 export type XrayTarget = { kind: "verdict" } | { kind: "line"; fact: string };
@@ -28,18 +28,6 @@ export interface XrayStageProps {
 }
 
 const WIDE = "(min-width: 1280px)";
-
-function useIsWide(): boolean {
-	return useSyncExternalStore(
-		(onChange) => {
-			const media = matchMedia(WIDE);
-			media.addEventListener("change", onChange);
-			return () => media.removeEventListener("change", onChange);
-		},
-		() => matchMedia(WIDE).matches,
-		() => false,
-	);
-}
 
 type Timing = { duration: number; ease: [number, number, number, number] };
 
@@ -162,7 +150,7 @@ export function XrayStage({
 	onClose,
 	rail,
 }: XrayStageProps) {
-	const isWide = useIsWide();
+	const isWide = useMediaQuery(WIDE);
 	const isReduced = useReducedMotion();
 	const announce = useAnnounce();
 	const sheetRef = useRef<HTMLDivElement>(null);

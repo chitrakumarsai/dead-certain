@@ -10,6 +10,7 @@ import {
 	ANSWERS_RAIL_SPECIMENS,
 	AnswersRailSection,
 } from "./AnswersRailSection";
+import { APP_SHELL_SPECIMENS, AppShellSection } from "./AppShellSection";
 import { BUTTON_SPECIMENS, ButtonsSection } from "./ButtonsSection";
 import { CHECK_ROW_SPECIMENS, CheckRowSection } from "./CheckRowSection";
 import {
@@ -59,6 +60,7 @@ const SECTIONS = [
 	{ title: "WhatIfList", specimens: WHAT_IF_LIST_SPECIMENS },
 	{ title: "ProofTree", specimens: PROOF_TREE_SPECIMENS },
 	{ title: "XrayStage", specimens: XRAY_STAGE_SPECIMENS },
+	{ title: "AppShell", specimens: APP_SHELL_SPECIMENS },
 ];
 
 function Gallery() {
@@ -125,6 +127,7 @@ function Gallery() {
 				<WhatIfListSection />
 				<ProofTreeSection />
 				<XrayStageSection />
+				<AppShellSection />
 			</main>
 		</div>
 	);

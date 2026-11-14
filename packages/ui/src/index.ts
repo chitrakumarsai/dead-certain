@@ -9,6 +9,7 @@ export {
 	AnswersRail,
 	type AnswersRailProps,
 } from "./components/AnswersRail";
+export { AppShell, type AppShellProps } from "./components/AppShell";
 export {
 	ANSWER_MESSAGES,
 	atLeastMessage,
@@ -79,4 +80,5 @@ export type {
 	Surface,
 	VerdictState,
 } from "./types";
+export { useMediaQuery } from "./useMediaQuery";
 export { VERDICT_WORDS, verdictStateFrom } from "./verdictState";

@@ -29,7 +29,12 @@ export async function expectNoAxeViolations(
 	page: Page,
 	scope?: string,
 ): Promise<void> {
-	const builder = new AxeBuilder({ page });
+	// The framed AppShell pages each own a full set of landmarks. Read through
+	// the gallery, axe would see three pages as one; kit-app-shell.spec.ts
+	// checks the shell page on its own at every width instead.
+	const builder = new AxeBuilder({ page }).exclude(
+		'[data-specimen^="appshell-"] iframe',
+	);
 	const { violations } = await (scope
 		? builder.include(scope)
 		: builder
