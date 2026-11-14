@@ -340,7 +340,7 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5_
 
 - [ ] 8. Proof and application frame
-  - [ ] 8.1 Build `ProofTree` rendering
+  - [x] 8.1 Build `ProofTree` rendering
     - Render `role="tree"` named "Proof", each node `role="treeitem"` with `aria-level`, `aria-setsize` and `aria-posinset`, parents with a true `aria-expanded`, children in `role="group"`, and a roving `tabindex` with exactly one `0`. Joints (derived with a rule) show the rule id in the Machine voice and the `because` sentence as received; bone ends (answered or collected leaves) show label, value and `SourceBadge`. `undefined` prints "Not known yet". Strokes use `--text-soft`. Initial state comes from `initialTreeState`, or, when the `initialState` prop is supplied, from `normalizeTreeState` (read on mount only; the caller remounts with `key={target}`). Memoise rows by index-path id.
     - When `decidingClause` names a clause that `clauseFor` returns and at least one node cites, show one deciding `ClauseQuote` after the tree, in a wrapper beside the `role="tree"` element and never inside a treeitem. It shows once however many nodes cite the clause, and stays visible when their branches are closed.
     - Branch cue: every parent shows a `Chevron` (glyph swap closed/open, no rotation, no animation) in a 44 px pointer toggle that is not a tab stop; closed parents also show an `aria-hidden` "N hidden" count in the Machine voice, where N is the direct children count (`node.children.length`). Leaves show neither. The toggle calls `toggleNode`.
@@ -391,19 +391,19 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - Close with Task_Evidence.
 
 - [ ] 9. Gallery completion and static screens
-  - [ ] 9.1 Audit the fixtures
+  - [x] 9.1 Audit the fixtures
     - Extend `fixtures.test.ts`: every export is annotated with a contract type (a type-level check where possible); every verdict fixture ledger adds up, except fixtures named in `NOT_ENGINE_FAITHFUL`, which carry a comment saying why; every proof node index path is unique; every `LineItem.rule` and `LineItem.clause` used in a verdict fixture appears in a proof or clause fixture where claimed; the 30-line verdict fixture and the 200-node proof fixture exist; all existing exports (`CLAIMED_AMOUNT`, `questionFixture`, `claimVerdictFixture`, `proofFixture`, `preFlightVerdictFixture`) are still present.
     - Add `claimFormat` and any fixture still missing from the design's fixture table.
     - Close with Task_Evidence.
     - _Requirements: 23.1, 23.2, 23.3, 23.4, 23.5, 23.6, 23.7, 23.8_
 
-  - [ ] 9.2 Build static screens 1 to 3
+  - [x] 9.2 Build static screens 1 to 3
     - Under "Screens" in the gallery, each with its own deep link, `kit/screen.html?screen=<name>`, shown in the gallery in an inert iframe (`&preview=1`, where `focus()` is a no-op): Claim Check start, Claim Check question (money) and Claim Check verdict (reduced, with ledger, proportion bar and what-if). Use only Component_Set components and fixtures, wrapped in `AppShell`. No engine import at run time.
     - Playwright: each deep link loads at the three widths with a clean console and zero axe violations; the verdict screen heading is focusable.
     - Close with Task_Evidence (screenshots of all three screens at all three widths).
     - _Requirements: 25.1, 25.2, 25.3, 24.9_
 
-  - [ ] 9.3 Build static screens 4 to 6
+  - [x] 9.3 Build static screens 4 to 6
     - Claim Check verdict with the X-ray open (side panel at 1280, bottom sheet at 390 and 768); Pre-Flight report (not ready, with an inline question, checks grouped by the first number of the clause id with titles from an app-supplied map); stale link (`KB_MISMATCH`).
     - Playwright: the X-ray screen presents `side` at 1280 and `sheet` at 390 and 768; the Pre-Flight groups are in clause-number order; each deep link passes console and axe at the three widths. Add each screen to `SCREENS` in `screen.tsx` and to the gallery's "Screens" section.
     - Close with Task_Evidence (screenshots of all three screens at all three widths).
