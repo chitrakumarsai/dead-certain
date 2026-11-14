@@ -601,7 +601,7 @@ interface ProofTreeProps {
   formatValue: (fact: string, value: FactValue | undefined) => string;
   ruleExpression?: (ruleId: string) => string | undefined;   // built by the app with the engine's print()
   clauseFor?: (clauseId: string) => Clause | undefined;
-  decidingClause?: string;                                    // clause id to mark with wax
+  decidingClause?: string;                                    // clause id quoted once after the tree, marked with wax
   onChangeAnswer?: (fact: string) => void;                    // offered on answered facts
   initialState?: TreeState;                                   // the reducer's own type; read on mount only
   onEscape: () => void;                                       // XrayStage restores focus
@@ -625,7 +625,7 @@ ARIA tree pattern:
 
 **Branch cue.** Every parent shows a `Chevron` (glyph swap between closed and open, no rotation, no animation) inside a 44 px pointer toggle that is not a tab stop. A closed parent also shows an `aria-hidden` count "N hidden" in the Machine voice, where N is the number of **direct** children (`node.children.length`), not all descendants. Leaves show neither. A pointer toggle (`toggleNode`) makes its node active and then applies the Enter transition.
 
-Value `undefined` prints "Not known yet". A `collected` fact prints the value and "Collected". A node whose clause equals `decidingClause` shows its `ClauseQuote` (deciding variant) under the rule sentence.
+Value `undefined` prints "Not known yet". A `collected` fact prints the value and "Collected". The deciding clause is shown **once**, as in the build plan's X-ray wireframe: when `decidingClause` is supplied, `clauseFor` returns a clause for it and at least one node cites it, the `ProofTree` renders one `ClauseQuote` (deciding variant) after the tree, in a wrapper beside the `role="tree"` element, never inside it (a tree holds only treeitems and groups). Several rules often cite the same clause, and repeating the quote under each would bury the proof; the single quote also stays visible when the branches that cite it are closed. Rule joints show no clause text.
 
 ### Sheet and Film
 
