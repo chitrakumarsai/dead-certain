@@ -409,7 +409,7 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - Close with Task_Evidence (screenshots of all three screens at all three widths).
     - _Requirements: 25.1, 25.2, 25.3, 25.4, 25.5_
 
-  - [ ] 9.4 Audit the specimen matrix and deep links
+  - [x] 9.4 Audit the specimen matrix and deep links
     - Add an Playwright test with the design's specimen matrix as data: for every component and state listed, assert a `[data-specimen]` with the matching id exists, contains a heading and a one-line note, and that `#<id>` scrolls it into view. Assert Film specimens are inside a Film and Paper specimens are on `--lightbox`.
     - Fill any missing specimen found by the audit.
     - Close with Task_Evidence.
