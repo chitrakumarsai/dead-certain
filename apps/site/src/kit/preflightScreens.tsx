@@ -41,6 +41,14 @@ const GROUP_TITLES: Readonly<Record<string, string>> = {
 	"4": "Submission",
 };
 
+/**
+ * The input each check is worked out from, as the app reads it from the
+ * knowledge base. A check is derived, so its question asks for this input.
+ */
+const ASKED_FOR: Readonly<Record<string, string>> = {
+	video_under_3_minutes: "demo_video_short",
+};
+
 /** Evidence lines the collector would supply, by fact. */
 const EVIDENCE: Readonly<Record<string, string>> = {
 	has_detectable_license: "LICENSE not found at the root",
@@ -121,7 +129,9 @@ export function PreflightScreen() {
 	const unknown = verdict.lineItems.filter(
 		(item) => typeof item.value !== "boolean",
 	).length;
-	const question = verdict.needed[0];
+	// Each needed question goes on the one check whose input it asks for.
+	const questionFor = (item: Item) =>
+		verdict.needed.find((question) => question.fact === ASKED_FOR[item.fact]);
 	const [answer, setAnswer] = useState<CheckRowProps["answerValue"]>();
 	return (
 		<div className="max-w-column space-y-8">
@@ -148,12 +158,8 @@ export function PreflightScreen() {
 								key={item.fact}
 								item={item}
 								detail={EVIDENCE[item.fact]}
-								question={
-									question && typeof item.value !== "boolean"
-										? question
-										: undefined
-								}
-								def={question ? factDefFixtures[question.fact] : undefined}
+								question={questionFor(item)}
+								def={factDefFixtures[questionFor(item)?.fact ?? ""]}
 								answerValue={answer}
 								onAnswer={(_, value) => setAnswer(value)}
 								onOpen={() => undefined}

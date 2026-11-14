@@ -58,8 +58,10 @@ test("the X-ray screen opens the film beside the sheet from 1280 px, as a bottom
 	await expect(
 		page.getByRole("heading", { name: "Why: Room rent above the limit" }),
 	).toBeFocused();
-	// After the develop, nothing is left past the page's right edge.
-	await page.waitForTimeout(700);
+	// After the develop (the line hides when it ends; reduced motion has none),
+	// nothing is left past the page's right edge.
+	const line = page.locator("[data-scan-line]");
+	if ((await line.count()) > 0) await expect(line).toHaveClass(/\binvisible\b/);
 	const overflow = await page.evaluate(
 		() => document.documentElement.scrollWidth - innerWidth,
 	);
@@ -93,8 +95,15 @@ test("the Pre-Flight report groups checks by clause number, in order, and asks i
 		"Kiro usage",
 		"Submission",
 	]);
+	// The question sits on the one check whose input it asks for.
 	await expect(
 		page.getByText("Is the demo video under 3 minutes?"),
+	).toHaveCount(1);
+	await expect(
+		page
+			.locator('[data-check="unknown"]')
+			.filter({ hasText: "Demo video under 3 minutes" })
+			.getByText("Is the demo video under 3 minutes?"),
 	).toBeVisible();
 	await expect(page.getByRole("radio", { name: "Yes" })).toBeVisible();
 });

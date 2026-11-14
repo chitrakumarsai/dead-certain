@@ -62,6 +62,10 @@ const TREE_KEYS: readonly Key[] = [
 	"Enter",
 ];
 
+/** True when any node in the tree cites the clause. */
+const cites = (node: ProofNode, clause: string): boolean =>
+	node.clause === clause || node.children.some((child) => cites(child, clause));
+
 const isJoint = (node: ProofNode): boolean =>
 	node.source === "derived" && node.rule !== undefined;
 
@@ -210,13 +214,9 @@ function TreeNode({
 	onChangeAnswer,
 	...row
 }: NodeProps) {
-	const { node, clauseFor, decidingClause } = row;
+	const { node } = row;
 	const isParent = node.children.length > 0;
 	const isOpen = isParent && state.expanded.has(id);
-	const clause =
-		node.clause !== undefined && node.clause === decidingClause
-			? clauseFor?.(node.clause)
-			: undefined;
 
 	return (
 		<div
@@ -233,11 +233,6 @@ function TreeNode({
 			className="[&:focus-visible>[data-row]]:outline-2 [&:focus-visible>[data-row]]:outline-offset-2 [&:focus-visible>[data-row]]:outline-focus [&:focus-visible>[data-row]]:outline-solid"
 		>
 			<Row {...row} id={id} isOpen={isOpen} />
-			{clause && (
-				<div data-deciding className="pb-2 pl-16">
-					<ClauseQuote clause={clause} variant="deciding" />
-				</div>
-			)}
 			{state.active === id && (
 				<NodeActions
 					node={node}
@@ -320,29 +315,37 @@ export function ProofTree({
 		setState((prev) => treeReduce(root, prev, event.key as Key));
 	};
 
+	// The deciding clause is quoted once, after the tree: an ARIA tree holds only
+	// treeitems and groups, and a quote inside a closed branch would be hidden.
+	const deciding =
+		decidingClause !== undefined && cites(root, decidingClause)
+			? clauseFor?.(decidingClause)
+			: undefined;
+
 	return (
-		<div
-			ref={treeRef}
-			role="tree"
-			aria-label="Proof"
-			onKeyDown={onKeyDown}
-			className="max-w-column"
-		>
-			<TreeNode
-				node={root}
-				id="0"
-				level={1}
-				posinset={1}
-				setsize={1}
-				state={state}
-				onToggle={onToggle}
-				labelFor={labelFor}
-				formatValue={formatValue}
-				clauseFor={clauseFor}
-				decidingClause={decidingClause}
-				ruleExpression={ruleExpression}
-				onChangeAnswer={onChangeAnswer}
-			/>
+		<div className="max-w-column space-y-4">
+			<div ref={treeRef} role="tree" aria-label="Proof" onKeyDown={onKeyDown}>
+				<TreeNode
+					node={root}
+					id="0"
+					level={1}
+					posinset={1}
+					setsize={1}
+					state={state}
+					onToggle={onToggle}
+					labelFor={labelFor}
+					formatValue={formatValue}
+					clauseFor={clauseFor}
+					decidingClause={decidingClause}
+					ruleExpression={ruleExpression}
+					onChangeAnswer={onChangeAnswer}
+				/>
+			</div>
+			{deciding && (
+				<div data-deciding>
+					<ClauseQuote clause={deciding} variant="deciding" />
+				</div>
+			)}
 		</div>
 	);
 }

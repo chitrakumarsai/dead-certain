@@ -167,9 +167,9 @@ const TREES: readonly {
 	{
 		id: "prooftree-deciding",
 		title: "Deciding clause",
-		note: "The rule citing the deciding clause quotes it under its sentence, marked in wax.",
-		root: deepProofFixture,
-		decidingClause: "1.2",
+		note: "Three rules cite clause 4.2; it is quoted once, after the tree, marked in wax, and stays when their branches close.",
+		root: proofFixture,
+		decidingClause: "4.2",
 	},
 	{
 		id: "prooftree-huge",

@@ -98,21 +98,32 @@ test("joints show rule id and sentence; bone ends show label, value and source",
 	await expect(tree(page, "unknown")).toContainText("Not known yet");
 });
 
-test("the deciding clause is quoted under its rule sentence, once", async ({
+test("the deciding clause is quoted once, after the tree, and stays when branches close", async ({
 	page,
 }) => {
 	await page.goto("./kit/#prooftree-deciding");
+	const specimen = page.locator('[data-specimen="prooftree-deciding"]');
 	const deciding = tree(page, "deciding");
+	const quote = specimen.locator("[data-deciding] > blockquote");
 
-	await expect(deciding.locator("blockquote")).toHaveCount(1);
-	await expect(deciding.locator("blockquote")).toHaveCSS(
-		"border-left-color",
-		"rgb(242, 193, 46)",
+	// Three rules in this proof cite clause 4.2.
+	await expect(deciding.locator('[role="treeitem"]')).toHaveCount(5);
+	await expect(specimen.locator("blockquote")).toHaveCount(1);
+	await expect(quote).toContainText("Clause 4.2");
+	await expect(quote).toHaveCSS("border-left-color", "rgb(242, 193, 46)");
+	await expect(deciding.locator("blockquote")).toHaveCount(0);
+
+	// Close every branch: the quote is outside the tree, so it stays.
+	for (const id of ["0.0", "0.1", "0"]) {
+		await deciding
+			.locator(`[data-node-id="${id}"] > [data-row] [data-toggle]`)
+			.click();
+	}
+	await expect(deciding.locator('[data-node-id="0"]')).toHaveAttribute(
+		"aria-expanded",
+		"false",
 	);
-	// Only the root of the deep proof cites clause 1.2.
-	await expect(
-		deciding.locator('[data-node-id="0"] > [data-deciding] > blockquote'),
-	).toContainText("Clause 1.2");
+	await expect(quote).toBeVisible();
 });
 
 test("strokes are drawn in the film's soft text colour", async ({ page }) => {
