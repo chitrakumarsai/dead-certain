@@ -378,3 +378,52 @@ describe("Schema: non-mapping values", () => {
 		expect(only(run(null)).code).toBe("SCHEMA_INVALID");
 	});
 });
+
+describe("Schema: a bad value is shown without throwing", () => {
+	/** The fact `type` set to `bad`, and the message the schema reports for it. */
+	function typeMessage(bad: unknown): string {
+		const kb = clone();
+		(kb.facts as Obj).rent = { type: bad, ask: "?" };
+		const diag = run(kb).find((d) => d.id === "rent");
+		expect(diag?.code).toBe("SCHEMA_INVALID");
+		return diag?.message ?? "";
+	}
+
+	it("does not throw on the counterexample fast-check found, and shows the BigInt", () => {
+		const result = validateRaw({ facts: { "": { type: 0n } } }, FILE);
+		expect(result.diagnostics.length).toBeGreaterThan(0);
+		expect(typeMessage(0n)).toContain("Found '0n'");
+		expect(typeMessage(-12n)).toContain("Found '-12n'");
+	});
+
+	it("says a value JSON cannot write cannot be shown", () => {
+		const cycle: Obj = {};
+		cycle.self = cycle;
+		const getter = {
+			get boom(): never {
+				throw new Error("no");
+			},
+		};
+		const toJson = {
+			toJSON(): never {
+				throw new Error("no");
+			},
+		};
+		for (const bad of [{ n: 1n }, [1n], cycle, getter, toJson]) {
+			expect(typeMessage(bad)).toContain(
+				"Found '[value that cannot be shown]'",
+			);
+		}
+	});
+
+	it("shows a symbol and a function as ?, as before", () => {
+		expect(typeMessage(Symbol("x"))).toContain("Found '?'");
+		expect(typeMessage(() => 1)).toContain("Found '?'");
+	});
+
+	it("still shows JSON-writable values as JSON", () => {
+		expect(typeMessage("int")).toContain("Found 'int'");
+		expect(typeMessage(7)).toContain("Found '7'");
+		expect(typeMessage({ a: [1, null] })).toContain(`Found '{"a":[1,null]}'`);
+	});
+});
