@@ -32,6 +32,7 @@ import type { TreeState } from "./components/proofTreeState";
 import type { QuestionCardProps } from "./components/QuestionCard";
 import type { SheetProps } from "./components/Sheet";
 import type { SourceBadgeProps } from "./components/SourceBadge";
+import type { StaleLinkNoticeProps } from "./components/StaleLinkNotice";
 import type { VerdictHeadlineProps } from "./components/VerdictHeadline";
 import type { WhatIfListProps } from "./components/WhatIfList";
 import type { XrayStageProps, XrayTarget } from "./components/XrayStage";
@@ -218,4 +219,14 @@ test("AppShell takes an app name, navigation and optional rail and footer", () =
 	>();
 	expectTypeOf<"No guesses">().toExtend<AppShellProps["footer"]>();
 	expectTypeOf<AppShellProps["rail"]>().not.toBeNever();
+});
+
+test("StaleLinkNotice takes a ReplayFailure, a start callback and an optional rulebook link", () => {
+	expectTypeOf<
+		StaleLinkNoticeProps["failure"]
+	>().toEqualTypeOf<ReplayFailure>();
+	expectTypeOf<StaleLinkNoticeProps["onStart"]>().toEqualTypeOf<() => void>();
+	expectTypeOf<StaleLinkNoticeProps["rulebookHref"]>().toEqualTypeOf<
+		string | undefined
+	>();
 });

@@ -34,6 +34,7 @@ import {
 	SOURCE_BADGE_SPECIMENS,
 	SourceBadgeSection,
 } from "./SourceBadgeSection";
+import { STALE_LINK_SPECIMENS, StaleLinkSection } from "./StaleLinkSection";
 import { TOKEN_SPECIMENS, TokensSection } from "./TokensSection";
 import {
 	VERDICT_HEADLINE_SPECIMENS,
@@ -61,6 +62,7 @@ const SECTIONS = [
 	{ title: "ProofTree", specimens: PROOF_TREE_SPECIMENS },
 	{ title: "XrayStage", specimens: XRAY_STAGE_SPECIMENS },
 	{ title: "AppShell", specimens: APP_SHELL_SPECIMENS },
+	{ title: "StaleLinkNotice", specimens: STALE_LINK_SPECIMENS },
 ];
 
 function Gallery() {
@@ -128,6 +130,7 @@ function Gallery() {
 				<ProofTreeSection />
 				<XrayStageSection />
 				<AppShellSection />
+				<StaleLinkSection />
 			</main>
 		</div>
 	);

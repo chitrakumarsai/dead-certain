@@ -1,6 +1,6 @@
 import type { FactDef } from "@dead-certain/engine/types";
 import { expect, test } from "vitest";
-import { humanize } from "./format/label";
+import { humanize, lowerFirst } from "./format/label";
 import {
 	defaultLocale,
 	formatMoney,
@@ -152,3 +152,18 @@ test("reformatMoneyInput groups by the locale", () => {
 	expect(reformatMoneyInput("1425000", 7, "en").text).toBe("1,425,000");
 	expect(reformatMoneyInput("1425000", 7, "en-IN").text).toBe("14,25,000");
 });
+
+test.each([
+	["Room rent per day", "room rent per day"],
+	["Age", "age"],
+	["ICU days", "ICU days"],
+	["MIT licence type", "MIT licence type"],
+	["GitHub Actions", "gitHub Actions"],
+	["already lower", "already lower"],
+	["", ""],
+])(
+	"lowerFirst(%j) is %j: a capitalised first word lowers, an acronym stays",
+	(text, expected) => {
+		expect(lowerFirst(text)).toBe(expected);
+	},
+);

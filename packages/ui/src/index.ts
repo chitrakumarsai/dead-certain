@@ -48,6 +48,10 @@ export {
 export { Sheet, type SheetProps } from "./components/Sheet";
 export { SourceBadge, type SourceBadgeProps } from "./components/SourceBadge";
 export {
+	StaleLinkNotice,
+	type StaleLinkNoticeProps,
+} from "./components/StaleLinkNotice";
+export {
 	VerdictHeadline,
 	type VerdictHeadlineProps,
 } from "./components/VerdictHeadline";
