@@ -220,10 +220,12 @@ Boundary rules that shape every requirement:
 
 ---
 
-## Questions for the human, with the default each requirement assumes
+## Decisions
 
-1. **Is a rule that no scenario covers an error or a warning?** Requirement 7 makes `RULE_NOT_COVERED` an error, because Gate G2 says every rule fires in at least one scenario. A warning would let a gate pass with a gap.
-2. **Should `TOO_FEW_SCENARIOS` fail the run?** Requirement 7 makes it a warning, since 12 is a content rule and not a property of the tool. An error would enforce Gate G2's count mechanically.
-3. **Is one `expect.goals` entry for every goal required?** Requirement 4 requires all of them, so a goal cannot go unchecked. A partial block would be shorter to write and easier to break silently.
-4. **`dc golden --json`?** Playwright can use the exported loader and runner (Requirement 12). A machine-readable command output is not in this spec. Say if the Claude Code lane wants it.
-5. **Should an `audit` Scenario be able to run with facts the app only collects, for example from GitHub?** Requirement 3 treats every non-derived fact as askable, so collected facts go in `facts` like any other. A separate `collected` block would mirror the interface more closely.
+The human settled the five questions that the first draft left open. Each requirement already states the decision.
+
+1. **An uncovered rule is an error.** `RULE_NOT_COVERED` is an error, so Gate G2's "every rule fires in at least one scenario" is checked by the tool (Requirement 7, criterion 1; Requirement 8, criterion 4).
+2. **Fewer than 12 scenarios is a warning only.** `TOO_FEW_SCENARIOS` does not fail the run, because 12 is a content rule and not a property of the tool (Requirement 7, criterion 3).
+3. **Every goal must be listed in `expect.goals`.** A scenario cannot leave a goal unchecked (Requirement 4, criterion 1).
+4. **There is no `--json` output.** Playwright uses the exported loader and runner (Requirement 12).
+5. **There is no separate `collected` block.** Collected facts go in `facts`, like any other non-derived fact (Requirement 3, criterion 2, and the definition of Askable_Fact).
