@@ -9,6 +9,10 @@ test-results/
 playwright-report/
 # Screenshots made by e2e/evidence.spec.ts; CI uploads them as an artifact.
 evidence/
+# The same screenshots downloaded with `gh run download <id> -n screenshots`.
+/390/
+/768/
+/1280/
 coverage/
 
 # Python (managed with uv)
