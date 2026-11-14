@@ -1,21 +1,27 @@
 import { Specimen } from "./Specimen";
 
 /** The shell owns a page's landmarks and live region, so each one gets its own document. */
-function Framed({
+export function Framed({
 	src,
 	title,
 	width,
+	height = 560,
+	isPreview = false,
 }: {
 	src: string;
 	title: string;
 	width?: number;
+	height?: number;
+	/** Inert: nothing inside can take focus from the gallery, or be used. */
+	isPreview?: boolean;
 }) {
 	return (
 		<iframe
 			src={src}
 			title={title}
+			inert={isPreview}
 			// Fixed sizes keep the gallery from shifting as each frame loads.
-			style={{ width: width ?? "100%", maxWidth: "100%", height: 560 }}
+			style={{ width: width ?? "100%", maxWidth: "100%", height }}
 			className="block rounded-paper border border-divider bg-surface"
 		/>
 	);

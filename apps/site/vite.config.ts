@@ -12,6 +12,7 @@ export default defineConfig({
 				main: "index.html",
 				kit: "kit/index.html",
 				shell: "kit/shell.html",
+				screen: "kit/screen.html",
 			},
 		},
 	},

@@ -29,6 +29,7 @@ import {
 	QUESTION_CARD_SPECIMENS,
 	QuestionCardSection,
 } from "./QuestionCardSection";
+import { SCREEN_SPECIMENS, ScreensSection } from "./ScreensSection";
 import { SHEET_FILM_SPECIMENS, SheetFilmSection } from "./SheetFilmSection";
 import {
 	SOURCE_BADGE_SPECIMENS,
@@ -63,6 +64,7 @@ const SECTIONS = [
 	{ title: "XrayStage", specimens: XRAY_STAGE_SPECIMENS },
 	{ title: "AppShell", specimens: APP_SHELL_SPECIMENS },
 	{ title: "StaleLinkNotice", specimens: STALE_LINK_SPECIMENS },
+	{ title: "Screens", specimens: SCREEN_SPECIMENS },
 ];
 
 function Gallery() {
@@ -131,6 +133,7 @@ function Gallery() {
 				<XrayStageSection />
 				<AppShellSection />
 				<StaleLinkSection />
+				<ScreensSection />
 			</main>
 		</div>
 	);
