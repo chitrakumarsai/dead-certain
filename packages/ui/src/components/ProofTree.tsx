@@ -1,12 +1,23 @@
 import type { Clause, FactValue, ProofNode } from "@dead-certain/engine/types";
-import { memo, useCallback, useState } from "react";
+import {
+	type KeyboardEvent,
+	memo,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { Chevron } from "../icons";
+import { Button } from "./Button";
 import { ClauseQuote } from "./ClauseQuote";
+import { Disclosure } from "./Disclosure";
 import {
 	initialTreeState,
+	type Key,
 	normalizeTreeState,
 	type TreeState,
 	toggleNode,
+	treeReduce,
 } from "./proofTreeState";
 import { SourceBadge } from "./SourceBadge";
 
@@ -40,6 +51,16 @@ type RowProps = Pick<
 	isOpen: boolean;
 	onToggle: (id: string) => void;
 };
+
+const TREE_KEYS: readonly Key[] = [
+	"ArrowDown",
+	"ArrowUp",
+	"ArrowRight",
+	"ArrowLeft",
+	"Home",
+	"End",
+	"Enter",
+];
 
 const isJoint = (node: ProofNode): boolean =>
 	node.source === "derived" && node.rule !== undefined;
@@ -137,7 +158,41 @@ const Row = memo(function Row({
 	);
 });
 
+/** The active node's actions: in the tab order only because only it renders them. */
+function NodeActions({
+	node,
+	ruleExpression,
+	onChangeAnswer,
+}: Pick<ProofTreeProps, "ruleExpression" | "onChangeAnswer"> & {
+	node: ProofNode;
+}) {
+	const expression = node.rule ? ruleExpression?.(node.rule) : undefined;
+	const canChange = node.source === "answered" && onChangeAnswer !== undefined;
+	if (!expression && !canChange) return null;
+	return (
+		<div data-actions className="space-y-2 pt-1 pb-2 pl-16">
+			{expression && (
+				<Disclosure title="Show the rule">
+					<code
+						data-rule-expression
+						className="block font-mono text-mono text-text wrap-anywhere"
+					>
+						{expression}
+					</code>
+				</Disclosure>
+			)}
+			{canChange && (
+				<Button onClick={() => onChangeAnswer(node.fact)}>
+					Change this answer
+				</Button>
+			)}
+		</div>
+	);
+}
+
 interface NodeProps extends Omit<RowProps, "id" | "isOpen"> {
+	ruleExpression: ProofTreeProps["ruleExpression"];
+	onChangeAnswer: ProofTreeProps["onChangeAnswer"];
 	id: string;
 	level: number;
 	posinset: number;
@@ -145,7 +200,16 @@ interface NodeProps extends Omit<RowProps, "id" | "isOpen"> {
 	state: TreeState;
 }
 
-function TreeNode({ id, level, posinset, setsize, state, ...row }: NodeProps) {
+function TreeNode({
+	id,
+	level,
+	posinset,
+	setsize,
+	state,
+	ruleExpression,
+	onChangeAnswer,
+	...row
+}: NodeProps) {
 	const { node, clauseFor, decidingClause } = row;
 	const isParent = node.children.length > 0;
 	const isOpen = isParent && state.expanded.has(id);
@@ -174,6 +238,13 @@ function TreeNode({ id, level, posinset, setsize, state, ...row }: NodeProps) {
 					<ClauseQuote clause={clause} variant="deciding" />
 				</div>
 			)}
+			{state.active === id && (
+				<NodeActions
+					node={node}
+					ruleExpression={ruleExpression}
+					onChangeAnswer={onChangeAnswer}
+				/>
+			)}
 			{isOpen && (
 				// biome-ignore lint/a11y/useSemanticElements: a tree's child list is role="group"; a fieldset is for form controls.
 				<div role="group" className="ml-2 border-l-2 border-text-soft pl-4">
@@ -188,6 +259,8 @@ function TreeNode({ id, level, posinset, setsize, state, ...row }: NodeProps) {
 							posinset={i + 1}
 							setsize={node.children.length}
 							state={state}
+							ruleExpression={ruleExpression}
+							onChangeAnswer={onChangeAnswer}
 						/>
 					))}
 				</div>
@@ -199,7 +272,7 @@ function TreeNode({ id, level, posinset, setsize, state, ...row }: NodeProps) {
 /**
  * A verdict's proof as an ARIA tree: rules are joints, facts are bone ends.
  * Ids are index paths, so a fact under two rules gets two ids. One item is in
- * the tab order at a time. Keys and node actions arrive with task 8.2.
+ * the tab order at a time, plus its own actions; Tab then leaves the tree.
  */
 export function ProofTree({
 	root,
@@ -207,18 +280,54 @@ export function ProofTree({
 	formatValue,
 	clauseFor,
 	decidingClause,
+	ruleExpression,
+	onChangeAnswer,
+	onEscape,
 	initialState,
 }: ProofTreeProps) {
 	const [state, setState] = useState(() =>
 		normalizeTreeState(root, initialState ?? initialTreeState(root)),
 	);
+	const treeRef = useRef<HTMLDivElement>(null);
+	// Focus follows the active node after a key or a click, never on mount.
+	const hasMoved = useRef(false);
 	const onToggle = useCallback(
-		(id: string) => setState((prev) => toggleNode(root, prev, id)),
+		(id: string) => {
+			hasMoved.current = true;
+			setState((prev) => toggleNode(root, prev, id));
+		},
 		[root],
 	);
 
+	useEffect(() => {
+		if (!hasMoved.current) return;
+		treeRef.current
+			?.querySelector<HTMLElement>(`[data-node-id="${state.active}"]`)
+			?.focus();
+	}, [state.active]);
+
+	const onKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
+		if (event.key === "Escape") {
+			onEscape();
+			return;
+		}
+		// Keys on an action (a button inside the node) belong to that action.
+		if ((event.target as HTMLElement).getAttribute("role") !== "treeitem")
+			return;
+		if (!(TREE_KEYS as readonly string[]).includes(event.key)) return;
+		event.preventDefault();
+		hasMoved.current = true;
+		setState((prev) => treeReduce(root, prev, event.key as Key));
+	};
+
 	return (
-		<div role="tree" aria-label="Proof" className="max-w-column">
+		<div
+			ref={treeRef}
+			role="tree"
+			aria-label="Proof"
+			onKeyDown={onKeyDown}
+			className="max-w-column"
+		>
 			<TreeNode
 				node={root}
 				id="0"
@@ -231,6 +340,8 @@ export function ProofTree({
 				formatValue={formatValue}
 				clauseFor={clauseFor}
 				decidingClause={decidingClause}
+				ruleExpression={ruleExpression}
+				onChangeAnswer={onChangeAnswer}
 			/>
 		</div>
 	);

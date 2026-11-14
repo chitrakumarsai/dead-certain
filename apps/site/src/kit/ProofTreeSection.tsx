@@ -16,6 +16,7 @@ import {
 	proofFixture,
 	unknownValueProofFixture,
 } from "@dead-certain/ui/fixtures";
+import { useState } from "react";
 import { OnFilm } from "./OnFilm";
 import { Specimen } from "./Specimen";
 
@@ -41,6 +42,67 @@ const valueFor = (
 };
 const clauseFor = (id: string) =>
 	clauseFixtures[id] ?? preFlightClauseFixtures[id];
+
+/** Sample rule expressions, as an app would print them with the engine. */
+const EXPRESSIONS: Readonly<Record<string, string>> = {
+	"ROOM-01": "room_rent_cap = sum_insured * 0.01",
+	"ROOM-02": "rent_over_cap = room_rent_per_day > room_rent_cap",
+	"ROOM-03":
+		"room_rent_deduction = round(other_charges * (1 - room_rent_cap / room_rent_per_day))",
+};
+const ruleExpression = (rule: string) => EXPRESSIONS[rule];
+
+/** A tree with its actions wired to visible outputs. */
+function KeyedTree({ initialState }: { initialState: TreeState }) {
+	const [changed, setChanged] = useState<string>();
+	const [escapes, setEscapes] = useState(0);
+	return (
+		<div className="space-y-3">
+			<OnFilm>
+				<ProofTree
+					root={proofFixture}
+					labelFor={labelFor}
+					formatValue={valueFor}
+					ruleExpression={ruleExpression}
+					onChangeAnswer={setChanged}
+					onEscape={() => setEscapes((n) => n + 1)}
+					initialState={initialState}
+				/>
+			</OnFilm>
+			<p className="text-sys-small text-text-soft">
+				Asked to change:{" "}
+				<span data-changed className="font-mono text-mono">
+					{changed ?? "nothing yet"}
+				</span>
+				. Escape pressed:{" "}
+				<span data-escaped className="font-mono text-mono">
+					{escapes}
+				</span>
+			</p>
+		</div>
+	);
+}
+
+const KEYED = [
+	{
+		id: "prooftree-keys-joint",
+		title: "Keyboard focus on a joint",
+		note: "Arrow keys, Home, End and Enter move through the tree. Tab reaches this rule's Show the rule, then leaves.",
+		active: "0.0",
+	},
+	{
+		id: "prooftree-keys-bone",
+		title: "Keyboard focus on a bone end",
+		note: "An answered fact offers Change this answer while it is the active node.",
+		active: "0.0.0",
+	},
+	{
+		id: "prooftree-actions",
+		title: "With actions visible",
+		note: "Only the active node shows its actions. Escape anywhere in the tree hands focus back.",
+		active: "0",
+	},
+] as const;
 
 /** Every node with children open, the root active. */
 function allOpen(root: Root): TreeState {
@@ -117,10 +179,9 @@ const TREES: readonly {
 	},
 ];
 
-export const PROOF_TREE_SPECIMENS = TREES.map(({ id, title }) => ({
-	id,
-	title,
-}));
+export const PROOF_TREE_SPECIMENS = [...TREES, ...KEYED].map(
+	({ id, title }) => ({ id, title }),
+);
 
 export function ProofTreeSection() {
 	return (
@@ -133,8 +194,8 @@ export function ProofTreeSection() {
 			</h2>
 			<p className="max-w-column pt-2 text-text-soft">
 				A verdict's bones, on film. Each rule that fired is a joint, each fact
-				it used is a bone end, and the tree follows the ARIA tree pattern.
-				Keyboard movement arrives with the next task.
+				it used is a bone end, and the tree follows the ARIA tree pattern. The
+				keys follow the ARIA tree pattern.
 			</p>
 
 			{TREES.map(({ id, title, note, root, initialState, decidingClause }) => (
@@ -150,6 +211,16 @@ export function ProofTreeSection() {
 							onEscape={() => undefined}
 						/>
 					</OnFilm>
+				</Specimen>
+			))}
+			{KEYED.map(({ id, title, note, active }) => (
+				<Specimen key={id} id={id} title={title} note={note}>
+					<KeyedTree
+						initialState={{
+							active,
+							expanded: new Set(["0", "0.0", "0.1"]),
+						}}
+					/>
 				</Specimen>
 			))}
 		</section>
