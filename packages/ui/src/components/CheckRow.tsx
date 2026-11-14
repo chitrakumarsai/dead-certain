@@ -16,9 +16,14 @@ export interface CheckRowProps {
 	detail?: string;
 	/** Present while the value is unknown and the engine needs an answer. */
 	question?: Question;
-	/** The question is asked inline only when this is a boolean fact. */
+	/**
+	 * The definition of the fact the question asks for (`question.fact`), not of
+	 * the check itself: a check is derived, so the engine asks for its input.
+	 * The question is asked inline only when this is boolean.
+	 */
 	def?: FactDef;
 	answerValue?: FactValue;
+	/** Called with `question.fact`, the fact that was asked. */
 	onAnswer?: (fact: string, value: FactValue) => void;
 	/** `opener` is the rule button, so focus can return to it. */
 	onOpen: (item: LineItem, opener: HTMLElement) => void;
@@ -91,11 +96,11 @@ export function CheckRow({
 						</p>
 						<div className="pt-2">
 							<AnswerControl
-								fact={item.fact}
+								fact={question.fact}
 								def={def}
 								value={answerValue}
 								onChange={(next) => {
-									if (next !== undefined) onAnswer?.(item.fact, next);
+									if (next !== undefined) onAnswer?.(question.fact, next);
 								}}
 								labelledBy={questionId}
 								format={format}

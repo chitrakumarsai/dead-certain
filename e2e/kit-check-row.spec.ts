@@ -80,11 +80,11 @@ test("the inline question shows only while unknown, and answering emits once", a
 	).toBeVisible();
 	await unknown.getByRole("radio", { name: "Yes" }).click();
 	await expect(unknown.locator("[data-answered]")).toHaveText(
-		"video_under_3_minutes = true (1)",
+		"demo_video_short = true (1)",
 	);
 	await unknown.getByRole("radio", { name: "Yes" }).click();
 	await expect(unknown.locator("[data-answered]")).toHaveText(
-		"video_under_3_minutes = true (1)",
+		"demo_video_short = true (1)",
 	);
 	await expect(specimen(page, "fail").getByRole("radio")).toHaveCount(0);
 	await expect(specimen(page, "non-boolean").getByRole("radio")).toHaveCount(0);

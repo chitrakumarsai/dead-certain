@@ -87,7 +87,7 @@ const ROWS: readonly {
 		row: {
 			item: itemOf(preFlightUnknownFixture, "video_under_3_minutes"),
 			question: preFlightUnknownFixture.needed[0],
-			def: factDefFixtures.video_under_3_minutes,
+			def: factDefFixtures.demo_video_short,
 		},
 	},
 	{

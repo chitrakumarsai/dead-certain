@@ -175,7 +175,7 @@ export function AnswerControlSection() {
 				title="Yes or no, disabled"
 				note="Disabled while the answer cannot change."
 			>
-				<Live fact="video_under_3_minutes" start={true} disabled />
+				<Live fact="demo_video_short" start={true} disabled />
 			</Specimen>
 
 			<Specimen

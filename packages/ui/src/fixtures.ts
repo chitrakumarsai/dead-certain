@@ -127,7 +127,8 @@ export const preFlightVerdictFixture: Verdict = {
 	needed: [
 		{
 			kind: "question",
-			fact: "video_under_3_minutes",
+			// The check fact is derived; the engine asks for the input behind it.
+			fact: "demo_video_short",
 			text: "Is the demo video under 3 minutes?",
 		},
 	],
@@ -321,21 +322,33 @@ export const factDefFixtures: Readonly<Record<string, FactDef>> = {
 	},
 	admission_date: { type: "date", ask: "When was the patient admitted?" },
 	is_emergency: { type: "boolean", ask: "Was it an emergency admission?" },
-	is_public: { type: "boolean", role: "check", label: "Public repository" },
+	is_public: {
+		type: "boolean",
+		derived: true,
+		role: "check",
+		label: "Public repository",
+	},
 	has_detectable_license: {
 		type: "boolean",
+		derived: true,
 		role: "check",
 		label: "License file GitHub can detect",
 	},
 	kiro_not_ignored: {
 		type: "boolean",
+		derived: true,
 		role: "check",
 		label: ".kiro is not ignored",
 	},
 	video_under_3_minutes: {
 		type: "boolean",
+		derived: true,
 		role: "check",
 		label: "Demo video under 3 minutes",
+	},
+	/** The input the video check is worked out from: asked, not a line item. */
+	demo_video_short: {
+		type: "boolean",
 		ask: "Is the demo video under 3 minutes?",
 	},
 };
@@ -376,9 +389,9 @@ export const questionFixtures: Readonly<Record<string, Question>> = {
 		text: "Was it an emergency admission?",
 		why: "An emergency admission is covered from the first day of the policy.",
 	},
-	video_under_3_minutes: {
+	demo_video_short: {
 		kind: "question",
-		fact: "video_under_3_minutes",
+		fact: "demo_video_short",
 		text: "Is the demo video under 3 minutes?",
 	},
 };

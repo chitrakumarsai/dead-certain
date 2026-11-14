@@ -160,11 +160,16 @@ test("Pre-Flight edge fixtures: all pass is ready; unknown is undecided and asks
 	expect(
 		preFlightUnknownFixture.lineItems.some((item) => item.value === undefined),
 	).toBe(true);
+	// Check facts are derived, so the engine asks for the inputs behind them.
 	for (const question of preFlightUnknownFixture.needed) {
-		const item = preFlightUnknownFixture.lineItems.find(
-			(line) => line.fact === question.fact,
-		);
-		expect(item?.value, question.fact).toBeUndefined();
+		const def = factDefFixtures[question.fact];
+		expect(def?.ask, question.fact).toBeDefined();
+		expect(def?.derived, question.fact).not.toBe(true);
+		expect(
+			preFlightUnknownFixture.lineItems.some(
+				(line) => line.fact === question.fact,
+			),
+		).toBe(false);
 	}
 });
 
@@ -275,4 +280,17 @@ test("collected proof has collected leaves; unknown proof has an unknown value",
 			(node) => node.value === undefined,
 		),
 	).toBe(true);
+});
+
+test("every check fact is derived with a boolean type, as dc validate requires", () => {
+	const checks = Object.entries(factDefFixtures).filter(
+		([, def]) => def.role === "check",
+	);
+
+	expect(checks.length).toBeGreaterThan(0);
+	for (const [fact, def] of checks) {
+		expect(def.derived, fact).toBe(true);
+		expect(def.type, fact).toBe("boolean");
+		expect(def.ask, fact).toBeUndefined();
+	}
 });

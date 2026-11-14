@@ -196,7 +196,7 @@ export function QuestionCardSection() {
 				title="No why and no clause"
 				note="With nothing to explain, there is no panel."
 			>
-				<Card question={questionFor("video_under_3_minutes")} />
+				<Card question={questionFor("demo_video_short")} />
 			</Specimen>
 			<Specimen
 				id="questioncard-invalid"
