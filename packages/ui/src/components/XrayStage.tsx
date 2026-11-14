@@ -74,24 +74,30 @@ function ScanLine({ isWide }: { isWide: boolean }) {
 	const [isDone, setDone] = useState(false);
 	const [timing] = useState(developTiming);
 	return (
-		<m.div
+		// The moving layer ends a full sheet past its edge; the clip keeps it from
+		// widening the page.
+		<div
 			aria-hidden="true"
-			data-scan-line
-			data-direction={isWide ? "across" : "down"}
-			initial={isWide ? { x: "0%" } : { y: "0%" }}
-			animate={isWide ? { x: "100%" } : { y: "100%" }}
-			transition={timing}
-			onAnimationComplete={() => setDone(true)}
-			className={`pointer-events-none absolute inset-0 ${isDone ? "invisible" : ""}`}
+			className="pointer-events-none absolute inset-0 overflow-hidden"
 		>
-			<div
-				className={
-					isWide
-						? "absolute inset-y-0 left-0 w-0.5 bg-film"
-						: "absolute inset-x-0 top-0 h-0.5 bg-film"
-				}
-			/>
-		</m.div>
+			<m.div
+				data-scan-line
+				data-direction={isWide ? "across" : "down"}
+				initial={isWide ? { x: "0%" } : { y: "0%" }}
+				animate={isWide ? { x: "100%" } : { y: "100%" }}
+				transition={timing}
+				onAnimationComplete={() => setDone(true)}
+				className={`absolute inset-0 ${isDone ? "invisible" : ""}`}
+			>
+				<div
+					className={
+						isWide
+							? "absolute inset-y-0 left-0 w-0.5 bg-film"
+							: "absolute inset-x-0 top-0 h-0.5 bg-film"
+					}
+				/>
+			</m.div>
+		</div>
 	);
 }
 

@@ -18,6 +18,21 @@ const SCREENS = [
 		title: "Claim Check verdict",
 		note: "Paid in part: the headline, the bar, the ledger and what would change it.",
 	},
+	{
+		name: "xray",
+		title: "Claim Check verdict with the X-ray open",
+		note: "The room rent line's proof: beside the sheet from 1280 px, a bottom sheet below.",
+	},
+	{
+		name: "preflight",
+		title: "Pre-Flight report",
+		note: "Not ready: checks grouped by clause number, one asked inline.",
+	},
+	{
+		name: "stale",
+		title: "Stale verdict link",
+		note: "A link made with older rules: what happened and the way forward.",
+	},
 ] as const;
 
 export const SCREEN_SPECIMENS = SCREENS.map(({ name, title }) => ({
