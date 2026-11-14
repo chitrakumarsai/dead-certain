@@ -143,6 +143,17 @@ describe("Property 1: Validation is total and deterministic", () => {
 		);
 	});
 
+	// Counterexample found by fast-check: a BigInt where a fact's type belongs
+	// made the message builder throw. The seed replays the original run.
+	it("replays seed -646317260 without a throw", () => {
+		fc.assert(
+			fc.property(rawArb, (value) => {
+				expectTotalAndDeterministic(() => validateRaw(value, FILE));
+			}),
+			{ numRuns: 200, seed: -646317260 },
+		);
+	});
+
 	it("handles very long strings and deep nesting", () => {
 		for (const kind of ["array", "object"] as const) {
 			for (const depth of [50, 500, 5000]) {

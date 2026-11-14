@@ -160,8 +160,18 @@ function expectedName(expected: unknown): string {
 	}
 }
 
+/**
+ * The bad value as a message shows it. Never throws: JSON.stringify throws on
+ * a BigInt, a cycle, and anything holding either, and validation is total.
+ */
 function shown(value: unknown): string {
-	return typeof value === "string" ? value : (JSON.stringify(value) ?? "?");
+	if (typeof value === "string") return value;
+	if (typeof value === "bigint") return `${value}n`;
+	try {
+		return JSON.stringify(value) ?? "?";
+	} catch {
+		return "[value that cannot be shown]";
+	}
 }
 
 function fieldPhrase(path: readonly PropertyKey[], owner: Owner): string {
