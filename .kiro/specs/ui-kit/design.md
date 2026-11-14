@@ -110,7 +110,8 @@ apps/site/
 ├── index.html                # EXISTS, placeholder, untouched
 ├── kit/index.html            # NEW entry: /dead-certain/kit/
 ├── kit/shell.html            # NEW entry: the AppShell on its own page, shown in iframes
-└── src/kit/                  # gallery: main.tsx, Specimen.tsx, sections/*, screens/*
+├── kit/screen.html           # NEW entry: one static screen per page, ?screen=<name>
+└── src/kit/                  # gallery: main.tsx, Specimen.tsx, sections/*, claimScreens.tsx, screen.tsx
 ```
 
 The gallery uses a second HTML entry (Vite multi-page build) instead of a router. `/kit/` is a real path on GitHub Pages and needs no dependency. The apps keep their hash routing for verdict links.
@@ -1043,7 +1044,7 @@ catch (e) {
 
 ### Static screens (built on fixtures, no engine)
 
-Rendered inside the gallery under "Screens" and also as their own deep links, so each is screenshot-able at three widths:
+Each screen is its own page, `apps/site/kit/screen.html?screen=<name>`, wrapped in `AppShell` so it owns its landmarks. The gallery shows it under "Screens" in an inert iframe (`&preview=1`) with a link "on its own" to the page, so each is screenshot-able at three widths. In a preview frame `HTMLElement.prototype.focus` is a no-op, because a `focus()` inside a frame pulls the gallery's focus into it; the page opened on its own focuses its heading as it should. Screen names: `start`, `question`, `verdict`, then `xray`, `preflight` and `stale` as screens 4 to 6 are built.
 
 1. Claim Check start
 2. Claim Check question (money)

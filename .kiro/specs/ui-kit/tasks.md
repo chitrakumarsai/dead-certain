@@ -397,14 +397,14 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - _Requirements: 23.1, 23.2, 23.3, 23.4, 23.5, 23.6, 23.7, 23.8_
 
   - [ ] 9.2 Build static screens 1 to 3
-    - Under "Screens" in the gallery, each with its own deep link: Claim Check start, Claim Check question (money) and Claim Check verdict (reduced, with ledger, proportion bar and what-if). Use only Component_Set components and fixtures, wrapped in `AppShell`. No engine import at run time.
+    - Under "Screens" in the gallery, each with its own deep link, `kit/screen.html?screen=<name>`, shown in the gallery in an inert iframe (`&preview=1`, where `focus()` is a no-op): Claim Check start, Claim Check question (money) and Claim Check verdict (reduced, with ledger, proportion bar and what-if). Use only Component_Set components and fixtures, wrapped in `AppShell`. No engine import at run time.
     - Playwright: each deep link loads at the three widths with a clean console and zero axe violations; the verdict screen heading is focusable.
     - Close with Task_Evidence (screenshots of all three screens at all three widths).
     - _Requirements: 25.1, 25.2, 25.3, 24.9_
 
   - [ ] 9.3 Build static screens 4 to 6
     - Claim Check verdict with the X-ray open (side panel at 1280, bottom sheet at 390 and 768); Pre-Flight report (not ready, with an inline question, checks grouped by the first number of the clause id with titles from an app-supplied map); stale link (`KB_MISMATCH`).
-    - Playwright: the X-ray screen presents `side` at 1280 and `sheet` at 390 and 768; the Pre-Flight groups are in clause-number order; each deep link passes console and axe at the three widths.
+    - Playwright: the X-ray screen presents `side` at 1280 and `sheet` at 390 and 768; the Pre-Flight groups are in clause-number order; each deep link passes console and axe at the three widths. Add each screen to `SCREENS` in `screen.tsx` and to the gallery's "Screens" section.
     - Close with Task_Evidence (screenshots of all three screens at all three widths).
     - _Requirements: 25.1, 25.2, 25.3, 25.4, 25.5_
 

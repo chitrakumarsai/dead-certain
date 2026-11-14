@@ -481,7 +481,7 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 #### Acceptance Criteria
 
 1. THE Gallery SHALL render six Static_Screens: Claim Check start, Claim Check question (money), Claim Check verdict (reduced, with ledger and what-if), Claim Check verdict with the X-ray open, Pre-Flight report (not ready, with an inline question) and stale link (`KB_MISMATCH`).
-2. THE Gallery SHALL expose each Static_Screen as its own deep link.
+2. THE Gallery SHALL expose each Static_Screen as its own deep link, a page `apps/site/kit/screen.html?screen=<name>`, and SHALL show it in an inert iframe that does not take focus.
 3. THE Static_Screens SHALL use only Component_Set components and Fixtures.
 4. THE Static_Screens SHALL render the X-ray as a side panel at 1280 px and as a bottom sheet at 390 and 768 px.
 5. THE Static_Screens SHALL group Pre-Flight checks by the first number of the clause id, with titles from an app-supplied map.
