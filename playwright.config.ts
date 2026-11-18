@@ -1,6 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const SITE_URL = "http://localhost:4173/dead-certain/";
+/** Claim Check is served on its own port; its specs open it with this absolute URL. */
+export const CLAIM_CHECK_URL =
+	"http://localhost:4174/dead-certain/claim-check/";
 const HEIGHT = 900;
 const chrome = devices["Desktop Chrome"];
 
@@ -31,11 +34,19 @@ export default defineConfig({
 			},
 		},
 	],
-	// Tests run against the built site, never a watcher.
-	webServer: {
-		command:
-			"pnpm --filter @dead-certain/site build && pnpm --filter @dead-certain/site preview --port 4173 --strictPort",
-		url: SITE_URL,
-		reuseExistingServer: true,
-	},
+	// Tests run against the built apps, never a watcher.
+	webServer: [
+		{
+			command:
+				"pnpm --filter @dead-certain/site build && pnpm --filter @dead-certain/site preview --port 4173 --strictPort",
+			url: SITE_URL,
+			reuseExistingServer: true,
+		},
+		{
+			command:
+				"pnpm --filter @dead-certain/claim-check build && pnpm --filter @dead-certain/claim-check preview --port 4174 --strictPort",
+			url: CLAIM_CHECK_URL,
+			reuseExistingServer: true,
+		},
+	],
 });

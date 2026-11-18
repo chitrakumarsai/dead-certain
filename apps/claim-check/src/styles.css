@@ -1,0 +1,4 @@
+/* The kit's fonts, tokens and Tailwind theme. It already imports tokens.css. */
+@import "@dead-certain/ui/styles.css";
+/* Scan this app's own components for class names. */
+@source "./";

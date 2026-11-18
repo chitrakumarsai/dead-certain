@@ -37,6 +37,8 @@ __pycache__/
 /.claude/settings.local.json
 !/apps/*/rulebook/**
 !/apps/*/kb/**
+# ...but not the JSON that `pnpm dc build` compiles from them.
+/apps/*/kb/dist/
 !/docs/kb-format.md
 # Kiro's session log, versioned so the submission write-up has a public record.
 !/docs/kiro-log.md
