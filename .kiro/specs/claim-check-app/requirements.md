@@ -25,7 +25,7 @@ Scope of this spec: the start screen, the consultation flow, the verdict, the X-
 - **Stale_Link**: A Replay_Link whose token `decode` rejects with `KB_MISMATCH`, `MALFORMED_TOKEN` or `UNSUPPORTED_VERSION`.
 - **Goal_Config**: The small module `src/config.ts` that names the Knowledge_Base's amount goal, state goal and claimed-amount fact. It is the only place the app names a fact or goal.
 - **Question_Path**: The ordered list of facts the Engine asks, found by replaying the answers from an empty session. It does not depend on the order the user answered in.
-- **Relevant_Answer**: An answered fact that appears as a leaf with source `answered` in the proof of a goal, or that is the question being asked now.
+- **Relevant_Answer**: An answered fact that is on the Question_Path, appears in the proof of a goal as a leaf with source `answered`, and has an answer in the session; or the question being asked now. The Engine marks an unanswered leaf `answered` too, so the answer itself is checked, and a fact the proof names but the Question_Path does not hold (an early stop made it unnecessary) is not relevant.
 - **Skipped_Note**: A `SkippedNote` from `@dead-certain/ui`: an answered fact that is no longer a Relevant_Answer, with one plain line of reason.
 - **Verdict_Screen**: The screen that shows the verdict, the ledger and the what-if list.
 - **X-ray**: The proof view: paper on the left and film on the right at 1280 px and up, film as a sheet below that, opened through `XrayStage`.
@@ -43,14 +43,14 @@ Scope of this spec: the start screen, the consultation flow, the verdict, the X-
 #### Acceptance Criteria
 
 1. THE Claim_Check SHALL serve three pages chosen by the fragment route, so deep links work on static hosting: the check at `#/`, the rulebook at `#/rulebook`, and a 404 page for any other route.
-2. THE Claim_Check SHALL render every page inside the UI_Kit `AppShell` with the app name "Claim Check" and navigation entries "Claim Check" and "Rulebook", with `current` set on the page shown.
+2. THE Claim_Check SHALL render every page inside the UI_Kit `AppShell` with the app name "Claim Check" and navigation entries "Claim Check" and "Rulebook", with `current` set on the page shown. The "Claim Check" entry keeps the Replay_Fragment of the current session, so a visit to the rulebook does not lose the answers.
 3. THE Claim_Check SHALL load the Knowledge_Base from the compiled JSON of `pnpm dc build` and SHALL NOT parse YAML or compile rules in the browser.
 4. THE Claim_Check SHALL make no network request after the page and its assets have loaded, and SHALL load no third-party font, script or style.
 5. THE Claim_Check SHALL NOT use `localStorage`, `sessionStorage`, cookies, analytics or a backend.
 6. THE Claim_Check SHALL import the Engine and the UI_Kit as packages, and SHALL NOT modify `packages/engine/src/types.ts` or any file in `packages/ui`.
 7. THE Claim_Check SHALL name a fact or a goal in `src/config.ts` only, and every other module SHALL read the fact definitions, labels, clauses and currency from the Knowledge_Base.
 8. WHEN the Knowledge_Base file is missing or does not satisfy `KnowledgeBase` at start-up, THE Claim_Check SHALL show a plain-words notice that says the rules failed to load and that the page should be reloaded, and SHALL NOT show a blank page.
-9. THE Claim_Check SHALL set the document title to the screen's heading followed by "Claim Check", and SHALL update it on each screen change.
+9. THE Claim_Check SHALL set the document title to the screen's heading, a full stop and a space, then "Claim Check" ("<screen heading>. Claim Check"), and SHALL update it on each screen change.
 
 ### Requirement 2: Start screen
 
@@ -87,6 +87,7 @@ Scope of this spec: the start screen, the consultation flow, the verdict, the X-
 12. WHEN the user activates "Back", THE Claim_Check SHALL show the previous question of the Question_Path with its answer filled in, and SHALL leave every answer in the session.
 13. THE Claim_Check SHALL omit "Back" on the first question.
 14. THE Claim_Check SHALL NOT ask a question for a fact the Engine has not asked, and SHALL NOT ask a question for a fact that already has an answer unless the user chose to change it.
+15. WHEN a valid answer would make the decided claim deduct more than the claimed amount (the sum of the known deduction line items of `next(answer(session, fact, value))` is greater than the claimed fact), THE Claim_Check SHALL NOT call `answer` on the live session, SHALL keep the session unchanged and SHALL show under the field: "With this answer, the deductions would be more than the hospital bill. Check the amounts." The check reads `Verdict.lineItems` and changes no amount. An answer that only puts one charge above the bill (such as room charges, golden G-17) is valid and SHALL NOT be refused.
 
 ### Requirement 4: The answers rail
 
@@ -141,9 +142,9 @@ Scope of this spec: the start screen, the consultation flow, the verdict, the X-
 #### Acceptance Criteria
 
 1. THE Verdict_Screen SHALL show a `WhatIfList` headed "What would change this", built from `whatIf(session)`.
-2. FOR each alternative, THE `WhatIfList` SHALL show the changed fact's label, the new value as printed and the signed change in the payable amount.
+2. FOR each alternative whose payable amount is known, THE `WhatIfList` SHALL show the changed fact's label, the new value as printed and the signed change in the payable amount. THE Claim_Check SHALL leave out an alternative whose payable amount is unknown, and a money alternative whose value is not a whole currency unit (the Engine's threshold probes one minor unit either side of a limit, such as ₹4,999.99).
 3. WHEN `whatIf(session)` returns no alternative, THE Claim_Check SHALL omit the heading and the list.
-4. WHEN the user activates an alternative, THE Claim_Check SHALL NOT change the session, and SHALL offer the question for that fact through the answers rail only.
+4. THE `WhatIfList` is read-only because the UI_Kit's list has no action. THE Claim_Check SHALL NOT change the session from the list, and SHALL offer the question for the fact through the answers rail only.
 
 ### Requirement 8: The X-ray proof view
 
@@ -172,13 +173,14 @@ Scope of this spec: the start screen, the consultation flow, the verdict, the X-
 #### Acceptance Criteria
 
 1. THE rulebook page SHALL show the clauses of the Knowledge_Base in the Document voice, in numbered order, each with its id, title and text.
-2. FOR each clause, THE rulebook page SHALL list the rules that cite it, each with its id, its plain sentence and a link to open that rule's proof where the rule has a fact the Engine can explain.
+2. FOR each clause, THE rulebook page SHALL list the rules that cite it, each with its id, its plain sentence and a link to open that rule's proof where the rule has a fact the Engine can explain. WHERE the sentence names a fact in a `{fact}` slot, THE rulebook page SHALL show the slot as a marked blank carrying the fact's label, because the rulebook has no answers to fill it with and substituting the label reads badly.
 3. WHEN no rule cites a clause, THE rulebook page SHALL show "Not used in any decision" for that clause.
 4. THE rulebook page SHALL show, from the rule side, every rule with the clause it cites, so that the page proves coverage in both directions.
 5. WHEN a rule cites a clause id that the Knowledge_Base does not hold, THE rulebook page SHALL show the rule under "Cites a missing clause" with the id, and SHALL NOT fail to render.
 6. THE rulebook page SHALL read clauses and rules from the Knowledge_Base only, and SHALL NOT carry a second copy of any clause text.
 7. THE rulebook page SHALL support a link to a single clause at `#/rulebook?clause=<clause id>`, using the clause id as the element id, and SHALL move focus to that clause when the page opens on its link.
 8. THE rulebook page SHALL be reachable from the start screen, the navigation and the stale-link notice.
+9. WHEN the user activates "Open its proof" and the link's fragment equals the Replay_Fragment of the current session, THE Claim_Check SHALL keep the session's view, so that the check opens with that proof open instead of resetting.
 
 ### Requirement 10: The replay link
 
@@ -205,7 +207,7 @@ Scope of this spec: the start screen, the consultation flow, the verdict, the X-
 2. WHEN `decode` throws any other `EngineError`, THE Claim_Check SHALL show the `StaleLinkNotice` for `MALFORMED_TOKEN`.
 3. WHEN `decode` throws an error that is not an `EngineError`, THE Claim_Check SHALL show the `StaleLinkNotice` for `MALFORMED_TOKEN` and SHALL NOT show the error's message.
 4. THE Claim_Check SHALL NOT show a verdict, a partial verdict or a question for a Stale_Link.
-5. THE Claim_Check SHALL pass `rulebookHref` for `KB_MISMATCH`, so that "Read the current policy" opens the rulebook page.
+5. THE Claim_Check SHALL pass `rulebookHref` for `KB_MISMATCH`, so that the notice's link, which the UI_Kit labels "Read the rules", opens the rulebook page.
 6. WHEN the user activates "Start the check" in the notice, THE Claim_Check SHALL clear the fragment and show the first question.
 7. WHEN the notice appears, THE Claim_Check SHALL move focus to its heading and SHALL announce it through the polite live region.
 
@@ -237,6 +239,7 @@ Scope of this spec: the start screen, the consultation flow, the verdict, the X-
 8. THE Claim_Check SHALL show a cumulative layout shift below 0.05 on every screen.
 9. THE Claim_Check SHALL compute one consultation step in under 10 ms, measured in a benchmark over the built Knowledge_Base.
 10. THE Claim_Check SHALL render each step without a spinner or loading placeholder.
+11. THE `index.html` SHALL preload the three above-the-fold fonts that `packages/ui/fonts.css` names, so that the rulebook page holds the layout shift of requirement 13.8.
 
 ### Requirement 14: Dependencies and lanes
 
@@ -249,6 +252,8 @@ Scope of this spec: the start screen, the consultation flow, the verdict, the X-
 3. THE Claude_Code_Lane SHALL write only in `apps/claim-check/src`, `apps/claim-check` configuration files, `e2e` and the root configuration it needs, and SHALL NOT write in `.kiro/**`, `apps/claim-check/kb`, `apps/claim-check/rulebook` or `apps/claim-check/golden`.
 4. IF the app needs a value that `packages/engine/src/types.ts` does not carry, THEN THE Claude_Code_Lane SHALL take it as an app-side prop or open a question for the Kiro_Lane, and SHALL NOT change the contract.
 5. IF the app needs a component or prop that the UI_Kit does not offer, THEN THE Claude_Code_Lane SHALL compose it in the app from existing components and SHALL NOT edit `packages/ui`.
+6. THE CI workflow SHALL run `pnpm dc build apps/claim-check` before `pnpm check`, because unit tests and `tsc` import the compiled Knowledge_Base, which is not committed.
+7. THE Claude_Code_Lane MAY add a CI-only test that fails when a Claude Code commit on a pull request touches a path of the Kiro_Lane. It SHALL skip outside CI.
 
 ### Requirement 15: A Playwright test for every golden scenario
 
@@ -261,8 +266,8 @@ Scope of this spec: the start screen, the consultation flow, the verdict, the X-
 3. FOR each scenario with `expect.line_items`, THE test SHALL assert that the ledger shows exactly the non-zero deduction rows the line items give, with their labels and amounts, and no other deduction.
 4. FOR each scenario with `expect.fires`, THE test SHALL open the X-ray for the verdict and SHALL assert that each listed rule id appears in the proof or in a ledger line's proof.
 5. FOR each scenario with `expect.ask`, THE test SHALL assert that, after the given facts, the app shows a question for that fact and no verdict.
-6. THE test SHALL give every fact through the control that matches its type, using the labelled field or option, and SHALL NOT call the Engine or write the fragment to reach the screen.
-7. FOR each scenario, THE test SHALL copy the Replay_Link after the verdict, open it in a new page and SHALL assert that the same verdict and ledger appear.
+6. THE test SHALL give every fact through the control that matches its type, using the labelled field or option, and SHALL NOT call the Engine or write the fragment to reach the screen. The other tests of requirement 15.10 MAY set `location.hash` for an in-app move (for example to the rulebook at 390 px, where the navigation sits behind the menu), but SHALL reach every question and verdict through the controls.
+7. FOR each scenario, THE test SHALL take the Replay_Link after the verdict (the page's URL, which `history.replaceState` keeps current), open it in a new page and SHALL assert that the same verdict and ledger appear. A separate test SHALL click "Copy link to this verdict" and read the clipboard.
 8. THE test SHALL read the scenarios with the `@dead-certain/kb-tools` loader and the amounts in minor units, and SHALL format expected amounts with the UI_Kit's `formatMoney`, so that no expected string is typed by hand.
 9. THE test suite SHALL fail when `apps/claim-check/golden/` holds no scenario, so that a missing folder does not pass.
 10. THE test suite SHALL cover the flows that scenarios do not: a keyboard-only run from start to verdict and into the X-ray and out, changing an answer from the rail so that the verdict recomputes and a skipped note appears, early stop with "That is enough to decide", a Stale_Link for each of `KB_MISMATCH`, `MALFORMED_TOKEN` and `UNSUPPORTED_VERSION`, the 404 page, the rulebook coverage in both directions, and the X-ray develop with and without reduced motion.

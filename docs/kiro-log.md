@@ -355,3 +355,12 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - Renamed the `sum_insured` options `rs_300000`, `rs_500000`, `rs_1000000` to `three_lakh`, `five_lakh`, `ten_lakh`, so the interface shows "Three lakh", "Five lakh" and "Ten lakh". Updated `SUM-01`, the 16 golden scenarios that use them, and the answer to open question 5. No other rule, clause or amount changed.
 - `pnpm dc validate`: clean. `pnpm dc golden`: 31 of 31 pass, 36 of 36 rules covered. `pnpm biome check apps/claim-check`: clean.
 - Flagged: any code in `apps/claim-check/src` (Claude Code lane) that uses the old option names must follow the rename.
+
+### Gate G3 review: claim-check-app, pull request #8 (2026-11-18)
+
+- Reviewed `apps/claim-check/src` and `e2e/claim-check-*` (merged as `486a651`) against `.kiro/specs/claim-check-app`. Reran `pnpm dc build apps/claim-check` and `pnpm vitest run apps/claim-check` (57 passed, 1 skipped: the CI-only lane guard). Did not rerun the Playwright suite; the pull request reports 1,246 passed.
+- Accepted all 13 deviations and amended the spec to match: glossary `Relevant_Answer` (1), 11.5 (2), 3.15 new (4), 7.2 (6), 1.9 (7), 9.2 (9), 9.9 new (10), 13.11 new (11), 14.6 new (12), 15.6 (13). Deviations 3 and 8 are test-level and went into the design's Testing Strategy; deviation 5 went into the design's X-ray section. No deviation was rejected.
+- Requirements not covered by a deviation: the nav's "Claim Check" link keeps the replay token (now in 1.2); the golden test reads the page URL instead of clicking "Copy link" (15.7 amended, the button has its own test); the what-if list has no action in the kit (7.4 reworded); the CI-only lane guard `lanes.test.ts` (14.7 new). No requirement is unmet.
+- Marked tasks 1 to 16 and their subtasks complete in `tasks.md`. No task reopened.
+- Engine notes: neither is an engine bug, so no Bugfix spec was opened. The raw `because` values are what inference-engine requirement 9.6 specifies (`String(value)`), and the engine has no currency or locale. PAY-01 appears twice because the verdict's proof is the `outcome` tree, and `total_deductions` sits both under `payable` and directly under the outcome rule; inference-engine requirement 9.12 asks for an equal subtree at each occurrence.
+- Flagged for the human: deviation 4's above-bill refusal puts a domain judgment in the app. If the policy should forbid deductions above the bill, a `kb` rule should say so. Not changed here.

@@ -156,7 +156,7 @@ Each pass costs one `next` call, and `next` computes in under 10 ms (engine benc
 function relevantFacts(s: Session, currentFact?: string): Set<string>
 ```
 
-For each goal in `kb.goals`, call `explain(s, goal)` and collect every proof node with `source === "answered"`. Add `currentFact`. An answered fact outside this set is not relevant.
+For each goal in `kb.goals`, call `explain(s, goal)` and collect every proof node with `source === "answered"` whose fact has an answer in the session (the Engine marks an unanswered leaf `answered` too). Keep only the facts on `questionPath`: a proof names every fact its rules reference, even after an early stop made later answers unnecessary, and proof-only relevance never produced skipped notes. Add `currentFact`. An answered fact outside this set is not relevant.
 
 `skippedNotes(before, after, changed)` compares the relevant sets before and after one answer. A fact relevant before and not relevant after, other than the changed fact, becomes a `SkippedNote` with `reason = "Not needed now that <label(changed)> is <printed value>."` A fact that becomes relevant again leaves the list. The list is held in `ViewState.skipped` and recomputed on every answer. It is reset on `start` and `restart`.
 
@@ -184,6 +184,8 @@ VerdictScreen(verdict)
 - When `claimed` is absent or 0 the bar is omitted. This cannot happen after a verdict, since the claimed fact is needed to decide, but the guard avoids a divide by zero in the bar.
 - A `WhatIfList` is shown only when `whatIf(session).length > 0`. Its `labelFor` and `defFor` come from `kb.ts`; `amountGoal` is `config.amountGoal`.
 - "That is enough to decide" is shown while `arrivedByAnswer` is true and is cleared by any later navigation.
+- Before `answer` is applied on the live session, `deductedAboveBill(answer(session, fact, value))` reads `next(...).lineItems` and refuses the answer when the known deductions exceed the claimed amount (requirement 3.15). It computes nothing the ledger shows.
+- `usefulAlternatives` filters `whatIf(session)` to alternatives with a known payable amount and, for money facts, whole-unit values (requirement 7.2).
 - The three actions are Buttons: "See why" (primary), "Copy link to this verdict", "Start over" (quiet).
 
 ### X-ray
@@ -206,6 +208,10 @@ VerdictScreen(verdict)
 - `decidingClause` = the root node's `clause`.
 - `onChangeAnswer(fact)` dispatches `close` then `edit`.
 - `onEscape` = `onClose`. `XrayStage` restores focus to the opener.
+
+`withPrintedBecause(node, session)` refills each node's `because` from the rule's template in `kb.rules` with `formatValue`, because the Engine fills `{fact}` with `String(value)`, which prints money as raw minor units ("16500000"). The Engine meets its own contract (inference-engine requirement 9.6) and has no currency or locale, so this stays in the app.
+
+The same proof can show one fact twice: the verdict's proof has `total_deductions` under the outcome rule and again under `payable`, because the Engine returns a tree, not a graph, and gives each occurrence an equal subtree (inference-engine requirement 9.12). The app shows the tree as it is.
 
 Below the tree, `ClauseRef` shows the deciding clause in the "deciding" variant with `mark` set only when a clause names a deciding sentence (open question 3). Without one, the whole clause carries the wax rule.
 
@@ -243,7 +249,7 @@ function coverage(kb): {
 }
 ```
 
-The page lists clauses in id order (natural numeric sort, so `4.10` follows `4.9`). Each clause shows its rules, or "Not used in any decision". A second section, "Rules and the clauses they cite", lists every rule with its clause. Rules in `missing` appear under "Cites a missing clause". Together the two lists show coverage both ways. A rule's "Open its proof" link appears only when the rule's `set` fact is a goal or a line item the engine can explain with the current session; otherwise the link is left out. With no answers, no proof can open, so the link is omitted and the sentence "Answer the questions to see this rule at work" is not added (YAGNI).
+The page lists clauses in id order (natural numeric sort, so `4.10` follows `4.9`). Each clause shows its rules, or "Not used in any decision". A second section, "Rules and the clauses they cite", lists every rule with its clause. Rules in `missing` appear under "Cites a missing clause". Together the two lists show coverage both ways. A `{fact}` slot in a rule's sentence is drawn as a marked blank with the fact's label (requirement 9.2). "Open its proof" keeps the open view when the link's fragment equals the session's own fragment (requirement 9.9). A rule's "Open its proof" link appears only when the rule's `set` fact is a goal or a line item the engine can explain with the current session; otherwise the link is left out. With no answers, no proof can open, so the link is omitted and the sentence "Answer the questions to see this rule at work" is not added (YAGNI).
 
 ### 404 and load failure
 
@@ -356,6 +362,9 @@ No error shows an engine message or a stack. Copy says what happened and what to
 | Golden | Playwright, generated from `golden/*.yaml` through the kb-tools loader | One test per scenario (Requirement 15) |
 | Accessibility | `@axe-core/playwright` | Zero violations per screen at 390, 768, 1280 |
 | Budgets | A build-size test, a layout-shift check in Playwright, a step benchmark | Requirement 13.7 to 13.9 |
+| Engine refusals | Vitest | `INVALID_ANSWER` and `NOT_ANSWERABLE` are tested at the reducer, because the kit's controls cannot produce a value the Engine rejects (requirement 3.6) |
+| X-ray rows | Playwright | Rows are found by the rule ids shown and the "You answered" badges, not by position |
+| CI | GitHub Actions | `pnpm dc build apps/claim-check` runs before `pnpm check` (requirement 14.6). `lanes.test.ts` runs only in CI (14.7) |
 
 ### The golden e2e
 
