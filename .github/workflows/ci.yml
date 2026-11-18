@@ -22,8 +22,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
-      # The dc command arrives with the kb-tools spec (Kiro lane). Until then this is a no-op.
-      - run: pnpm run --if-present dc validate
+      - run: pnpm dc validate
+      - run: pnpm dc golden
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm e2e
       # Screenshots for the pull request: every static screen and gallery
