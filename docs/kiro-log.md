@@ -303,3 +303,15 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
   4. Replay link: open question 5 is now a recorded decision, not a question.
 - A decision the answer forced, flagged for the human: with one goal, the checklist picker has nothing to decide on its own. New open question 4 offers the way out. If one checklist is enough, drop the picker, requirement 2.7 and the two sentences.
 - Still open: the two snapshot repositories (task 2), fact and check names, severity and groups (task 7, until Phase 2 delivers the knowledge base).
+
+### Rulebook drafts for both apps (2026-11-16)
+
+- Drafted by Kiro's default agent at the human's request, in the human's own words: `apps/claim-check/rulebook/policy.md` (about 1,000 words) and `apps/pre-flight/rulebook/checklist.md` (about 650 words). Both are fictional and copy no insurer's policy or organiser's rules. No knowledge base was written. The stale-rule hook ran after each save and found no `kb/` to sync.
+- `policy.md`: the six fixed clauses (1.2, 2.2, 3.1, 4.2, 5.3, 6.1) keep their numbers, titles and meanings. Added definitions (1.1), the order of calculation with rounding (1.3), cover (2.1), claims already paid (2.3), room and other charges (4.1), two exclusions (5.1, 5.2), claim filing (7.1, 7.2) and Annexure 1.
+  - Decisions the draft forced: a full denial is a deduction equal to the whole bill, so the ledger always adds up; the cap on the sum insured is a deduction; the sum insured is one of three amounts; amounts round to the whole rupee, half a rupee up. No claim-filing deadline, since it would need a rule.
+  - Clauses 1.1, 2.1, 7.1 and 7.2 change no amount, so no rule will cite them and the rulebook page will show "Not used in any decision".
+- `checklist.md`: nine checks, R-01 to R-09. The four fixed ones keep their clauses (1.1 R-01, 1.2 R-02, 2.2 R-05, 4.1 R-09). Eight are collected from GitHub and one, R-09, is asked. Each clause names its source and severity (blocker or warning).
+- Human decisions recorded:
+  1. Clause 5.1 stays as written: a failed warning also makes the repository not ready. "Ready" means all nine checks pass, which the "All K checks passed" summary sentence assumes. Severity only decides how the summary counts a failure.
+  2. R-03 (not archived) and R-08 (two app folders under `apps/`, each with a `package.json`) stay. R-08 matches the hackathon's two-app-folder rule.
+- For the knowledge-engineer: tree-based and README-based facts need an `ask`, since the tool asks when GitHub cannot supply them. Severity and groups are not in the contract, so they go in `apps/pre-flight/src/checklists.ts`, read from these clauses.
