@@ -373,3 +373,11 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - Flagged: the pull request has no comments, so the Task_Evidence (screenshots at 390, 768 and 1280 px, console, axe, failing and passing runs) is not attached. Needed before task 5 is reviewed. Not verifiable from the branch: the red runs of the test-first tasks.
 - Flagged: requirement 9.3 asks the three snapshots to include an inline question. Whether the chosen set does is open, and task 18.1 now checks it.
 - No code changed. Fixed the dates of the four entries before this one: they said 2026-11-19 to 2026-11-22 but were all written on 2026-11-18.
+
+### Gate G4 review, tasks 2, 5 and 6: pre-flight-app, pull request #10 (2026-11-18)
+
+- Reviewed commits `db43bf3`, `041da88` and `b17fc8f` on `cc/phase4-pre-flight` against `.kiro/specs/pre-flight-app`. In a clean worktree: `pnpm vitest run apps/pre-flight` passed (136 tests), Biome and `tsc` were clean. The full `pnpm check` there stopped only on Claim Check suites that need `pnpm dc build` output (`kb/dist`), which the worktree did not have. Probed the `gitignore_ignores_kiro` and `readme_has_run_heading` extractors by hand on 9 inputs.
+- Task 2: every recorded and synthetic file now has `recordedAt`, and the re-recording changed only the date, rate-limit headers and this repository's `pushed_at` and issue count. Requirement 12.7 is met. Task 2 marked complete.
+- Task 5: accepted all 4 deviations (double timeout, tree 404 as empty tree with a `done` step, `not_found` events for absent files, exceptions as `unreadable`). Added requirements 3.8, 3.12 and new 3.20, design "Timeout" and "Step results", and task 5.1. Tasks 5, 5.1 and 5.2 marked complete. Gap: no unit test covers a tree 404 or a `fetch` that ignores the abort signal.
+- Task 6: accepted (a), (b) and (d). Rejected (c) in part: `headings()` counts a line inside a fenced code block, so a README with a shell comment `# Install` in a code block passes `readme_has_run_heading`, and `Usage` over `***` counts as an underlined heading. Both confirmed by probe. Added requirements 3.21 to 3.23, design "The real table" and the `Extractor` shape, and task 6.3's fix text. Tasks 6.1, 6.2 and 6.4 marked complete; 6 and 6.3 stay open.
+- Flagged: the pull request has no Task_Evidence for task 6. Tasks 7 to 21 untouched. No code changed.

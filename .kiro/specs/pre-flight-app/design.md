@@ -158,7 +158,7 @@ interface RepoSnapshot {
 }
 ```
 
-Request plan (each with `Accept: application/vnd.github+json` for JSON, `application/vnd.github.raw+json` for the two file bodies, `X-GitHub-Api-Version: 2022-11-28`, `credentials: "omit"`, `cache: "no-store"`, an `AbortSignal.timeout(timeoutMs)`):
+Request plan (each with `Accept: application/vnd.github+json` for JSON, `application/vnd.github.raw+json` for the two file bodies, `X-GitHub-Api-Version: 2022-11-28`, `credentials: "omit"`, `cache: "no-store"`, an `AbortSignal` from an `AbortController`):
 
 | Step | Request | 200 | 404 | 409 | other |
 | --- | --- | --- | --- | --- | --- |
@@ -166,6 +166,10 @@ Request plan (each with `Accept: application/vnd.github+json` for JSON, `applica
 | tree | `GET /repos/{o}/{n}/git/trees/{branch}?recursive=1` | parse entries, `truncated` | tree absent: empty tree | empty repository: `empty: true` | classify |
 | gitignore | `GET /repos/{o}/{n}/contents/.gitignore` | raw text, clip at 65,536 bytes | `null` (absent) | n/a | classify |
 | readme | `GET /repos/{o}/{n}/readme` | raw text, clip | `null` | n/a | classify |
+
+**Timeout.** Each request has its own `AbortController` and a `setTimeout` of `timeoutMs`. When the timer fires it aborts the signal and rejects a race against the request, so a `fetch` that ignores the signal still ends `unreachable` at `timeoutMs`. The timer cannot be driven by the injected `now`, so tests of the timeout use Vitest's fake timers.
+
+**Step results.** A `.gitignore` or README 404 ends its step as `not_found` and the run goes on. A tree 404 gives `{ entries: [], truncated: false, empty: false }` and the step is `done`. A 409 gives the same with `empty: true`. An unexpected exception inside `collect` is caught and returned as `unreadable`; `collect` never rejects.
 
 The first request runs alone. The tree needs `default_branch`. Then the tree, `.gitignore` and README requests are sent one after another, so the step list shows an honest order and a failure stops the run with the later steps "Not run". Four sequential requests over HTTP/2 take well under a second each.
 
@@ -198,9 +202,14 @@ function deriveFacts(snapshot: RepoSnapshot, kb: KnowledgeBase): Derived
 `extractors.ts` is a table keyed by fact name:
 
 ```ts
-type Extractor = (s: RepoSnapshot) => { value: FactValue; evidence: string } | undefined;
+interface Extractor {
+  reads: "metadata" | "tree" | "gitignore" | "readme";   // "tree": a truncated tree makes the fact unseen
+  read: (s: RepoSnapshot) => { value: FactValue; evidence: string } | undefined;
+}
 const EXTRACTORS: Readonly<Record<string, Extractor>>;
 ```
+
+`deriveFacts(snapshot, kb, extractors = EXTRACTORS)` takes the table as an optional third argument, so a test can pass its own.
 
 Return `undefined` when the snapshot cannot say (for example, any tree-based fact when `tree.truncated`). `deriveFacts` then:
 
@@ -212,7 +221,14 @@ Examples of extractors the knowledge base will need (names are placeholders unti
 
 `ignores` is deliberately narrow: it answers one question for one path, by reading `.gitignore` lines with the gitignore rules a root file needs (comments, blank lines, trailing slash for directories, leading slash anchoring, `!` negation, `*` and `**` globs). It returns `{ ignored: boolean; line?: number; text?: string }`. A construct it does not understand makes the extractor return `undefined`, so the fact is asked and not guessed. This keeps the "never guess" rule of requirement 3.16.
 
-The "today" case: if the knowledge base declares a date fact the app supplies, `extractors.ts` reads it from the snapshot's `takenAt`, so that an audit of a stored snapshot is the same on any day.
+**The real table (task 6).** The knowledge base existed when task 6 ran, so `extractors.ts` holds the real extractors, one for each collected fact of `apps/pre-flight/kb`, and no test table exists. `demo_video_seconds` has none and is always asked. The meanings follow the facts' `ask` text and `kb/open-questions.md`:
+
+- `license_detected` is false when GitHub reports no licence or `NOASSERTION` (question 1).
+- `kiro_dir_has_file` counts a file anywhere under `.kiro/` (question 3).
+- `gitignore_ignores_kiro` follows requirement 3.21 (question 4). The six lines are compared as text after trailing spaces are removed; the matcher is then asked about `.kiro/` and `.kiro/x`, and a disagreement makes the fact unseen.
+- `readme_has_run_heading` follows requirement 3.22 (questions 6 and 7). The README is whatever file the tree names as the root README.
+
+The "today" case: the knowledge base declares no such fact (requirement 3.23). If it ever declares a date fact the app supplies, `extractors.ts` reads it from the snapshot's `takenAt`, so that an audit of a stored snapshot is the same on any day.
 
 ### The audit
 
