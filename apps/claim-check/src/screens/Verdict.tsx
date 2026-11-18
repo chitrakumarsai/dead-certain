@@ -15,6 +15,7 @@ import type { Action, ViewState } from "../session/store";
 import { useTitle } from "../useTitle";
 import { ledgerFrom, partsFrom } from "../verdict/parts";
 import { statementFor, stateOf } from "../verdict/statement";
+import { usefulAlternatives } from "../verdict/whatIf";
 import { CopyLink } from "./CopyLink";
 
 const ENOUGH = "That is enough to decide";
@@ -44,7 +45,7 @@ export function VerdictScreen({
 	}, [view.arrivedByAnswer, view.changed, announce]);
 
 	const format = formatFor(kb);
-	const alternatives = whatIf(view.session);
+	const alternatives = usefulAlternatives(kb, whatIf(view.session));
 	const parts = ledger === null ? [] : partsFrom(ledger);
 	const selected = view.open?.kind === "line" ? view.open.fact : undefined;
 
