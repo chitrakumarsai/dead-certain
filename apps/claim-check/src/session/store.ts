@@ -14,7 +14,7 @@ import type { ReplayFailure, SkippedNote, XrayTarget } from "@dead-certain/ui";
 import { useEffect, useReducer } from "react";
 import { questionPath } from "./path";
 import { updateSkipped } from "./relevance";
-import { decodeFragment, writeFragment } from "./replay";
+import { decodeFragment, fragmentFor, writeFragment } from "./replay";
 
 export interface ViewState {
 	session: Session;
@@ -152,7 +152,10 @@ export function reducer(view: ViewState, action: Action): ViewState {
 		case "close":
 			return { ...view, open: null };
 		case "fragment":
-			return init(kb, action.hash);
+			// The app's own write, or a return to the same answers, keeps the view (an open proof included).
+			return action.hash === fragmentFor(view.session) && view.started
+				? view
+				: init(kb, action.hash);
 	}
 }
 

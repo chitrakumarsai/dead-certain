@@ -2,6 +2,7 @@ import { answer, encode, next, start } from "@dead-certain/engine";
 import { describe, expect, it } from "vitest";
 import { realKb } from "../testing/realKb";
 import { toyKb } from "../testing/toyKb";
+import { fragmentFor } from "./replay";
 import { init, REJECTED, reducer, step, type ViewState } from "./store";
 
 const kb = realKb();
@@ -19,6 +20,14 @@ const DENIED = {
 };
 
 describe("the session reducer", () => {
+	it("keeps an open proof when the fragment returns to the same answers", () => {
+		const done = play(begun, DENIED);
+		const opened = reducer(done, { type: "open", target: { kind: "verdict" } });
+		const hash = fragmentFor(opened.session);
+		expect(reducer(opened, { type: "fragment", hash })).toBe(opened);
+		expect(reducer(opened, { type: "fragment", hash: "#/" }).open).toBeNull();
+	});
+
 	it("starts on the start screen and moves to the first question", () => {
 		expect(step(init(kb, "#/")).kind).toBe("start");
 		const s = step(begun);

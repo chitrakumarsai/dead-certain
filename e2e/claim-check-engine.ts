@@ -4,6 +4,7 @@
 import { readFileSync } from "node:fs";
 import {
 	answer,
+	encode,
 	type FactValue,
 	type KnowledgeBase,
 	next,
@@ -86,3 +87,25 @@ export async function answerInUi(
 	}
 	throw new Error("the app never reached a verdict");
 }
+
+/** Answers that end in a part payment with a co-payment and a room-rent cut. */
+export const REDUCED: Record<string, FactValue> = {
+	claimed: 2_00_000_00,
+	cause: "accident",
+	treatment: "other",
+	treated_outside_india: false,
+	annexure_items: 2_000_00,
+	room_rent_per_day: 6_000_00,
+	sum_insured: "five_lakh",
+	room_days: 5,
+	age: 65,
+	paid_this_year: 0,
+};
+
+/** The replay token for REDUCED. */
+export const reducedToken = encode(
+	Object.entries(REDUCED).reduce(
+		(s, [f, v]) => answer(s, f, v),
+		start(claimKb),
+	),
+);

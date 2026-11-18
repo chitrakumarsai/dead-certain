@@ -7,6 +7,8 @@ import { loadedKb } from "./kb";
 import { useRoute } from "./route";
 import { Consult } from "./screens/Consult";
 import { LoadFailure } from "./screens/LoadFailure";
+import { NotFound } from "./screens/NotFound";
+import { Rulebook } from "./screens/Rulebook";
 import { Stale } from "./screens/Stale";
 import { Start } from "./screens/Start";
 import { XrayVerdict } from "./screens/Xray";
@@ -56,7 +58,11 @@ function App({ kb }: { kb: KnowledgeBase }) {
 	) : undefined;
 
 	let page: React.ReactNode;
-	if (route.page !== "check") page = <h1>Page not found</h1>;
+	if (route.page === "notfound") page = <NotFound />;
+	else if (route.page === "rulebook")
+		page = (
+			<Rulebook kb={kb} clause={route.clause} view={view} dispatch={dispatch} />
+		);
 	else if (step.kind === "start")
 		page = <Start onStart={() => dispatch({ type: "start" })} />;
 	else if (step.kind === "question")

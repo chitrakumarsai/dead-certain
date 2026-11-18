@@ -1,27 +1,8 @@
-import { answer, encode, start } from "@dead-certain/engine";
 import type { Page, TestInfo } from "@playwright/test";
-import { claimKb } from "./claim-check-engine";
+import { reducedToken as token } from "./claim-check-engine";
 import { openClaimCheck, questionHeading } from "./claim-check-helpers";
 import { expect, expectNoAxeViolations, test } from "./kit-fixtures";
 
-const REDUCED = {
-	claimed: 2_00_000_00,
-	cause: "accident",
-	treatment: "other",
-	treated_outside_india: false,
-	annexure_items: 2_000_00,
-	room_rent_per_day: 6_000_00,
-	sum_insured: "five_lakh",
-	room_days: 5,
-	age: 65,
-	paid_this_year: 0,
-};
-const token = encode(
-	Object.entries(REDUCED).reduce(
-		(s, [f, v]) => answer(s, f, v),
-		start(claimKb),
-	),
-);
 const isReduced = (info: TestInfo) => info.project.name === "reduced-motion";
 
 async function openVerdict(page: Page) {
