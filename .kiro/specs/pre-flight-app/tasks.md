@@ -32,34 +32,35 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
 
 ## Tasks
 
-- [ ] 1. Scaffold the app
+- [x] 1. Scaffold the app
   - Create `apps/pre-flight` with `package.json` (`@dead-certain/pre-flight`, exact pinned versions, scripts `dev`, `build`, `preview`), `vite.config.ts` (React, Tailwind plugin, `base: "/dead-certain/pre-flight/"`), `tsconfig.json` extending the root, `index.html`, `src/main.tsx` and `src/styles.css` importing the kit's `tokens.css` and `styles.css`, and the folders `collectors/`, `collectors/recorded/`, `collectors/snapshots/`. Mirror `apps/site` for structure and versions.
-  - Render `AppShell` with app name "Pre-Flight", the one nav entry and a placeholder child, with a hash router that shows the start screen for any route.
-  - Add the app to the Playwright config as another web server or a combined preview. Add one smoke test `e2e/preflight-shell.spec.ts` that opens the app and finds the nav and the footer.
+  - Render `AppShell` with app name "Pre-Flight", the one nav entry and a placeholder child that shows the start screen for any route. The hash router arrives with the run controller (task 10).
+  - Add the app to the Playwright config as another web server or a combined preview. Add one smoke test `e2e/preflight-shell.spec.ts` that opens the app (at 390 px it opens the Menu first) and finds the nav and the footer. The root `tsconfig.json` includes `apps/*/collectors`, so `pnpm check` type-checks the collector.
   - `pnpm -r ls --depth 0` lists the package. `pnpm build` builds it.
   - _Requirements: 1.1 to 1.3, 1.7, 12.1, 12.3_
 
 - [ ] 2. Record the API responses
-  - Ask the human first: which two public repositories to bundle with this one (open question 3). Stop until you have the answer. The human has approved you running the recording script.
-  - Write `collectors/record.ts`, run with `node` under Node 22 and type-stripping or through the repo's TypeScript runner (no new dependency). For each of the three targets it makes the four requests of the design, with no token and no cookies, and writes `{ url, status, headers, body }` per request to `collectors/recorded/<owner>__<name>/<step>.json`. Keep only the headers listed in the design. Fail if a body looks like it holds a credential.
+  - The human chose the two repositories (open question 3, answered 2026-11-18): `chitrakumarsai/dc-sample-not-ready` and `chitrakumarsai/dc-sample-warnings`, with this repository. The human has approved you running the recording script.
+  - Write `collectors/record.ts`, run with `node` under Node 22 and type-stripping or through the repo's TypeScript runner (no new dependency). For each of the three targets it makes the four requests of the design, with no token and no cookies, and writes `{ url, status, headers, body, recordedAt }` per request, where `recordedAt` is the ISO time of the request. Task 2 writes `recorded/` only. Task 18 extends the script to write `snapshots/` to `collectors/recorded/<owner>__<name>/<step>.json`. Keep only the headers listed in the design. Fail if a body looks like it holds a credential.
   - Add the root script `record:snapshots` that runs it. Document it in the app's README section: who runs it, when to re-run it (when `.gitignore` or `.kiro` changes in this repo), and the request count (12).
   - Add synthetic fixtures, marked `"synthetic": true`, for the cases you cannot record safely: metadata 404, a rate-limit 403 with `x-ratelimit-remaining: 0` and a reset time, a 429 with `retry-after`, a truncated tree, an empty-repository 409, a `.gitignore` 404 and a README 404.
-  - Vitest: every recorded file parses as JSON, has the four keys, holds no `authorization` or `set-cookie` header, and each synthetic fixture is marked.
+  - Vitest: every recorded file parses as JSON, has the five keys (`url`, `status`, `headers`, `body`, `recordedAt`), holds no `authorization` or `set-cookie` header, and each synthetic fixture is marked.
+  - Reopened by Kiro's review of tasks 1 to 4 (requirement 12.7): the recorded files carry no date. Add `recordedAt` (ISO) to every recorded file and to `record.ts`, and to the recorded-files test. Re-run `pnpm record:snapshots` (12 requests, approved) rather than back-filling the date by hand. For a synthetic fixture, `recordedAt` is the date it was written. Tick this task only after Kiro's re-review.
   - _Requirements: 12.7, 3.19, 9.2_
 
-- [ ] 3. Target parsing
-  - [ ] 3.1 Write `collectors/target.ts` test-first. Tests first for every form in requirement 2.3, the length and character rules of 2.4, the two rejections of 2.5 and 2.6, and host checks (`github.com.evil.example`, `gist.github.com`, `github.com@evil.example`, a URL with a port or credentials are all rejected).
+- [x] 3. Target parsing
+  - [x] 3.1 Write `collectors/target.ts` test-first. Tests first for every form in requirement 2.3, the length and character rules of 2.4, the two rejections of 2.5 and 2.6, and host checks (`github.com.evil.example`, `gist.github.com`, `github.com@evil.example`, a URL with a port or credentials are all rejected).
     - _Requirements: 2.3 to 2.6, 3.6_
-  - [ ]* 3.2 Property tests.
+  - [x]* 3.2 Property tests.
     - Property 1: target parsing is total and normalises.
     - Property 2: a parsed Target cannot bend a URL. Include a URL-builder function `requestUrls(target, branch)` in `collectors/urls.ts` that the collector will use.
     - _Requirements: 2.3 to 2.6, 3.2 to 3.6_
 
-- [ ] 4. Parsing and classification
-  - [ ] 4.1 Write `collectors/parse.ts` and `classify` test-first, against the recorded and synthetic files. Tests first for: each field check on metadata, tree and the two file bodies; a wrong type in any field gives `unreadable`; clipping of paths and files; the 100,000-entry cap; rate-limit detection from 429, from 403 with `x-ratelimit-remaining: 0` and from `retry-after`; `resetAt` from the header and from `retry-after`; a 403 without rate-limit signs is `unreadable`, not `rate_limited`.
+- [x] 4. Parsing and classification
+  - [x] 4.1 Write `collectors/parse.ts` and `classify` test-first, against the recorded and synthetic files. Tests first for: each field check on metadata, tree and the two file bodies; a wrong type in any field gives `unreadable`; clipping of paths and files; the 100,000-entry cap; rate-limit detection from 429, from 403 with `x-ratelimit-remaining: 0` and from `retry-after`; `resetAt` from the header and from `retry-after`; a 403 without rate-limit signs is `unreadable`, not `rate_limited`.
     - _Requirements: 3.8 to 3.11, 3.18, 8.2, 8.3, 8.7_
-  - [ ]* 4.2 Property test.
-    - Property 11: errors are classified, never thrown. Generate statuses, headers and bodies, including non-JSON and deeply nested JSON.
+  - [x]* 4.2 Property test.
+    - Property 11, first step: `classify` and the parsers never throw, and a rate-limit response is never `not_found` or `unreadable`. Generate statuses, headers and bodies, including non-JSON and deeply nested JSON. Task 5.2 extends it to `collect`.
     - _Requirements: 8.1, 8.2, 8.6, 8.7, 3.18_
 
 - [ ] 5. The collector
@@ -67,6 +68,7 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
     - _Requirements: 3.1 to 3.13, 4.2, 8.6, 12.6_
   - [ ]* 5.2 Property test.
     - Property 10: collection is faithful to the recorded responses.
+    - Property 11, second step: `collect` resolves and never rejects, for any status, headers and body.
     - _Requirements: 3.1, 3.7, 3.12, 3.13, 4.2_
 
 - [ ] 6. Fact derivation
@@ -193,7 +195,7 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
 ## Notes
 
 - Tasks marked `*` are property tests. Run them with the task before them, not later.
-- Questions that block a task: open question 3 blocks task 2; open questions 1 and 2 block task 7. The goal, the recording run and the missing replay link are decided.
+- Questions that block a task: open questions 1 and 2 block task 7. The goal, the recording run, the snapshot repositories and the missing replay link are decided.
 - If Phase 2 is late, tasks 1 to 6 and 10 can proceed against the small test knowledge base. Remove it when task 7 lands, except for cases the real knowledge base does not cover.
 - Pre-Flight's golden scenarios (audit mode, from Phase 2) prove the engine and the knowledge base through `pnpm dc golden`. The end-to-end tests here prove the interface and the collector. Both must pass at the final checkpoint.
 - The Kiro lane's gate review checks every requirement above against the evidence, and amends this spec if it accepts a deviation.

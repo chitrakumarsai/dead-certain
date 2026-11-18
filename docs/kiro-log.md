@@ -324,7 +324,7 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - Decisions the policy forced, listed in `open-questions.md` for the human: an illness that starts before the policy start (rules deny it), which clause is named when two of 3.1, 5.1 and 5.2 apply (the first listed), dental "caused by an accident" read as the admission cause, any sum insured accepted by the rules, and negative other charges when Annexure 1 items exceed the bill.
 - Clause 2.2 has a pass-through rule (`SUM-01`) so each clause that sets an amount has a rule. Clauses 1.1, 2.1, 7.1 and 7.2 have none.
 
-### Pre-Flight knowledge base and golden scenarios (2026-11-19)
+### Pre-Flight knowledge base and golden scenarios (2026-11-18)
 
 - Ran the `knowledge-engineer` brief on `apps/pre-flight/rulebook/checklist.md`. Wrote `apps/pre-flight/kb/checklist.yaml` (10 rules), `apps/pre-flight/kb/open-questions.md` (11 questions) and `apps/pre-flight/golden/scenarios.yaml` (14 scenarios).
 - One goal, `readiness` (enum `ready`, `not_ready`). Rules `R-01` to `R-09` each set one check fact (`role: check`, with a short label) and cite their clause. `READY-01` cites 5.1 and uses `if(<nine checks joined by and>, 'ready', 'not_ready')`. Because `and` is false when any side is false, one failed check gives `not_ready` while other checks are still unknown.
@@ -332,7 +332,7 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - Decisions the checklist forced: R-08 is read as "every directory under `apps` has a `package.json`, and there are at least two" (two numbers, `apps_dir_count` and `apps_with_package_json`). R-05 fails when `.kiro` has no file in the tree. The video length is in seconds. Severity is not encoded, since it does not change the goal.
 - `pnpm dc validate`: clean on the first run. `pnpm dc golden`: all scenarios pass, every rule covered (36 of 36 across both apps).
 
-### Claim Check open questions answered (2026-11-20)
+### Claim Check open questions answered (2026-11-18)
 
 - The human answered all nine questions in `apps/claim-check/kb/open-questions.md`. Questions 2, 3, 4, 7, 8 and 9 keep what the rules did. The file now marks every question answered, with the decision beside it.
 - Q1: added one sentence to clause 3.1 in `rulebook/policy.md` and in the clause text of `policy.yaml`: an illness that starts before the policy start date is not covered. No rule changed.
@@ -341,7 +341,7 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - `pnpm dc validate`: clean. `pnpm dc golden`: 31 of 31 pass across both apps, 36 of 36 rules covered. `pnpm biome check apps/claim-check`: clean.
 - Flagged: Claim Check's rulebook is in the knowledge-engineer lane, but the app's input for the sum insured (a three-option choice) now follows the enum, which `apps/claim-check/src` (Claude Code lane) must adopt.
 
-### Pre-Flight app spec: one checklist, no picker (2026-11-21)
+### Pre-Flight app spec: one checklist, no picker (2026-11-18)
 
 - Amended `.kiro/specs/pre-flight-app` with the human's answer to open question 4: one checklist, no picker. Question 3 (the two snapshot repositories) stays open.
 - `requirements.md`: removed the picker requirement 2.7, so 2.8 to 2.12 are now 2.7 to 2.11. Removed the `checklist=<id>` route parameter from requirements 1.1, 2.8 and 2.10. Removed the two sentences for a view and goal that disagree from 5.3 and 5.4, and the "same for every Checklist" clause from 5.2. Redefined Checklist as the one list, and simplified the start-up check in 1.10. Question 4 is marked answered.
@@ -349,7 +349,7 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - `tasks.md`: removed the picker from task 11 and its test, the disagreement-sentence tests from task 8.1, and question 4 from the blockers of task 7. The requirements reference of task 11 is now 2.1 to 2.11.
 - No code changed. Cross-references to requirements 2.3 to 2.6 and 5.2 to 5.6 are unaffected.
 
-### Claim Check labels and sum insured options (2026-11-22)
+### Claim Check labels and sum insured options (2026-11-18)
 
 - Added a `label` to the 12 facts the policyholder answers in `apps/claim-check/kb/policy.yaml` (for example `claimed`: "Hospital bill", `treated_outside_india`: "Treated outside India", `annexure_items`: "Annexure 1 items").
 - Renamed the `sum_insured` options `rs_300000`, `rs_500000`, `rs_1000000` to `three_lakh`, `five_lakh`, `ten_lakh`, so the interface shows "Three lakh", "Five lakh" and "Ten lakh". Updated `SUM-01`, the 16 golden scenarios that use them, and the answer to open question 5. No other rule, clause or amount changed.
@@ -364,3 +364,12 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - Marked tasks 1 to 16 and their subtasks complete in `tasks.md`. No task reopened.
 - Engine notes: neither is an engine bug, so no Bugfix spec was opened. The raw `because` values are what inference-engine requirement 9.6 specifies (`String(value)`), and the engine has no currency or locale. PAY-01 appears twice because the verdict's proof is the `outcome` tree, and `total_deductions` sits both under `payable` and directly under the outcome rule; inference-engine requirement 9.12 asks for an equal subtree at each occurrence.
 - Flagged for the human: deviation 4's above-bill refusal puts a domain judgment in the app. If the policy should forbid deductions above the bill, a `kb` rule should say so. Not changed here.
+
+### Gate G4 review, tasks 1 to 4: pre-flight-app, pull request #10 (2026-11-18)
+
+- Reviewed `apps/pre-flight` (tasks 1 to 4, commits `85d1b60` to `eb30e25`), `e2e/preflight-shell.spec.ts`, the root `tsconfig.json`, `package.json`, `playwright.config.ts` and `ci.yml` against `.kiro/specs/pre-flight-app`. In a clean worktree of the branch: `pnpm check` passed (1,537 tests, 1 skipped), `pnpm dc build apps/pre-flight` was clean, and `e2e/preflight-shell.spec.ts` passed in all four projects. Probed `parseTarget`, `classify`, `parseTree` and `parseFile` by hand on 25 inputs, including look-alike hosts, a port, credentials, a 403 without rate-limit signs and a clipped multi-byte file.
+- Accepted all 9 deviations and amended the spec: open question 3 answered with the human's two repositories (requirements decisions list, question 3, design snapshot choice, task 2); requirements 2.3, 2.6, 3.11, 3.18; design target parsing, response shape and `classify` signature, field checks, `record.ts` row and recording paragraph, Property 11 split in two steps; tasks 1, 2, 4.2, 5.2 and the notes.
+- Unmet and not covered by a deviation: requirement 12.7 asks for the date on the recorded responses, and the files hold URL, status, headers and body only. Added `recordedAt` to the design and reopened task 2. Tasks 1, 3 (3.1, 3.2) and 4 (4.1, 4.2) marked complete. Tasks 5 to 21 untouched.
+- Flagged: the pull request has no comments, so the Task_Evidence (screenshots at 390, 768 and 1280 px, console, axe, failing and passing runs) is not attached. Needed before task 5 is reviewed. Not verifiable from the branch: the red runs of the test-first tasks.
+- Flagged: requirement 9.3 asks the three snapshots to include an inline question. Whether the chosen set does is open, and task 18.1 now checks it.
+- No code changed. Fixed the dates of the four entries before this one: they said 2026-11-19 to 2026-11-22 but were all written on 2026-11-18.
