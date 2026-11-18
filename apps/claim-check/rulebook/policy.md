@@ -28,7 +28,7 @@ The policy works out a claim in these steps, in this order.
 4. Take the co-payment (clause 6.1) from the amount left after steps 2 and 3.
 5. Apply the sum insured limit (clauses 2.2 and 2.3) to the amount left after step 4.
 
-Every amount worked out under this policy is rounded to the nearest whole rupee. Exactly half a rupee rounds up.
+Every amount worked out under this policy is rounded to the nearest whole rupee. Exactly half a rupee rounds up. No amount worked out under this policy is less than zero. A result below zero is taken as zero.
 
 The claim is paid in full when no deduction applies. It is paid in part when the payable amount is more than zero and at least one deduction applies. It is not paid when the payable amount is zero.
 
@@ -52,7 +52,7 @@ Every amount the policy has already paid in the same policy year counts against 
 
 ### 3.1 Waiting period
 
-An illness is not covered if its start date falls less than 30 days after the policy start date. An illness that starts 30 or more days after the policy start date is covered. The waiting period does not apply to an accident, which is covered from the first day of the policy.
+An illness is not covered if its start date falls less than 30 days after the policy start date. An illness that starts 30 or more days after the policy start date is covered. The waiting period does not apply to an accident, which is covered from the first day of the policy. An illness that starts before the policy start date is not covered.
 
 ## 4. Hospital charges
 

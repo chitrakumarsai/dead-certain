@@ -331,3 +331,12 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - Collected facts are plain non-derived facts. The validator requires `ask` on every non-derived fact, so metadata facts have one too, as do the tree, `.gitignore` and README facts. Heading and `.gitignore` matching, and the choice of README file, are left to the app (open questions 3, 4, 6, 7).
 - Decisions the checklist forced: R-08 is read as "every directory under `apps` has a `package.json`, and there are at least two" (two numbers, `apps_dir_count` and `apps_with_package_json`). R-05 fails when `.kiro` has no file in the tree. The video length is in seconds. Severity is not encoded, since it does not change the goal.
 - `pnpm dc validate`: clean on the first run. `pnpm dc golden`: all scenarios pass, every rule covered (36 of 36 across both apps).
+
+### Claim Check open questions answered (2026-11-20)
+
+- The human answered all nine questions in `apps/claim-check/kb/open-questions.md`. Questions 2, 3, 4, 7, 8 and 9 keep what the rules did. The file now marks every question answered, with the decision beside it.
+- Q1: added one sentence to clause 3.1 in `rulebook/policy.md` and in the clause text of `policy.yaml`: an illness that starts before the policy start date is not covered. No rule changed.
+- Q5: `sum_insured` is now an enum (`rs_300000`, `rs_500000`, `rs_1000000`). `SUM-01` maps it to the money fact `year_cover`, and `ROOM-03` reads `year_cover`. The 31 golden scenarios that gave `sum_insured` as paise now give the enum option.
+- Q6: added one sentence to clause 1.3 (policy and clause text): no worked-out amount is less than zero. Floored with `max(..., 0)` in `ROOM-02`, `COPAY-02`, `SUM-03` and `PAY-02`. New scenario `G-17` (room charges above the bill) fails without the floor, since the other-charges deduction would be negative.
+- `pnpm dc validate`: clean. `pnpm dc golden`: 31 of 31 pass across both apps, 36 of 36 rules covered. `pnpm biome check apps/claim-check`: clean.
+- Flagged: Claim Check's rulebook is in the knowledge-engineer lane, but the app's input for the sum insured (a three-option choice) now follows the enum, which `apps/claim-check/src` (Claude Code lane) must adopt.

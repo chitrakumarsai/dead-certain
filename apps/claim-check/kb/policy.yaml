@@ -51,8 +51,9 @@ facts:
     ask: How old was the policyholder in completed years on the day of admission?
     why: A policyholder aged 61 or over pays a co-payment.
   sum_insured:
-    type: money
-    ask: What is the sum insured on the policy schedule?
+    type: enum
+    options: [rs_300000, rs_500000, rs_1000000]
+    ask: Which sum insured does the policy schedule show, ₹3,00,000, ₹5,00,000 or ₹10,00,000?
     why: The room rent limit and the most the policy pays in one policy year both come from the sum insured.
   paid_this_year:
     type: money
@@ -183,14 +184,14 @@ rules:
   - id: ROOM-02
     cite: "4.1"
     set: other_charges
-    to: round((claimed - room_charges - annexure_items) / 100) * 100
+    to: round(max(claimed - room_charges - annexure_items, 0) / 100) * 100
     because: Other charges are the hospital bill less the room charges, {room_charges}, and less the Annexure 1 items.
 
   # 4.2 Room rent limit (step 3)
   - id: ROOM-03
     cite: "4.2"
     set: room_rent_limit
-    to: round(sum_insured * 0.01 / 100) * 100
+    to: round(year_cover * 0.01 / 100) * 100
     because: The room rent limit is 1% of the sum insured for each day.
   - id: ROOM-04
     cite: "4.2"
@@ -222,7 +223,7 @@ rules:
   - id: COPAY-02
     cite: "6.1"
     set: admissible_claim
-    to: round((claimed - annexure_deduction - room_rent_deduction - other_charges_deduction) / 100) * 100
+    to: round(max(claimed - annexure_deduction - room_rent_deduction - other_charges_deduction, 0) / 100) * 100
     because: The admissible claim is the hospital bill after the Annexure 1 items and the room rent limit have been taken off.
   - id: COPAY-03
     cite: "6.1"
@@ -234,8 +235,8 @@ rules:
   - id: SUM-01
     cite: "2.2"
     set: year_cover
-    to: sum_insured
-    because: The sum insured is the most the policy pays in one policy year.
+    to: if(sum_insured == 'rs_300000', 30000000, if(sum_insured == 'rs_500000', 50000000, 100000000))
+    because: The sum insured is the most the policy pays in one policy year. The policy schedule shows one of three amounts.
   - id: SUM-02
     cite: "2.3"
     set: cover_left
@@ -244,7 +245,7 @@ rules:
   - id: SUM-03
     cite: "1.3"
     set: amount_after_copayment
-    to: round((admissible_claim - copayment_deduction) / 100) * 100
+    to: round(max(admissible_claim - copayment_deduction, 0) / 100) * 100
     because: Step 5 applies the sum insured limit to the amount left after the co-payment.
   - id: SUM-04
     cite: "2.3"
@@ -261,7 +262,7 @@ rules:
   - id: PAY-02
     cite: "1.2"
     set: payable
-    to: round(min(claimed, claimed - total_deductions) / 100) * 100
+    to: round(max(min(claimed, claimed - total_deductions), 0) / 100) * 100
     because: The policy pays the hospital bill of {claimed} less the deductions of {total_deductions}, and never more than the hospital bill.
 
   # 1.3 How the outcome is stated
@@ -295,7 +296,8 @@ clauses:
       is not paid. The deduction is the full hospital bill, and steps 2 to 5 are skipped. 2. Take off the Annexure 1 items
       (clause 5.3). 3. Apply the room rent limit (clause 4.2). 4. Take the co-payment (clause 6.1) from the amount left
       after steps 2 and 3. 5. Apply the sum insured limit (clauses 2.2 and 2.3) to the amount left after step 4. Every
-      amount worked out under this policy is rounded to the nearest whole rupee. Exactly half a rupee rounds up. The claim
+      amount worked out under this policy is rounded to the nearest whole rupee. Exactly half a rupee rounds up. No amount
+      worked out under this policy is less than zero. A result below zero is taken as zero. The claim
       is paid in full when no deduction applies. It is paid in part when the payable amount is more than zero and at least
       one deduction applies. It is not paid when the payable amount is zero.
   "2.2":
@@ -312,7 +314,7 @@ clauses:
     text: >-
       An illness is not covered if its start date falls less than 30 days after the policy start date. An illness that
       starts 30 or more days after the policy start date is covered. The waiting period does not apply to an accident,
-      which is covered from the first day of the policy.
+      which is covered from the first day of the policy. An illness that starts before the policy start date is not covered.
   "4.1":
     title: Room charges and other charges
     text: >-
