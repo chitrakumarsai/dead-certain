@@ -1,23 +1,8 @@
-// @ts-expect-error TS2591: no type definitions for node:fs
-import { readFileSync } from "node:fs";
-import type { KnowledgeBase } from "@dead-certain/engine";
-import { compileText } from "@dead-certain/kb-tools";
 import { describe, expect, it } from "vitest";
 import { config } from "./config";
 import { clauseFor, formatFor, labelFor, ruleExpression } from "./kb";
 import { isKnowledgeBase } from "./kbShape";
-
-// Compiled from the YAML here, so the test does not depend on a prior `dc build`.
-function realKb(): KnowledgeBase {
-	const file = new URL("../kb/policy.yaml", import.meta.url);
-	const result = compileText(
-		readFileSync(file, "utf8") as string,
-		"policy.yaml",
-	);
-	if (!result.ok)
-		throw new Error("apps/claim-check/kb/policy.yaml does not compile");
-	return JSON.parse(result.json) as KnowledgeBase;
-}
+import { realKb } from "./testing/realKb";
 
 describe("the knowledge-base guard", () => {
 	it("accepts the real compiled knowledge base", () => {
