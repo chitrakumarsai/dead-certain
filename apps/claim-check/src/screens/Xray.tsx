@@ -52,16 +52,11 @@ function FilmBody({
 				onChangeAnswer={(f) => dispatch({ type: "edit", fact: f })}
 				onEscape={close}
 			/>
-			{root.clause !== undefined && (
-				<ClauseRef
-					id={root.clause}
-					{...(clauseFor(kb, root.clause) === undefined
-						? {}
-						: { clause: clauseFor(kb, root.clause) })}
-					variant="deciding"
-					surface="film"
-				/>
-			)}
+			{/* ProofTree quotes the deciding clause; only a missing one is named here, by id. */}
+			{root.clause !== undefined &&
+				clauseFor(kb, root.clause) === undefined && (
+					<ClauseRef id={root.clause} variant="deciding" surface="film" />
+				)}
 		</div>
 	);
 }

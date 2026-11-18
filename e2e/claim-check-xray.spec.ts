@@ -152,3 +152,14 @@ test("a change that removes the open line closes the panel", async ({
 	await expect(page.getByRole("table").getByText("Co-payment")).toHaveCount(0);
 	await expect(tree(page)).toHaveCount(0);
 });
+
+test("the deciding clause is quoted once", async ({ page }) => {
+	await openVerdict(page);
+	await seeWhy(page).click();
+	await expect(tree(page)).toBeVisible();
+	await expect(
+		page.locator("[data-surface=film] [data-clause-heading]", {
+			hasText: "Clause 1.3",
+		}),
+	).toHaveCount(1);
+});
