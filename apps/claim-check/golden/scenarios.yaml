@@ -1,0 +1,434 @@
+kb: claim-check
+scenarios:
+  - id: G-01
+    title: "Worked example of clause 1.3: annexure, room rent and co-payment"
+    facts:
+      cause: illness
+      treatment: other
+      treated_outside_india: false
+      policy_start_date: 2025-01-01
+      illness_start_date: 2025-06-01
+      annexure_items: 1200000
+      room_rent_per_day: 600000
+      room_days: 5
+      age: 64
+      sum_insured: 50000000
+      paid_this_year: 0
+      claimed: 21000000
+    expect:
+      goals:
+        payable: 13200000
+        outcome: reduced
+      line_items:
+        waiting_deduction: 0
+        exclusion_deduction: 0
+        outside_india_deduction: 0
+        annexure_deduction: 1200000
+        room_rent_deduction: 500000
+        other_charges_deduction: 2800000
+        copayment_deduction: 3300000
+        sum_insured_deduction: 0
+      fires: [ANNEX-01, ROOM-05, ROOM-07, COPAY-03, PAY-02, OUT-03]
+  - id: G-02
+    title: "Worked example of clause 4.2: room rent of 6,000 over a limit of 5,000"
+    facts:
+      cause: illness
+      treatment: other
+      treated_outside_india: false
+      policy_start_date: 2025-01-01
+      illness_start_date: 2025-06-01
+      annexure_items: 0
+      room_rent_per_day: 600000
+      room_days: 5
+      age: 40
+      sum_insured: 50000000
+      paid_this_year: 0
+      claimed: 19800000
+    expect:
+      goals:
+        payable: 16500000
+        outcome: reduced
+      line_items:
+        waiting_deduction: 0
+        exclusion_deduction: 0
+        outside_india_deduction: 0
+        annexure_deduction: 0
+        room_rent_deduction: 500000
+        other_charges_deduction: 2800000
+        copayment_deduction: 0
+        sum_insured_deduction: 0
+      fires: [ROOM-03, ROOM-04, ROOM-05, ROOM-06, ROOM-07]
+  - id: G-03
+    title: "Paid in full when no deduction applies"
+    facts:
+      cause: illness
+      treatment: other
+      treated_outside_india: false
+      policy_start_date: 2025-01-01
+      illness_start_date: 2025-06-01
+      annexure_items: 0
+      room_rent_per_day: 300000
+      room_days: 3
+      age: 40
+      sum_insured: 50000000
+      paid_this_year: 0
+      claimed: 10000000
+    expect:
+      goals:
+        payable: 10000000
+        outcome: paid
+      line_items:
+        waiting_deduction: 0
+        exclusion_deduction: 0
+        outside_india_deduction: 0
+        annexure_deduction: 0
+        room_rent_deduction: 0
+        other_charges_deduction: 0
+        copayment_deduction: 0
+        sum_insured_deduction: 0
+      fires: [OUT-02, ROOM-01, ROOM-02, COPAY-01, SUM-02]
+  - id: G-04
+    title: "Illness 10 days after the policy start is in the waiting period"
+    facts:
+      cause: illness
+      treatment: other
+      treated_outside_india: false
+      policy_start_date: 2025-01-01
+      illness_start_date: 2025-01-11
+      annexure_items: 0
+      room_rent_per_day: 300000
+      room_days: 3
+      age: 40
+      sum_insured: 50000000
+      paid_this_year: 0
+      claimed: 5000000
+    expect:
+      goals:
+        payable: 0
+        outcome: denied
+      line_items:
+        waiting_deduction: 5000000
+        exclusion_deduction: 0
+        outside_india_deduction: 0
+        annexure_deduction: 0
+        room_rent_deduction: 0
+        other_charges_deduction: 0
+        copayment_deduction: 0
+        sum_insured_deduction: 0
+      fires: [WAIT-01, WAIT-02, DENY-01, PAY-01, OUT-01]
+  - id: G-05
+    title: "Illness exactly 30 days after the policy start is covered"
+    facts:
+      cause: illness
+      treatment: other
+      treated_outside_india: false
+      policy_start_date: 2025-01-01
+      illness_start_date: 2025-01-31
+      annexure_items: 0
+      room_rent_per_day: 300000
+      room_days: 3
+      age: 40
+      sum_insured: 50000000
+      paid_this_year: 0
+      claimed: 10000000
+    expect:
+      goals:
+        payable: 10000000
+        outcome: paid
+      line_items:
+        waiting_deduction: 0
+        exclusion_deduction: 0
+        outside_india_deduction: 0
+        annexure_deduction: 0
+        room_rent_deduction: 0
+        other_charges_deduction: 0
+        copayment_deduction: 0
+        sum_insured_deduction: 0
+      fires: [WAIT-01, OUT-02]
+  - id: G-06
+    title: "An accident in the first days of the policy is covered"
+    facts:
+      cause: accident
+      treatment: other
+      treated_outside_india: false
+      annexure_items: 0
+      room_rent_per_day: 300000
+      room_days: 3
+      age: 40
+      sum_insured: 50000000
+      paid_this_year: 0
+      claimed: 10000000
+    expect:
+      goals:
+        payable: 10000000
+        outcome: paid
+      line_items:
+        waiting_deduction: 0
+        exclusion_deduction: 0
+        outside_india_deduction: 0
+        annexure_deduction: 0
+        room_rent_deduction: 0
+        other_charges_deduction: 0
+        copayment_deduction: 0
+        sum_insured_deduction: 0
+      fires: [WAIT-01, OUT-02]
+  - id: G-07
+    title: "Cosmetic surgery is never covered"
+    facts:
+      cause: accident
+      treatment: cosmetic
+      treated_outside_india: false
+      annexure_items: 0
+      room_rent_per_day: 300000
+      room_days: 3
+      age: 40
+      sum_insured: 50000000
+      paid_this_year: 0
+      claimed: 8000000
+    expect:
+      goals:
+        payable: 0
+        outcome: denied
+      line_items:
+        waiting_deduction: 0
+        exclusion_deduction: 8000000
+        outside_india_deduction: 0
+        annexure_deduction: 0
+        room_rent_deduction: 0
+        other_charges_deduction: 0
+        copayment_deduction: 0
+        sum_insured_deduction: 0
+      fires: [EXCL-01, EXCL-02, DENY-01, OUT-01]
+  - id: G-08
+    title: "Dental treatment after an illness is never covered"
+    facts:
+      cause: illness
+      treatment: dental
+      treated_outside_india: false
+      policy_start_date: 2025-01-01
+      illness_start_date: 2025-03-01
+      annexure_items: 0
+      room_rent_per_day: 300000
+      room_days: 3
+      age: 40
+      sum_insured: 50000000
+      paid_this_year: 0
+      claimed: 4000000
+    expect:
+      goals:
+        payable: 0
+        outcome: denied
+      line_items:
+        waiting_deduction: 0
+        exclusion_deduction: 4000000
+        outside_india_deduction: 0
+        annexure_deduction: 0
+        room_rent_deduction: 0
+        other_charges_deduction: 0
+        copayment_deduction: 0
+        sum_insured_deduction: 0
+      fires: [EXCL-01, EXCL-02]
+  - id: G-09
+    title: "Dental treatment after an accident is covered"
+    facts:
+      cause: accident
+      treatment: dental
+      treated_outside_india: false
+      annexure_items: 0
+      room_rent_per_day: 200000
+      room_days: 1
+      age: 30
+      sum_insured: 50000000
+      paid_this_year: 0
+      claimed: 4000000
+    expect:
+      goals:
+        payable: 4000000
+        outcome: paid
+      line_items:
+        waiting_deduction: 0
+        exclusion_deduction: 0
+        outside_india_deduction: 0
+        annexure_deduction: 0
+        room_rent_deduction: 0
+        other_charges_deduction: 0
+        copayment_deduction: 0
+        sum_insured_deduction: 0
+      fires: [EXCL-01, OUT-02]
+  - id: G-10
+    title: "Treatment outside India is not paid"
+    facts:
+      cause: accident
+      treatment: other
+      treated_outside_india: true
+      annexure_items: 0
+      room_rent_per_day: 300000
+      room_days: 3
+      age: 40
+      sum_insured: 50000000
+      paid_this_year: 0
+      claimed: 9000000
+    expect:
+      goals:
+        payable: 0
+        outcome: denied
+      line_items:
+        waiting_deduction: 0
+        exclusion_deduction: 0
+        outside_india_deduction: 9000000
+        annexure_deduction: 0
+        room_rent_deduction: 0
+        other_charges_deduction: 0
+        copayment_deduction: 0
+        sum_insured_deduction: 0
+      fires: [ABROAD-01, DENY-01, OUT-01]
+  - id: G-11
+    title: "A policyholder aged 61 pays a co-payment of 20%"
+    facts:
+      cause: illness
+      treatment: other
+      treated_outside_india: false
+      policy_start_date: 2025-01-01
+      illness_start_date: 2025-06-01
+      annexure_items: 0
+      room_rent_per_day: 300000
+      room_days: 3
+      age: 61
+      sum_insured: 50000000
+      paid_this_year: 0
+      claimed: 10000000
+    expect:
+      goals:
+        payable: 8000000
+        outcome: reduced
+      line_items:
+        waiting_deduction: 0
+        exclusion_deduction: 0
+        outside_india_deduction: 0
+        annexure_deduction: 0
+        room_rent_deduction: 0
+        other_charges_deduction: 0
+        copayment_deduction: 2000000
+        sum_insured_deduction: 0
+      fires: [COPAY-01, COPAY-02, COPAY-03, OUT-03]
+  - id: G-12
+    title: "A policyholder aged 60 pays no co-payment"
+    facts:
+      cause: illness
+      treatment: other
+      treated_outside_india: false
+      policy_start_date: 2025-01-01
+      illness_start_date: 2025-06-01
+      annexure_items: 0
+      room_rent_per_day: 300000
+      room_days: 3
+      age: 60
+      sum_insured: 50000000
+      paid_this_year: 0
+      claimed: 10000000
+    expect:
+      goals:
+        payable: 10000000
+        outcome: paid
+      line_items:
+        waiting_deduction: 0
+        exclusion_deduction: 0
+        outside_india_deduction: 0
+        annexure_deduction: 0
+        room_rent_deduction: 0
+        other_charges_deduction: 0
+        copayment_deduction: 0
+        sum_insured_deduction: 0
+      fires: [COPAY-01, COPAY-03, OUT-02]
+  - id: G-13
+    title: "Half a rupee of other charges rounds up"
+    facts:
+      cause: illness
+      treatment: other
+      treated_outside_india: false
+      policy_start_date: 2025-01-01
+      illness_start_date: 2025-06-01
+      annexure_items: 0
+      room_rent_per_day: 600000
+      room_days: 5
+      age: 40
+      sum_insured: 50000000
+      paid_this_year: 0
+      claimed: 3000300
+    expect:
+      goals:
+        payable: 2500300
+        outcome: reduced
+      line_items:
+        waiting_deduction: 0
+        exclusion_deduction: 0
+        outside_india_deduction: 0
+        annexure_deduction: 0
+        room_rent_deduction: 500000
+        other_charges_deduction: 0
+        copayment_deduction: 0
+        sum_insured_deduction: 0
+      fires: [ROOM-06, ROOM-07, PAY-02]
+  - id: G-14
+    title: "Sum insured limit takes off the part above what is left"
+    facts:
+      cause: illness
+      treatment: other
+      treated_outside_india: false
+      policy_start_date: 2025-01-01
+      illness_start_date: 2025-06-01
+      annexure_items: 0
+      room_rent_per_day: 300000
+      room_days: 2
+      age: 40
+      sum_insured: 30000000
+      paid_this_year: 25000000
+      claimed: 10000000
+    expect:
+      goals:
+        payable: 5000000
+        outcome: reduced
+      line_items:
+        waiting_deduction: 0
+        exclusion_deduction: 0
+        outside_india_deduction: 0
+        annexure_deduction: 0
+        room_rent_deduction: 0
+        other_charges_deduction: 0
+        copayment_deduction: 0
+        sum_insured_deduction: 5000000
+      fires: [SUM-01, SUM-02, SUM-03, SUM-04]
+  - id: G-15
+    title: "Payments above the sum insured leave nothing for a new claim"
+    facts:
+      cause: illness
+      treatment: other
+      treated_outside_india: false
+      policy_start_date: 2025-01-01
+      illness_start_date: 2025-06-01
+      annexure_items: 0
+      room_rent_per_day: 300000
+      room_days: 2
+      age: 40
+      sum_insured: 30000000
+      paid_this_year: 35000000
+      claimed: 10000000
+    expect:
+      goals:
+        payable: 0
+        outcome: denied
+      line_items:
+        waiting_deduction: 0
+        exclusion_deduction: 0
+        outside_india_deduction: 0
+        annexure_deduction: 0
+        room_rent_deduction: 0
+        other_charges_deduction: 0
+        copayment_deduction: 0
+        sum_insured_deduction: 10000000
+      fires: [SUM-02, SUM-04, OUT-01]
+  - id: G-16
+    title: "Nothing answered yet, so the first question"
+    facts: {}
+    expect:
+      ask: claimed

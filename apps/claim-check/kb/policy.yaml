@@ -1,0 +1,346 @@
+id: claim-check
+currency: INR
+goals: [payable, outcome]
+
+# Money is in paise (minor units). Clause 1.3 rounds every amount worked out to the
+# nearest whole rupee, halves up, so each worked-out money value is written
+# round(x / 100) * 100.
+
+facts:
+  # Facts the policyholder answers
+  claimed:
+    type: money
+    ask: What is the total on the final hospital bill?
+    why: The policy pays the hospital bill less its deductions, and never more than the bill.
+  cause:
+    type: enum
+    options: [illness, accident]
+    ask: Was the admission for an illness or for an accident?
+    why: The 30-day waiting period applies to an illness and never to an accident.
+  treatment:
+    type: enum
+    options: [cosmetic, weight_loss, dental, other]
+    ask: What kind of treatment was it?
+    why: Cosmetic surgery, weight-loss treatment and dental treatment that no accident caused are never covered.
+  treated_outside_india:
+    type: boolean
+    ask: Was the treatment received outside India?
+    why: The policy does not pay for treatment received outside India.
+  policy_start_date:
+    type: date
+    ask: What is the policy start date?
+    why: An illness that starts less than 30 days after this date is not covered.
+  illness_start_date:
+    type: date
+    ask: On what date did the illness start, that is, the first symptoms or the first diagnosis, whichever is earlier?
+    why: The waiting period is counted from the policy start date to this date.
+  annexure_items:
+    type: money
+    ask: How much did the hospital bill for Annexure 1 items such as gloves, masks and gowns?
+    why: The policy does not pay for Annexure 1 items, and it takes them off before any other limit.
+  room_rent_per_day:
+    type: money
+    ask: What was the room rent for each day?
+    why: The policy limits room rent for each day, and a higher rent reduces the other charges too.
+  room_days:
+    type: number
+    ask: For how many days did the hospital charge for the room?
+    why: Room charges are the room rent for each day multiplied by these days.
+  age:
+    type: number
+    ask: How old was the policyholder in completed years on the day of admission?
+    why: A policyholder aged 61 or over pays a co-payment.
+  sum_insured:
+    type: money
+    ask: What is the sum insured on the policy schedule?
+    why: The room rent limit and the most the policy pays in one policy year both come from the sum insured.
+  paid_this_year:
+    type: money
+    ask: How much has the policy already paid in this policy year?
+    why: Amounts already paid in the policy year count against the sum insured.
+
+  # Facts the rules work out
+  waiting_period_applies: { type: boolean, derived: true }
+  excluded_treatment: { type: boolean, derived: true }
+  claim_denied: { type: boolean, derived: true }
+  room_charges: { type: money, derived: true }
+  other_charges: { type: money, derived: true }
+  room_rent_limit: { type: money, derived: true }
+  room_rent_over: { type: boolean, derived: true }
+  other_charges_payable: { type: money, derived: true }
+  copayment_applies: { type: boolean, derived: true }
+  admissible_claim: { type: money, derived: true }
+  amount_after_copayment: { type: money, derived: true }
+  year_cover: { type: money, derived: true }
+  cover_left: { type: money, derived: true }
+  total_deductions: { type: money, derived: true }
+
+  # Deductions, in the ledger
+  waiting_deduction:
+    type: money
+    derived: true
+    role: deduction
+    label: Waiting period
+  exclusion_deduction:
+    type: money
+    derived: true
+    role: deduction
+    label: Treatment never covered
+  outside_india_deduction:
+    type: money
+    derived: true
+    role: deduction
+    label: Treatment outside India
+  annexure_deduction:
+    type: money
+    derived: true
+    role: deduction
+    label: Annexure 1 items
+  room_rent_deduction:
+    type: money
+    derived: true
+    role: deduction
+    label: Room rent over the limit
+  other_charges_deduction:
+    type: money
+    derived: true
+    role: deduction
+    label: Other charges reduced for room rent
+  copayment_deduction:
+    type: money
+    derived: true
+    role: deduction
+    label: Co-payment
+  sum_insured_deduction:
+    type: money
+    derived: true
+    role: deduction
+    label: Sum insured limit
+
+  # Goals
+  payable:
+    type: money
+    derived: true
+    label: Amount payable
+  outcome:
+    type: enum
+    options: [paid, reduced, denied]
+    derived: true
+    label: Outcome
+
+rules:
+  # 3.1 Waiting period
+  - id: WAIT-01
+    cite: "3.1"
+    set: waiting_period_applies
+    to: cause == 'illness' and days_between(policy_start_date, illness_start_date) < 30
+    because: An illness that starts less than 30 days after the policy start date is not covered. An accident is covered from the first day.
+  - id: WAIT-02
+    cite: "3.1"
+    set: waiting_deduction
+    to: if(waiting_period_applies, claimed, 0)
+    because: The illness started inside the 30-day waiting period, so the whole hospital bill, {claimed}, is not paid.
+
+  # 5.1 Treatment that is never covered
+  - id: EXCL-01
+    cite: "5.1"
+    set: excluded_treatment
+    to: treatment == 'cosmetic' or treatment == 'weight_loss' or (treatment == 'dental' and cause != 'accident')
+    because: Cosmetic surgery, weight-loss treatment and dental treatment that no accident caused are never covered.
+  - id: EXCL-02
+    cite: "5.1"
+    set: exclusion_deduction
+    to: if(excluded_treatment and not waiting_period_applies, claimed, 0)
+    because: The treatment is never covered, so the whole hospital bill, {claimed}, is not paid.
+
+  # 5.2 Treatment outside India
+  - id: ABROAD-01
+    cite: "5.2"
+    set: outside_india_deduction
+    to: if(treated_outside_india and not waiting_period_applies and not excluded_treatment, claimed, 0)
+    because: The policy does not pay for treatment received outside India, so the whole hospital bill, {claimed}, is not paid.
+
+  # 1.3 Order of calculation, step 1
+  - id: DENY-01
+    cite: "1.3"
+    set: claim_denied
+    to: waiting_period_applies or excluded_treatment or treated_outside_india
+    because: When clause 3.1, 5.1 or 5.2 applies, the whole claim is not paid and steps 2 to 5 are skipped.
+
+  # 5.3 Annexure 1 items (step 2)
+  - id: ANNEX-01
+    cite: "5.3"
+    set: annexure_deduction
+    to: if(claim_denied, 0, round(annexure_items / 100) * 100)
+    because: The policy does not pay for Annexure 1 items, so it deducts the {annexure_items} the hospital billed for them.
+
+  # 4.1 Room charges and other charges
+  - id: ROOM-01
+    cite: "4.1"
+    set: room_charges
+    to: round(room_rent_per_day * room_days / 100) * 100
+    because: Room charges are the room rent for each day, {room_rent_per_day}, multiplied by the days charged.
+  - id: ROOM-02
+    cite: "4.1"
+    set: other_charges
+    to: round((claimed - room_charges - annexure_items) / 100) * 100
+    because: Other charges are the hospital bill less the room charges, {room_charges}, and less the Annexure 1 items.
+
+  # 4.2 Room rent limit (step 3)
+  - id: ROOM-03
+    cite: "4.2"
+    set: room_rent_limit
+    to: round(sum_insured * 0.01 / 100) * 100
+    because: The room rent limit is 1% of the sum insured for each day.
+  - id: ROOM-04
+    cite: "4.2"
+    set: room_rent_over
+    to: room_rent_per_day > room_rent_limit
+    because: Room rent of {room_rent_per_day} for a day is compared with the limit of {room_rent_limit}.
+  - id: ROOM-05
+    cite: "4.2"
+    set: room_rent_deduction
+    to: if(claim_denied, 0, if(room_rent_over, round((room_rent_per_day - room_rent_limit) * room_days / 100) * 100, 0))
+    because: When the room rent is above the limit of {room_rent_limit}, the policy deducts the difference for every day charged. At or below the limit, nothing is deducted.
+  - id: ROOM-06
+    cite: "4.2"
+    set: other_charges_payable
+    to: if(room_rent_over, round(room_rent_limit / room_rent_per_day * other_charges / 100) * 100, other_charges)
+    because: When the room rent is above the limit, the policy pays only the limit divided by the room rent, multiplied by the other charges of {other_charges}.
+  - id: ROOM-07
+    cite: "4.2"
+    set: other_charges_deduction
+    to: if(claim_denied, 0, round((other_charges - other_charges_payable) / 100) * 100)
+    because: The policy deducts the part of the other charges that it does not pay, which is {other_charges} less {other_charges_payable}.
+
+  # 6.1 Co-payment (step 4)
+  - id: COPAY-01
+    cite: "6.1"
+    set: copayment_applies
+    to: age >= 61
+    because: A policyholder aged 61 or over pays a co-payment. A policyholder aged 60 or under pays none.
+  - id: COPAY-02
+    cite: "6.1"
+    set: admissible_claim
+    to: round((claimed - annexure_deduction - room_rent_deduction - other_charges_deduction) / 100) * 100
+    because: The admissible claim is the hospital bill after the Annexure 1 items and the room rent limit have been taken off.
+  - id: COPAY-03
+    cite: "6.1"
+    set: copayment_deduction
+    to: if(claim_denied, 0, if(copayment_applies, round(admissible_claim * 0.2 / 100) * 100, 0))
+    because: A policyholder aged 61 or over pays 20% of the admissible claim of {admissible_claim}.
+
+  # 2.2 and 2.3 Sum insured (step 5)
+  - id: SUM-01
+    cite: "2.2"
+    set: year_cover
+    to: sum_insured
+    because: The sum insured is the most the policy pays in one policy year.
+  - id: SUM-02
+    cite: "2.3"
+    set: cover_left
+    to: round(max(year_cover - paid_this_year, 0) / 100) * 100
+    because: The amount left for a new claim is the sum insured less the {paid_this_year} already paid in the policy year, and never less than zero.
+  - id: SUM-03
+    cite: "1.3"
+    set: amount_after_copayment
+    to: round((admissible_claim - copayment_deduction) / 100) * 100
+    because: Step 5 applies the sum insured limit to the amount left after the co-payment.
+  - id: SUM-04
+    cite: "2.3"
+    set: sum_insured_deduction
+    to: if(claim_denied, 0, round(max(amount_after_copayment - cover_left, 0) / 100) * 100)
+    because: When the amount left after the co-payment is higher than the {cover_left} left under the sum insured, the policy deducts the difference.
+
+  # 1.2 What the policy pays
+  - id: PAY-01
+    cite: "1.2"
+    set: total_deductions
+    to: round((waiting_deduction + exclusion_deduction + outside_india_deduction + annexure_deduction + room_rent_deduction + other_charges_deduction + copayment_deduction + sum_insured_deduction) / 100) * 100
+    because: Every deduction in this policy is added up.
+  - id: PAY-02
+    cite: "1.2"
+    set: payable
+    to: round(min(claimed, claimed - total_deductions) / 100) * 100
+    because: The policy pays the hospital bill of {claimed} less the deductions of {total_deductions}, and never more than the hospital bill.
+
+  # 1.3 How the outcome is stated
+  - id: OUT-01
+    cite: "1.3"
+    set: outcome
+    when: payable == 0
+    to: "'denied'"
+    because: The claim is not paid when the payable amount is zero.
+  - id: OUT-02
+    cite: "1.3"
+    set: outcome
+    when: payable > 0 and total_deductions == 0
+    to: "'paid'"
+    because: The claim is paid in full when no deduction applies.
+  - id: OUT-03
+    cite: "1.3"
+    set: outcome
+    when: payable > 0 and total_deductions > 0
+    to: "'reduced'"
+    because: The claim is paid in part when the payable amount is more than zero and at least one deduction applies.
+
+clauses:
+  "1.2":
+    title: What the policy pays
+    text: The policy pays the hospital bill less every deduction in this policy. It never pays more than the hospital bill.
+  "1.3":
+    title: Order of calculation
+    text: >-
+      The policy works out a claim in these steps, in this order. 1. If clause 3.1, 5.1 or 5.2 applies, the whole claim
+      is not paid. The deduction is the full hospital bill, and steps 2 to 5 are skipped. 2. Take off the Annexure 1 items
+      (clause 5.3). 3. Apply the room rent limit (clause 4.2). 4. Take the co-payment (clause 6.1) from the amount left
+      after steps 2 and 3. 5. Apply the sum insured limit (clauses 2.2 and 2.3) to the amount left after step 4. Every
+      amount worked out under this policy is rounded to the nearest whole rupee. Exactly half a rupee rounds up. The claim
+      is paid in full when no deduction applies. It is paid in part when the payable amount is more than zero and at least
+      one deduction applies. It is not paid when the payable amount is zero.
+  "2.2":
+    title: Sum insured
+    text: The sum insured is the most the policy pays in one policy year. The policy schedule shows one of three amounts, ₹3,00,000, ₹5,00,000 or ₹10,00,000.
+  "2.3":
+    title: Claims already paid in the policy year
+    text: >-
+      Every amount the policy has already paid in the same policy year counts against the sum insured. The amount left for
+      a new claim is the sum insured less those payments, and never less than zero. If the amount left after the
+      co-payment is higher than this, the policy deducts the difference.
+  "3.1":
+    title: Waiting period
+    text: >-
+      An illness is not covered if its start date falls less than 30 days after the policy start date. An illness that
+      starts 30 or more days after the policy start date is covered. The waiting period does not apply to an accident,
+      which is covered from the first day of the policy.
+  "4.1":
+    title: Room charges and other charges
+    text: >-
+      Room charges are the room rent for each day multiplied by the number of days the hospital charged for the room.
+      Other charges are the hospital bill less the room charges and less the Annexure 1 items.
+  "4.2":
+    title: Room rent limit
+    text: >-
+      The room rent limit is 1% of the sum insured for each day. If the room rent for a day is higher than the limit, the
+      policy deducts the difference for every day charged. Other charges then reduce in the same ratio: the policy pays
+      only the limit divided by the room rent, multiplied by the other charges, and deducts the rest. If the room rent is
+      at or below the limit, nothing is deducted under this clause.
+  "5.1":
+    title: Treatment that is never covered
+    text: >-
+      The policy does not pay for cosmetic surgery, for weight-loss treatment, or for dental treatment unless an accident
+      caused the need for it. A claim for any of these is not paid.
+  "5.2":
+    title: Treatment outside India
+    text: The policy does not pay for treatment received outside India. A claim for such treatment is not paid.
+  "5.3":
+    title: Items the policy does not pay
+    text: >-
+      The policy does not pay for consumables listed in Annexure 1 (gloves, masks, gowns and similar). The policy deducts
+      the amount the hospital billed for these items.
+  "6.1":
+    title: Co-payment
+    text: >-
+      A policyholder aged 61 or over pays 20% of every admissible claim. The admissible claim is the hospital bill after
+      the Annexure 1 items and the room rent limit have been taken off. A policyholder aged 60 or under pays no
+      co-payment.
