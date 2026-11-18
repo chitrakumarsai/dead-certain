@@ -261,3 +261,16 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - What the spec delivered: the golden format in `apps/<app>/golden/*.yaml` and the "Golden scenarios" section of `docs/kb-format.md`; the pure loader, checker and runner, exported from `@dead-certain/kb-tools`; `pnpm dc golden` with exact messages, rule coverage as an error and the 12-scenario count as a warning; ten correctness properties; and the agent prompt. The value-agreement property caught one real bug (year 0000).
 - Handoff notes for Claude Code, at the end of `kb-golden/tasks.md`: (1) the root `dc` script needs no change; (2) Playwright tests for every golden scenario import `loadGolden`, `checkGolden`, `duplicateIds` and `runScenario`, or read the YAML, and the results serialise; (3) add `pnpm run --if-present dc golden` after `dc validate` in CI once the first golden files exist; (4) commit `apps/*/golden/*.yaml`, since the Markdown-ignore rule does not touch YAML.
 - The work stays on `kiro/2-golden-spec` and merges at gate G2. Still open for the human: registering the three hand-written specs with the IDE's spec tool, and the rulebooks (Phase 2).
+
+### `claim-check-app` and `pre-flight-app` specs written (2026-11-16)
+
+- Both specs were written Design-First in this session: `requirements.md`, then `design.md`, then `tasks.md`, each approved in turn on the human's instruction. No task was run. Both are for the Claude Code lane.
+- Read first: section 7 and 8 of `docs/BUILD_PLAN.md`, `design-system.md`, `engine/src/types.ts`, the `packages/ui` props, and the golden section of `docs/kb-format.md`.
+- What the reading caught:
+  1. `apps/claim-check` and `apps/pre-flight` do not exist, and neither does `templates/`. Task 1 of each spec scaffolds the app by hand. Tasks that need `kb/` or `golden/` stop if Phase 2 has not delivered them.
+  2. The first draft of `claim-check-app` used path routes and a `404.html`. Section 7 puts routes in the URL hash. The spec was corrected before approval: routes and the replay token share the fragment (`#/?r=<token>`).
+  3. The engine never returns `source: "collected"`, since a flat fact record carries no origin. `pre-flight-app` relabels sources in the app (`relabelSources`) and has a property test for it.
+  4. The contract has no groups, severities or evidence. They are app-side data in `checklists.ts` and the collector, checked against the knowledge base at start-up.
+  5. `docs/kb-format.md` does not say where `pnpm dc build` writes JSON. `claim-check-app` task 2 finds it.
+- Open questions for the human, listed in each requirements file: goal and fact names (both specs, until Phase 2), the two other snapshot repositories and the recording run (`pre-flight-app`), the deciding-sentence marker in a clause, and a replay link for Pre-Flight reports (left out).
+- Not done: the specs are not registered with the IDE's spec tool, since this session has none (`kb-golden` had the same gap).
