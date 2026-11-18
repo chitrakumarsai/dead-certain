@@ -12,7 +12,7 @@ scenarios:
       room_rent_per_day: 600000
       room_days: 5
       age: 64
-      sum_insured: rs_500000
+      sum_insured: five_lakh
       paid_this_year: 0
       claimed: 21000000
     expect:
@@ -41,7 +41,7 @@ scenarios:
       room_rent_per_day: 600000
       room_days: 5
       age: 40
-      sum_insured: rs_500000
+      sum_insured: five_lakh
       paid_this_year: 0
       claimed: 19800000
     expect:
@@ -70,7 +70,7 @@ scenarios:
       room_rent_per_day: 300000
       room_days: 3
       age: 40
-      sum_insured: rs_500000
+      sum_insured: five_lakh
       paid_this_year: 0
       claimed: 10000000
     expect:
@@ -99,7 +99,7 @@ scenarios:
       room_rent_per_day: 300000
       room_days: 3
       age: 40
-      sum_insured: rs_500000
+      sum_insured: five_lakh
       paid_this_year: 0
       claimed: 5000000
     expect:
@@ -128,7 +128,7 @@ scenarios:
       room_rent_per_day: 300000
       room_days: 3
       age: 40
-      sum_insured: rs_500000
+      sum_insured: five_lakh
       paid_this_year: 0
       claimed: 10000000
     expect:
@@ -155,7 +155,7 @@ scenarios:
       room_rent_per_day: 300000
       room_days: 3
       age: 40
-      sum_insured: rs_500000
+      sum_insured: five_lakh
       paid_this_year: 0
       claimed: 10000000
     expect:
@@ -182,7 +182,7 @@ scenarios:
       room_rent_per_day: 300000
       room_days: 3
       age: 40
-      sum_insured: rs_500000
+      sum_insured: five_lakh
       paid_this_year: 0
       claimed: 8000000
     expect:
@@ -211,7 +211,7 @@ scenarios:
       room_rent_per_day: 300000
       room_days: 3
       age: 40
-      sum_insured: rs_500000
+      sum_insured: five_lakh
       paid_this_year: 0
       claimed: 4000000
     expect:
@@ -238,7 +238,7 @@ scenarios:
       room_rent_per_day: 200000
       room_days: 1
       age: 30
-      sum_insured: rs_500000
+      sum_insured: five_lakh
       paid_this_year: 0
       claimed: 4000000
     expect:
@@ -265,7 +265,7 @@ scenarios:
       room_rent_per_day: 300000
       room_days: 3
       age: 40
-      sum_insured: rs_500000
+      sum_insured: five_lakh
       paid_this_year: 0
       claimed: 9000000
     expect:
@@ -294,7 +294,7 @@ scenarios:
       room_rent_per_day: 300000
       room_days: 3
       age: 61
-      sum_insured: rs_500000
+      sum_insured: five_lakh
       paid_this_year: 0
       claimed: 10000000
     expect:
@@ -323,7 +323,7 @@ scenarios:
       room_rent_per_day: 300000
       room_days: 3
       age: 60
-      sum_insured: rs_500000
+      sum_insured: five_lakh
       paid_this_year: 0
       claimed: 10000000
     expect:
@@ -352,7 +352,7 @@ scenarios:
       room_rent_per_day: 600000
       room_days: 5
       age: 40
-      sum_insured: rs_500000
+      sum_insured: five_lakh
       paid_this_year: 0
       claimed: 3000300
     expect:
@@ -381,7 +381,7 @@ scenarios:
       room_rent_per_day: 300000
       room_days: 2
       age: 40
-      sum_insured: rs_300000
+      sum_insured: three_lakh
       paid_this_year: 25000000
       claimed: 10000000
     expect:
@@ -410,7 +410,7 @@ scenarios:
       room_rent_per_day: 300000
       room_days: 2
       age: 40
-      sum_insured: rs_300000
+      sum_insured: three_lakh
       paid_this_year: 35000000
       claimed: 10000000
     expect:
@@ -444,7 +444,7 @@ scenarios:
       room_rent_per_day: 400000
       room_days: 5
       age: 40
-      sum_insured: rs_1000000
+      sum_insured: ten_lakh
       paid_this_year: 0
       claimed: 1000000
     expect:
