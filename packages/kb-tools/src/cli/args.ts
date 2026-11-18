@@ -3,15 +3,17 @@ export const USAGE = [
 	"Usage:",
 	"  dc validate [path...]   check knowledge bases",
 	"  dc build [path...]      check knowledge bases and write apps/<app>/kb/dist/<stem>.json",
+	"  dc golden [path...]     run golden scenarios against the compiled knowledge bases",
 	"  dc help | --help | -h   print this text",
 	"",
-	"A path is a file apps/<app>/kb/<name>.yaml or a directory apps/<app>,",
-	"relative to the repository root. With no path, every apps/*/kb/*.yaml is used.",
+	"A path is a file apps/<app>/kb/<name>.yaml (golden: apps/<app>/golden/<name>.yaml)",
+	"or a directory apps/<app>, relative to the repository root. With no path,",
+	"every apps/*/kb/*.yaml (golden: every apps/*/golden/*.yaml) is used.",
 	"Exit status: 0 no errors, 1 errors, 2 usage problem.",
 	"",
 ].join("\n");
 
-export type Command = "validate" | "build";
+export type Command = "validate" | "build" | "golden";
 
 export type ParsedArgs =
 	| { readonly kind: "help" }
@@ -36,7 +38,7 @@ export function parseArgs(argv: readonly string[]): ParsedArgs {
 			? { kind: "help" }
 			: { kind: "usage", message: `dc: '${command}' takes no arguments.` };
 	}
-	if (command !== "validate" && command !== "build") {
+	if (command !== "validate" && command !== "build" && command !== "golden") {
 		return { kind: "usage", message: `dc: unknown command '${command}'.` };
 	}
 	for (const arg of rest) {

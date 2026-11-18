@@ -194,7 +194,11 @@ function walk(node: unknown, depth: number, ctx: Ctx, st: State): unknown {
 }
 
 /** Parse YAML text into a plain value, keeping located diagnostics. Never throws. */
-export function loadTextLocated(text: string, file: string): LocatedLoad {
+export function loadTextLocated(
+	text: string,
+	file: string,
+	subject = "A knowledge base",
+): LocatedLoad {
 	if (exactSizeExceeds(text)) {
 		return {
 			diagnostics: [
@@ -250,7 +254,7 @@ export function loadTextLocated(text: string, file: string): LocatedLoad {
 				makeError(
 					"SCHEMA_INVALID",
 					file,
-					`File '${file}' is empty. A knowledge base is a YAML mapping.`,
+					`File '${file}' is empty. ${subject} is a YAML mapping.`,
 				),
 			],
 		};
@@ -281,8 +285,12 @@ export function loadTextLocated(text: string, file: string): LocatedLoad {
 }
 
 /** Parse YAML and return the plain value, or sorted diagnostics. Never throws. */
-export function loadText(text: string, file: string): LoadResult {
-	const loaded = loadTextLocated(text, file);
+export function loadText(
+	text: string,
+	file: string,
+	subject = "A knowledge base",
+): LoadResult {
+	const loaded = loadTextLocated(text, file, subject);
 	if (loaded.raw !== undefined && loaded.diagnostics.length === 0) {
 		return { ok: true, raw: loaded.raw, diagnostics: [] };
 	}

@@ -164,7 +164,7 @@ function expectedName(expected: unknown): string {
  * The bad value as a message shows it. Never throws: JSON.stringify throws on
  * a BigInt, a cycle, and anything holding either, and validation is total.
  */
-function shown(value: unknown): string {
+export function shown(value: unknown): string {
 	if (typeof value === "string") return value;
 	if (typeof value === "bigint") return `${value}n`;
 	try {

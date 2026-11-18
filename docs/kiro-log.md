@@ -203,3 +203,148 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
   2. `.kiro/settings/mcp.json` starts `@dead-certain/mcp`, which does not exist until Phase 5. The `knowledge-engineer` agent has `includeMcpJson: true`, so it will try to start that server.
   3. Markdown stays out of git by the owner's instruction (`.gitignore`, `*.md`, with exceptions for `README.md`, `AGENTS.md`, `CLAUDE.md`, `.kiro/**` and `.claude/**`). So `docs/BUILD_PLAN.md` and this log are not in git. `docs/kiro-log.md` is a symlink in Kiro's worktree to the untracked file in the main checkout, which means no log entry written so far was ever committed or pushed. Fresh clones and CI have neither file.
   4. The rulebooks are the first task and need the human: the sample policy and the Pre-Flight checklist.
+
+### Phase 2 starts: the `kb-golden` spec, requirements phase (2026-11-15)
+
+- PR #6 versioned this log, so Kiro deleted the `docs/kiro-log.md` symlink in its worktree (its content matched the tracked file line for line), pulled `main` (`3f2715b`) onto `kiro/2-golden-spec`, and deleted the empty `kiro/gate-g1-close` branch. From now on each entry is committed with the session's work.
+- Human's decisions on the gate G1 report: golden scenarios approved, MCP server to be disabled, rulebooks to wait for the human's content.
+- Spec `kb-golden` (Requirements-First), requirements written in `.kiro/specs/kb-golden/requirements.md`: 13 requirements and five questions for the human. Scenarios live in `apps/<app>/golden/*.yaml`, outside `kb/`, so `dc validate` and `dc build` never read them. Each file names its knowledge base by `kb` id. A scenario is a consult run (`start`, `answer`, `next`) or an audit run, and its `expect` block must list every goal, so none goes unchecked. `dc golden` compiles the knowledge base in memory, runs every scenario on its own session, and reports a rule that no passing scenario fires as `RULE_NOT_COVERED`. The loader and runner are pure and exported, so Playwright can read the same files. Properties: record-and-replay, mutation, order independence, and coverage consistency.
+- Stopped after the requirements phase, as the human asked. Design and tasks wait for review.
+- **Blocked: the MCP change.** A permission rule (`kiro-scope`) denies Kiro's write to `.kiro/settings/mcp.json`, and the human did not reject it. Kiro did not work around it with a shell edit. The `dead-certain` server is still enabled and still points at the missing `@dead-certain/mcp`. The human needs to set `"disabled": true` on it, or lift the rule for that file.
+- `docs/kb-format.md` is the only tracked Markdown in `docs/` that holds a grammar, so the golden format goes there as a new section (Requirement 13) and not in a new `.md` file, which `.gitignore` would exclude.
+
+### `kb-golden`: decisions recorded, design written (2026-11-15)
+
+- The human answered the five questions on the requirements: an uncovered rule is an error; fewer than 12 scenarios is a warning only; every goal must be listed in `expect.goals`; no `--json`; no separate `collected` block. Kiro removed the questions from `requirements.md` and recorded them as a Decisions section. The requirements text already matched all five answers.
+- The human said they disabled the `dead-certain` MCP server by hand on `kiro/2-golden-spec`. `git pull` found nothing new on that branch, `origin/kiro/2-golden-spec` holds only Kiro's own commit, and `.kiro/settings/mcp.json` in both worktrees still reads `"disabled": false`. The edit is therefore not on the remote. Kiro did not make it, because the `kiro-scope` rule still denies the write.
+- Design written in `.kiro/specs/kb-golden/design.md` (402 lines): pure core (`loadGolden`, `checkGolden`, `runScenario`, `runGolden`, `coverage`, `duplicateIds`) and a thin `dc golden` shell, a strict Zod grammar, a scenario run built only on the engine's public API with one fresh session each, exact messages for every code, and ten correctness properties (record and replay, mutation, order independence for scenarios and for facts, exact coverage, validate unaffected, totality, determinism, date and value agreement with the engine, stable output).
+- Five departures from the requirements text are marked "Open? Yes" for the human: the goal-set check moves from loader to checker, coverage is computed only on whole-app runs, one fixed summary line replaces three partial ones, an `outcome` difference is added for question-versus-verdict mismatches, and coverage diagnostics point at the knowledge-base file. Decisions 1 to 10 hold the rest.
+- Checked while designing: kb-tools' source scan already covers a new `golden/` directory (no Node API, no `Date`, no network), and `pnpm dc` appends its arguments, so `dc golden` needs no root change.
+- Stopped after the design phase, as the human asked. Tasks wait for review.
+
+### `kb-golden`: departures approved, tasks written (2026-11-15)
+
+- The human approved all five design departures. Kiro marked them "Approved" in `design.md` (the status column replaces "Open?") and amended the requirements to match, so spec and design agree: the goal-set check is in the Golden_Runner's fit check (4.1), `outcome` joins the failure fields (5.4, 9.5), coverage and the too-few warning belong to whole-app runs and name the KB file (7.1, 7.3, 8.2), and the summary line has one fixed form (7.5, 8.6, 9.4).
+- Pulled `kiro/2-golden-spec`: the human's commit `023c439` is there, and `.kiro/settings/mcp.json` has `"disabled": true` for `dead-certain` (`context7` is still enabled). Kiro's earlier note that the edit was missing was right at that time; the commit arrived after.
+- Tasks written in `.kiro/specs/kb-golden/tasks.md`: 10 sections, 23 sub-tasks, one task per wave. The order is types and `shown` export, YAML loader check, value checks, loader, checker, runner (with the record-and-replay, mutation and order properties), coverage, the `dc golden` command, exports and the dist smoke test, documentation and the agent prompt, then the checkpoint. All ten correctness properties are assigned to a task, each with a `// Feature: kb-golden, Property N` rule.
+- Two edits need the human's confirmation when their tasks run: the "Golden scenarios" section of the shared `docs/kb-format.md` (9.1), and the prompt in `.kiro/agents/knowledge-engineer.json` (9.3), which a permission rule may block as it did `mcp.json`.
+- Handoff notes for Claude Code: Playwright reads the exported loader and runner; add `dc golden` to CI after the first golden files exist; no root script change is expected.
+- Stopped before running any task, as the human asked.
+
+### `kb-golden`: tasks 1.1 to 8.2 run (2026-11-15)
+
+- The human approved the tasks and asked for all of them to be run one at a time, stopping for two confirmations: the `docs/kb-format.md` edit (9.1) and the agent prompt (9.3). Kiro ran 1.1 to 8.2, which is every task up to the first confirmation, and stopped before 9.1.
+- Built in `packages/kb-tools/src`: `golden/` (types, value checks, the strict Zod schema and loader, the checker with `duplicateIds`, `runScenario` and `runGolden`, `coverage`, the public index), `cli/golden.ts` (the `dc golden` command), the `golden` command in `args.ts`, `discover.ts`, `run.ts` and `format.ts`, and test support in `testkit/` (a fixture knowledge base with 11 rules, twelve recorded scenarios that cover all of them, `recordScenario`, `goldenSetArb`, `goldenYaml`). `pnpm check` passes 1,363 tests in 127 files. `pnpm dc golden` works through the unchanged root script, and `--json` exits 2.
+- All ten properties have tests. The value-agreement property (Property 9) caught a real mismatch on its first run: the engine accepts years 0001 to 9999, and the first draft of `isCalendarDate` accepted `0000-01-01`. It is fixed, with a unit case for it.
+- Departures from the written plan, none changing behaviour the human approved:
+  - Tasks 5.5 and 5.6 ran in the order 5.6, 5.5, because Property 3 runs `runGolden` (noted in `tasks.md`).
+  - A `null` in `facts` is let through by the loader so that `checkGolden` can report it as `BAD_VALUE` (Requirement 3.5); `Scenario.facts` is therefore typed `Record<string, GoldenValue>`, where the design's snippet says "no null values". The engine rejects a `null` answer as `INVALID_ANSWER` if an unchecked scenario reaches `runScenario`. `design.md` is untouched, so its snippet is now slightly behind; the human can have it amended.
+  - `loadText` and `loadTextLocated` take an optional third argument, the subject of the empty-file message, defaulting to the knowledge-base wording, so a golden file reads "A golden file is a YAML mapping". Every existing test passes unchanged.
+  - A line-item key that has no `role` is reported as `UNKNOWN_FACT` with its own message, since the design's table lists no code for it.
+  - An explicit golden file path that does not exist is a usage error (exit 2), as Requirement 8.5 says, where `dc validate` reports a missing explicit file as `READ_ERROR`.
+- Stopped for confirmation of task 9.1: the new "Golden scenarios" section of the shared `docs/kb-format.md`.
+
+### `kb-golden`: tasks 9.1 and 9.2 run, design amended, two questions answered (2026-11-15)
+
+- The human approved the `docs/kb-format.md` edit. Task 9.1 added the "Golden scenarios" section at the end of the document: location and why it is outside `kb/`, the file and scenario fields, the two forms of `expect`, value rules per fact type, how consult and audit scenarios run, what "fires" and coverage mean, a worked example (a knowledge base and a four-scenario golden file), the summary line, the table of the 15 golden codes with notes. The section has its own heading, so the existing catalogue test, which reads only the "Diagnostic codes" section, is unaffected.
+- Task 9.2 added `src/golden/catalogue.test.ts`: the table lists exactly the 15 codes with the right severities; the example's knowledge base compiles; its golden file loads, fits, passes all four scenarios, covers the three rules and gives the one warning; `dc golden` prints exactly the two lines the section says; and twelve of the example messages in the table are checked word for word against what the code prints. `pnpm check` passes.
+- `design.md` amended so spec and code agree: `Scenario.facts` is `Record<string, GoldenValue>` with `null` allowed and reported as `BAD_VALUE` by `checkGolden`; dates are valid in years 0001 to 9999; the loader note says the nested-`facts` check is a test and describes the optional subject parameter of `loadText`; the line-item row names its own message; `discoverGolden` returns `wholeApps`.
+- Questions the human asked:
+  1. **Which agent is this session?** Kiro's default agent in the Kiro CLI, in "vibe" mode with the model set to Auto (from the session's `session.json`: `agentMode: vibe`, `modelId: auto`). It is not the custom `knowledge-engineer` agent. No custom agent is selected in this session.
+  2. **Is `kb-golden` registered with the spec tool?** No. This session has no spec tool: `session.json` shows `specWorkflow: quick`, `specPlanEnabled: false`, `workflowsEnabled: false`, and no spec-creation function is available. Kiro wrote `requirements.md`, `design.md` and `tasks.md` as plain files, so the folder has no `.config.kiro`, which the spec tool generates with a spec id. The same holds for `kb-props-timeout` and `kb-validate-never-throws`. The older specs (`rule-language`, `inference-engine`, `kb-tools`, `ui-kit`, `kb-role-type-mismatch`) have one. Kiro did not write a `.config.kiro` by hand, since that would invent the tool's own record. Effect: the files work, but the IDE's Specs panel may not list the three specs or track their task status. To register them, open each folder in the Kiro IDE and let it create the spec, or have the human run the spec workflow there; that is the human's call.
+- Stopped for confirmation of task 9.3: the prompt in `.kiro/agents/knowledge-engineer.json`.
+
+### `kb-golden` complete: task 9.3 and the final checkpoint (2026-11-15)
+
+- The human approved task 9.3 with the proposed sentence. The write to `.kiro/agents/knowledge-engineer.json` was not blocked by a permission rule. The prompt now ends: "Then write golden scenarios in apps/<app>/golden/, in the format of the "Golden scenarios" section of docs/kb-format.md, with at least 12 scenarios and every rule firing in at least one. Run pnpm dc golden until every scenario passes." Nothing else in the file changed, and it is still valid JSON with the same keys.
+- Final checkpoint (task 10), under Node 22.14.0: `pnpm check` passes 1,374 tests in 128 files, `pnpm test:props` passes 152 property tests in 51 files, `pnpm dc validate` and `pnpm dc golden` each exit 0. `dc golden` prints `0 files, 0 scenarios run, 0 passed, 0 of 0 rules covered, 0 errors, 0 warnings`, since no app has golden files yet. All 33 boxes in `kb-golden/tasks.md` are ticked.
+- What the spec delivered: the golden format in `apps/<app>/golden/*.yaml` and the "Golden scenarios" section of `docs/kb-format.md`; the pure loader, checker and runner, exported from `@dead-certain/kb-tools`; `pnpm dc golden` with exact messages, rule coverage as an error and the 12-scenario count as a warning; ten correctness properties; and the agent prompt. The value-agreement property caught one real bug (year 0000).
+- Handoff notes for Claude Code, at the end of `kb-golden/tasks.md`: (1) the root `dc` script needs no change; (2) Playwright tests for every golden scenario import `loadGolden`, `checkGolden`, `duplicateIds` and `runScenario`, or read the YAML, and the results serialise; (3) add `pnpm run --if-present dc golden` after `dc validate` in CI once the first golden files exist; (4) commit `apps/*/golden/*.yaml`, since the Markdown-ignore rule does not touch YAML.
+- The work stays on `kiro/2-golden-spec` and merges at gate G2. Still open for the human: registering the three hand-written specs with the IDE's spec tool, and the rulebooks (Phase 2).
+
+### `claim-check-app` and `pre-flight-app` specs written (2026-11-16)
+
+- Both specs were written Design-First in this session: `requirements.md`, then `design.md`, then `tasks.md`, each approved in turn on the human's instruction. No task was run. Both are for the Claude Code lane.
+- Read first: section 7 and 8 of `docs/BUILD_PLAN.md`, `design-system.md`, `engine/src/types.ts`, the `packages/ui` props, and the golden section of `docs/kb-format.md`.
+- What the reading caught:
+  1. `apps/claim-check` and `apps/pre-flight` do not exist, and neither does `templates/`. Task 1 of each spec scaffolds the app by hand. Tasks that need `kb/` or `golden/` stop if Phase 2 has not delivered them.
+  2. The first draft of `claim-check-app` used path routes and a `404.html`. Section 7 puts routes in the URL hash. The spec was corrected before approval: routes and the replay token share the fragment (`#/?r=<token>`).
+  3. The engine never returns `source: "collected"`, since a flat fact record carries no origin. `pre-flight-app` relabels sources in the app (`relabelSources`) and has a property test for it.
+  4. The contract has no groups, severities or evidence. They are app-side data in `checklists.ts` and the collector, checked against the knowledge base at start-up.
+  5. `docs/kb-format.md` does not say where `pnpm dc build` writes JSON. `claim-check-app` task 2 finds it.
+- Open questions for the human, listed in each requirements file: goal and fact names (both specs, until Phase 2), the two other snapshot repositories and the recording run (`pre-flight-app`), the deciding-sentence marker in a clause, and a replay link for Pre-Flight reports (left out).
+- Not done: the specs are not registered with the IDE's spec tool, since this session has none (`kb-golden` had the same gap).
+
+### Decisions the two specs forced (2026-11-16)
+
+- Specs created this session: `.kiro/specs/claim-check-app` and `.kiro/specs/pre-flight-app`, each with requirements, design and tasks (commit `005e12c`). No task was run.
+- `claim-check-app`:
+  1. Routes and the replay token share the URL fragment (`#/?r=<token>`, rulebook at `#/rulebook`), as BUILD_PLAN section 7 says. No `404.html`.
+  2. Question order comes from replaying the answers through `next`, so Back and the rail do not depend on the order the user answered in.
+  3. Answers the engine no longer needs stay in the session and the token. The rail hides them and shows a skipped note, so changing an answer back restores them.
+  4. "Up to M more" is an upper bound counted by the app, since the engine exposes no count.
+  5. A fact or goal is named only in `src/config.ts`. Goal names are assumed until Phase 2 delivers the knowledge base.
+- `pre-flight-app`:
+  1. The engine reports every non-derived fact as "answered", so the app relabels proof sources to "Collected" (`relabelSources`).
+  2. Check groups, severity and evidence are app-side (`checklists.ts`, collector), validated against the knowledge base at start-up. The contract was not touched.
+  3. Live and bundled data meet at one `RepoSnapshot` shape, so a sample runs the same code as a live audit.
+  4. The collector makes exactly four sequential requests, never retries, and never falls back to a snapshot on its own.
+  5. No replay link for reports, because they depend on live GitHub data. The human may reverse this.
+  6. No gitignore library: a narrow matcher that returns "unsupported" and lets the fact become a question, so nothing is guessed.
+- Both specs hand tasks to Claude Code only. Neither touches `packages/ui` or `packages/engine/src/types.ts`.
+
+### `pre-flight-app` amended after the human's answers (2026-11-16)
+
+- Answers from the human: Claude Code may run the recording script; Pre-Flight reports get no replay link; the knowledge base has a single goal with the values exactly `ready` and `not_ready`, not one goal per checklist. The two other snapshot repositories are still open.
+- Amended in `requirements.md`, `design.md` and `tasks.md`:
+  1. New glossary term Goal. The Summary state is `verdictStateFrom` of that one goal, and is the same for every checklist (requirement 5.2, Property 8). Checklists lose their `goal` field. `src/checklists.ts` exports `GOAL`, and start-up validation requires exactly one goal.
+  2. A checklist is now a view: it lists a subset of checks and counts failures in that subset. The app computes no verdict for a subset. Requirements 5.3 and 5.4 add two sentences for when the view and the goal disagree ("Not ready in owner/name. The failed checks are outside <title>."). Requirement 1.10 allows a check in more than one checklist, and requires it in at least one.
+  3. Recording: task 2 and task 18.1 no longer wait for a human to run the script. Task 2 still stops for the two repository choices.
+  4. Replay link: open question 5 is now a recorded decision, not a question.
+- A decision the answer forced, flagged for the human: with one goal, the checklist picker has nothing to decide on its own. New open question 4 offers the way out. If one checklist is enough, drop the picker, requirement 2.7 and the two sentences.
+- Still open: the two snapshot repositories (task 2), fact and check names, severity and groups (task 7, until Phase 2 delivers the knowledge base).
+
+### Rulebook drafts for both apps (2026-11-16)
+
+- Drafted by Kiro's default agent at the human's request, in the human's own words: `apps/claim-check/rulebook/policy.md` (about 1,000 words) and `apps/pre-flight/rulebook/checklist.md` (about 650 words). Both are fictional and copy no insurer's policy or organiser's rules. No knowledge base was written. The stale-rule hook ran after each save and found no `kb/` to sync.
+- `policy.md`: the six fixed clauses (1.2, 2.2, 3.1, 4.2, 5.3, 6.1) keep their numbers, titles and meanings. Added definitions (1.1), the order of calculation with rounding (1.3), cover (2.1), claims already paid (2.3), room and other charges (4.1), two exclusions (5.1, 5.2), claim filing (7.1, 7.2) and Annexure 1.
+  - Decisions the draft forced: a full denial is a deduction equal to the whole bill, so the ledger always adds up; the cap on the sum insured is a deduction; the sum insured is one of three amounts; amounts round to the whole rupee, half a rupee up. No claim-filing deadline, since it would need a rule.
+  - Clauses 1.1, 2.1, 7.1 and 7.2 change no amount, so no rule will cite them and the rulebook page will show "Not used in any decision".
+- `checklist.md`: nine checks, R-01 to R-09. The four fixed ones keep their clauses (1.1 R-01, 1.2 R-02, 2.2 R-05, 4.1 R-09). Eight are collected from GitHub and one, R-09, is asked. Each clause names its source and severity (blocker or warning).
+- Human decisions recorded:
+  1. Clause 5.1 stays as written: a failed warning also makes the repository not ready. "Ready" means all nine checks pass, which the "All K checks passed" summary sentence assumes. Severity only decides how the summary counts a failure.
+  2. R-03 (not archived) and R-08 (two app folders under `apps/`, each with a `package.json`) stay. R-08 matches the hackathon's two-app-folder rule.
+- For the knowledge-engineer: tree-based and README-based facts need an `ask`, since the tool asks when GitHub cannot supply them. Severity and groups are not in the contract, so they go in `apps/pre-flight/src/checklists.ts`, read from these clauses.
+
+### Claim Check knowledge base and golden scenarios (2026-11-18)
+
+- Ran the `knowledge-engineer` brief on `apps/claim-check/rulebook/policy.md`. Wrote `apps/claim-check/kb/policy.yaml` (26 rules, 8 deduction line items, 12 asked facts), `apps/claim-check/kb/open-questions.md` and `apps/claim-check/golden/scenarios.yaml` (16 scenarios).
+- Goals: `payable` (money) and `outcome` (enum `paid`, `reduced`, `denied`). The bill is the money fact `claimed`. Money is in paise, and every worked-out amount is written `round(x / 100) * 100`, which is clause 1.3's whole-rupee, half-up rule.
+- `pnpm dc validate`: clean on the first run. `pnpm dc golden`: 16 of 16 pass, 26 of 26 rules covered. The scenarios include the worked examples of clauses 1.3 (payable ₹1,32,000) and 4.2 (₹33,000 deducted), the 29 and 30 day waiting boundary, ages 60 and 61, and a half-rupee case in the other-charges ratio.
+- Decisions the policy forced, listed in `open-questions.md` for the human: an illness that starts before the policy start (rules deny it), which clause is named when two of 3.1, 5.1 and 5.2 apply (the first listed), dental "caused by an accident" read as the admission cause, any sum insured accepted by the rules, and negative other charges when Annexure 1 items exceed the bill.
+- Clause 2.2 has a pass-through rule (`SUM-01`) so each clause that sets an amount has a rule. Clauses 1.1, 2.1, 7.1 and 7.2 have none.
+
+### Pre-Flight knowledge base and golden scenarios (2026-11-19)
+
+- Ran the `knowledge-engineer` brief on `apps/pre-flight/rulebook/checklist.md`. Wrote `apps/pre-flight/kb/checklist.yaml` (10 rules), `apps/pre-flight/kb/open-questions.md` (11 questions) and `apps/pre-flight/golden/scenarios.yaml` (14 scenarios).
+- One goal, `readiness` (enum `ready`, `not_ready`). Rules `R-01` to `R-09` each set one check fact (`role: check`, with a short label) and cite their clause. `READY-01` cites 5.1 and uses `if(<nine checks joined by and>, 'ready', 'not_ready')`. Because `and` is false when any side is false, one failed check gives `not_ready` while other checks are still unknown.
+- Collected facts are plain non-derived facts. The validator requires `ask` on every non-derived fact, so metadata facts have one too, as do the tree, `.gitignore` and README facts. Heading and `.gitignore` matching, and the choice of README file, are left to the app (open questions 3, 4, 6, 7).
+- Decisions the checklist forced: R-08 is read as "every directory under `apps` has a `package.json`, and there are at least two" (two numbers, `apps_dir_count` and `apps_with_package_json`). R-05 fails when `.kiro` has no file in the tree. The video length is in seconds. Severity is not encoded, since it does not change the goal.
+- `pnpm dc validate`: clean on the first run. `pnpm dc golden`: all scenarios pass, every rule covered (36 of 36 across both apps).
+
+### Claim Check open questions answered (2026-11-20)
+
+- The human answered all nine questions in `apps/claim-check/kb/open-questions.md`. Questions 2, 3, 4, 7, 8 and 9 keep what the rules did. The file now marks every question answered, with the decision beside it.
+- Q1: added one sentence to clause 3.1 in `rulebook/policy.md` and in the clause text of `policy.yaml`: an illness that starts before the policy start date is not covered. No rule changed.
+- Q5: `sum_insured` is now an enum (`rs_300000`, `rs_500000`, `rs_1000000`). `SUM-01` maps it to the money fact `year_cover`, and `ROOM-03` reads `year_cover`. The 15 golden scenarios that gave `sum_insured` in paise now give the enum option.
+- Q6: added one sentence to clause 1.3 (policy and clause text): no worked-out amount is less than zero. Floored with `max(..., 0)` in `ROOM-02`, `COPAY-02`, `SUM-03` and `PAY-02`. New scenario `G-17` (room charges above the bill) fails without the floor, since the other-charges deduction would be negative.
+- `pnpm dc validate`: clean. `pnpm dc golden`: 31 of 31 pass across both apps, 36 of 36 rules covered. `pnpm biome check apps/claim-check`: clean.
+- Flagged: Claim Check's rulebook is in the knowledge-engineer lane, but the app's input for the sum insured (a three-option choice) now follows the enum, which `apps/claim-check/src` (Claude Code lane) must adopt.
+
+### Pre-Flight app spec: one checklist, no picker (2026-11-21)
+
+- Amended `.kiro/specs/pre-flight-app` with the human's answer to open question 4: one checklist, no picker. Question 3 (the two snapshot repositories) stays open.
+- `requirements.md`: removed the picker requirement 2.7, so 2.8 to 2.12 are now 2.7 to 2.11. Removed the `checklist=<id>` route parameter from requirements 1.1, 2.8 and 2.10. Removed the two sentences for a view and goal that disagree from 5.3 and 5.4, and the "same for every Checklist" clause from 5.2. Redefined Checklist as the one list, and simplified the start-up check in 1.10. Question 4 is marked answered.
+- `design.md`: dropped the route parameter, the `id` and `description` fields, `CHECKLISTS` (now `CHECKLIST`), the `title` argument of `summarize`, the disagreement cases, and the "same for every checklist" clause of property 8. The decision row now reads "One goal, one checklist".
+- `tasks.md`: removed the picker from task 11 and its test, the disagreement-sentence tests from task 8.1, and question 4 from the blockers of task 7. The requirements reference of task 11 is now 2.1 to 2.11.
+- No code changed. Cross-references to requirements 2.3 to 2.6 and 5.2 to 5.6 are unaffected.

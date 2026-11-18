@@ -1,0 +1,380 @@
+kb: pre-flight
+scenarios:
+  - id: G-01
+    title: All nine checks pass
+    facts:
+      repo_private: false
+      license_detected: true
+      repo_archived: false
+      license_file_at_root: true
+      kiro_dir_has_file: true
+      kiro_spec_with_tasks: true
+      apps_dir_count: 2
+      apps_with_package_json: 2
+      gitignore_ignores_kiro: false
+      readme_has_run_heading: true
+      demo_video_seconds: 120
+    expect:
+      goals:
+        readiness: ready
+      line_items:
+        repo_public: true
+        has_open_licence: true
+        not_archived: true
+        kiro_dir_present: true
+        kiro_dir_committed: true
+        has_spec: true
+        readme_run_section: true
+        two_app_folders: true
+        video_under_limit: true
+      fires: [R-01, R-02, R-03, R-04, R-05, R-06, R-07, R-08, R-09, READY-01]
+
+  - id: G-02
+    title: Private repository
+    facts:
+      repo_private: true
+      license_detected: true
+      repo_archived: false
+      license_file_at_root: true
+      kiro_dir_has_file: true
+      kiro_spec_with_tasks: true
+      apps_dir_count: 2
+      apps_with_package_json: 2
+      gitignore_ignores_kiro: false
+      readme_has_run_heading: true
+      demo_video_seconds: 120
+    expect:
+      goals:
+        readiness: not_ready
+      line_items:
+        repo_public: false
+        has_open_licence: true
+        not_archived: true
+        kiro_dir_present: true
+        kiro_dir_committed: true
+        has_spec: true
+        readme_run_section: true
+        two_app_folders: true
+        video_under_limit: true
+      fires: [R-01, R-02, R-03, R-04, R-05, R-06, R-07, R-08, R-09, READY-01]
+
+  - id: G-03
+    title: No licence detected by GitHub
+    mode: audit
+    facts:
+      repo_private: false
+      license_detected: false
+      repo_archived: false
+      license_file_at_root: true
+      kiro_dir_has_file: true
+      kiro_spec_with_tasks: true
+      apps_dir_count: 2
+      apps_with_package_json: 2
+      gitignore_ignores_kiro: false
+      readme_has_run_heading: true
+      demo_video_seconds: 120
+    expect:
+      goals:
+        readiness: not_ready
+      line_items:
+        repo_public: true
+        has_open_licence: false
+        not_archived: true
+        kiro_dir_present: true
+        kiro_dir_committed: true
+        has_spec: true
+        readme_run_section: true
+        two_app_folders: true
+        video_under_limit: true
+      fires: [R-01, R-02, R-03, R-04, R-05, R-06, R-07, R-08, R-09, READY-01]
+
+  - id: G-04
+    title: Licence detected but no licence file at the root
+    facts:
+      repo_private: false
+      license_detected: true
+      repo_archived: false
+      license_file_at_root: false
+      kiro_dir_has_file: true
+      kiro_spec_with_tasks: true
+      apps_dir_count: 2
+      apps_with_package_json: 2
+      gitignore_ignores_kiro: false
+      readme_has_run_heading: true
+      demo_video_seconds: 120
+    expect:
+      goals:
+        readiness: not_ready
+      line_items:
+        repo_public: true
+        has_open_licence: false
+        not_archived: true
+        kiro_dir_present: true
+        kiro_dir_committed: true
+        has_spec: true
+        readme_run_section: true
+        two_app_folders: true
+        video_under_limit: true
+      fires: [R-01, R-02, R-03, R-04, R-05, R-06, R-07, R-08, R-09, READY-01]
+
+  - id: G-05
+    title: Archived repository fails although it is only a warning
+    facts:
+      repo_private: false
+      license_detected: true
+      repo_archived: true
+      license_file_at_root: true
+      kiro_dir_has_file: true
+      kiro_spec_with_tasks: true
+      apps_dir_count: 2
+      apps_with_package_json: 2
+      gitignore_ignores_kiro: false
+      readme_has_run_heading: true
+      demo_video_seconds: 120
+    expect:
+      goals:
+        readiness: not_ready
+      line_items:
+        repo_public: true
+        has_open_licence: true
+        not_archived: false
+        kiro_dir_present: true
+        kiro_dir_committed: true
+        has_spec: true
+        readme_run_section: true
+        two_app_folders: true
+        video_under_limit: true
+      fires: [R-01, R-02, R-03, R-04, R-05, R-06, R-07, R-08, R-09, READY-01]
+
+  - id: G-06
+    title: No .kiro directory with a file
+    mode: audit
+    facts:
+      repo_private: false
+      license_detected: true
+      repo_archived: false
+      license_file_at_root: true
+      kiro_dir_has_file: false
+      kiro_spec_with_tasks: true
+      apps_dir_count: 2
+      apps_with_package_json: 2
+      gitignore_ignores_kiro: false
+      readme_has_run_heading: true
+      demo_video_seconds: 120
+    expect:
+      goals:
+        readiness: not_ready
+      line_items:
+        repo_public: true
+        has_open_licence: true
+        not_archived: true
+        kiro_dir_present: false
+        kiro_dir_committed: false
+        has_spec: true
+        readme_run_section: true
+        two_app_folders: true
+        video_under_limit: true
+      fires: [R-01, R-02, R-03, R-04, R-05, R-06, R-07, R-08, R-09, READY-01]
+
+  - id: G-07
+    title: .kiro is ignored by .gitignore
+    facts:
+      repo_private: false
+      license_detected: true
+      repo_archived: false
+      license_file_at_root: true
+      kiro_dir_has_file: true
+      kiro_spec_with_tasks: true
+      apps_dir_count: 2
+      apps_with_package_json: 2
+      gitignore_ignores_kiro: true
+      readme_has_run_heading: true
+      demo_video_seconds: 120
+    expect:
+      goals:
+        readiness: not_ready
+      line_items:
+        repo_public: true
+        has_open_licence: true
+        not_archived: true
+        kiro_dir_present: true
+        kiro_dir_committed: false
+        has_spec: true
+        readme_run_section: true
+        two_app_folders: true
+        video_under_limit: true
+      fires: [R-01, R-02, R-03, R-04, R-05, R-06, R-07, R-08, R-09, READY-01]
+
+  - id: G-08
+    title: No spec with a tasks.md
+    facts:
+      repo_private: false
+      license_detected: true
+      repo_archived: false
+      license_file_at_root: true
+      kiro_dir_has_file: true
+      kiro_spec_with_tasks: false
+      apps_dir_count: 2
+      apps_with_package_json: 2
+      gitignore_ignores_kiro: false
+      readme_has_run_heading: true
+      demo_video_seconds: 120
+    expect:
+      goals:
+        readiness: not_ready
+      line_items:
+        repo_public: true
+        has_open_licence: true
+        not_archived: true
+        kiro_dir_present: true
+        kiro_dir_committed: true
+        has_spec: false
+        readme_run_section: true
+        two_app_folders: true
+        video_under_limit: true
+      fires: [R-01, R-02, R-03, R-04, R-05, R-06, R-07, R-08, R-09, READY-01]
+
+  - id: G-09
+    title: README has no run heading
+    facts:
+      repo_private: false
+      license_detected: true
+      repo_archived: false
+      license_file_at_root: true
+      kiro_dir_has_file: true
+      kiro_spec_with_tasks: true
+      apps_dir_count: 2
+      apps_with_package_json: 2
+      gitignore_ignores_kiro: false
+      readme_has_run_heading: false
+      demo_video_seconds: 120
+    expect:
+      goals:
+        readiness: not_ready
+      line_items:
+        repo_public: true
+        has_open_licence: true
+        not_archived: true
+        kiro_dir_present: true
+        kiro_dir_committed: true
+        has_spec: true
+        readme_run_section: false
+        two_app_folders: true
+        video_under_limit: true
+      fires: [R-01, R-02, R-03, R-04, R-05, R-06, R-07, R-08, R-09, READY-01]
+
+  - id: G-10
+    title: Three app folders and only two have a package.json
+    facts:
+      repo_private: false
+      license_detected: true
+      repo_archived: false
+      license_file_at_root: true
+      kiro_dir_has_file: true
+      kiro_spec_with_tasks: true
+      apps_dir_count: 3
+      apps_with_package_json: 2
+      gitignore_ignores_kiro: false
+      readme_has_run_heading: true
+      demo_video_seconds: 120
+    expect:
+      goals:
+        readiness: not_ready
+      line_items:
+        repo_public: true
+        has_open_licence: true
+        not_archived: true
+        kiro_dir_present: true
+        kiro_dir_committed: true
+        has_spec: true
+        readme_run_section: true
+        two_app_folders: false
+        video_under_limit: true
+      fires: [R-01, R-02, R-03, R-04, R-05, R-06, R-07, R-08, R-09, READY-01]
+
+  - id: G-11
+    title: Only one app folder
+    facts:
+      repo_private: false
+      license_detected: true
+      repo_archived: false
+      license_file_at_root: true
+      kiro_dir_has_file: true
+      kiro_spec_with_tasks: true
+      apps_dir_count: 1
+      apps_with_package_json: 1
+      gitignore_ignores_kiro: false
+      readme_has_run_heading: true
+      demo_video_seconds: 120
+    expect:
+      goals:
+        readiness: not_ready
+      line_items:
+        repo_public: true
+        has_open_licence: true
+        not_archived: true
+        kiro_dir_present: true
+        kiro_dir_committed: true
+        has_spec: true
+        readme_run_section: true
+        two_app_folders: false
+        video_under_limit: true
+      fires: [R-01, R-02, R-03, R-04, R-05, R-06, R-07, R-08, R-09, READY-01]
+
+  - id: G-12
+    title: Demo video of exactly 180 seconds
+    facts:
+      repo_private: false
+      license_detected: true
+      repo_archived: false
+      license_file_at_root: true
+      kiro_dir_has_file: true
+      kiro_spec_with_tasks: true
+      apps_dir_count: 2
+      apps_with_package_json: 2
+      gitignore_ignores_kiro: false
+      readme_has_run_heading: true
+      demo_video_seconds: 180
+    expect:
+      goals:
+        readiness: not_ready
+      line_items:
+        repo_public: true
+        has_open_licence: true
+        not_archived: true
+        kiro_dir_present: true
+        kiro_dir_committed: true
+        has_spec: true
+        readme_run_section: true
+        two_app_folders: true
+        video_under_limit: false
+      fires: [R-01, R-02, R-03, R-04, R-05, R-06, R-07, R-08, R-09, READY-01]
+
+  - id: G-13
+    title: One failed check makes it not ready while other checks are unanswered
+    mode: audit
+    facts:
+      repo_private: true
+    expect:
+      goals:
+        readiness: not_ready
+      fires: [R-01, READY-01]
+
+  - id: G-14
+    title: Everything passes but the video length is unanswered
+    mode: audit
+    facts:
+      repo_private: false
+      license_detected: true
+      repo_archived: false
+      license_file_at_root: true
+      kiro_dir_has_file: true
+      kiro_spec_with_tasks: true
+      apps_dir_count: 2
+      apps_with_package_json: 2
+      gitignore_ignores_kiro: false
+      readme_has_run_heading: true
+    expect:
+      goals:
+        readiness: null
+      needed: [demo_video_seconds]

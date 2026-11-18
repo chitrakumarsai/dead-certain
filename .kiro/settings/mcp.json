@@ -2,12 +2,20 @@
   "mcpServers": {
     "dead-certain": {
       "command": "pnpm",
-      "args": ["-s", "--filter", "@dead-certain/mcp", "start"],
-      "disabled": false
+      "args": [
+        "-s",
+        "--filter",
+        "@dead-certain/mcp",
+        "start"
+      ],
+      "disabled": true
     },
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
       "disabled": false
     }
   }

@@ -20,6 +20,7 @@ export type {
 	Severity,
 	WarningCode,
 } from "./diagnostics";
+export * from "./golden";
 export type { LoadResult, ParsedRaw } from "./load/yaml-load";
 export { loadText } from "./load/yaml-load";
 
