@@ -1,3 +1,5 @@
+import { answer, type FactValue, next, start } from "@dead-certain/engine";
+import { answerInUi, answerText, claimKb, REDUCED } from "./claim-check-engine";
 import { answerWith, questionHeading, startCheck } from "./claim-check-helpers";
 import { expect, expectNoAxeViolations, test } from "./kit-fixtures";
 
@@ -82,20 +84,32 @@ test.describe("Claim Check consultation", () => {
 		await expect(page.getByRole("textbox")).toHaveValue("2,50,000");
 	});
 
-	test("an answer the app refuses shows a message and stays on the question", async ({
+	test("an answer that would deduct more than the bill is refused, and the question stays", async ({
 		page,
 	}) => {
+		// Annexure 1 items of ₹5,000 on a bill of ₹1,000.
+		const answers: Record<string, FactValue> = {
+			...REDUCED,
+			claimed: 1_000_00,
+			annexure_items: 5_000_00,
+		};
+		let s = start(claimKb);
+		let last = "";
+		for (let step = next(s); step.kind === "question"; step = next(s)) {
+			last = step.fact;
+			s = answer(s, last, answers[last] as FactValue);
+		}
 		await startCheck(page);
-		await answerWith(page, "1000");
-		await answerWith(page, "Accident");
-		await answerWith(page, "Other");
-		await answerWith(page, "No");
-		await answerWith(page, "5000");
+		await answerInUi(page, answers, last);
+		await answerWith(page, answerText(last, answers[last] as FactValue));
 		await expect(
 			page.getByText(
-				"With this answer, the charges would be more than the hospital bill.",
+				"With this answer, the deductions would be more than the hospital bill. Check the amounts.",
 			),
 		).toBeVisible();
-		await expect(page.locator("main input").first()).toBeVisible();
+		await expect(questionHeading(page)).toHaveText(
+			claimKb.facts[last]?.ask ?? "",
+		);
+		await expect(page.getByRole("table")).toHaveCount(0);
 	});
 });

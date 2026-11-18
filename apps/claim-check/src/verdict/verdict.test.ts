@@ -8,7 +8,7 @@ import {
 } from "@dead-certain/engine";
 import { describe, expect, it } from "vitest";
 import { realKb } from "../testing/realKb";
-import { ledgerFrom, partsFrom } from "./parts";
+import { deductedAboveBill, ledgerFrom, partsFrom } from "./parts";
 import { statementFor, stateOf } from "./statement";
 
 const kb = realKb();
@@ -84,5 +84,42 @@ describe("verdict parts", () => {
 		expect(statementFor(kb, 0, 100_000_00)).toBe(
 			"₹0 of ₹1,00,000 will be paid",
 		);
+	});
+});
+
+describe("deductedAboveBill", () => {
+	const kb = realKb();
+	const G17 = {
+		cause: "illness",
+		treatment: "other",
+		treated_outside_india: false,
+		policy_start_date: "2025-01-01",
+		illness_start_date: "2025-06-01",
+		annexure_items: 0,
+		room_rent_per_day: 4_000_00,
+		room_days: 5,
+		age: 40,
+		sum_insured: "ten_lakh",
+		paid_this_year: 0,
+		claimed: 10_000_00,
+	};
+	const play = (answers: Record<string, unknown>) =>
+		Object.entries(answers).reduce(
+			(s, [f, v]) => answer(s, f, v as never),
+			start(kb),
+		);
+
+	it("accepts room charges above the bill when nothing is deducted (G-17)", () => {
+		expect(deductedAboveBill(play(G17))).toBe(false);
+	});
+
+	it("refuses Annexure 1 items above the bill", () => {
+		expect(deductedAboveBill(play({ ...G17, annexure_items: 20_000_00 }))).toBe(
+			true,
+		);
+	});
+
+	it("is false before a verdict", () => {
+		expect(deductedAboveBill(play({ claimed: 1_00 }))).toBe(false);
 	});
 });

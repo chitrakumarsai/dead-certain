@@ -1,16 +1,21 @@
-import type { FactValue, KnowledgeBase } from "@dead-certain/engine";
+import {
+	answer,
+	type FactValue,
+	type KnowledgeBase,
+} from "@dead-certain/engine";
 import { QuestionCard, Sheet } from "@dead-certain/ui";
 import { useState } from "react";
-import { config, namedCharges, units } from "../config";
+import { config, units } from "../config";
 import { clauseFor, formatFor } from "../kb";
 import { progress } from "../session/progress";
 import type { Action, Step, ViewState } from "../session/store";
 import { useTitle } from "../useTitle";
+import { deductedAboveBill } from "../verdict/parts";
 
 type QuestionStep = Extract<Step, { kind: "question" }>;
 
 export const ABOVE_BILL =
-	"With this answer, the charges would be more than the hospital bill.";
+	"With this answer, the deductions would be more than the hospital bill. Check the amounts.";
 
 /** One question at a time (requirement 3). Keyed by fact, so a new question starts fresh. */
 export function Consult({
@@ -31,18 +36,17 @@ export function Consult({
 
 	const answers = view.session.answers;
 	const at = progress(kb, answers, question.fact);
-	const claimed = answers[config.claimedFact];
 	const clause =
 		question.clause === undefined ? undefined : clauseFor(kb, question.clause);
 
 	const submit = (fact: string, value: FactValue) => {
-		// shortcut: checked when answered only; a later, lower bill is not re-checked.
-		const after = { ...answers, [fact]: value };
-		if (
-			typeof claimed === "number" &&
-			fact !== config.claimedFact &&
-			namedCharges(after) > claimed
-		) {
+		let above = false;
+		try {
+			above = deductedAboveBill(answer(view.session, fact, value));
+		} catch {
+			// The reducer rejects an answer the engine refuses.
+		}
+		if (above) {
 			setLocalError(ABOVE_BILL);
 			return;
 		}

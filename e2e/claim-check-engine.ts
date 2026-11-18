@@ -68,6 +68,8 @@ export function factAsked(text: string): string {
 export async function answerInUi(
 	page: Page,
 	answers: Readonly<Record<string, FactValue>>,
+	/** Stop, without answering, when the app asks this fact. */
+	stopAt?: string,
 ): Promise<string[]> {
 	const asked: string[] = [];
 	const nextStep = page.getByRole("button", { name: /^(Continue|See why)$/ });
@@ -76,6 +78,7 @@ export async function answerInUi(
 		if ((await page.getByRole("button", { name: "Continue" }).count()) === 0)
 			return asked;
 		const fact = factAsked((await questionHeading(page).textContent()) ?? "");
+		if (fact === stopAt) return asked;
 		expect(asked.at(-1), `the app asked ${fact} twice in a row`).not.toBe(fact);
 		const value = answers[fact];
 		expect(
