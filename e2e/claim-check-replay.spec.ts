@@ -74,10 +74,10 @@ test("the same link opens the same verdict and ledger in a new page", async ({
 	await expect(headline(page)).toContainText(
 		`${money(verdict.goals.payable as number)} of ${money(REDUCED.claimed)} will be paid`,
 	);
-	const ledger = await page.getByRole("table").innerText();
+	const ledger = await page.getByRole("table").textContent();
 	const other = await page.context().newPage();
 	await openClaimCheck(other, hashOf(page));
-	expect(await other.getByRole("table").innerText()).toBe(ledger);
+	expect(await other.getByRole("table").textContent()).toBe(ledger);
 });
 
 test("editing the fragment while open decodes it again", async ({ page }) => {

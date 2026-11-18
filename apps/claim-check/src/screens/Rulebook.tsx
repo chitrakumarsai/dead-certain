@@ -8,7 +8,8 @@ import { type Action, step as stepOf, type ViewState } from "../session/store";
 import { useTitle } from "../useTitle";
 
 const HEADING = "The sample policy";
-const LINK = "underline underline-offset-4";
+const LINK =
+	"inline-flex min-h-touch items-center underline underline-offset-4";
 
 /**
  * The rule's sentence. Each {fact} is a value the check fills in, so it is

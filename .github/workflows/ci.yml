@@ -21,6 +21,8 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The apps import their compiled knowledge base, which is not committed.
+      - run: pnpm dc build apps/claim-check
       - run: pnpm check
       - run: pnpm dc validate
       - run: pnpm dc golden

@@ -46,35 +46,49 @@ test("no two facts share an ask text", () => {
 	}
 });
 
-/** Expands every row of the open proof by keyboard and returns the rows' text. */
-async function proofText(page: Page): Promise<string> {
+/** Rule ids of `want` not yet in `text`. */
+const missingFrom = (text: string, want: readonly string[]) =>
+	want.filter((id) => !text.includes(id));
+
+/**
+ * Expands the open proof by keyboard, row by row, until every id in `want`
+ * shows or the last row is reached, and returns the tree's text.
+ */
+async function proofText(page: Page, want: readonly string[]): Promise<string> {
 	const tree = page.getByRole("tree", { name: "Proof" });
 	await tree.getByRole("treeitem").first().focus();
 	for (let i = 0; i < 400; i++) {
-		// Open a closed row; otherwise mark it and move down, until a marked row comes back.
-		const row = await page.evaluate(() => {
+		// One round trip per key: is everything shown, is this row closed, or was it seen?
+		const row = await page.evaluate((ids) => {
+			const text = document.querySelector('[role="tree"]')?.textContent ?? "";
+			if (ids.every((id) => text.includes(id))) return "done";
 			const el = document.activeElement as HTMLElement | null;
 			if (el?.getAttribute("aria-expanded") === "false") return "closed";
 			if (el?.dataset.walked === "1") return "done";
 			if (el) el.dataset.walked = "1";
 			return "next";
-		});
+		}, want);
 		if (row === "done") break;
 		await page.keyboard.press(row === "closed" ? "ArrowRight" : "ArrowDown");
 	}
 	return (await tree.textContent()) ?? "";
 }
 
-/** The text of the verdict's proof and of every ledger line's proof. */
-async function allProofs(page: Page): Promise<string> {
+/** The verdict's proof, then each ledger line's proof, until every id in `want` has shown. */
+async function proofsShowing(
+	page: Page,
+	want: readonly string[],
+): Promise<string> {
 	const openers = [
 		page.getByRole("button", { name: "See why", exact: true }),
 		...(await page.getByRole("table").getByRole("button").all()),
 	];
 	let text = "";
 	for (const opener of openers) {
+		const left = missingFrom(text, want);
+		if (left.length === 0) break;
 		await opener.click();
-		text += await proofText(page);
+		text += await proofText(page, left);
 		await page.keyboard.press("Escape");
 		await expect(page.getByRole("tree", { name: "Proof" })).toHaveCount(0);
 	}
@@ -108,6 +122,8 @@ async function expectVerdict(page: Page, s: Scenario) {
 for (const s of scenarios) {
 	test(`${s.id}: ${s.title}`, async ({ page, context }) => {
 		test.skip(s.mode === "audit", "Claim Check runs consultation only");
+		// A whole consultation, its proofs and a replay: three times the usual limit.
+		test.slow();
 		const answers = s.facts as Readonly<Record<string, FactValue>>;
 		await startCheck(page);
 		if ("ask" in s.expect) {
@@ -121,9 +137,12 @@ for (const s of scenarios) {
 		await answerInUi(page, answers);
 		await expectVerdict(page, s);
 
-		const proofs = await allProofs(page);
-		for (const rule of s.expect.fires ?? [])
-			expect(proofs, `${rule} in the proofs`).toContain(rule);
+		const fires = s.expect.fires ?? [];
+		const proofs = await proofsShowing(page, fires);
+		expect(
+			missingFrom(proofs, fires),
+			"fired rules missing from the proofs",
+		).toEqual([]);
 
 		const ledger = await page.getByRole("table").textContent();
 		const replay = await context.newPage();
