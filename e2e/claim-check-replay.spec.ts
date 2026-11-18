@@ -16,7 +16,7 @@ const REDUCED = {
 	treated_outside_india: false,
 	annexure_items: 2_000_00,
 	room_rent_per_day: 6_000_00,
-	sum_insured: "rs_500000",
+	sum_insured: "five_lakh",
 	room_days: 5,
 	age: 65,
 	paid_this_year: 0,

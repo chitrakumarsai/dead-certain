@@ -9,7 +9,7 @@ const ACCIDENT = [
 	"No",
 	"2000",
 	"6000",
-	"Rs 500000",
+	"Five lakh",
 	"5",
 	"40",
 	"0",
@@ -47,7 +47,7 @@ test.describe("Claim Check answers rail", () => {
 		await openRail(page);
 		await expect(
 			page.getByRole("button", {
-				name: /^Change Claimed, currently ₹2,50,000/,
+				name: /^Change Hospital bill, currently ₹2,50,000/,
 			}),
 		).toBeVisible();
 		await expectNoAxeViolations(page);
@@ -61,7 +61,9 @@ test.describe("Claim Check answers rail", () => {
 		await answerWith(page, "Accident");
 		await openRail(page);
 		await page
-			.getByRole("button", { name: /^Change Cause, currently Accident/ })
+			.getByRole("button", {
+				name: /^Change Cause of admission, currently Accident/,
+			})
 			.click();
 		await expect(questionHeading(page)).toHaveText(
 			/illness or for an accident/,
@@ -69,7 +71,7 @@ test.describe("Claim Check answers rail", () => {
 		await expect(page.getByRole("radio", { name: "Accident" })).toBeChecked();
 		await openRail(page);
 		await expect(
-			page.getByRole("button", { name: /^Change Cause/ }),
+			page.getByRole("button", { name: /^Change Cause of admission/ }),
 		).toHaveAttribute("aria-current", "true");
 	});
 
@@ -78,19 +80,25 @@ test.describe("Claim Check answers rail", () => {
 	}) => {
 		await reachVerdict(page);
 		await openRail(page);
-		await page.getByRole("button", { name: /^Change Treatment/ }).click();
+		await page
+			.getByRole("button", { name: /^Change Kind of treatment/ })
+			.click();
 		await answerWith(page, "Cosmetic");
 		await expect(page.getByRole("button", { name: "Continue" })).toHaveCount(0);
 		await expect(
-			page.getByText("Treatment changed. The verdict updated."),
+			page.getByText("Kind of treatment changed. The verdict updated."),
 		).toBeAttached();
 		// Changing it back restores the rail entry.
 		await openRail(page);
-		await page.getByRole("button", { name: /^Change Treatment/ }).click();
+		await page
+			.getByRole("button", { name: /^Change Kind of treatment/ })
+			.click();
 		await answerWith(page, "Other");
 		await openRail(page);
 		await expect(
-			page.getByRole("button", { name: /^Change Treatment, currently Other/ }),
+			page.getByRole("button", {
+				name: /^Change Kind of treatment, currently Other/,
+			}),
 		).toBeVisible();
 	});
 
@@ -100,24 +108,30 @@ test.describe("Claim Check answers rail", () => {
 		await reachVerdict(page);
 		await openRail(page);
 		const before = await page.getByRole("button", { name: /^Change / }).count();
-		await page.getByRole("button", { name: /^Change Treatment/ }).click();
+		await page
+			.getByRole("button", { name: /^Change Kind of treatment/ })
+			.click();
 		await answerWith(page, "Cosmetic");
 		await openRail(page);
 		await expect(page.getByRole("button", { name: /^Change / })).toHaveCount(3);
 		await expect(
 			page
 				.getByRole("listitem")
-				.filter({ hasText: "Not needed now that Treatment is Cosmetic." })
+				.filter({
+					hasText: "Not needed now that Kind of treatment is Cosmetic.",
+				})
 				.first(),
 		).toBeVisible();
-		await page.getByRole("button", { name: /^Change Treatment/ }).click();
+		await page
+			.getByRole("button", { name: /^Change Kind of treatment/ })
+			.click();
 		await answerWith(page, "Other");
 		await openRail(page);
 		await expect(page.getByRole("button", { name: /^Change / })).toHaveCount(
 			before,
 		);
 		await expect(
-			page.getByText("Not needed now that Treatment is Cosmetic."),
+			page.getByText("Not needed now that Kind of treatment is Cosmetic."),
 		).toHaveCount(0);
 	});
 });

@@ -23,7 +23,7 @@ test.describe("Claim Check consultation", () => {
 		await answerWith(page, "No");
 		await answerWith(page, "2000");
 		await answerWith(page, "6000");
-		await answerWith(page, "Rs 500000");
+		await answerWith(page, "Five lakh");
 		await expect(page.getByText("days", { exact: true })).toBeVisible(); // number
 		await expectNoAxeViolations(page);
 	});

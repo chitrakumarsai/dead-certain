@@ -95,7 +95,9 @@ describe("relevance and skipped notes", () => {
 			"illness_start_date",
 			"policy_start_date",
 		]);
-		expect(notes[0]?.reason).toBe("Not needed now that Cause is Accident.");
+		expect(notes[0]?.reason).toBe(
+			"Not needed now that Cause of admission is Accident.",
+		);
 	});
 
 	it("adds the current question to the relevant set", () => {

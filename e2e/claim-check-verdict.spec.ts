@@ -10,7 +10,7 @@ const BASE = {
 	treated_outside_india: false,
 	annexure_items: 0,
 	room_rent_per_day: 4_000_00,
-	sum_insured: "rs_500000",
+	sum_insured: "five_lakh",
 	room_days: 5,
 	age: 40,
 	paid_this_year: 0,
