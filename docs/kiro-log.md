@@ -274,3 +274,21 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
   5. `docs/kb-format.md` does not say where `pnpm dc build` writes JSON. `claim-check-app` task 2 finds it.
 - Open questions for the human, listed in each requirements file: goal and fact names (both specs, until Phase 2), the two other snapshot repositories and the recording run (`pre-flight-app`), the deciding-sentence marker in a clause, and a replay link for Pre-Flight reports (left out).
 - Not done: the specs are not registered with the IDE's spec tool, since this session has none (`kb-golden` had the same gap).
+
+### Decisions the two specs forced (2026-11-16)
+
+- Specs created this session: `.kiro/specs/claim-check-app` and `.kiro/specs/pre-flight-app`, each with requirements, design and tasks (commit `005e12c`). No task was run.
+- `claim-check-app`:
+  1. Routes and the replay token share the URL fragment (`#/?r=<token>`, rulebook at `#/rulebook`), as BUILD_PLAN section 7 says. No `404.html`.
+  2. Question order comes from replaying the answers through `next`, so Back and the rail do not depend on the order the user answered in.
+  3. Answers the engine no longer needs stay in the session and the token. The rail hides them and shows a skipped note, so changing an answer back restores them.
+  4. "Up to M more" is an upper bound counted by the app, since the engine exposes no count.
+  5. A fact or goal is named only in `src/config.ts`. Goal names are assumed until Phase 2 delivers the knowledge base.
+- `pre-flight-app`:
+  1. The engine reports every non-derived fact as "answered", so the app relabels proof sources to "Collected" (`relabelSources`).
+  2. Check groups, severity and evidence are app-side (`checklists.ts`, collector), validated against the knowledge base at start-up. The contract was not touched.
+  3. Live and bundled data meet at one `RepoSnapshot` shape, so a sample runs the same code as a live audit.
+  4. The collector makes exactly four sequential requests, never retries, and never falls back to a snapshot on its own.
+  5. No replay link for reports, because they depend on live GitHub data. The human may reverse this.
+  6. No gitignore library: a narrow matcher that returns "unsupported" and lets the fact become a question, so nothing is guessed.
+- Both specs hand tasks to Claude Code only. Neither touches `packages/ui` or `packages/engine/src/types.ts`.
