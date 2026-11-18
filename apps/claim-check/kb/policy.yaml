@@ -10,53 +10,65 @@ facts:
   # Facts the policyholder answers
   claimed:
     type: money
+    label: Hospital bill
     ask: What is the total on the final hospital bill?
     why: The policy pays the hospital bill less its deductions, and never more than the bill.
   cause:
     type: enum
+    label: Cause of admission
     options: [illness, accident]
     ask: Was the admission for an illness or for an accident?
     why: The 30-day waiting period applies to an illness and never to an accident.
   treatment:
     type: enum
+    label: Kind of treatment
     options: [cosmetic, weight_loss, dental, other]
     ask: What kind of treatment was it?
     why: Cosmetic surgery, weight-loss treatment and dental treatment that no accident caused are never covered.
   treated_outside_india:
     type: boolean
+    label: Treated outside India
     ask: Was the treatment received outside India?
     why: The policy does not pay for treatment received outside India.
   policy_start_date:
     type: date
+    label: Policy start date
     ask: What is the policy start date?
     why: An illness that starts less than 30 days after this date is not covered.
   illness_start_date:
     type: date
+    label: Illness start date
     ask: On what date did the illness start, that is, the first symptoms or the first diagnosis, whichever is earlier?
     why: The waiting period is counted from the policy start date to this date.
   annexure_items:
     type: money
+    label: Annexure 1 items
     ask: How much did the hospital bill for Annexure 1 items such as gloves, masks and gowns?
     why: The policy does not pay for Annexure 1 items, and it takes them off before any other limit.
   room_rent_per_day:
     type: money
+    label: Room rent per day
     ask: What was the room rent for each day?
     why: The policy limits room rent for each day, and a higher rent reduces the other charges too.
   room_days:
     type: number
+    label: Room days
     ask: For how many days did the hospital charge for the room?
     why: Room charges are the room rent for each day multiplied by these days.
   age:
     type: number
+    label: Age at admission
     ask: How old was the policyholder in completed years on the day of admission?
     why: A policyholder aged 61 or over pays a co-payment.
   sum_insured:
     type: enum
-    options: [rs_300000, rs_500000, rs_1000000]
+    label: Sum insured
+    options: [three_lakh, five_lakh, ten_lakh]
     ask: Which sum insured does the policy schedule show, ₹3,00,000, ₹5,00,000 or ₹10,00,000?
     why: The room rent limit and the most the policy pays in one policy year both come from the sum insured.
   paid_this_year:
     type: money
+    label: Paid this policy year
     ask: How much has the policy already paid in this policy year?
     why: Amounts already paid in the policy year count against the sum insured.
 
@@ -235,7 +247,7 @@ rules:
   - id: SUM-01
     cite: "2.2"
     set: year_cover
-    to: if(sum_insured == 'rs_300000', 30000000, if(sum_insured == 'rs_500000', 50000000, 100000000))
+    to: if(sum_insured == 'three_lakh', 30000000, if(sum_insured == 'five_lakh', 50000000, 100000000))
     because: The sum insured is the most the policy pays in one policy year. The policy schedule shows one of three amounts.
   - id: SUM-02
     cite: "2.3"

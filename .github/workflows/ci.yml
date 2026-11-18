@@ -21,6 +21,8 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The apps import their compiled knowledge base, which is not committed.
+      - run: pnpm dc build apps/claim-check
       - run: pnpm check
       - run: pnpm dc validate
       - run: pnpm dc golden
@@ -37,6 +39,8 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
       - run: pnpm build
+      # One Pages site: Claim Check is served under the site at claim-check/.
+      - run: cp -R apps/claim-check/dist apps/site/dist/claim-check
       - if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:

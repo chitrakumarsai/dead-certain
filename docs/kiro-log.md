@@ -348,3 +348,10 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - `design.md`: dropped the route parameter, the `id` and `description` fields, `CHECKLISTS` (now `CHECKLIST`), the `title` argument of `summarize`, the disagreement cases, and the "same for every checklist" clause of property 8. The decision row now reads "One goal, one checklist".
 - `tasks.md`: removed the picker from task 11 and its test, the disagreement-sentence tests from task 8.1, and question 4 from the blockers of task 7. The requirements reference of task 11 is now 2.1 to 2.11.
 - No code changed. Cross-references to requirements 2.3 to 2.6 and 5.2 to 5.6 are unaffected.
+
+### Claim Check labels and sum insured options (2026-11-22)
+
+- Added a `label` to the 12 facts the policyholder answers in `apps/claim-check/kb/policy.yaml` (for example `claimed`: "Hospital bill", `treated_outside_india`: "Treated outside India", `annexure_items`: "Annexure 1 items").
+- Renamed the `sum_insured` options `rs_300000`, `rs_500000`, `rs_1000000` to `three_lakh`, `five_lakh`, `ten_lakh`, so the interface shows "Three lakh", "Five lakh" and "Ten lakh". Updated `SUM-01`, the 16 golden scenarios that use them, and the answer to open question 5. No other rule, clause or amount changed.
+- `pnpm dc validate`: clean. `pnpm dc golden`: 31 of 31 pass, 36 of 36 rules covered. `pnpm biome check apps/claim-check`: clean.
+- Flagged: any code in `apps/claim-check/src` (Claude Code lane) that uses the old option names must follow the rename.
