@@ -2,3 +2,14 @@
 @import "@dead-certain/ui/styles.css";
 /* Scan this app's own components for class names. */
 @source "./";
+
+/* A printed verdict keeps the sheet and its ledger, and drops the controls (6.11). */
+@media print {
+	[data-print-hide],
+	[data-rail-slot],
+	aside,
+	header,
+	footer {
+		display: none;
+	}
+}

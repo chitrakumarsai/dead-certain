@@ -1,7 +1,7 @@
 import type { FactValue, KnowledgeBase } from "@dead-certain/engine";
 import { QuestionCard, Sheet } from "@dead-certain/ui";
 import { useState } from "react";
-import { atMostClaimed, config, units } from "../config";
+import { config, namedCharges, units } from "../config";
 import { clauseFor, formatFor } from "../kb";
 import { progress } from "../session/progress";
 import type { Action, Step, ViewState } from "../session/store";
@@ -9,7 +9,8 @@ import { useTitle } from "../useTitle";
 
 type QuestionStep = Extract<Step, { kind: "question" }>;
 
-export const ABOVE_BILL = "This cannot be more than the hospital bill.";
+export const ABOVE_BILL =
+	"With this answer, the charges would be more than the hospital bill.";
 
 /** One question at a time (requirement 3). Keyed by fact, so a new question starts fresh. */
 export function Consult({
@@ -36,11 +37,11 @@ export function Consult({
 
 	const submit = (fact: string, value: FactValue) => {
 		// shortcut: checked when answered only; a later, lower bill is not re-checked.
+		const after = { ...answers, [fact]: value };
 		if (
-			atMostClaimed.includes(fact) &&
-			typeof value === "number" &&
 			typeof claimed === "number" &&
-			value > claimed
+			fact !== config.claimedFact &&
+			namedCharges(after) > claimed
 		) {
 			setLocalError(ABOVE_BILL);
 			return;
@@ -71,6 +72,7 @@ export function Consult({
 					progress={at}
 					{...(error === undefined ? {} : { externalError: error })}
 					{...(unit === undefined ? {} : { unit })}
+					{...(question.fact === config.claimedFact ? { min: 1 } : {})}
 					format={formatFor(kb)}
 				/>
 			</Sheet>

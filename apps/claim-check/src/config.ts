@@ -1,5 +1,6 @@
 // The only module that names a fact or a goal (requirement 1.7).
 // The compiled knowledge base is written by `pnpm dc build` to kb/dist/policy.json.
+import type { FactValue } from "@dead-certain/engine";
 import compiled from "../kb/dist/policy.json";
 
 export const config = {
@@ -17,8 +18,19 @@ export const units: Readonly<Record<string, string>> = {
 	age: "years",
 };
 
-/** Money answers that cannot be more than the hospital bill. */
-export const atMostClaimed: readonly string[] = ["annexure_items"];
+/**
+ * The parts of the bill the answers name: Annexure 1 items and room charges.
+ * Together they cannot be more than the bill, or the deductions would be too.
+ */
+export function namedCharges(
+	answers: Readonly<Record<string, FactValue>>,
+): number {
+	const n = (fact: string) => {
+		const v = answers[fact];
+		return typeof v === "number" ? v : 0;
+	};
+	return n("annexure_items") + n("room_rent_per_day") * n("room_days");
+}
 
 /** The compiled JSON, not yet shape-checked. */
 export const compiledKb: unknown = compiled;

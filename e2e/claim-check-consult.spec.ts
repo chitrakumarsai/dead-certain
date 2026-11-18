@@ -92,7 +92,9 @@ test.describe("Claim Check consultation", () => {
 		await answerWith(page, "No");
 		await answerWith(page, "5000");
 		await expect(
-			page.getByText("This cannot be more than the hospital bill."),
+			page.getByText(
+				"With this answer, the charges would be more than the hospital bill.",
+			),
 		).toBeVisible();
 		await expect(page.locator("main input").first()).toBeVisible();
 	});

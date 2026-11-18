@@ -37,6 +37,7 @@ export function valueArb(def: FactDef): fc.Arbitrary<FactValue> {
 export function consultArb(
 	kb: KnowledgeBase,
 	stopAfter = Number.POSITIVE_INFINITY,
+	overrides: Readonly<Record<string, fc.Arbitrary<FactValue>>> = {},
 ): fc.Arbitrary<Session> {
 	return fc.gen().map((gen) => {
 		let s = start(kb);
@@ -45,7 +46,8 @@ export function consultArb(
 			if (step.kind === "verdict") break;
 			const def = kb.facts[step.fact];
 			if (def === undefined) throw new Error(`no definition for ${step.fact}`);
-			s = answer(s, step.fact, gen(valueArb, def));
+			const own = overrides[step.fact];
+			s = answer(s, step.fact, own ? gen(() => own) : gen(valueArb, def));
 		}
 		return s;
 	});

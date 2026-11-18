@@ -7,7 +7,9 @@ import { loadedKb } from "./kb";
 import { useRoute } from "./route";
 import { Consult } from "./screens/Consult";
 import { LoadFailure } from "./screens/LoadFailure";
+import { Stale } from "./screens/Stale";
 import { Start } from "./screens/Start";
+import { VerdictScreen } from "./screens/Verdict";
 import { changeSentence, railEntries } from "./session/rail";
 import { fragmentFor } from "./session/replay";
 import { step as stepOf, useSession, type ViewState } from "./session/store";
@@ -55,7 +57,22 @@ function App({ kb }: { kb: KnowledgeBase }) {
 				dispatch={dispatch}
 			/>
 		);
-	else page = <h1>Verdict</h1>;
+	else if (step.kind === "stale")
+		page = (
+			<Stale
+				failure={step.failure}
+				onStart={() => dispatch({ type: "start" })}
+			/>
+		);
+	else
+		page = (
+			<VerdictScreen
+				kb={kb}
+				view={view}
+				verdict={step.verdict}
+				dispatch={dispatch}
+			/>
+		);
 
 	const showRail =
 		route.page === "check" &&
@@ -71,8 +88,9 @@ function App({ kb }: { kb: KnowledgeBase }) {
 
 	return (
 		<AppShell appName="Claim Check" nav={nav} rail={rail}>
-			<ChangeAnnouncer view={view} />
 			{page}
+			{/* Last, so its sentence follows the headline's own announcement. */}
+			<ChangeAnnouncer view={view} />
 		</AppShell>
 	);
 }
