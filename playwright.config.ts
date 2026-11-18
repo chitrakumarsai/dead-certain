@@ -4,6 +4,8 @@ const SITE_URL = "http://localhost:4173/dead-certain/";
 /** Claim Check is served on its own port; its specs open it with this absolute URL. */
 export const CLAIM_CHECK_URL =
 	"http://localhost:4174/dead-certain/claim-check/";
+/** Pre-Flight is served on its own port, like Claim Check. */
+export const PRE_FLIGHT_URL = "http://localhost:4175/dead-certain/pre-flight/";
 const HEIGHT = 900;
 const chrome = devices["Desktop Chrome"];
 
@@ -46,6 +48,12 @@ export default defineConfig({
 			command:
 				"pnpm --filter @dead-certain/claim-check build && pnpm --filter @dead-certain/claim-check preview --port 4174 --strictPort",
 			url: CLAIM_CHECK_URL,
+			reuseExistingServer: true,
+		},
+		{
+			command:
+				"pnpm --filter @dead-certain/pre-flight build && pnpm --filter @dead-certain/pre-flight preview --port 4175 --strictPort",
+			url: PRE_FLIGHT_URL,
 			reuseExistingServer: true,
 		},
 	],
