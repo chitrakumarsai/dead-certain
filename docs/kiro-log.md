@@ -315,3 +315,11 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
   1. Clause 5.1 stays as written: a failed warning also makes the repository not ready. "Ready" means all nine checks pass, which the "All K checks passed" summary sentence assumes. Severity only decides how the summary counts a failure.
   2. R-03 (not archived) and R-08 (two app folders under `apps/`, each with a `package.json`) stay. R-08 matches the hackathon's two-app-folder rule.
 - For the knowledge-engineer: tree-based and README-based facts need an `ask`, since the tool asks when GitHub cannot supply them. Severity and groups are not in the contract, so they go in `apps/pre-flight/src/checklists.ts`, read from these clauses.
+
+### Claim Check knowledge base and golden scenarios (2026-11-18)
+
+- Ran the `knowledge-engineer` brief on `apps/claim-check/rulebook/policy.md`. Wrote `apps/claim-check/kb/policy.yaml` (26 rules, 8 deduction line items, 12 asked facts), `apps/claim-check/kb/open-questions.md` and `apps/claim-check/golden/scenarios.yaml` (16 scenarios).
+- Goals: `payable` (money) and `outcome` (enum `paid`, `reduced`, `denied`). The bill is the money fact `claimed`. Money is in paise, and every worked-out amount is written `round(x / 100) * 100`, which is clause 1.3's whole-rupee, half-up rule.
+- `pnpm dc validate`: clean on the first run. `pnpm dc golden`: 16 of 16 pass, 26 of 26 rules covered. The scenarios include the worked examples of clauses 1.3 (payable ₹1,32,000) and 4.2 (₹33,000 deducted), the 29 and 30 day waiting boundary, ages 60 and 61, and a half-rupee case in the other-charges ratio.
+- Decisions the policy forced, listed in `open-questions.md` for the human: an illness that starts before the policy start (rules deny it), which clause is named when two of 3.1, 5.1 and 5.2 apply (the first listed), dental "caused by an accident" read as the admission cause, any sum insured accepted by the rules, and negative other charges when Annexure 1 items exceed the bill.
+- Clause 2.2 has a pass-through rule (`SUM-01`) so each clause that sets an amount has a rule. Clauses 1.1, 2.1, 7.1 and 7.2 have none.
