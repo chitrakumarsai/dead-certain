@@ -1,6 +1,6 @@
 import type { KnowledgeBase } from "@dead-certain/engine";
-import { AppShell } from "@dead-certain/ui";
-import { StrictMode } from "react";
+import { AnswersRail, AppShell, useAnnounce } from "@dead-certain/ui";
+import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
 import { loadedKb } from "./kb";
@@ -8,8 +8,20 @@ import { useRoute } from "./route";
 import { Consult } from "./screens/Consult";
 import { LoadFailure } from "./screens/LoadFailure";
 import { Start } from "./screens/Start";
+import { changeSentence, railEntries } from "./session/rail";
 import { fragmentFor } from "./session/replay";
-import { step as stepOf, useSession } from "./session/store";
+import { step as stepOf, useSession, type ViewState } from "./session/store";
+
+/** Says in one sentence what an edited answer changed (requirement 4.9). */
+function ChangeAnnouncer({ view }: { view: ViewState }) {
+	const announce = useAnnounce();
+	useEffect(() => {
+		if (view.changed === null) return;
+		const decided = stepOf(view).kind === "verdict";
+		announce(changeSentence(view.session, view.changed, decided));
+	}, [view, announce]);
+	return null;
+}
 
 function App({ kb }: { kb: KnowledgeBase }) {
 	const route = useRoute();
@@ -45,8 +57,21 @@ function App({ kb }: { kb: KnowledgeBase }) {
 		);
 	else page = <h1>Verdict</h1>;
 
+	const showRail =
+		route.page === "check" &&
+		(step.kind === "question" || step.kind === "verdict");
+	const rail = showRail ? (
+		<AnswersRail
+			answers={railEntries(view.session)}
+			onChange={(fact) => dispatch({ type: "edit", fact })}
+			skipped={view.skipped}
+			{...(step.kind === "question" ? { current: step.question.fact } : {})}
+		/>
+	) : undefined;
+
 	return (
-		<AppShell appName="Claim Check" nav={nav}>
+		<AppShell appName="Claim Check" nav={nav} rail={rail}>
+			<ChangeAnnouncer view={view} />
 			{page}
 		</AppShell>
 	);

@@ -29,6 +29,8 @@ export interface ViewState {
 	skipped: readonly SkippedNote[];
 	/** The engine refused the last answer; shown under the field. */
 	rejected: string | null;
+	/** The fact whose earlier answer the last answer changed, for the live region. */
+	changed: string | null;
 }
 
 export type Action =
@@ -65,6 +67,7 @@ const fresh = (kb: KnowledgeBase, started: boolean): ViewState => ({
 	failure: null,
 	skipped: [],
 	rejected: null,
+	changed: null,
 });
 
 /** The state a fragment opens: a decoded session, a failure, or the start screen. */
@@ -106,9 +109,12 @@ export function reducer(view: ViewState, action: Action): ViewState {
 				return { ...view, rejected: REJECTED };
 			}
 			const step = next(session);
+			const before = view.session.answers[action.fact];
 			return {
 				...view,
 				session,
+				changed:
+					before !== undefined && before !== action.value ? action.fact : null,
 				editing: null,
 				rejected: null,
 				open: keepOpen(view.open, step),

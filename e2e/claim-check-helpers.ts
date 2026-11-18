@@ -13,12 +13,12 @@ export async function openClaimCheck(page: Page, hash = ""): Promise<void> {
 export async function startCheck(page: Page): Promise<void> {
 	await openClaimCheck(page);
 	await page.getByRole("button", { name: "Start the check" }).click();
-	await expect(page.getByRole("heading", { level: 2 })).toBeFocused();
+	await expect(questionHeading(page)).toBeFocused();
 }
 
-/** The question's heading, the card's h2. */
+/** The question's heading, the card's h2 (the rail has its own). */
 export const questionHeading = (page: Page) =>
-	page.getByRole("heading", { level: 2 }).first();
+	page.locator("main").getByRole("heading", { level: 2 });
 
 /**
  * Answers the open question: a radio label ("Yes", "Accident") or text for a

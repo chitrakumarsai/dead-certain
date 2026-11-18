@@ -60,7 +60,6 @@ describe("questionPath", () => {
 });
 
 describe("relevance and skipped notes", () => {
-	// The real policy's proofs refer to every fact, so no change there drops an answer.
 	const toy = toyKb();
 	const covered = answer(answer(start(toy), "covered", true), "amount", 40);
 
@@ -86,10 +85,17 @@ describe("relevance and skipped notes", () => {
 		expect(after.answers.amount).toBe(40);
 	});
 
-	it("keeps the illness dates in the real policy's proofs after a change of cause", () => {
+	it("drops the illness dates, with a note, when the cause changes to an accident", () => {
 		const before = answerAll(ILLNESS);
 		const after = answer(before, "cause", "accident");
-		expect(skippedNotes(before, after, "cause")).toEqual([]);
+		expect(relevantFacts(before)).toContain("policy_start_date");
+		expect(relevantFacts(after)).not.toContain("policy_start_date");
+		const notes = skippedNotes(before, after, "cause");
+		expect(notes.map((n) => n.fact).sort()).toEqual([
+			"illness_start_date",
+			"policy_start_date",
+		]);
+		expect(notes[0]?.reason).toBe("Not needed now that Cause is Accident.");
 	});
 
 	it("adds the current question to the relevant set", () => {

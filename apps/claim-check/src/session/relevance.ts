@@ -6,6 +6,7 @@ import {
 } from "@dead-certain/engine";
 import { formatValue, type SkippedNote } from "@dead-certain/ui";
 import { defFor, formatFor, labelFor } from "../kb";
+import { questionPath } from "./path";
 
 // An unanswered leaf also carries source "answered", so the answer itself is checked.
 function collectAnswered(node: ProofNode, s: Session, into: Set<string>): void {
@@ -14,10 +15,17 @@ function collectAnswered(node: ProofNode, s: Session, into: Set<string>): void {
 	for (const child of node.children) collectAnswered(child, s, into);
 }
 
-/** Answered facts the goals' proofs use, plus the question being asked. */
+/**
+ * Answered facts on the question path that the goals' proofs use, plus the
+ * question being asked. The path matters too: a proof refers to every fact
+ * its rules name, even after an early stop made the later answers unnecessary.
+ */
 export function relevantFacts(s: Session, currentFact?: string): Set<string> {
-	const facts = new Set<string>();
-	for (const goal of s.kb.goals) collectAnswered(explain(s, goal), s, facts);
+	const inProof = new Set<string>();
+	for (const goal of s.kb.goals) collectAnswered(explain(s, goal), s, inProof);
+	const facts = new Set(
+		questionPath(s.kb, s.answers).filter((fact) => inProof.has(fact)),
+	);
 	if (currentFact !== undefined) facts.add(currentFact);
 	return facts;
 }
