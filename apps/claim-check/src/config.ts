@@ -11,5 +11,14 @@ export const config = {
 	claimedFact: "claimed",
 } as const;
 
+/** Shown after a number field. The knowledge base has no unit field. */
+export const units: Readonly<Record<string, string>> = {
+	room_days: "days",
+	age: "years",
+};
+
+/** Money answers that cannot be more than the hospital bill. */
+export const atMostClaimed: readonly string[] = ["annexure_items"];
+
 /** The compiled JSON, not yet shape-checked. */
 export const compiledKb: unknown = compiled;
