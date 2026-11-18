@@ -323,3 +323,11 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - `pnpm dc validate`: clean on the first run. `pnpm dc golden`: 16 of 16 pass, 26 of 26 rules covered. The scenarios include the worked examples of clauses 1.3 (payable ₹1,32,000) and 4.2 (₹33,000 deducted), the 29 and 30 day waiting boundary, ages 60 and 61, and a half-rupee case in the other-charges ratio.
 - Decisions the policy forced, listed in `open-questions.md` for the human: an illness that starts before the policy start (rules deny it), which clause is named when two of 3.1, 5.1 and 5.2 apply (the first listed), dental "caused by an accident" read as the admission cause, any sum insured accepted by the rules, and negative other charges when Annexure 1 items exceed the bill.
 - Clause 2.2 has a pass-through rule (`SUM-01`) so each clause that sets an amount has a rule. Clauses 1.1, 2.1, 7.1 and 7.2 have none.
+
+### Pre-Flight knowledge base and golden scenarios (2026-11-19)
+
+- Ran the `knowledge-engineer` brief on `apps/pre-flight/rulebook/checklist.md`. Wrote `apps/pre-flight/kb/checklist.yaml` (10 rules), `apps/pre-flight/kb/open-questions.md` (11 questions) and `apps/pre-flight/golden/scenarios.yaml` (14 scenarios).
+- One goal, `readiness` (enum `ready`, `not_ready`). Rules `R-01` to `R-09` each set one check fact (`role: check`, with a short label) and cite their clause. `READY-01` cites 5.1 and uses `if(<nine checks joined by and>, 'ready', 'not_ready')`. Because `and` is false when any side is false, one failed check gives `not_ready` while other checks are still unknown.
+- Collected facts are plain non-derived facts. The validator requires `ask` on every non-derived fact, so metadata facts have one too, as do the tree, `.gitignore` and README facts. Heading and `.gitignore` matching, and the choice of README file, are left to the app (open questions 3, 4, 6, 7).
+- Decisions the checklist forced: R-08 is read as "every directory under `apps` has a `package.json`, and there are at least two" (two numbers, `apps_dir_count` and `apps_with_package_json`). R-05 fails when `.kiro` has no file in the tree. The video length is in seconds. Severity is not encoded, since it does not change the goal.
+- `pnpm dc validate`: clean on the first run. `pnpm dc golden`: all scenarios pass, every rule covered (36 of 36 across both apps).

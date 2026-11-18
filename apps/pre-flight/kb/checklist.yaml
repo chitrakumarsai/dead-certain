@@ -1,0 +1,199 @@
+id: pre-flight
+goals: [readiness]
+
+# Clause 5.1: the repository is ready when all nine checks pass. One failed check
+# makes it not ready, even while other checks are still waiting for an answer.
+# Facts marked "collected" are supplied by the app from GitHub. Where GitHub cannot
+# supply them (for example a truncated file tree), the app asks the 'ask' text.
+
+facts:
+  # Collected: repository metadata
+  repo_private:
+    type: boolean
+    ask: Is the repository private?
+    why: Anyone must be able to open a public repository without signing in.
+  license_detected:
+    type: boolean
+    ask: Does GitHub show an open-source licence for the repository?
+    why: A licence file that GitHub cannot recognise as a licence does not pass.
+  repo_archived:
+    type: boolean
+    ask: Is the repository archived?
+    why: An archived repository is read-only and cannot take a last fix.
+
+  # Collected: file tree
+  license_file_at_root:
+    type: boolean
+    ask: Is there a file called LICENSE, LICENSE.md, LICENSE.txt, COPYING or COPYING.md at the root of the repository?
+    why: The licence check needs a licence file at the root.
+  kiro_dir_has_file:
+    type: boolean
+    ask: Does a .kiro directory at the root of the repository hold at least one file?
+    why: The .kiro directory shows how Kiro was used.
+  kiro_spec_with_tasks:
+    type: boolean
+    ask: Does .kiro/specs hold at least one directory that contains a file called tasks.md?
+    why: A spec with a task list shows spec-driven work.
+  apps_dir_count:
+    type: number
+    ask: How many directories are directly inside the apps directory at the root of the repository?
+    why: The repository must hold at least two app folders.
+  apps_with_package_json:
+    type: number
+    ask: How many of those directories have a package.json file directly inside them?
+    why: Each app folder must have its own package.json.
+
+  # Collected: .gitignore at the root
+  gitignore_ignores_kiro:
+    type: boolean
+    ask: Does an active line in the .gitignore file at the root ignore the .kiro directory itself (.kiro, .kiro/, /.kiro, /.kiro/, .kiro/* or .kiro/**)? Answer no if there is no .gitignore file.
+    why: An ignored .kiro directory is not committed.
+
+  # Collected: README at the root
+  readme_has_run_heading:
+    type: boolean
+    ask: Does the README at the root have a heading called Getting started, Install, Installation, Run, Running, Usage or Quick start?
+    why: Readers need run instructions.
+
+  # Asked of the user
+  demo_video_seconds:
+    type: number
+    ask: How long is the demo video, in seconds?
+    why: The demo video must run for less than 3 minutes.
+
+  # Checks (one per rule R-01 to R-09)
+  repo_public:
+    type: boolean
+    derived: true
+    role: check
+    label: Public repository
+  has_open_licence:
+    type: boolean
+    derived: true
+    role: check
+    label: Open-source licence
+  not_archived:
+    type: boolean
+    derived: true
+    role: check
+    label: Not archived
+  kiro_dir_present:
+    type: boolean
+    derived: true
+    role: check
+    label: .kiro directory
+  kiro_dir_committed:
+    type: boolean
+    derived: true
+    role: check
+    label: .kiro committed
+  has_spec:
+    type: boolean
+    derived: true
+    role: check
+    label: At least one spec
+  readme_run_section:
+    type: boolean
+    derived: true
+    role: check
+    label: README run instructions
+  two_app_folders:
+    type: boolean
+    derived: true
+    role: check
+    label: Two app folders
+  video_under_limit:
+    type: boolean
+    derived: true
+    role: check
+    label: Demo video under 3 minutes
+
+  # Goal
+  readiness:
+    type: enum
+    options: [ready, not_ready]
+    derived: true
+
+rules:
+  - id: R-01
+    cite: "1.1"
+    set: repo_public
+    to: not repo_private
+    because: The repository is public when its metadata does not say it is private.
+  - id: R-02
+    cite: "1.2"
+    set: has_open_licence
+    to: license_detected and license_file_at_root
+    because: A licence passes when GitHub detects it and a licence file sits at the root.
+  - id: R-03
+    cite: "1.3"
+    set: not_archived
+    to: not repo_archived
+    because: The repository passes when it is not archived.
+  - id: R-04
+    cite: "2.1"
+    set: kiro_dir_present
+    to: kiro_dir_has_file
+    because: The .kiro directory at the root must hold at least one file.
+  - id: R-05
+    cite: "2.2"
+    set: kiro_dir_committed
+    to: kiro_dir_has_file and not gitignore_ignores_kiro
+    because: The .kiro directory must be committed, and no active line in the root .gitignore may ignore it.
+  - id: R-06
+    cite: "2.3"
+    set: has_spec
+    to: kiro_spec_with_tasks
+    because: A directory under .kiro/specs must contain a tasks.md file.
+  - id: R-07
+    cite: "3.1"
+    set: readme_run_section
+    to: readme_has_run_heading
+    because: The README must have a heading for getting started, installing, running or usage.
+  - id: R-08
+    cite: "3.2"
+    set: two_app_folders
+    to: apps_dir_count >= 2 and apps_with_package_json == apps_dir_count
+    because: The apps directory holds {apps_dir_count} directories, and {apps_with_package_json} have a package.json. It needs at least two, and every one needs a package.json.
+  - id: R-09
+    cite: "4.1"
+    set: video_under_limit
+    to: demo_video_seconds < 180
+    because: The demo video runs for {demo_video_seconds} seconds. It must run for less than 180 seconds.
+  - id: READY-01
+    cite: "5.1"
+    set: readiness
+    to: if(repo_public and has_open_licence and not_archived and kiro_dir_present and kiro_dir_committed and has_spec and readme_run_section and two_app_folders and video_under_limit, 'ready', 'not_ready')
+    because: The repository is ready only when all nine checks pass. One failed check makes it not ready.
+
+clauses:
+  "1.1":
+    title: Public repository
+    text: The repository is public. Anyone can open it without signing in.
+  "1.2":
+    title: Open-source licence file
+    text: The repository has a licence file at the root, and GitHub detects an open-source licence from it. A file that GitHub cannot recognise as a licence does not pass.
+  "1.3":
+    title: Repository is not archived
+    text: The repository is not archived. An archived repository is read-only and cannot take a last fix.
+  "2.1":
+    title: The .kiro directory at the root
+    text: A directory named .kiro sits at the root of the repository and holds at least one file.
+  "2.2":
+    title: The .kiro directory is committed and not ignored
+    text: The .kiro directory is committed. No active line in the .gitignore file at the root ignores .kiro itself. A line that ignores only something inside .kiro does not fail this check. A repository with no .gitignore passes this check if R-04 passes.
+  "2.3":
+    title: At least one spec
+    text: The .kiro/specs directory holds at least one directory that contains a file called tasks.md.
+  "3.1":
+    title: README with run instructions
+    text: The repository has a README at the root with a heading called one of Getting started, Install, Installation, Run, Running, Usage or Quick start. Capital letters do not matter.
+  "3.2":
+    title: Two app folders
+    text: The apps directory at the root holds at least two directories, and each of them has a package.json file directly inside it.
+  "4.1":
+    title: Demo video length
+    text: The demo video runs for less than 3 minutes. A video that runs for exactly 3 minutes (180 seconds) does not pass.
+  "5.1":
+    title: When the repository is ready
+    text: The repository is ready when all nine checks, R-01 to R-09, pass. If any one check fails, the repository is not ready, whether that check is a blocker or a warning. It is not ready as soon as one check fails, even while other checks are still waiting for an answer.
