@@ -9,7 +9,7 @@ import { Consult } from "./screens/Consult";
 import { LoadFailure } from "./screens/LoadFailure";
 import { Stale } from "./screens/Stale";
 import { Start } from "./screens/Start";
-import { VerdictScreen } from "./screens/Verdict";
+import { XrayVerdict } from "./screens/Xray";
 import { changeSentence, railEntries } from "./session/rail";
 import { fragmentFor } from "./session/replay";
 import { step as stepOf, useSession, type ViewState } from "./session/store";
@@ -43,6 +43,18 @@ function App({ kb }: { kb: KnowledgeBase }) {
 	];
 	const step = stepOf(view);
 
+	const showRail =
+		route.page === "check" &&
+		(step.kind === "question" || step.kind === "verdict");
+	const rail = showRail ? (
+		<AnswersRail
+			answers={railEntries(view.session)}
+			onChange={(fact) => dispatch({ type: "edit", fact })}
+			skipped={view.skipped}
+			{...(step.kind === "question" ? { current: step.question.fact } : {})}
+		/>
+	) : undefined;
+
 	let page: React.ReactNode;
 	if (route.page !== "check") page = <h1>Page not found</h1>;
 	else if (step.kind === "start")
@@ -66,28 +78,22 @@ function App({ kb }: { kb: KnowledgeBase }) {
 		);
 	else
 		page = (
-			<VerdictScreen
+			<XrayVerdict
 				kb={kb}
 				view={view}
 				verdict={step.verdict}
 				dispatch={dispatch}
+				rail={rail}
 			/>
 		);
 
-	const showRail =
-		route.page === "check" &&
-		(step.kind === "question" || step.kind === "verdict");
-	const rail = showRail ? (
-		<AnswersRail
-			answers={railEntries(view.session)}
-			onChange={(fact) => dispatch({ type: "edit", fact })}
-			skipped={view.skipped}
-			{...(step.kind === "question" ? { current: step.question.fact } : {})}
-		/>
-	) : undefined;
-
 	return (
-		<AppShell appName="Claim Check" nav={nav} rail={rail}>
+		<AppShell
+			appName="Claim Check"
+			nav={nav}
+			// On the verdict the stage hosts the rail, so it folds up beside the film.
+			rail={step.kind === "verdict" ? undefined : rail}
+		>
 			{page}
 			{/* Last, so its sentence follows the headline's own announcement. */}
 			<ChangeAnnouncer view={view} />
