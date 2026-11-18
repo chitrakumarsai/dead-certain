@@ -360,7 +360,6 @@ scenarios:
         readiness: not_ready
       fires: [R-01, READY-01]
 
-
   - id: G-14
     title: Everything passes but the video length is unanswered
     mode: audit
