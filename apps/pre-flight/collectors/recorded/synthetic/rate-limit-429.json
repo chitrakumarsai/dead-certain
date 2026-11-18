@@ -1,0 +1,14 @@
+{
+	"url": "https://api.github.com/repos/example/sample",
+	"status": 429,
+	"headers": {
+		"content-type": "application/json; charset=utf-8",
+		"retry-after": "60"
+	},
+	"body": {
+		"message": "You have exceeded a secondary rate limit.",
+		"documentation_url": "https://docs.github.com/rest"
+	},
+	"recordedAt": "2026-11-18T13:30:00.000Z",
+	"synthetic": true
+}

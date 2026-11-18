@@ -1,0 +1,12 @@
+{
+	"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/contents/.gitignore",
+	"status": 200,
+	"headers": {
+		"content-type": "application/vnd.github.raw+json; charset=utf-8",
+		"x-ratelimit-limit": "60",
+		"x-ratelimit-remaining": "45",
+		"x-ratelimit-reset": "1795015037"
+	},
+	"body": "# Dependencies and build output\nnode_modules/\n.pnpm-store/\ndist/\n*.tsbuildinfo\n\n# Test output\ntest-results/\nplaywright-report/\n# Screenshots made by e2e/evidence.spec.ts; CI uploads them as an artifact.\nevidence/\n# The same screenshots downloaded with `gh run download <id> -n screenshots`.\n/390/\n/768/\n/1280/\ncoverage/\n\n# Python (managed with uv)\n.venv/\n__pycache__/\n\n# Secrets and local state\n.env\n.env.*\n.claude/settings.local.json\n.DS_Store\n\n# Markdown stays out of git by owner's instruction (planning docs in docs/ and stray notes).\n# Exceptions: files the agents, the hackathon rules or the running apps need.\n*.md\n!/README.md\n!/AGENTS.md\n!/CLAUDE.md\n!/.kiro/**\n!/.claude/**\n# The line above re-includes everything under .claude; keep machine-local settings out.\n/.claude/settings.local.json\n!/apps/*/rulebook/**\n!/apps/*/kb/**\n# ...but not the JSON that `pnpm dc build` compiles from them.\n/apps/*/kb/dist/\n!/docs/kb-format.md\n# Kiro's session log, versioned so the submission write-up has a public record.\n!/docs/kiro-log.md\n",
+	"recordedAt": "2026-11-18T14:34:57.225Z"
+}

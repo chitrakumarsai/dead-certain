@@ -14,6 +14,7 @@
 	"include": [
 		"packages/*/src",
 		"apps/*/src",
+		"apps/*/collectors",
 		"apps/*/*.config.ts",
 		"e2e",
 		"*.config.ts"

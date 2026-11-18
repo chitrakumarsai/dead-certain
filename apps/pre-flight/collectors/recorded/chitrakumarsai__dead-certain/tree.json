@@ -1,0 +1,4145 @@
+{
+	"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/main?recursive=1",
+	"status": 200,
+	"headers": {
+		"content-type": "application/json; charset=utf-8",
+		"x-ratelimit-limit": "60",
+		"x-ratelimit-remaining": "46",
+		"x-ratelimit-reset": "1795015037"
+	},
+	"body": {
+		"sha": "aa83c6697738647fdc94527be06ad905dcf3e173",
+		"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/aa83c6697738647fdc94527be06ad905dcf3e173",
+		"tree": [
+			{
+				"path": ".claude",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "da23b87d81b74a624794b63cfae85e20180e99f3",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/da23b87d81b74a624794b63cfae85e20180e99f3"
+			},
+			{
+				"path": ".claude/rules",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "d85f45ecd77924f8aa76f68ac19e40f2b6478607",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/d85f45ecd77924f8aa76f68ac19e40f2b6478607"
+			},
+			{
+				"path": ".claude/rules/ui.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ba66d36d909e186cc7d6208ffc927118bedbe251",
+				"size": 593,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ba66d36d909e186cc7d6208ffc927118bedbe251"
+			},
+			{
+				"path": ".claude/settings.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "f3abb921a04734250e89df91e8f3bd90aee6d2c3",
+				"size": 453,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/f3abb921a04734250e89df91e8f3bd90aee6d2c3"
+			},
+			{
+				"path": ".github",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "c6c9e156f55a6cf792a5e4c4cbf5e8a49381c70d",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/c6c9e156f55a6cf792a5e4c4cbf5e8a49381c70d"
+			},
+			{
+				"path": ".github/workflows",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "eaa98911ffb98ac179179a39c47262e16298d332",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/eaa98911ffb98ac179179a39c47262e16298d332"
+			},
+			{
+				"path": ".github/workflows/ci.yml",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "6374bd68412700d73e54e75543f123adbf17e8cf",
+				"size": 1760,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/6374bd68412700d73e54e75543f123adbf17e8cf"
+			},
+			{
+				"path": ".gitignore",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b9a6caf837ca21f5fc2231b7738443fe590e598c",
+				"size": 1034,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b9a6caf837ca21f5fc2231b7738443fe590e598c"
+			},
+			{
+				"path": ".kiro",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "dca3dbc1a77a1d10f6fa274853e486434a9cc079",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/dca3dbc1a77a1d10f6fa274853e486434a9cc079"
+			},
+			{
+				"path": ".kiro/agents",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "23b7faaab30177633e11c5257b96dd0837191b00",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/23b7faaab30177633e11c5257b96dd0837191b00"
+			},
+			{
+				"path": ".kiro/agents/knowledge-engineer.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "0f6039261b9c62ebf7bb2103433a096980c7e65d",
+				"size": 986,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/0f6039261b9c62ebf7bb2103433a096980c7e65d"
+			},
+			{
+				"path": ".kiro/hooks",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "37d25ba1b0b3918a041044245f8f8d3ea2e1257f",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/37d25ba1b0b3918a041044245f8f8d3ea2e1257f"
+			},
+			{
+				"path": ".kiro/hooks/engine-properties.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c994276dc45a5214fc58ec3f4d933a42e126bca7",
+				"size": 313,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c994276dc45a5214fc58ec3f4d933a42e126bca7"
+			},
+			{
+				"path": ".kiro/hooks/gate-check.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "f8dea76637199ea7fa8e47297892ec2832cc9b0a",
+				"size": 265,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/f8dea76637199ea7fa8e47297892ec2832cc9b0a"
+			},
+			{
+				"path": ".kiro/hooks/stale-rule-check.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "3666e1dcb1ae1cf190869eabb1518a1ceb954246",
+				"size": 458,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/3666e1dcb1ae1cf190869eabb1518a1ceb954246"
+			},
+			{
+				"path": ".kiro/hooks/validate-knowledge-base.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "7a84a0085d1a79b2c58e0be1ee1f630967812399",
+				"size": 300,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/7a84a0085d1a79b2c58e0be1ee1f630967812399"
+			},
+			{
+				"path": ".kiro/settings",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "c2062c422fc297c1e1b13185aaeff8c132bf4a82",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/c2062c422fc297c1e1b13185aaeff8c132bf4a82"
+			},
+			{
+				"path": ".kiro/settings/mcp.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "6fa6967bad3e36fbaf817208d6e26093f44bfbd7",
+				"size": 350,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/6fa6967bad3e36fbaf817208d6e26093f44bfbd7"
+			},
+			{
+				"path": ".kiro/specs",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "704215cba432124c3e783f1d1776663fb1b9cd29",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/704215cba432124c3e783f1d1776663fb1b9cd29"
+			},
+			{
+				"path": ".kiro/specs/claim-check-app",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "33114945f2ac14fdc0cb25d02f435a4803b01d5f",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/33114945f2ac14fdc0cb25d02f435a4803b01d5f"
+			},
+			{
+				"path": ".kiro/specs/claim-check-app/design.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "cc015e62ddca52e5fa1db6c303d057e252d8fdd0",
+				"size": 26676,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/cc015e62ddca52e5fa1db6c303d057e252d8fdd0"
+			},
+			{
+				"path": ".kiro/specs/claim-check-app/requirements.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "6876248ee34e16cef7ba2c8c333a5bcb8abdbc08",
+				"size": 31599,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/6876248ee34e16cef7ba2c8c333a5bcb8abdbc08"
+			},
+			{
+				"path": ".kiro/specs/claim-check-app/tasks.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c9b484c3d38c700540baede479778d06712be552",
+				"size": 20499,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c9b484c3d38c700540baede479778d06712be552"
+			},
+			{
+				"path": ".kiro/specs/inference-engine",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "b1521a5908d2c75362948c7825d2b4abdf468319",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/b1521a5908d2c75362948c7825d2b4abdf468319"
+			},
+			{
+				"path": ".kiro/specs/inference-engine/.config.kiro",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "5f8dca757536cfe94b76907e11f6e31286249ad0",
+				"size": 111,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/5f8dca757536cfe94b76907e11f6e31286249ad0"
+			},
+			{
+				"path": ".kiro/specs/inference-engine/design.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "9f9fecc1850f6bf85000d52685ed56487ae0c787",
+				"size": 59400,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/9f9fecc1850f6bf85000d52685ed56487ae0c787"
+			},
+			{
+				"path": ".kiro/specs/inference-engine/requirements.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "62e55d0550ef6e3044e720e8d865227a8685e3d2",
+				"size": 73889,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/62e55d0550ef6e3044e720e8d865227a8685e3d2"
+			},
+			{
+				"path": ".kiro/specs/inference-engine/tasks.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d17b2690c6c558a426e8b53dedd85a8e736468d8",
+				"size": 32991,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d17b2690c6c558a426e8b53dedd85a8e736468d8"
+			},
+			{
+				"path": ".kiro/specs/inference-engine/tasks.meta.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b20c1814ac4580a608ccac9d259fd01bd2069248",
+				"size": 32663,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b20c1814ac4580a608ccac9d259fd01bd2069248"
+			},
+			{
+				"path": ".kiro/specs/kb-golden",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "83d58714a68f71b37b98b0fe069da9df511b672c",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/83d58714a68f71b37b98b0fe069da9df511b672c"
+			},
+			{
+				"path": ".kiro/specs/kb-golden/design.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "6d899bed4e8dc03d12d475ed9a1aeb7150e2dd36",
+				"size": 31443,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/6d899bed4e8dc03d12d475ed9a1aeb7150e2dd36"
+			},
+			{
+				"path": ".kiro/specs/kb-golden/requirements.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "56575e8d8cb9902f1ad6f3968b39e8a32e74dd96",
+				"size": 23885,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/56575e8d8cb9902f1ad6f3968b39e8a32e74dd96"
+			},
+			{
+				"path": ".kiro/specs/kb-golden/tasks.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "db946accf78b49611a46760bf55f2b717f09315e",
+				"size": 28570,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/db946accf78b49611a46760bf55f2b717f09315e"
+			},
+			{
+				"path": ".kiro/specs/kb-props-timeout",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "9da39516dec65757ed11661ca24d036fc23fc407",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/9da39516dec65757ed11661ca24d036fc23fc407"
+			},
+			{
+				"path": ".kiro/specs/kb-props-timeout/bugfix.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "0965ee812f542d39696a95d2d457212b73e00dc6",
+				"size": 2349,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/0965ee812f542d39696a95d2d457212b73e00dc6"
+			},
+			{
+				"path": ".kiro/specs/kb-props-timeout/design.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8da708d3833bacc9889e5b49eb4eb9f6dec1e056",
+				"size": 1890,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8da708d3833bacc9889e5b49eb4eb9f6dec1e056"
+			},
+			{
+				"path": ".kiro/specs/kb-props-timeout/tasks.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "6524ece2d8d9a84f19d58b1ffa5998c292673af0",
+				"size": 722,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/6524ece2d8d9a84f19d58b1ffa5998c292673af0"
+			},
+			{
+				"path": ".kiro/specs/kb-role-type-mismatch",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "355151378d7988d73c33b76200ef211ec77bbdae",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/355151378d7988d73c33b76200ef211ec77bbdae"
+			},
+			{
+				"path": ".kiro/specs/kb-role-type-mismatch/.config.kiro",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "daf0e1143a4dd684f24ec1561222b7d1e36766d0",
+				"size": 111,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/daf0e1143a4dd684f24ec1561222b7d1e36766d0"
+			},
+			{
+				"path": ".kiro/specs/kb-role-type-mismatch/bugfix.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a9216b029edfb4b167ab880d8103837d983a5f45",
+				"size": 5149,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a9216b029edfb4b167ab880d8103837d983a5f45"
+			},
+			{
+				"path": ".kiro/specs/kb-role-type-mismatch/design.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "f4d0f6367eb7d24ebcd78f0b929ec9b13a40dc7a",
+				"size": 17658,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/f4d0f6367eb7d24ebcd78f0b929ec9b13a40dc7a"
+			},
+			{
+				"path": ".kiro/specs/kb-role-type-mismatch/tasks.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "efdf039987188dc90bbe64854e178ba708e77c53",
+				"size": 11871,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/efdf039987188dc90bbe64854e178ba708e77c53"
+			},
+			{
+				"path": ".kiro/specs/kb-role-type-mismatch/tasks.meta.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "dda88e29cfb52a83421d91f0abf36cbf286c1c97",
+				"size": 7249,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/dda88e29cfb52a83421d91f0abf36cbf286c1c97"
+			},
+			{
+				"path": ".kiro/specs/kb-tools",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "05830ea4ba3623e73cf172d157bab040f570a0fa",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/05830ea4ba3623e73cf172d157bab040f570a0fa"
+			},
+			{
+				"path": ".kiro/specs/kb-tools/.config.kiro",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b8fe447ebc77f24c8ea5c9ee8c1e8c646c213e6e",
+				"size": 112,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b8fe447ebc77f24c8ea5c9ee8c1e8c646c213e6e"
+			},
+			{
+				"path": ".kiro/specs/kb-tools/design.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8a8b93319e7ae24e032294c71d2604beff80a1c5",
+				"size": 70227,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8a8b93319e7ae24e032294c71d2604beff80a1c5"
+			},
+			{
+				"path": ".kiro/specs/kb-tools/requirements.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d220156ac778f197b029b20e686777b72fcea647",
+				"size": 35528,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d220156ac778f197b029b20e686777b72fcea647"
+			},
+			{
+				"path": ".kiro/specs/kb-tools/tasks.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "5287438aebf1d345afa19b963ff9d58d553d2393",
+				"size": 48626,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/5287438aebf1d345afa19b963ff9d58d553d2393"
+			},
+			{
+				"path": ".kiro/specs/kb-tools/tasks.meta.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a59fea388fd87f7143bca7327de352f3ea6af6af",
+				"size": 41549,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a59fea388fd87f7143bca7327de352f3ea6af6af"
+			},
+			{
+				"path": ".kiro/specs/kb-validate-never-throws",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "8e3d49a883019f16596f3f74da03d75200315fd3",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/8e3d49a883019f16596f3f74da03d75200315fd3"
+			},
+			{
+				"path": ".kiro/specs/kb-validate-never-throws/bugfix.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "213afe0e68480d506286356f381d408674ae3a85",
+				"size": 2946,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/213afe0e68480d506286356f381d408674ae3a85"
+			},
+			{
+				"path": ".kiro/specs/kb-validate-never-throws/design.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a5e19b653cdc334bd0ee9e90c276dae94494eeba",
+				"size": 2111,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a5e19b653cdc334bd0ee9e90c276dae94494eeba"
+			},
+			{
+				"path": ".kiro/specs/kb-validate-never-throws/tasks.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "77ccc523da8fc1cbe7a2b1f5b5de9468c916d99c",
+				"size": 1188,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/77ccc523da8fc1cbe7a2b1f5b5de9468c916d99c"
+			},
+			{
+				"path": ".kiro/specs/pre-flight-app",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "94bbcc25eb6d893188fe570c0c5ef1dc912aeb25",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/94bbcc25eb6d893188fe570c0c5ef1dc912aeb25"
+			},
+			{
+				"path": ".kiro/specs/pre-flight-app/design.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "560d83f4cf1d887f685b3365ea03bdc58a4d42f4",
+				"size": 35590,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/560d83f4cf1d887f685b3365ea03bdc58a4d42f4"
+			},
+			{
+				"path": ".kiro/specs/pre-flight-app/requirements.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "3f7f1e7c5c983e30ac29ced88411a0ee4979684a",
+				"size": 33053,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/3f7f1e7c5c983e30ac29ced88411a0ee4979684a"
+			},
+			{
+				"path": ".kiro/specs/pre-flight-app/tasks.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b7207b8de2e2ac929d5025d35d17241cf15d6f63",
+				"size": 25490,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b7207b8de2e2ac929d5025d35d17241cf15d6f63"
+			},
+			{
+				"path": ".kiro/specs/rule-language",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "4a027b7c4575c484eb09fe38df851a0edf78fc2f",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/4a027b7c4575c484eb09fe38df851a0edf78fc2f"
+			},
+			{
+				"path": ".kiro/specs/rule-language/.config.kiro",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d4e0590ce523e625f07af0239e3e8f5b4e7fdcca",
+				"size": 112,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d4e0590ce523e625f07af0239e3e8f5b4e7fdcca"
+			},
+			{
+				"path": ".kiro/specs/rule-language/design.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "f70a3811bba7dde14dea9ae2e06167d04cd4a598",
+				"size": 41491,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/f70a3811bba7dde14dea9ae2e06167d04cd4a598"
+			},
+			{
+				"path": ".kiro/specs/rule-language/requirements.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "34574d63eec444c1330455bc10cb20f65ace05e0",
+				"size": 36171,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/34574d63eec444c1330455bc10cb20f65ace05e0"
+			},
+			{
+				"path": ".kiro/specs/rule-language/tasks.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "9cad3dd68cdd33b99d400b9c7666cb36366f26dc",
+				"size": 20252,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/9cad3dd68cdd33b99d400b9c7666cb36366f26dc"
+			},
+			{
+				"path": ".kiro/specs/rule-language/tasks.meta.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e85ef6775d3915ab0f17c9f8ae8b6a1794c6da96",
+				"size": 20254,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e85ef6775d3915ab0f17c9f8ae8b6a1794c6da96"
+			},
+			{
+				"path": ".kiro/specs/ui-kit",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "315663233cd1724c628aa043eeb82797cf12a45d",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/315663233cd1724c628aa043eeb82797cf12a45d"
+			},
+			{
+				"path": ".kiro/specs/ui-kit/.config.kiro",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "3928697893481ae83a07fa67f8f0ea6dfd52d373",
+				"size": 106,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/3928697893481ae83a07fa67f8f0ea6dfd52d373"
+			},
+			{
+				"path": ".kiro/specs/ui-kit/design.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "2d839db3a5f2a7290807f05b10bac900bb6307ac",
+				"size": 83903,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/2d839db3a5f2a7290807f05b10bac900bb6307ac"
+			},
+			{
+				"path": ".kiro/specs/ui-kit/requirements.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b1255a598e5940cccc2531e37409a84d9288e709",
+				"size": 53979,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b1255a598e5940cccc2531e37409a84d9288e709"
+			},
+			{
+				"path": ".kiro/specs/ui-kit/tasks.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "3a76e1928abd7923b3faacdad25f8826dfbeb1b4",
+				"size": 60182,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/3a76e1928abd7923b3faacdad25f8826dfbeb1b4"
+			},
+			{
+				"path": ".kiro/steering",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "0a700a95c4319a37bc6ba8d5917fda61cfdee04e",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/0a700a95c4319a37bc6ba8d5917fda61cfdee04e"
+			},
+			{
+				"path": ".kiro/steering/design-system.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "900e62290e3ebe0a83cb41f4c3e8008f319cc974",
+				"size": 6643,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/900e62290e3ebe0a83cb41f4c3e8008f319cc974"
+			},
+			{
+				"path": ".kiro/steering/new-app.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a9756597774d92a86e83abf55c78b868113eba1a",
+				"size": 3119,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a9756597774d92a86e83abf55c78b868113eba1a"
+			},
+			{
+				"path": ".kiro/steering/product.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "0027dd4173ead0e73be98a8184502333cd82f92b",
+				"size": 2044,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/0027dd4173ead0e73be98a8184502333cd82f92b"
+			},
+			{
+				"path": ".kiro/steering/rule-authoring.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "9569b9dce5c60be29f57bf883f124ccb39b6d15b",
+				"size": 2515,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/9569b9dce5c60be29f57bf883f124ccb39b6d15b"
+			},
+			{
+				"path": ".kiro/steering/structure.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "127973e3de5e12a0952c14d8dec095d86323f9f1",
+				"size": 2892,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/127973e3de5e12a0952c14d8dec095d86323f9f1"
+			},
+			{
+				"path": ".kiro/steering/tech.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "4feef892915ee4636735f1dc20e5d02f4c556e7d",
+				"size": 1882,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/4feef892915ee4636735f1dc20e5d02f4c556e7d"
+			},
+			{
+				"path": ".nvmrc",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "2bd5a0a98a36cc08ada88b804d3be047e6aa5b8a",
+				"size": 3,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/2bd5a0a98a36cc08ada88b804d3be047e6aa5b8a"
+			},
+			{
+				"path": "AGENTS.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "01e0242516add6b2f9451dded5cc951c488fb0af",
+				"size": 2783,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/01e0242516add6b2f9451dded5cc951c488fb0af"
+			},
+			{
+				"path": "CLAUDE.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "9e3a3daba5e559021978b6506ea57176bc84dd4e",
+				"size": 1228,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/9e3a3daba5e559021978b6506ea57176bc84dd4e"
+			},
+			{
+				"path": "LICENSE",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "89129450c50aabd8b117c78b56afa857f4b6e31c",
+				"size": 1089,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/89129450c50aabd8b117c78b56afa857f4b6e31c"
+			},
+			{
+				"path": "README.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e397e0e17f782ce58a17b2369073f3b7b221cc20",
+				"size": 1468,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e397e0e17f782ce58a17b2369073f3b7b221cc20"
+			},
+			{
+				"path": "apps",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "aae8890efbbf2330f3667285d0c1c721c51fed92",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/aae8890efbbf2330f3667285d0c1c721c51fed92"
+			},
+			{
+				"path": "apps/claim-check",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "8a5b6ee28b50458ccf05efcdc132cbd57dcc26db",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/8a5b6ee28b50458ccf05efcdc132cbd57dcc26db"
+			},
+			{
+				"path": "apps/claim-check/golden",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "52a6a284b3d8dfc13b056b7912b6f0281a78c94b",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/52a6a284b3d8dfc13b056b7912b6f0281a78c94b"
+			},
+			{
+				"path": "apps/claim-check/golden/scenarios.yaml",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "fb5df2dc17b02d1fcc9e42564429147fc8c763d3",
+				"size": 12721,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/fb5df2dc17b02d1fcc9e42564429147fc8c763d3"
+			},
+			{
+				"path": "apps/claim-check/index.html",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8c3487b57b5086c99fc975cdf547c166dc8a261a",
+				"size": 1050,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8c3487b57b5086c99fc975cdf547c166dc8a261a"
+			},
+			{
+				"path": "apps/claim-check/kb",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "c9fb57f3ac1368a30153ed7791d83482be4b4acd",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/c9fb57f3ac1368a30153ed7791d83482be4b4acd"
+			},
+			{
+				"path": "apps/claim-check/kb/open-questions.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a629a1b9c89c98c108e2ce859775511c96e458d1",
+				"size": 3362,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a629a1b9c89c98c108e2ce859775511c96e458d1"
+			},
+			{
+				"path": "apps/claim-check/kb/policy.yaml",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c64e5f615ef77d9797d71e27ace2b962d5cbcd64",
+				"size": 15699,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c64e5f615ef77d9797d71e27ace2b962d5cbcd64"
+			},
+			{
+				"path": "apps/claim-check/package.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "dec6e6158553aed345fc2a3070cea0f55fe28221",
+				"size": 640,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/dec6e6158553aed345fc2a3070cea0f55fe28221"
+			},
+			{
+				"path": "apps/claim-check/rulebook",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "11b26a6a769dd66fe4a4dc9e24618cb2c5a93714",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/11b26a6a769dd66fe4a4dc9e24618cb2c5a93714"
+			},
+			{
+				"path": "apps/claim-check/rulebook/policy.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "1b84c37a9d7708060142e820a5204fd0ff4b2d8e",
+				"size": 5807,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/1b84c37a9d7708060142e820a5204fd0ff4b2d8e"
+			},
+			{
+				"path": "apps/claim-check/src",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "f21494abdc282300cd44229be08ceb44aa48f439",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/f21494abdc282300cd44229be08ceb44aa48f439"
+			},
+			{
+				"path": "apps/claim-check/src/config.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "892c52f29a920b1b78b9606e2ebbaf065db0945a",
+				"size": 747,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/892c52f29a920b1b78b9606e2ebbaf065db0945a"
+			},
+			{
+				"path": "apps/claim-check/src/json.d.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "bb61259bf1153391c05529a3c620375d1cf23349",
+				"size": 175,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/bb61259bf1153391c05529a3c620375d1cf23349"
+			},
+			{
+				"path": "apps/claim-check/src/kb.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "29767adce3b7e14cf38f1957068e5afc983d15f7",
+				"size": 1862,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/29767adce3b7e14cf38f1957068e5afc983d15f7"
+			},
+			{
+				"path": "apps/claim-check/src/kb.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "abbf3a36968ab5e9853b4294c36fb04cf84d09e7",
+				"size": 1292,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/abbf3a36968ab5e9853b4294c36fb04cf84d09e7"
+			},
+			{
+				"path": "apps/claim-check/src/kbShape.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "86b29b411d6aea251e50a138336ff18b64d68072",
+				"size": 1738,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/86b29b411d6aea251e50a138336ff18b64d68072"
+			},
+			{
+				"path": "apps/claim-check/src/lanes.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "64d8d2327a1244f207bee97c8a4921e35bea0e01",
+				"size": 1423,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/64d8d2327a1244f207bee97c8a4921e35bea0e01"
+			},
+			{
+				"path": "apps/claim-check/src/main.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e82efa55452e1e0e6b5928893fc478d1e960adbf",
+				"size": 3522,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e82efa55452e1e0e6b5928893fc478d1e960adbf"
+			},
+			{
+				"path": "apps/claim-check/src/route.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "bd6671d844dc1f78a4f92be2d9c8bee9a6226581",
+				"size": 532,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/bd6671d844dc1f78a4f92be2d9c8bee9a6226581"
+			},
+			{
+				"path": "apps/claim-check/src/route.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b99551b56ab523051de4df32ee2cd9b9865882dd",
+				"size": 824,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b99551b56ab523051de4df32ee2cd9b9865882dd"
+			},
+			{
+				"path": "apps/claim-check/src/rulebook",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "f9cafae1651b0a0a7c0a3d0d9b4141ffe37d1b0d",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/f9cafae1651b0a0a7c0a3d0d9b4141ffe37d1b0d"
+			},
+			{
+				"path": "apps/claim-check/src/rulebook/coverage.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "9f3a91e76e3ab1246ecaa2213796e65f8db262ae",
+				"size": 1507,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/9f3a91e76e3ab1246ecaa2213796e65f8db262ae"
+			},
+			{
+				"path": "apps/claim-check/src/rulebook/coverage.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8d20aa662d7df2e916c29dfa4c5e58276576dfea",
+				"size": 1756,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8d20aa662d7df2e916c29dfa4c5e58276576dfea"
+			},
+			{
+				"path": "apps/claim-check/src/rulebook/coverage.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "af280e7a3dd8243a6a012c256665ce33d8f37cdf",
+				"size": 1251,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/af280e7a3dd8243a6a012c256665ce33d8f37cdf"
+			},
+			{
+				"path": "apps/claim-check/src/screens",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "7580e8d073a1d7417d0fbbd6c544659e39f9b5c6",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/7580e8d073a1d7417d0fbbd6c544659e39f9b5c6"
+			},
+			{
+				"path": "apps/claim-check/src/screens/Consult.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "4e76bfb0f2dd17346edf2448879314bfe5a85a1e",
+				"size": 2400,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/4e76bfb0f2dd17346edf2448879314bfe5a85a1e"
+			},
+			{
+				"path": "apps/claim-check/src/screens/CopyLink.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a9264792f68505e4b4e6584fbb144210832abd62",
+				"size": 1214,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a9264792f68505e4b4e6584fbb144210832abd62"
+			},
+			{
+				"path": "apps/claim-check/src/screens/LoadFailure.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ab7550a4c55a62155b46f91620878f8f409457ef",
+				"size": 381,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ab7550a4c55a62155b46f91620878f8f409457ef"
+			},
+			{
+				"path": "apps/claim-check/src/screens/NotFound.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "5286d2b01059c5875fe00cce9cba9fcefac70072",
+				"size": 1009,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/5286d2b01059c5875fe00cce9cba9fcefac70072"
+			},
+			{
+				"path": "apps/claim-check/src/screens/Rulebook.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ab2f2e42ae381608a58930a64e171dfc8c901e01",
+				"size": 5522,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ab2f2e42ae381608a58930a64e171dfc8c901e01"
+			},
+			{
+				"path": "apps/claim-check/src/screens/Stale.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "6261ef0de0eaa3a8c75fd36933b8f80f4107b852",
+				"size": 573,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/6261ef0de0eaa3a8c75fd36933b8f80f4107b852"
+			},
+			{
+				"path": "apps/claim-check/src/screens/Start.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "43d7a43cd129c4c18a199261c49aa9fc70dec769",
+				"size": 1145,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/43d7a43cd129c4c18a199261c49aa9fc70dec769"
+			},
+			{
+				"path": "apps/claim-check/src/screens/Verdict.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "fd9041dc0c851425ae4d40adbed32c132e625314",
+				"size": 3190,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/fd9041dc0c851425ae4d40adbed32c132e625314"
+			},
+			{
+				"path": "apps/claim-check/src/screens/Xray.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "355ac6c90ce36f8592d9a9d721ef98c3ca2f17eb",
+				"size": 2597,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/355ac6c90ce36f8592d9a9d721ef98c3ca2f17eb"
+			},
+			{
+				"path": "apps/claim-check/src/session",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "ee57306efb6951dfcaf594dfaeec4a8f37306f8a",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/ee57306efb6951dfcaf594dfaeec4a8f37306f8a"
+			},
+			{
+				"path": "apps/claim-check/src/session/next.perf.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "feeeed1e1211973655b9b5362f10fa18f476b4ea",
+				"size": 1642,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/feeeed1e1211973655b9b5362f10fa18f476b4ea"
+			},
+			{
+				"path": "apps/claim-check/src/session/path.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "38a163abe2c6023ade7c7e6a2e4fc71e01630c78",
+				"size": 675,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/38a163abe2c6023ade7c7e6a2e4fc71e01630c78"
+			},
+			{
+				"path": "apps/claim-check/src/session/progress.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a771cebb15b8349223f71768f0fab4592ddfe3f4",
+				"size": 813,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a771cebb15b8349223f71768f0fab4592ddfe3f4"
+			},
+			{
+				"path": "apps/claim-check/src/session/rail.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a176a40c7e2580043f38d8a0101b26f40c44fe14",
+				"size": 779,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a176a40c7e2580043f38d8a0101b26f40c44fe14"
+			},
+			{
+				"path": "apps/claim-check/src/session/rail.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "1f870b55ca119b6adc96fe174b8d1853dc8faaf0",
+				"size": 983,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/1f870b55ca119b6adc96fe174b8d1853dc8faaf0"
+			},
+			{
+				"path": "apps/claim-check/src/session/relevance.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c91e34a72219c19dc0b34b003daa59779a25b904",
+				"size": 2572,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c91e34a72219c19dc0b34b003daa59779a25b904"
+			},
+			{
+				"path": "apps/claim-check/src/session/replay.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e116e9ec2b36c091f404d9620df3ecdad7fb5cc3",
+				"size": 1589,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e116e9ec2b36c091f404d9620df3ecdad7fb5cc3"
+			},
+			{
+				"path": "apps/claim-check/src/session/replay.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "74255d44d4cbb8b674940349e020ceeaa27737a0",
+				"size": 1998,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/74255d44d4cbb8b674940349e020ceeaa27737a0"
+			},
+			{
+				"path": "apps/claim-check/src/session/replay.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "efff2e217b2494d6e87851bbe95373b4a04595a4",
+				"size": 1928,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/efff2e217b2494d6e87851bbe95373b4a04595a4"
+			},
+			{
+				"path": "apps/claim-check/src/session/session.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b0aaa3bdfe5d5127a71c84926675b821dd843891",
+				"size": 4090,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b0aaa3bdfe5d5127a71c84926675b821dd843891"
+			},
+			{
+				"path": "apps/claim-check/src/session/session.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ee038c7967bb5cb09e0a54b70b2e2cdbb2d4aa1e",
+				"size": 3626,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ee038c7967bb5cb09e0a54b70b2e2cdbb2d4aa1e"
+			},
+			{
+				"path": "apps/claim-check/src/session/store.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "dca7646acec70ae8704e3c4c63e8847cf7426e73",
+				"size": 4466,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/dca7646acec70ae8704e3c4c63e8847cf7426e73"
+			},
+			{
+				"path": "apps/claim-check/src/session/store.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d76d3c025d9b594232ac2a1312a3e4d5e2f22bd7",
+				"size": 6961,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d76d3c025d9b594232ac2a1312a3e4d5e2f22bd7"
+			},
+			{
+				"path": "apps/claim-check/src/styles.css",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "63c361068a715150f9db8c5cfe9bd4d8016c9ab0",
+				"size": 379,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/63c361068a715150f9db8c5cfe9bd4d8016c9ab0"
+			},
+			{
+				"path": "apps/claim-check/src/testing",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "3577057feeedbd9ebf0ccc44602f8866d2256f02",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/3577057feeedbd9ebf0ccc44602f8866d2256f02"
+			},
+			{
+				"path": "apps/claim-check/src/testing/consultArb.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "f047ba25d790a1d5d449ccc5d42fdcbc9e138626",
+				"size": 1549,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/f047ba25d790a1d5d449ccc5d42fdcbc9e138626"
+			},
+			{
+				"path": "apps/claim-check/src/testing/realKb.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "0e75149bfe5aa31a91a8c305605327aa76c33d58",
+				"size": 714,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/0e75149bfe5aa31a91a8c305605327aa76c33d58"
+			},
+			{
+				"path": "apps/claim-check/src/testing/toyKb.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "07fd85ac13b3122abfc9da4b306f78f7850f2766",
+				"size": 931,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/07fd85ac13b3122abfc9da4b306f78f7850f2766"
+			},
+			{
+				"path": "apps/claim-check/src/useTitle.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "90484a10fda9b9034aac3ca0688abd2d2acdab18",
+				"size": 227,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/90484a10fda9b9034aac3ca0688abd2d2acdab18"
+			},
+			{
+				"path": "apps/claim-check/src/verdict",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "7f5cde63b557cc4605b6bb339491d5055fc27310",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/7f5cde63b557cc4605b6bb339491d5055fc27310"
+			},
+			{
+				"path": "apps/claim-check/src/verdict/parts.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "4fed242fd312592242d66927fa939ebe7c7da86f",
+				"size": 2074,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/4fed242fd312592242d66927fa939ebe7c7da86f"
+			},
+			{
+				"path": "apps/claim-check/src/verdict/statement.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "53a149d24e28b87f4a258ad881f4f34e89dda966",
+				"size": 620,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/53a149d24e28b87f4a258ad881f4f34e89dda966"
+			},
+			{
+				"path": "apps/claim-check/src/verdict/verdict.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8c50f0611e191c7018910e787eb5cbb3078cccdb",
+				"size": 1627,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8c50f0611e191c7018910e787eb5cbb3078cccdb"
+			},
+			{
+				"path": "apps/claim-check/src/verdict/verdict.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "6647fb2cc95b549b51afb07a5dd43d1870cf80b5",
+				"size": 3208,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/6647fb2cc95b549b51afb07a5dd43d1870cf80b5"
+			},
+			{
+				"path": "apps/claim-check/src/verdict/whatIf.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8e42a8f7455d4583c44352ba81e8c35188cb6428",
+				"size": 1027,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8e42a8f7455d4583c44352ba81e8c35188cb6428"
+			},
+			{
+				"path": "apps/claim-check/src/verdict/whatIf.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "0e7d8a99b7ac290973c1a722afa937519577fd9e",
+				"size": 722,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/0e7d8a99b7ac290973c1a722afa937519577fd9e"
+			},
+			{
+				"path": "apps/claim-check/src/xray",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "6a9886d7992db3251802964859516027e791465d",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/6a9886d7992db3251802964859516027e791465d"
+			},
+			{
+				"path": "apps/claim-check/src/xray/because.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "449f56767df19de4c1ac24688216f075cb47dcd4",
+				"size": 1334,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/449f56767df19de4c1ac24688216f075cb47dcd4"
+			},
+			{
+				"path": "apps/claim-check/src/xray/because.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "adeb9c73d21f1210046f4b955cff186daf5ac3bc",
+				"size": 1259,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/adeb9c73d21f1210046f4b955cff186daf5ac3bc"
+			},
+			{
+				"path": "apps/claim-check/vite.config.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "cbeec49f4b2926f1b02aa6a596673ca2716af63a",
+				"size": 331,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/cbeec49f4b2926f1b02aa6a596673ca2716af63a"
+			},
+			{
+				"path": "apps/pre-flight",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "b7b4d6d5ede992c8b3123c3f1abed34269cfddd3",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/b7b4d6d5ede992c8b3123c3f1abed34269cfddd3"
+			},
+			{
+				"path": "apps/pre-flight/golden",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "b42fa48d2eb3a7b25f6b46021b14411198923980",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/b42fa48d2eb3a7b25f6b46021b14411198923980"
+			},
+			{
+				"path": "apps/pre-flight/golden/scenarios.yaml",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "62bf0c313526a4410d3612da67c75282e60265df",
+				"size": 10628,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/62bf0c313526a4410d3612da67c75282e60265df"
+			},
+			{
+				"path": "apps/pre-flight/kb",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "71af99be633ff3f9f2934158f6a5e84d0de0bc81",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/71af99be633ff3f9f2934158f6a5e84d0de0bc81"
+			},
+			{
+				"path": "apps/pre-flight/kb/checklist.yaml",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "f8fa061e7c675e6097b896c9d40657c9e025cc3c",
+				"size": 7740,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/f8fa061e7c675e6097b896c9d40657c9e025cc3c"
+			},
+			{
+				"path": "apps/pre-flight/kb/open-questions.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c2b1796c19f796d52a1928fdffb841b3acd4282b",
+				"size": 2943,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c2b1796c19f796d52a1928fdffb841b3acd4282b"
+			},
+			{
+				"path": "apps/pre-flight/rulebook",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "09cda91102215e5b7bd31f3672488e1322e40abe",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/09cda91102215e5b7bd31f3672488e1322e40abe"
+			},
+			{
+				"path": "apps/pre-flight/rulebook/checklist.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "34e241a3a4c781206ef3c89ecb165bf2465963e2",
+				"size": 3809,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/34e241a3a4c781206ef3c89ecb165bf2465963e2"
+			},
+			{
+				"path": "apps/site",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "28180457c56b2411a110b8475fa9f4aefc60d3b5",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/28180457c56b2411a110b8475fa9f4aefc60d3b5"
+			},
+			{
+				"path": "apps/site/index.html",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "af84834abb1d28cbeb157db87d0160362a4eb5a1",
+				"size": 944,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/af84834abb1d28cbeb157db87d0160362a4eb5a1"
+			},
+			{
+				"path": "apps/site/kit",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "f204dbf911cc8460363ea836d1faa0be3991d60c",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/f204dbf911cc8460363ea836d1faa0be3991d60c"
+			},
+			{
+				"path": "apps/site/kit/index.html",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "0d72a37a407519532bae0f79e67630ee8f5b3873",
+				"size": 991,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/0d72a37a407519532bae0f79e67630ee8f5b3873"
+			},
+			{
+				"path": "apps/site/kit/screen.html",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "cda618087d16e20e410314570e902229a5244042",
+				"size": 408,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/cda618087d16e20e410314570e902229a5244042"
+			},
+			{
+				"path": "apps/site/kit/shell.html",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8b986e75c42df04cc91e5423b50b096b1180a275",
+				"size": 387,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8b986e75c42df04cc91e5423b50b096b1180a275"
+			},
+			{
+				"path": "apps/site/package.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "849f97a2843e117b8c47f0a288a4161e92fa87d4",
+				"size": 482,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/849f97a2843e117b8c47f0a288a4161e92fa87d4"
+			},
+			{
+				"path": "apps/site/src",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "f7f661a042ede23aad35ccaf56a8428821f49dc8",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/f7f661a042ede23aad35ccaf56a8428821f49dc8"
+			},
+			{
+				"path": "apps/site/src/kit",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "b86fe8f277e679372c4be37bcabc102bb84415f8",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/b86fe8f277e679372c4be37bcabc102bb84415f8"
+			},
+			{
+				"path": "apps/site/src/kit/AnswerControlSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "92f7f4e97023ea7b21e0393c4f4a7b87c426c596",
+				"size": 10907,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/92f7f4e97023ea7b21e0393c4f4a7b87c426c596"
+			},
+			{
+				"path": "apps/site/src/kit/AnswersRailSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "69f197eb98dad2f0a019022a1f7ece711294abba",
+				"size": 3696,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/69f197eb98dad2f0a019022a1f7ece711294abba"
+			},
+			{
+				"path": "apps/site/src/kit/AppShellSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b7901b03b4afefcd2ff4958a014dc8539e3dcbc3",
+				"size": 2203,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b7901b03b4afefcd2ff4958a014dc8539e3dcbc3"
+			},
+			{
+				"path": "apps/site/src/kit/ButtonsSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "9cfb6648179b4bb8278c82889b9008f6bd2acf7f",
+				"size": 2581,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/9cfb6648179b4bb8278c82889b9008f6bd2acf7f"
+			},
+			{
+				"path": "apps/site/src/kit/CheckRowSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "2d865fa295a0856ac95c1960937705d7ee79109a",
+				"size": 4087,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/2d865fa295a0856ac95c1960937705d7ee79109a"
+			},
+			{
+				"path": "apps/site/src/kit/ClauseQuoteSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "54891f6f0fb8c8bd654a17a82d0a90bb0f8b5b31",
+				"size": 3062,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/54891f6f0fb8c8bd654a17a82d0a90bb0f8b5b31"
+			},
+			{
+				"path": "apps/site/src/kit/DisclosureSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "17f00c97dc466544cbf46aebba4c52f0bf2e4689",
+				"size": 2118,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/17f00c97dc466544cbf46aebba4c52f0bf2e4689"
+			},
+			{
+				"path": "apps/site/src/kit/LedgerSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a095d6ad681149cc8919c32baf2b23be0cb67152",
+				"size": 3646,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a095d6ad681149cc8919c32baf2b23be0cb67152"
+			},
+			{
+				"path": "apps/site/src/kit/OnFilm.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "4a540ac04757dda6374d38d28e94d0081a08fa91",
+				"size": 322,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/4a540ac04757dda6374d38d28e94d0081a08fa91"
+			},
+			{
+				"path": "apps/site/src/kit/PrimitivesSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a61086ab0154d3ab5e12a2fba2f33d865289c4f3",
+				"size": 3421,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a61086ab0154d3ab5e12a2fba2f33d865289c4f3"
+			},
+			{
+				"path": "apps/site/src/kit/ProofTreeSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "779e396fd93ac04daaa9c46f4359f6f65c0a296a",
+				"size": 6281,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/779e396fd93ac04daaa9c46f4359f6f65c0a296a"
+			},
+			{
+				"path": "apps/site/src/kit/ProportionBarSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "7b02772da6f376113ecc16326af9679bfedc0912",
+				"size": 2771,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/7b02772da6f376113ecc16326af9679bfedc0912"
+			},
+			{
+				"path": "apps/site/src/kit/QuestionCardSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ba3092ef28553352c9036789e871fb93bc473aa7",
+				"size": 7079,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ba3092ef28553352c9036789e871fb93bc473aa7"
+			},
+			{
+				"path": "apps/site/src/kit/ScreensSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "1bcd67aaf0f2142fcf191c0db47ca095c2c3a87c",
+				"size": 2209,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/1bcd67aaf0f2142fcf191c0db47ca095c2c3a87c"
+			},
+			{
+				"path": "apps/site/src/kit/SheetFilmSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "382478bd6fcceac8f122bf222b6b156c66a2f2a0",
+				"size": 3724,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/382478bd6fcceac8f122bf222b6b156c66a2f2a0"
+			},
+			{
+				"path": "apps/site/src/kit/SourceBadgeSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "9e092e3cf4cb233b29a6848212a1e30d65dea3f8",
+				"size": 1473,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/9e092e3cf4cb233b29a6848212a1e30d65dea3f8"
+			},
+			{
+				"path": "apps/site/src/kit/Specimen.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e7d7c9e151d2f271fd7e84181d99d6c5a1702a67",
+				"size": 683,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e7d7c9e151d2f271fd7e84181d99d6c5a1702a67"
+			},
+			{
+				"path": "apps/site/src/kit/StaleLinkSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "db3929d559f75f87fff076c6a75e54084f48c08f",
+				"size": 2894,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/db3929d559f75f87fff076c6a75e54084f48c08f"
+			},
+			{
+				"path": "apps/site/src/kit/TokensSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "36e2e896e345d7c66f263b6037c6aae630034530",
+				"size": 7402,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/36e2e896e345d7c66f263b6037c6aae630034530"
+			},
+			{
+				"path": "apps/site/src/kit/VerdictHeadlineSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "40d111d4656c7ffe360f827c68de1081ce850fcb",
+				"size": 4044,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/40d111d4656c7ffe360f827c68de1081ce850fcb"
+			},
+			{
+				"path": "apps/site/src/kit/WhatIfListSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c4066472da4a8d4e3d191eae7f944f04c7023afb",
+				"size": 3803,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c4066472da4a8d4e3d191eae7f944f04c7023afb"
+			},
+			{
+				"path": "apps/site/src/kit/XrayStageSection.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "bc4245aa24d02c6e0c4fe63296ba6c9884d54fcc",
+				"size": 3858,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/bc4245aa24d02c6e0c4fe63296ba6c9884d54fcc"
+			},
+			{
+				"path": "apps/site/src/kit/claimScreens.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "18165903875e90433d9beffa260e305828534152",
+				"size": 4054,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/18165903875e90433d9beffa260e305828534152"
+			},
+			{
+				"path": "apps/site/src/kit/main.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "83d4441ba3fa344e61d53e509cdedb45d550c2ab",
+				"size": 5590,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/83d4441ba3fa344e61d53e509cdedb45d550c2ab"
+			},
+			{
+				"path": "apps/site/src/kit/preflightScreens.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "3d695e61564d4fc7b227a485404bfd7f9d839e08",
+				"size": 5441,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/3d695e61564d4fc7b227a485404bfd7f9d839e08"
+			},
+			{
+				"path": "apps/site/src/kit/screen.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "20de02db8f2b5b4126b666c0892c69748edd46f6",
+				"size": 2487,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/20de02db8f2b5b4126b666c0892c69748edd46f6"
+			},
+			{
+				"path": "apps/site/src/kit/shell.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "039a43a21f358f4328b258740ab48e2df44762b7",
+				"size": 975,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/039a43a21f358f4328b258740ab48e2df44762b7"
+			},
+			{
+				"path": "apps/site/src/placeholder.css",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "5a02f1a38a84091180334ec7f7f34841532c939f",
+				"size": 833,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/5a02f1a38a84091180334ec7f7f34841532c939f"
+			},
+			{
+				"path": "apps/site/vite.config.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "3c287fddb37e3b2c6badcf9ac4e7ab3ade99bd07",
+				"size": 468,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/3c287fddb37e3b2c6badcf9ac4e7ab3ade99bd07"
+			},
+			{
+				"path": "biome.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ad8ccfd7bdbd04dfb1079fe7ec155a5f49506295",
+				"size": 642,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ad8ccfd7bdbd04dfb1079fe7ec155a5f49506295"
+			},
+			{
+				"path": "docs",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "c1c8129bcd71efe392f27921fb76644d2d167a77",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/c1c8129bcd71efe392f27921fb76644d2d167a77"
+			},
+			{
+				"path": "docs/kb-format.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "279a35d33c95b4219e07974b8fed0fb5809a734d",
+				"size": 45529,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/279a35d33c95b4219e07974b8fed0fb5809a734d"
+			},
+			{
+				"path": "docs/kiro-log.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "be6918f9895a9b7b7628e14e826f7d9bb58b8e8c",
+				"size": 56716,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/be6918f9895a9b7b7628e14e826f7d9bb58b8e8c"
+			},
+			{
+				"path": "e2e",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "9ed88a4e8d7ca765135c5bbd6d2ccf13288866f2",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/9ed88a4e8d7ca765135c5bbd6d2ccf13288866f2"
+			},
+			{
+				"path": "e2e/claim-check-a11y.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "03920ab40ffe99b24c9fac3c8d006b2f884a6afd",
+				"size": 1154,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/03920ab40ffe99b24c9fac3c8d006b2f884a6afd"
+			},
+			{
+				"path": "e2e/claim-check-budgets.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "2ce14fb009f8f3d4838b174ca2a403bbb95c2df5",
+				"size": 2198,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/2ce14fb009f8f3d4838b174ca2a403bbb95c2df5"
+			},
+			{
+				"path": "e2e/claim-check-consult.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "798dc3ed1e6d92009189b4a62cc05c675b370aa2",
+				"size": 4434,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/798dc3ed1e6d92009189b4a62cc05c675b370aa2"
+			},
+			{
+				"path": "e2e/claim-check-engine.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "4792bdefcea97984307bf268f37db4cbc166fe6e",
+				"size": 3734,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/4792bdefcea97984307bf268f37db4cbc166fe6e"
+			},
+			{
+				"path": "e2e/claim-check-evidence.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a51f44c36acfd6d6410b59364d8664009b8a6033",
+				"size": 1032,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a51f44c36acfd6d6410b59364d8664009b8a6033"
+			},
+			{
+				"path": "e2e/claim-check-golden.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "30c0512987ca3ae829a913392b1de81c7434c5e6",
+				"size": 5683,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/30c0512987ca3ae829a913392b1de81c7434c5e6"
+			},
+			{
+				"path": "e2e/claim-check-helpers.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "df12c5d0809de9d6b2a0529bfa17dd1e1ec0892e",
+				"size": 1291,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/df12c5d0809de9d6b2a0529bfa17dd1e1ec0892e"
+			},
+			{
+				"path": "e2e/claim-check-keyboard.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "94a549bc09e08cf73873ba6835f0d8cfa1ca490b",
+				"size": 4540,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/94a549bc09e08cf73873ba6835f0d8cfa1ca490b"
+			},
+			{
+				"path": "e2e/claim-check-pages.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "cbdee89b89ab96a8ff213f8ddaf42443fa683532",
+				"size": 3580,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/cbdee89b89ab96a8ff213f8ddaf42443fa683532"
+			},
+			{
+				"path": "e2e/claim-check-privacy.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "dac6f6dcab829b23666248a3b48aab98cbd3119d",
+				"size": 2231,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/dac6f6dcab829b23666248a3b48aab98cbd3119d"
+			},
+			{
+				"path": "e2e/claim-check-rail.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b49a5395c74f59e35ed58cf4a3294a4a77d8228a",
+				"size": 4155,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b49a5395c74f59e35ed58cf4a3294a4a77d8228a"
+			},
+			{
+				"path": "e2e/claim-check-refusals.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "42b843a65aaffd770b048dd6fce291c762a8670e",
+				"size": 1397,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/42b843a65aaffd770b048dd6fce291c762a8670e"
+			},
+			{
+				"path": "e2e/claim-check-replay.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "3710fe72c486a12aecd7d489d4eb2ebb8ae6f3db",
+				"size": 5231,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/3710fe72c486a12aecd7d489d4eb2ebb8ae6f3db"
+			},
+			{
+				"path": "e2e/claim-check-screens.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "230454e30c816d64252de6a6fd1684c6f35f5815",
+				"size": 2456,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/230454e30c816d64252de6a6fd1684c6f35f5815"
+			},
+			{
+				"path": "e2e/claim-check-shell.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b40f4580604b1ab2b099a8fc0315399458a4ea3f",
+				"size": 822,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b40f4580604b1ab2b099a8fc0315399458a4ea3f"
+			},
+			{
+				"path": "e2e/claim-check-start.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "9494125b27c4ca0575fe40f1b26d93ef11af14d4",
+				"size": 1860,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/9494125b27c4ca0575fe40f1b26d93ef11af14d4"
+			},
+			{
+				"path": "e2e/claim-check-verdict.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "3d63450f28e5925f61fe94ac5c63bb178b42aaa6",
+				"size": 3364,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/3d63450f28e5925f61fe94ac5c63bb178b42aaa6"
+			},
+			{
+				"path": "e2e/claim-check-xray.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "4f3141872e1b7864bfaf602b8f83fdf0b2c3623a",
+				"size": 5782,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/4f3141872e1b7864bfaf602b8f83fdf0b2c3623a"
+			},
+			{
+				"path": "e2e/evidence.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "650da66f9f39abb14dc315239cff40486f44611e",
+				"size": 1747,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/650da66f9f39abb14dc315239cff40486f44611e"
+			},
+			{
+				"path": "e2e/kit-answer-boolean.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ff59860fd71eb9e5bf32121e2c773b33eecaf8d0",
+				"size": 4531,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ff59860fd71eb9e5bf32121e2c773b33eecaf8d0"
+			},
+			{
+				"path": "e2e/kit-answer-date.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "95315f31defa0c34fa4fbbf56b0b1da7d6c5c8e6",
+				"size": 2665,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/95315f31defa0c34fa4fbbf56b0b1da7d6c5c8e6"
+			},
+			{
+				"path": "e2e/kit-answer-enum.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "aeb0119a96ac3cc4419198d8d7e26bf280308143",
+				"size": 4418,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/aeb0119a96ac3cc4419198d8d7e26bf280308143"
+			},
+			{
+				"path": "e2e/kit-answer-money.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "2ad7b30dd0fba24602a07b06fc7f0e979400fa66",
+				"size": 5457,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/2ad7b30dd0fba24602a07b06fc7f0e979400fa66"
+			},
+			{
+				"path": "e2e/kit-answer-number.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "3f7dd72853a83564b4d5595c5a18cb3842f97c8b",
+				"size": 3021,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/3f7dd72853a83564b4d5595c5a18cb3842f97c8b"
+			},
+			{
+				"path": "e2e/kit-answers-rail.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "84264afd77c6c150b18e92e8697b14d3b049da7c",
+				"size": 4456,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/84264afd77c6c150b18e92e8697b14d3b049da7c"
+			},
+			{
+				"path": "e2e/kit-app-shell.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d15fd66fd3f69a4eaaa6631ea5481e47a966a57c",
+				"size": 4152,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d15fd66fd3f69a4eaaa6631ea5481e47a966a57c"
+			},
+			{
+				"path": "e2e/kit-button.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "4cc9e58f4e1652ca656c19f5a65c77a4345e7118",
+				"size": 5578,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/4cc9e58f4e1652ca656c19f5a65c77a4345e7118"
+			},
+			{
+				"path": "e2e/kit-check-row.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "3ffd647e866d90dbe89897e653d7c0b0039c6b82",
+				"size": 4365,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/3ffd647e866d90dbe89897e653d7c0b0039c6b82"
+			},
+			{
+				"path": "e2e/kit-clause-quote.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b7d6fe22a1dfd3bbcfc7dfb6736a5bb4a3d0f76a",
+				"size": 3590,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b7d6fe22a1dfd3bbcfc7dfb6736a5bb4a3d0f76a"
+			},
+			{
+				"path": "e2e/kit-disclosure.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "41cc96720c9c002e59b2bf397843bb4e89031b8a",
+				"size": 5154,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/41cc96720c9c002e59b2bf397843bb4e89031b8a"
+			},
+			{
+				"path": "e2e/kit-fixtures.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "cfe2188163234daf62d5207f41b889faaa7acb0c",
+				"size": 2269,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/cfe2188163234daf62d5207f41b889faaa7acb0c"
+			},
+			{
+				"path": "e2e/kit-ledger.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "22e96a735a47ba71f2d0c99643d8b76d2b9ca5b1",
+				"size": 4363,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/22e96a735a47ba71f2d0c99643d8b76d2b9ca5b1"
+			},
+			{
+				"path": "e2e/kit-matrix.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e09416dfeb48d5846eebca20f5fdc36fb7e6fe62",
+				"size": 5342,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e09416dfeb48d5846eebca20f5fdc36fb7e6fe62"
+			},
+			{
+				"path": "e2e/kit-primitives.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "33227fd8cc1b7266ca5d55e6368d88a381fbdefd",
+				"size": 2861,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/33227fd8cc1b7266ca5d55e6368d88a381fbdefd"
+			},
+			{
+				"path": "e2e/kit-proof-tree-keys.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "875dd0a007ab22457e63c4c93297391c9f069788",
+				"size": 4615,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/875dd0a007ab22457e63c4c93297391c9f069788"
+			},
+			{
+				"path": "e2e/kit-proof-tree.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "11cf267c45b77157770486c1542f2f6aac4805ec",
+				"size": 7112,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/11cf267c45b77157770486c1542f2f6aac4805ec"
+			},
+			{
+				"path": "e2e/kit-proportion-bar.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "0f238158b6118f22525dd4c10211dff22145868b",
+				"size": 2927,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/0f238158b6118f22525dd4c10211dff22145868b"
+			},
+			{
+				"path": "e2e/kit-question-card.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "bbcba8ac67fdf431d261005beb71b005d005c812",
+				"size": 7763,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/bbcba8ac67fdf431d261005beb71b005d005c812"
+			},
+			{
+				"path": "e2e/kit-screens.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "86427e91fa80bc07387f88a9934482d060de7564",
+				"size": 3683,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/86427e91fa80bc07387f88a9934482d060de7564"
+			},
+			{
+				"path": "e2e/kit-sheet-film.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "708343a645360ed6f4406f6068b582cf46f55181",
+				"size": 5101,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/708343a645360ed6f4406f6068b582cf46f55181"
+			},
+			{
+				"path": "e2e/kit-source-badge.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "623129c46386964a9db11df708c285376673eb96",
+				"size": 1478,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/623129c46386964a9db11df708c285376673eb96"
+			},
+			{
+				"path": "e2e/kit-stale-link.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "fd662d5058e924f0aac1cec137867343adcab736",
+				"size": 2695,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/fd662d5058e924f0aac1cec137867343adcab736"
+			},
+			{
+				"path": "e2e/kit-sweep.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e8640adf7caf84c19b06619c677e201be4f784a7",
+				"size": 3578,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e8640adf7caf84c19b06619c677e201be4f784a7"
+			},
+			{
+				"path": "e2e/kit-verdict-headline.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d560ae912ea212198f4f9af730b16b31e0eef29f",
+				"size": 3670,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d560ae912ea212198f4f9af730b16b31e0eef29f"
+			},
+			{
+				"path": "e2e/kit-what-if-list.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "12b3b2910eb44c556c278475de5c32cd262f20a9",
+				"size": 2160,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/12b3b2910eb44c556c278475de5c32cd262f20a9"
+			},
+			{
+				"path": "e2e/kit-xray-stage.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "04af3e8b7a50230f305f291d017df2d49cd81a6f",
+				"size": 6580,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/04af3e8b7a50230f305f291d017df2d49cd81a6f"
+			},
+			{
+				"path": "e2e/kit.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "1944c6307e68147cea5d33026f4e9003a23da24a",
+				"size": 8279,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/1944c6307e68147cea5d33026f4e9003a23da24a"
+			},
+			{
+				"path": "e2e/site.spec.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "2425179218c392357cfeebe0cb68cf4bedead06f",
+				"size": 253,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/2425179218c392357cfeebe0cb68cf4bedead06f"
+			},
+			{
+				"path": "e2e/sweep.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "bf37c4012100d8b438032ca32f35e8c78f6a414b",
+				"size": 1545,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/bf37c4012100d8b438032ca32f35e8c78f6a414b"
+			},
+			{
+				"path": "package.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8edb9d1fb79a9d98a08f55305701ee21036c3293",
+				"size": 890,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8edb9d1fb79a9d98a08f55305701ee21036c3293"
+			},
+			{
+				"path": "packages",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "61bc36bc964ddb38fc6049c7b975c17f95baf0f7",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/61bc36bc964ddb38fc6049c7b975c17f95baf0f7"
+			},
+			{
+				"path": "packages/engine",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "70e8dc411cf119acaabb82035881fe1a0dcbbde0",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/70e8dc411cf119acaabb82035881fe1a0dcbbde0"
+			},
+			{
+				"path": "packages/engine/package.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "17514e3c760d6988bda50f7db16ca875d1fccec2",
+				"size": 218,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/17514e3c760d6988bda50f7db16ca875d1fccec2"
+			},
+			{
+				"path": "packages/engine/src",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "101c0d980f59b0991011825ac84985f32067836a",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/101c0d980f59b0991011825ac84985f32067836a"
+			},
+			{
+				"path": "packages/engine/src/api-contract.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "5940485d3fb8e93e346bbbadcc133586c03939f9",
+				"size": 6999,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/5940485d3fb8e93e346bbbadcc133586c03939f9"
+			},
+			{
+				"path": "packages/engine/src/api.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "9d8b9103c6af9b9398e216a8c8c1b562aa430117",
+				"size": 2721,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/9d8b9103c6af9b9398e216a8c8c1b562aa430117"
+			},
+			{
+				"path": "packages/engine/src/calendar.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "9d8822a129e9432b06ce05e1478cd45b6572d2fc",
+				"size": 2064,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/9d8822a129e9432b06ce05e1478cd45b6572d2fc"
+			},
+			{
+				"path": "packages/engine/src/calendar.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "72d2984f636a0ac59825c991740003c3dd13c02c",
+				"size": 1997,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/72d2984f636a0ac59825c991740003c3dd13c02c"
+			},
+			{
+				"path": "packages/engine/src/check.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "09261495a6d09096dd6de1c8859c457fc7a50a00",
+				"size": 9218,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/09261495a6d09096dd6de1c8859c457fc7a50a00"
+			},
+			{
+				"path": "packages/engine/src/check.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ce188c8c0bb3a8b6d377198a45fe0b15410f36c1",
+				"size": 3357,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ce188c8c0bb3a8b6d377198a45fe0b15410f36c1"
+			},
+			{
+				"path": "packages/engine/src/codec.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "667f73f900f60f91ffe92479c3166f66f5609c50",
+				"size": 12372,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/667f73f900f60f91ffe92479c3166f66f5609c50"
+			},
+			{
+				"path": "packages/engine/src/codec",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "32fd0af48c5154d04f4e8ab4e8f4294dc087b9fb",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/32fd0af48c5154d04f4e8ab4e8f4294dc087b9fb"
+			},
+			{
+				"path": "packages/engine/src/codec/base64url.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "1761fc582b5b5f40df9be35c2c3b489dba5ab1c9",
+				"size": 3073,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/1761fc582b5b5f40df9be35c2c3b489dba5ab1c9"
+			},
+			{
+				"path": "packages/engine/src/codec/bytes.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b46f2a4d7811d64b6a1f0fc87ae9b3ca0141486a",
+				"size": 4152,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b46f2a4d7811d64b6a1f0fc87ae9b3ca0141486a"
+			},
+			{
+				"path": "packages/engine/src/codec/encode.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "24c2a4447f907ddaba61b440e775e42f362f749e",
+				"size": 7146,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/24c2a4447f907ddaba61b440e775e42f362f749e"
+			},
+			{
+				"path": "packages/engine/src/codec/sha256.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b30c06feb9dc07e14deb0dfec1f5de743962e18b",
+				"size": 6351,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b30c06feb9dc07e14deb0dfec1f5de743962e18b"
+			},
+			{
+				"path": "packages/engine/src/codec/sha256.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "5efaa29270fc9da9328d57b704a623dcdaa134d4",
+				"size": 3313,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/5efaa29270fc9da9328d57b704a623dcdaa134d4"
+			},
+			{
+				"path": "packages/engine/src/consultation-step.perf.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "14c854819ddb8e1f259e651acdea099dbf96425a",
+				"size": 6033,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/14c854819ddb8e1f259e651acdea099dbf96425a"
+			},
+			{
+				"path": "packages/engine/src/determinism.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "85f9e0fcebcee30988dbf61686403643f61a6980",
+				"size": 4883,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/85f9e0fcebcee30988dbf61686403643f61a6980"
+			},
+			{
+				"path": "packages/engine/src/engine-contract.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "110ccfcd562e4a5a99fedf474b426a498a614462",
+				"size": 28150,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/110ccfcd562e4a5a99fedf474b426a498a614462"
+			},
+			{
+				"path": "packages/engine/src/errors.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "2ec3d4332a37810802830aa7aa4a7b6ba69e333b",
+				"size": 894,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/2ec3d4332a37810802830aa7aa4a7b6ba69e333b"
+			},
+			{
+				"path": "packages/engine/src/explain-skipped-branch.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "f6397838692d7b9ccffd57332d86351cf208dffa",
+				"size": 3672,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/f6397838692d7b9ccffd57332d86351cf208dffa"
+			},
+			{
+				"path": "packages/engine/src/explain.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "71b2a5d745aef61191d3502c61a49d2694c5eda6",
+				"size": 3591,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/71b2a5d745aef61191d3502c61a49d2694c5eda6"
+			},
+			{
+				"path": "packages/engine/src/graph.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "12aa4bb5dfc0cf785acb761ef81f2dd9eae60b86",
+				"size": 2666,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/12aa4bb5dfc0cf785acb761ef81f2dd9eae60b86"
+			},
+			{
+				"path": "packages/engine/src/index.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "2a171ce91b794f4272d5b9a5071232738898509e",
+				"size": 871,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/2a171ce91b794f4272d5b9a5071232738898509e"
+			},
+			{
+				"path": "packages/engine/src/labels.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "6172657678f0ec551d75d3e5102991c68862dd3a",
+				"size": 3468,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/6172657678f0ec551d75d3e5102991c68862dd3a"
+			},
+			{
+				"path": "packages/engine/src/lang",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "7f9a65f60919a46a541272c9e1103ff80f4f5667",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/7f9a65f60919a46a541272c9e1103ff80f4f5667"
+			},
+			{
+				"path": "packages/engine/src/lang/dates.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "75abf0c79aff7c39f20af2aa4d253e521d84ae73",
+				"size": 1840,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/75abf0c79aff7c39f20af2aa4d253e521d84ae73"
+			},
+			{
+				"path": "packages/engine/src/lang/dates.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b9d0cc350792ce6666226a56dfb1581692af97ac",
+				"size": 1351,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b9d0cc350792ce6666226a56dfb1581692af97ac"
+			},
+			{
+				"path": "packages/engine/src/lang/evaluate.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "568cecf759bc118902d309fc7d15c4d92e4983fc",
+				"size": 21120,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/568cecf759bc118902d309fc7d15c4d92e4983fc"
+			},
+			{
+				"path": "packages/engine/src/lang/evaluate.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "f8f61e1dd0549593104d67491f7016ead749c913",
+				"size": 12566,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/f8f61e1dd0549593104d67491f7016ead749c913"
+			},
+			{
+				"path": "packages/engine/src/lang/expr.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ba0070fea0a30788a89e65eb09da74b7e428a3a2",
+				"size": 184,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ba0070fea0a30788a89e65eb09da74b7e428a3a2"
+			},
+			{
+				"path": "packages/engine/src/lang/finite-results.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "5e777809d1c7a3ee3f62697a2b099360f1a4bb81",
+				"size": 7563,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/5e777809d1c7a3ee3f62697a2b099360f1a4bb81"
+			},
+			{
+				"path": "packages/engine/src/lang/parse.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "0362a8b0f5326c32aca63425abec16149bacbd4e",
+				"size": 17189,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/0362a8b0f5326c32aca63425abec16149bacbd4e"
+			},
+			{
+				"path": "packages/engine/src/lang/parse.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8b63041797ebfc05b979943a9f7d97683139d2a3",
+				"size": 19185,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8b63041797ebfc05b979943a9f7d97683139d2a3"
+			},
+			{
+				"path": "packages/engine/src/lang/pipeline.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "6b0fd405861bf57829f4230c47aa473897e7c692",
+				"size": 1588,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/6b0fd405861bf57829f4230c47aa473897e7c692"
+			},
+			{
+				"path": "packages/engine/src/lang/print.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "30b38648902b5b16558b7784370d316d1da05396",
+				"size": 4618,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/30b38648902b5b16558b7784370d316d1da05396"
+			},
+			{
+				"path": "packages/engine/src/lang/print.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b15a8c0d815bd9acb0bda8099fbc18eec971f5a7",
+				"size": 2865,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b15a8c0d815bd9acb0bda8099fbc18eec971f5a7"
+			},
+			{
+				"path": "packages/engine/src/lang/round-trip.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "234656f45c194b5ff5faf6bc55c9c97aa68761d2",
+				"size": 6786,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/234656f45c194b5ff5faf6bc55c9c97aa68761d2"
+			},
+			{
+				"path": "packages/engine/src/lang/three-valued.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c217ad0cb00a9960719199e14a0bc9527629272c",
+				"size": 7210,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c217ad0cb00a9960719199e14a0bc9527629272c"
+			},
+			{
+				"path": "packages/engine/src/lang/total-parser.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ff5dcbf084c52f9d2b0d45b18476a88904dd93db",
+				"size": 750,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ff5dcbf084c52f9d2b0d45b18476a88904dd93db"
+			},
+			{
+				"path": "packages/engine/src/mode-agreement.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "7aced7a61eb81adf37e8d0da656cde2a3617aced",
+				"size": 7630,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/7aced7a61eb81adf37e8d0da656cde2a3617aced"
+			},
+			{
+				"path": "packages/engine/src/money.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "727521a2fd97ecd6d7e4e44181e972cf5fd1a9f7",
+				"size": 3641,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/727521a2fd97ecd6d7e4e44181e972cf5fd1a9f7"
+			},
+			{
+				"path": "packages/engine/src/no-wasted-questions.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d2e8375840e48aa5bebb74aba4f57e7535bc4780",
+				"size": 6542,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d2e8375840e48aa5bebb74aba4f57e7535bc4780"
+			},
+			{
+				"path": "packages/engine/src/order-independence.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "2dc4769f3e3b248d9b8e43eb754ab9082e6957b2",
+				"size": 5425,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/2dc4769f3e3b248d9b8e43eb754ab9082e6957b2"
+			},
+			{
+				"path": "packages/engine/src/outcome.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "43e153f6344e29ec15c2c483936563a561be7244",
+				"size": 3475,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/43e153f6344e29ec15c2c483936563a561be7244"
+			},
+			{
+				"path": "packages/engine/src/outcome.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "cf7b40f88b68c6d58c30596e63ca3ce161aafe35",
+				"size": 2918,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/cf7b40f88b68c6d58c30596e63ca3ce161aafe35"
+			},
+			{
+				"path": "packages/engine/src/proof-because.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "5e487e0398ef8a56ffabde4799e987931e279850",
+				"size": 1844,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/5e487e0398ef8a56ffabde4799e987931e279850"
+			},
+			{
+				"path": "packages/engine/src/public-values.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "cd68fb8139a44540513954de8a3ce7164102aa2c",
+				"size": 8597,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/cd68fb8139a44540513954de8a3ce7164102aa2c"
+			},
+			{
+				"path": "packages/engine/src/reference-agreement.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "49ce1dcac1624498d2692257bcc101e971dfedde",
+				"size": 5111,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/49ce1dcac1624498d2692257bcc101e971dfedde"
+			},
+			{
+				"path": "packages/engine/src/relevance.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e4efcb989e5e34a2e77e6f6785982e63ce849dd5",
+				"size": 3326,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e4efcb989e5e34a2e77e6f6785982e63ce849dd5"
+			},
+			{
+				"path": "packages/engine/src/relevance.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "987f597284dab8e6870a04c9ce8654f4b96c8e8a",
+				"size": 2480,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/987f597284dab8e6870a04c9ce8654f4b96c8e8a"
+			},
+			{
+				"path": "packages/engine/src/replay.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "7370866c13083d3d23f96e020e312a0a14d1198b",
+				"size": 14923,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/7370866c13083d3d23f96e020e312a0a14d1198b"
+			},
+			{
+				"path": "packages/engine/src/resolve.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ce727be87afb1e7c7f827a5dec56959227439a9c",
+				"size": 5804,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ce727be87afb1e7c7f827a5dec56959227439a9c"
+			},
+			{
+				"path": "packages/engine/src/resolve.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d85bb253d2cbe17a5d257b6d4c21fecf6e826016",
+				"size": 4091,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d85bb253d2cbe17a5d257b6d4c21fecf6e826016"
+			},
+			{
+				"path": "packages/engine/src/session.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "1fe5f4c91b453020c9a3678ea3e7641851cbd530",
+				"size": 4907,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/1fe5f4c91b453020c9a3678ea3e7641851cbd530"
+			},
+			{
+				"path": "packages/engine/src/sound-proofs.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "161969e15eeabf0b05e780bfb2ec331cd6c52102",
+				"size": 13567,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/161969e15eeabf0b05e780bfb2ec331cd6c52102"
+			},
+			{
+				"path": "packages/engine/src/termination.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "6749849668a5d82777f11dcee1f7367a9d9bc0c8",
+				"size": 8921,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/6749849668a5d82777f11dcee1f7367a9d9bc0c8"
+			},
+			{
+				"path": "packages/engine/src/testkit",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "4ed66227e749079e31e91e548d463abb726bde42",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/4ed66227e749079e31e91e548d463abb726bde42"
+			},
+			{
+				"path": "packages/engine/src/testkit/index.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "886b0d0ab50fbe92279e00addc022435f2bc5741",
+				"size": 539,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/886b0d0ab50fbe92279e00addc022435f2bc5741"
+			},
+			{
+				"path": "packages/engine/src/testkit/kb-arb.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "eec368b4dd829fff265538128f09aec0d5619746",
+				"size": 12644,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/eec368b4dd829fff265538128f09aec0d5619746"
+			},
+			{
+				"path": "packages/engine/src/testkit/read-once-arb.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a34c7e8ce74412cb0139eacf1ca0b87a330630aa",
+				"size": 9167,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a34c7e8ce74412cb0139eacf1ca0b87a330630aa"
+			},
+			{
+				"path": "packages/engine/src/testkit/reference.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "761b3c05037de4dbf5ee8ac21b5396031a1f5cad",
+				"size": 7602,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/761b3c05037de4dbf5ee8ac21b5396031a1f5cad"
+			},
+			{
+				"path": "packages/engine/src/testkit/session-arb.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "933c8a1a45c6f3d6bdf4f2e2923982ea4230bbc6",
+				"size": 4456,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/933c8a1a45c6f3d6bdf4f2e2923982ea4230bbc6"
+			},
+			{
+				"path": "packages/engine/src/testkit/testkit.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e49157e5714affcd5a82ef6532c0afa9e24abe39",
+				"size": 5857,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e49157e5714affcd5a82ef6532c0afa9e24abe39"
+			},
+			{
+				"path": "packages/engine/src/testkit/walk.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c50c846cf63e40cf6004235960e6f90bdb24e123",
+				"size": 2754,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c50c846cf63e40cf6004235960e6f90bdb24e123"
+			},
+			{
+				"path": "packages/engine/src/thresholds.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a747db4dd0607e3d5d74e84c34c6888881ed0514",
+				"size": 4243,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a747db4dd0607e3d5d74e84c34c6888881ed0514"
+			},
+			{
+				"path": "packages/engine/src/types.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b9c4d451a083915e0243c2705b967c78e51dfe14",
+				"size": 4530,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b9c4d451a083915e0243c2705b967c78e51dfe14"
+			},
+			{
+				"path": "packages/engine/src/util.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "37f65d0aeac941162440286dc7e0c9022bf89af8",
+				"size": 2113,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/37f65d0aeac941162440286dc7e0c9022bf89af8"
+			},
+			{
+				"path": "packages/engine/src/what-if-thresholds.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "617b3daf6e6fd918de6dc7bbfda07852e5bb4afd",
+				"size": 6854,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/617b3daf6e6fd918de6dc7bbfda07852e5bb4afd"
+			},
+			{
+				"path": "packages/engine/src/what-if.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "796c8469e8960a87825d50b20698811d4a9dc3ca",
+				"size": 12414,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/796c8469e8960a87825d50b20698811d4a9dc3ca"
+			},
+			{
+				"path": "packages/engine/src/what-if.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d93fdec3780baf1d78381647780e821f7734a543",
+				"size": 1972,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d93fdec3780baf1d78381647780e821f7734a543"
+			},
+			{
+				"path": "packages/kb-tools",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "f3bd2cce14a7002023d21de7f2768faa1f69c3b5",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/f3bd2cce14a7002023d21de7f2768faa1f69c3b5"
+			},
+			{
+				"path": "packages/kb-tools/bin",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "f7b9ab1136b85647bba60baf5ce22451cb93fc34",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/f7b9ab1136b85647bba60baf5ce22451cb93fc34"
+			},
+			{
+				"path": "packages/kb-tools/bin/dc.mjs",
+				"mode": "100755",
+				"type": "blob",
+				"sha": "24dc607fe9e241782aa8c7c93947f9b300ac98df",
+				"size": 314,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/24dc607fe9e241782aa8c7c93947f9b300ac98df"
+			},
+			{
+				"path": "packages/kb-tools/fixtures",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "61f10cc42a546b0d1490006a08463b062daae939",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/61f10cc42a546b0d1490006a08463b062daae939"
+			},
+			{
+				"path": "packages/kb-tools/fixtures/toy-money.yaml",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "2ab7f67f89f738da68877d714799821d0777224b",
+				"size": 427,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/2ab7f67f89f738da68877d714799821d0777224b"
+			},
+			{
+				"path": "packages/kb-tools/package.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "7737823d97fcf2ddad1ef9b5fdc37b177bb85bf6",
+				"size": 387,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/7737823d97fcf2ddad1ef9b5fdc37b177bb85bf6"
+			},
+			{
+				"path": "packages/kb-tools/src",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "5de5f956fb75f75d295ef8789d5b5c9a8e0edaeb",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/5de5f956fb75f75d295ef8789d5b5c9a8e0edaeb"
+			},
+			{
+				"path": "packages/kb-tools/src/analyse.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "77c38092d6a8b7aee8388c9618e333a0e1749892",
+				"size": 2501,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/77c38092d6a8b7aee8388c9618e333a0e1749892"
+			},
+			{
+				"path": "packages/kb-tools/src/catalogue.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8062496dd9e1144addc18668ed7a5a22531c4e71",
+				"size": 2971,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8062496dd9e1144addc18668ed7a5a22531c4e71"
+			},
+			{
+				"path": "packages/kb-tools/src/checks",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "fc7897cd2ee391cd8b9c568f200e0d416c9c1d34",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/fc7897cd2ee391cd8b9c568f200e0d416c9c1d34"
+			},
+			{
+				"path": "packages/kb-tools/src/checks/cycles.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "0552e0799321b8c30c70711fea035d9c7bc35fee",
+				"size": 4962,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/0552e0799321b8c30c70711fea035d9c7bc35fee"
+			},
+			{
+				"path": "packages/kb-tools/src/checks/dead-guards.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "69831e49037981f49a873bbdfb7983cc17760e89",
+				"size": 1890,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/69831e49037981f49a873bbdfb7983cc17760e89"
+			},
+			{
+				"path": "packages/kb-tools/src/checks/enums.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "bd821f1fa4b37c10f2b94aa6dfc3f72c0c0cb488",
+				"size": 2599,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/bd821f1fa4b37c10f2b94aa6dfc3f72c0c0cb488"
+			},
+			{
+				"path": "packages/kb-tools/src/checks/fallback.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "76d5d00007fe01dc0f513de3fe9ea92e4d14516e",
+				"size": 970,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/76d5d00007fe01dc0f513de3fe9ea92e4d14516e"
+			},
+			{
+				"path": "packages/kb-tools/src/checks/goals.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "39ae03ea926261766683b375aa76689dd4f36c25",
+				"size": 1567,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/39ae03ea926261766683b375aa76689dd4f36c25"
+			},
+			{
+				"path": "packages/kb-tools/src/checks/money.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "7ee6339a21c3bab03812792c0e522fb804846bd6",
+				"size": 2716,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/7ee6339a21c3bab03812792c0e522fb804846bd6"
+			},
+			{
+				"path": "packages/kb-tools/src/checks/parse-exprs.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c088ffe7b8df08ed18342ccc84ac81a1300eb941",
+				"size": 2556,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c088ffe7b8df08ed18342ccc84ac81a1300eb941"
+			},
+			{
+				"path": "packages/kb-tools/src/checks/refs.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "568507b1f8d3c3a2974caf28917d0bcf02996973",
+				"size": 3151,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/568507b1f8d3c3a2974caf28917d0bcf02996973"
+			},
+			{
+				"path": "packages/kb-tools/src/checks/types.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "fd77e3d5101a11c89fa2cf53afd842fb51fcbc67",
+				"size": 6182,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/fd77e3d5101a11c89fa2cf53afd842fb51fcbc67"
+			},
+			{
+				"path": "packages/kb-tools/src/cli-build.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d553cb03700c0f9631ce6a690507fff5b530c84d",
+				"size": 2330,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d553cb03700c0f9631ce6a690507fff5b530c84d"
+			},
+			{
+				"path": "packages/kb-tools/src/cli-discover.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "220a0a2a074236ee5252a418052df223ab8babba",
+				"size": 1953,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/220a0a2a074236ee5252a418052df223ab8babba"
+			},
+			{
+				"path": "packages/kb-tools/src/cli-output.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "39e91e082fc1af4f3f405f3d2e810892867afde9",
+				"size": 5192,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/39e91e082fc1af4f3f405f3d2e810892867afde9"
+			},
+			{
+				"path": "packages/kb-tools/src/cli.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "5ddef1d3c16a9c37c0d9868ba5e7ceae613990f9",
+				"size": 11823,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/5ddef1d3c16a9c37c0d9868ba5e7ceae613990f9"
+			},
+			{
+				"path": "packages/kb-tools/src/cli",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "05e6bce107dc076bf3979ec4d1cb011693c311dd",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/05e6bce107dc076bf3979ec4d1cb011693c311dd"
+			},
+			{
+				"path": "packages/kb-tools/src/cli/args.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "23d2adb6578167aa1ec7d5bb1e209b2697e40b73",
+				"size": 1931,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/23d2adb6578167aa1ec7d5bb1e209b2697e40b73"
+			},
+			{
+				"path": "packages/kb-tools/src/cli/discover.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "bdfaee319e5dffaa01aebb025853c5df3af5861c",
+				"size": 6630,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/bdfaee319e5dffaa01aebb025853c5df3af5861c"
+			},
+			{
+				"path": "packages/kb-tools/src/cli/format.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e1722558d157bc48ebd072f934b9eb65b1457c80",
+				"size": 1275,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e1722558d157bc48ebd072f934b9eb65b1457c80"
+			},
+			{
+				"path": "packages/kb-tools/src/cli/golden-args.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "3eafd6caf23c3cb8963e3ac7c0ba8753604b2b0f",
+				"size": 1600,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/3eafd6caf23c3cb8963e3ac7c0ba8753604b2b0f"
+			},
+			{
+				"path": "packages/kb-tools/src/cli/golden-discover.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "120b95e62215d595c268fa509e41be1d30f921a3",
+				"size": 2776,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/120b95e62215d595c268fa509e41be1d30f921a3"
+			},
+			{
+				"path": "packages/kb-tools/src/cli/golden-discover.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e79be69b584294b0710443de15bb35e300333293",
+				"size": 3544,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e79be69b584294b0710443de15bb35e300333293"
+			},
+			{
+				"path": "packages/kb-tools/src/cli/golden.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "36498b984028488b179b6cc779f5f0beb9127689",
+				"size": 8141,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/36498b984028488b179b6cc779f5f0beb9127689"
+			},
+			{
+				"path": "packages/kb-tools/src/cli/golden.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "63cd4fb77c3be3eeda80ccdefd5c6bca865822d8",
+				"size": 10381,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/63cd4fb77c3be3eeda80ccdefd5c6bca865822d8"
+			},
+			{
+				"path": "packages/kb-tools/src/cli/golden.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a8df03c721474006d3983419b58bedb0d3e9428b",
+				"size": 8505,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a8df03c721474006d3983419b58bedb0d3e9428b"
+			},
+			{
+				"path": "packages/kb-tools/src/cli/host-node.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e01a81b9ed1ffeae7bf079a65208a32562da8182",
+				"size": 2297,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e01a81b9ed1ffeae7bf079a65208a32562da8182"
+			},
+			{
+				"path": "packages/kb-tools/src/cli/host.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "32a903631aeb7a13ee60571167ea7d4a6b88506f",
+				"size": 714,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/32a903631aeb7a13ee60571167ea7d4a6b88506f"
+			},
+			{
+				"path": "packages/kb-tools/src/cli/main.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "7583c955cdd6fcd2926a94eb509c6d96af71a2b1",
+				"size": 644,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/7583c955cdd6fcd2926a94eb509c6d96af71a2b1"
+			},
+			{
+				"path": "packages/kb-tools/src/cli/run.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "5aaae5405338761cb3d73ac14aad1809eef7560b",
+				"size": 3109,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/5aaae5405338761cb3d73ac14aad1809eef7560b"
+			},
+			{
+				"path": "packages/kb-tools/src/codes.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c8d0a54a680d2aef9fe65bf192281f5d06ec792f",
+				"size": 8879,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c8d0a54a680d2aef9fe65bf192281f5d06ec792f"
+			},
+			{
+				"path": "packages/kb-tools/src/compile-json.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8996256e43f9439ce97eebf397899b832b7e7dbf",
+				"size": 3647,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8996256e43f9439ce97eebf397899b832b7e7dbf"
+			},
+			{
+				"path": "packages/kb-tools/src/compile-render.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "f086e07d51be75d81e9047c55dd78f00d35d7cad",
+				"size": 1524,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/f086e07d51be75d81e9047c55dd78f00d35d7cad"
+			},
+			{
+				"path": "packages/kb-tools/src/compile.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c14db1e152f7f2199278a235ea2864211b349027",
+				"size": 5989,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c14db1e152f7f2199278a235ea2864211b349027"
+			},
+			{
+				"path": "packages/kb-tools/src/compile.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a9ca5744802b5e573b593e181fef40dce2ae8910",
+				"size": 4096,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a9ca5744802b5e573b593e181fef40dce2ae8910"
+			},
+			{
+				"path": "packages/kb-tools/src/cycles-order.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "949265edc15bb31ad9646baabe291036f5ff2f00",
+				"size": 1263,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/949265edc15bb31ad9646baabe291036f5ff2f00"
+			},
+			{
+				"path": "packages/kb-tools/src/cycles.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "abacf9b62a2c580e828d76fe4749f88fa18e286c",
+				"size": 4855,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/abacf9b62a2c580e828d76fe4749f88fa18e286c"
+			},
+			{
+				"path": "packages/kb-tools/src/cycles.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "1cd38ad743dfdb10c7f7ab8529bca378394d0d99",
+				"size": 4341,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/1cd38ad743dfdb10c7f7ab8529bca378394d0d99"
+			},
+			{
+				"path": "packages/kb-tools/src/dead-guards.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "47514e8e183d8d8e98442fff9af95ae989a5a2a8",
+				"size": 4196,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/47514e8e183d8d8e98442fff9af95ae989a5a2a8"
+			},
+			{
+				"path": "packages/kb-tools/src/diagnostic-shape.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "38abd812bec98d066d1b26920807a482640d5b8b",
+				"size": 5165,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/38abd812bec98d066d1b26920807a482640d5b8b"
+			},
+			{
+				"path": "packages/kb-tools/src/diagnostics.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "87aee1c82e772b8e7d577f64174181cab6d6595f",
+				"size": 3145,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/87aee1c82e772b8e7d577f64174181cab6d6595f"
+			},
+			{
+				"path": "packages/kb-tools/src/diagnostics.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "20b24999e4e90912350d60260205ef006fa33ea7",
+				"size": 4071,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/20b24999e4e90912350d60260205ef006fa33ea7"
+			},
+			{
+				"path": "packages/kb-tools/src/dist-smoke.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b7af92f30c3ec127f0f8360decdaf82f50e82a10",
+				"size": 7866,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b7af92f30c3ec127f0f8360decdaf82f50e82a10"
+			},
+			{
+				"path": "packages/kb-tools/src/engine-accepts.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "77d8b526f167a5aface0fdab647559808e3f0358",
+				"size": 2072,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/77d8b526f167a5aface0fdab647559808e3f0358"
+			},
+			{
+				"path": "packages/kb-tools/src/enums.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e079b9bc6852ee00e4a3dcf075f7e4036f2b0fd6",
+				"size": 3486,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e079b9bc6852ee00e4a3dcf075f7e4036f2b0fd6"
+			},
+			{
+				"path": "packages/kb-tools/src/enums.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "565cb84b15fc6b7d96bbb82c61554adf9c704aa8",
+				"size": 3713,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/565cb84b15fc6b7d96bbb82c61554adf9c704aa8"
+			},
+			{
+				"path": "packages/kb-tools/src/expr-walk.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "fa8b65adb07cd24ed5e34462a7202a709d94aa02",
+				"size": 2562,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/fa8b65adb07cd24ed5e34462a7202a709d94aa02"
+			},
+			{
+				"path": "packages/kb-tools/src/fallback.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "7cbcc0f0edb5b0708c05a82b90c80952d94d453e",
+				"size": 3254,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/7cbcc0f0edb5b0708c05a82b90c80952d94d453e"
+			},
+			{
+				"path": "packages/kb-tools/src/golden",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "edfd98929a14192a7b046b05b4a5a4fe39469127",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/edfd98929a14192a7b046b05b4a5a4fe39469127"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/catalogue.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d8458d14309322ed34546834e13662d2fff0d85a",
+				"size": 8680,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d8458d14309322ed34546834e13662d2fff0d85a"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/check.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d183f4dbe5faa53504396b4aef9c7067f7439b52",
+				"size": 9417,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d183f4dbe5faa53504396b4aef9c7067f7439b52"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/check.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "115dedec9aa6cc2f89313aaaa4f3a8a61f32172e",
+				"size": 5769,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/115dedec9aa6cc2f89313aaaa4f3a8a61f32172e"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/coverage.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "f714b983947833d39ca71978f577af25c5c2fc6e",
+				"size": 3401,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/f714b983947833d39ca71978f577af25c5c2fc6e"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/coverage.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "9a20200564899d3d594dd1c60428ad5b35ac03ab",
+				"size": 2753,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/9a20200564899d3d594dd1c60428ad5b35ac03ab"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/coverage.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ba702fd19a70b8dc45b9fb5a85aae491929a96aa",
+				"size": 1385,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ba702fd19a70b8dc45b9fb5a85aae491929a96aa"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/exports.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "09c9ddb90cfad44fb83d78ca3f15a02b30b5cc66",
+				"size": 2779,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/09c9ddb90cfad44fb83d78ca3f15a02b30b5cc66"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/index.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "82a26d3a372f8bda923de5c38164cdff6244132f",
+				"size": 459,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/82a26d3a372f8bda923de5c38164cdff6244132f"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/load.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "cc4cd6623eb157a4d8033c40b3c3972eb14be471",
+				"size": 4162,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/cc4cd6623eb157a4d8033c40b3c3972eb14be471"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/load.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "636aa0f3c570f9b1fa2b1781038a51029506743e",
+				"size": 8757,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/636aa0f3c570f9b1fa2b1781038a51029506743e"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/load.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8d25898710017eee43bfc57ce810a49d38f5ed73",
+				"size": 2248,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8d25898710017eee43bfc57ce810a49d38f5ed73"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/model.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c134b58f56946e48bcbb27d6b743faedb5db8a3f",
+				"size": 1644,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c134b58f56946e48bcbb27d6b743faedb5db8a3f"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/model.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8ee006a9f380431e00968f4236534c96b522e49d",
+				"size": 3563,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8ee006a9f380431e00968f4236534c96b522e49d"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/mutation.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ee9ee879e7974123b95a349b42a5cbc2f44cc617",
+				"size": 2646,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ee9ee879e7974123b95a349b42a5cbc2f44cc617"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/order.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "4768a0592625d21d4228934e9687115f3d8c3d36",
+				"size": 3744,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/4768a0592625d21d4228934e9687115f3d8c3d36"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/replay.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b7eca5c465d58be8f75131a82204309644875063",
+				"size": 1797,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b7eca5c465d58be8f75131a82204309644875063"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/run-golden.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "42710c3b071685ff118dc6b54feb199c9ec2442f",
+				"size": 3691,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/42710c3b071685ff118dc6b54feb199c9ec2442f"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/run.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c12a52755a22c8ed86629716df676d590e70b7c1",
+				"size": 7867,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c12a52755a22c8ed86629716df676d590e70b7c1"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/run.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "122a68eec66ec805c1c2c13558f10eef76a51758",
+				"size": 6380,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/122a68eec66ec805c1c2c13558f10eef76a51758"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/schema.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "7e08dd6e9bec607b82e19996cda77bc86aa714e8",
+				"size": 6539,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/7e08dd6e9bec607b82e19996cda77bc86aa714e8"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/source-scan.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a31cdb32a79295a6981ff14b053551d901d4185b",
+				"size": 1879,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a31cdb32a79295a6981ff14b053551d901d4185b"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/values.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "dd4dca0dc8404a7f4d38c00f5079638d8d5de917",
+				"size": 3733,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/dd4dca0dc8404a7f4d38c00f5079638d8d5de917"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/values.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "af359a659ad294d36252b9cdb6b628a10bf80211",
+				"size": 3134,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/af359a659ad294d36252b9cdb6b628a10bf80211"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/values.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a8be60acbb1b88234c0a1231f25289ce3b946581",
+				"size": 2186,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a8be60acbb1b88234c0a1231f25289ce3b946581"
+			},
+			{
+				"path": "packages/kb-tools/src/golden/yaml.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "fc7b07d21b021e3ebab6e0d7b3226e95a9f7579f",
+				"size": 2423,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/fc7b07d21b021e3ebab6e0d7b3226e95a9f7579f"
+			},
+			{
+				"path": "packages/kb-tools/src/index.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "437d659d6ee63b5aada905483e50b9c21d5edad1",
+				"size": 2779,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/437d659d6ee63b5aada905483e50b9c21d5edad1"
+			},
+			{
+				"path": "packages/kb-tools/src/kb-format-notes.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c37beb7b8cacfaac3d0e5115639ada3a3663d1aa",
+				"size": 2301,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c37beb7b8cacfaac3d0e5115639ada3a3663d1aa"
+			},
+			{
+				"path": "packages/kb-tools/src/limits.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "da8b1f9c63ef1d6dfa0cc8ffeb2eae48ff64e821",
+				"size": 350,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/da8b1f9c63ef1d6dfa0cc8ffeb2eae48ff64e821"
+			},
+			{
+				"path": "packages/kb-tools/src/load.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "2e8a12225c8bc7b917aa724d8e18457602917e09",
+				"size": 8095,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/2e8a12225c8bc7b917aa724d8e18457602917e09"
+			},
+			{
+				"path": "packages/kb-tools/src/load",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "c375d8df2733b7d8ee1102fff04457dc8633789d",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/c375d8df2733b7d8ee1102fff04457dc8633789d"
+			},
+			{
+				"path": "packages/kb-tools/src/load/decode.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c1152afabe622fe5a32e950c98becb8bbc35d3b3",
+				"size": 790,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c1152afabe622fe5a32e950c98becb8bbc35d3b3"
+			},
+			{
+				"path": "packages/kb-tools/src/load/yaml-load.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "0edd419b8e1acf7037b8666cb2b589f43cf4ad12",
+				"size": 7203,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/0edd419b8e1acf7037b8666cb2b589f43cf4ad12"
+			},
+			{
+				"path": "packages/kb-tools/src/manifest.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "06da039d22c18bfce50bf48bde948ecabd6601d4",
+				"size": 2119,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/06da039d22c18bfce50bf48bde948ecabd6601d4"
+			},
+			{
+				"path": "packages/kb-tools/src/model.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a9d431b3ebbb432c0c7c2eb366cfdc237dc6d122",
+				"size": 1266,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a9d431b3ebbb432c0c7c2eb366cfdc237dc6d122"
+			},
+			{
+				"path": "packages/kb-tools/src/money-repo.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d5976a7b990a816826714e650e5a4188b6c53568",
+				"size": 1490,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d5976a7b990a816826714e650e5a4188b6c53568"
+			},
+			{
+				"path": "packages/kb-tools/src/money.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "06a62b807ba0b4c852cd225c2e83d4f8063db398",
+				"size": 3694,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/06a62b807ba0b4c852cd225c2e83d4f8063db398"
+			},
+			{
+				"path": "packages/kb-tools/src/money.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "523e8d15dd14e860458ca634677e4b36ed949731",
+				"size": 3459,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/523e8d15dd14e860458ca634677e4b36ed949731"
+			},
+			{
+				"path": "packages/kb-tools/src/no-cascade.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c72eb0b9853d963b42013cd91fe3f6a0b8090f6b",
+				"size": 3257,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c72eb0b9853d963b42013cd91fe3f6a0b8090f6b"
+			},
+			{
+				"path": "packages/kb-tools/src/own-names.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b05b087f19d1033f12bd771015f80d4be8138c7f",
+				"size": 3375,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b05b087f19d1033f12bd771015f80d4be8138c7f"
+			},
+			{
+				"path": "packages/kb-tools/src/print-parse.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "2fb93dabfe1b61d55fc4d247c96e7f8c7ae732de",
+				"size": 962,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/2fb93dabfe1b61d55fc4d247c96e7f8c7ae732de"
+			},
+			{
+				"path": "packages/kb-tools/src/quoted-literal.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "69f08a6b1cf39adaa17bbc6179f0fcf6e40a1033",
+				"size": 2610,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/69f08a6b1cf39adaa17bbc6179f0fcf6e40a1033"
+			},
+			{
+				"path": "packages/kb-tools/src/read.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c791a2d08858a80e979d40f7badbef6f9d7ab0e7",
+				"size": 3342,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c791a2d08858a80e979d40f7badbef6f9d7ab0e7"
+			},
+			{
+				"path": "packages/kb-tools/src/refs.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "dc9447c5deeae5f288ed4c2755831294afd8318c",
+				"size": 2146,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/dc9447c5deeae5f288ed4c2755831294afd8318c"
+			},
+			{
+				"path": "packages/kb-tools/src/refs.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "03df0c836952a85028a0b2718505c8c4c2c13927",
+				"size": 10284,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/03df0c836952a85028a0b2718505c8c4c2c13927"
+			},
+			{
+				"path": "packages/kb-tools/src/role-type-preservation.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "47ef07a35517f2103d9721466fe87e5f1c2c43ae",
+				"size": 6732,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/47ef07a35517f2103d9721466fe87e5f1c2c43ae"
+			},
+			{
+				"path": "packages/kb-tools/src/role-type.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e415a150d13759de669fd25cbb8db14e979fb6ec",
+				"size": 2215,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e415a150d13759de669fd25cbb8db14e979fb6ec"
+			},
+			{
+				"path": "packages/kb-tools/src/role-type.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "3ead269e12a9c42948fcdf39a60d9d2b123502aa",
+				"size": 3788,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/3ead269e12a9c42948fcdf39a60d9d2b123502aa"
+			},
+			{
+				"path": "packages/kb-tools/src/schema.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "997c8fc194f9c868d054faccc3d827ad77eeef91",
+				"size": 1245,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/997c8fc194f9c868d054faccc3d827ad77eeef91"
+			},
+			{
+				"path": "packages/kb-tools/src/schema.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c49a9df57e120f8954a38451c23ffd6e417536d2",
+				"size": 12491,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c49a9df57e120f8954a38451c23ffd6e417536d2"
+			},
+			{
+				"path": "packages/kb-tools/src/schema.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "24cc3d8014c5cfe5fb1b5c94a2ec4b6b1a0af9a6",
+				"size": 14583,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/24cc3d8014c5cfe5fb1b5c94a2ec4b6b1a0af9a6"
+			},
+			{
+				"path": "packages/kb-tools/src/source-scan.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "79604e38bd9ba4095faf13c3f2755e0df28f8507",
+				"size": 2642,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/79604e38bd9ba4095faf13c3f2755e0df28f8507"
+			},
+			{
+				"path": "packages/kb-tools/src/testkit-faults.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b5ca13fe6f6edd25620d82cbd0363a79ee4279ea",
+				"size": 3075,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b5ca13fe6f6edd25620d82cbd0363a79ee4279ea"
+			},
+			{
+				"path": "packages/kb-tools/src/testkit.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c82a7a0c4bd58aa41c160f86aa31b41eee064855",
+				"size": 3386,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c82a7a0c4bd58aa41c160f86aa31b41eee064855"
+			},
+			{
+				"path": "packages/kb-tools/src/testkit",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "76411428b56c923a84e1de9a5b02ceef6c67d927",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/76411428b56c923a84e1de9a5b02ceef6c67d927"
+			},
+			{
+				"path": "packages/kb-tools/src/testkit/cyclic.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "acbab1cc288c07983ec430c47b9abcad07f45dd3",
+				"size": 2614,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/acbab1cc288c07983ec430c47b9abcad07f45dd3"
+			},
+			{
+				"path": "packages/kb-tools/src/testkit/expr.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "6fa7a3309348a0ec2f99605928abf3d2614f6cc1",
+				"size": 9830,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/6fa7a3309348a0ec2f99605928abf3d2614f6cc1"
+			},
+			{
+				"path": "packages/kb-tools/src/testkit/faults.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "f474cc5cd9e546963d6cdf9fc876357e5b575a5e",
+				"size": 8347,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/f474cc5cd9e546963d6cdf9fc876357e5b575a5e"
+			},
+			{
+				"path": "packages/kb-tools/src/testkit/golden.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "f80a53cd3c5b1e1c1621fe210a0c48d7f853ca9b",
+				"size": 2254,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/f80a53cd3c5b1e1c1621fe210a0c48d7f853ca9b"
+			},
+			{
+				"path": "packages/kb-tools/src/testkit/golden.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "7f58f2a6638f031a5c07eb9e6a7841ee40063a3d",
+				"size": 2476,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/7f58f2a6638f031a5c07eb9e6a7841ee40063a3d"
+			},
+			{
+				"path": "packages/kb-tools/src/testkit/goldenFixture.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "74753ce4b61e8fe7040d29cb7590930d31dc9a03",
+				"size": 5865,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/74753ce4b61e8fe7040d29cb7590930d31dc9a03"
+			},
+			{
+				"path": "packages/kb-tools/src/testkit/index.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "265ca66f5439c3ecd6d3a1896c83ab79d9a82ffe",
+				"size": 298,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/265ca66f5439c3ecd6d3a1896c83ab79d9a82ffe"
+			},
+			{
+				"path": "packages/kb-tools/src/testkit/kb.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "28264cd236c9366458c93499a9f11137ed9b7bc8",
+				"size": 8638,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/28264cd236c9366458c93499a9f11137ed9b7bc8"
+			},
+			{
+				"path": "packages/kb-tools/src/testkit/render.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "708cccc773a70945733626c823185c4465477b2f",
+				"size": 1802,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/708cccc773a70945733626c823185c4465477b2f"
+			},
+			{
+				"path": "packages/kb-tools/src/testkit/tree.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "f68b3bebb245f59b4713285d2802d106a577ee78",
+				"size": 8069,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/f68b3bebb245f59b4713285d2802d106a577ee78"
+			},
+			{
+				"path": "packages/kb-tools/src/total.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "b3071854181fae6af6bde93e76382abfa3bfb477",
+				"size": 4291,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/b3071854181fae6af6bde93e76382abfa3bfb477"
+			},
+			{
+				"path": "packages/kb-tools/src/types.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "2fc65402eaa4fc42c21a5cb85ae415a1a7015660",
+				"size": 2522,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/2fc65402eaa4fc42c21a5cb85ae415a1a7015660"
+			},
+			{
+				"path": "packages/kb-tools/src/types.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "9c4a2f284476e8d1b7ff973309275f6a4f25f97a",
+				"size": 9266,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/9c4a2f284476e8d1b7ff973309275f6a4f25f97a"
+			},
+			{
+				"path": "packages/kb-tools/src/warnings.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "34ee181b368bbdfd2fa4de74fb1b03d1dc4ce4e6",
+				"size": 5350,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/34ee181b368bbdfd2fa4de74fb1b03d1dc4ce4e6"
+			},
+			{
+				"path": "packages/kb-tools/vite.config.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "7a57923cabfc5c70f2de256be03f0b83efc6115f",
+				"size": 538,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/7a57923cabfc5c70f2de256be03f0b83efc6115f"
+			},
+			{
+				"path": "packages/ui",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "6ef03331af6250a3f2a2ab34c52645a12b4163d1",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/6ef03331af6250a3f2a2ab34c52645a12b4163d1"
+			},
+			{
+				"path": "packages/ui/fonts.css",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d0c9477558b43c6e43e32df0f3d66a374228a4a4",
+				"size": 5387,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d0c9477558b43c6e43e32df0f3d66a374228a4a4"
+			},
+			{
+				"path": "packages/ui/package.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "1cc649f77bba80bb446ce3fffe5b212df7a9318b",
+				"size": 767,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/1cc649f77bba80bb446ce3fffe5b212df7a9318b"
+			},
+			{
+				"path": "packages/ui/src",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "4859b48974777a59335a929d2f55f6bde842a34c",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/4859b48974777a59335a929d2f55f6bde842a34c"
+			},
+			{
+				"path": "packages/ui/src/a11y",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "e1ebb7499abab198cef57c822b9f1f236553553f",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/e1ebb7499abab198cef57c822b9f1f236553553f"
+			},
+			{
+				"path": "packages/ui/src/a11y/LiveRegion.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "0398cd5daa02e6b316774939c0e87fee64adb812",
+				"size": 1178,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/0398cd5daa02e6b316774939c0e87fee64adb812"
+			},
+			{
+				"path": "packages/ui/src/a11y/useFocusOnMount.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "3e519b7911aca81e88af3d73edfe77e409dfe66a",
+				"size": 466,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/3e519b7911aca81e88af3d73edfe77e409dfe66a"
+			},
+			{
+				"path": "packages/ui/src/a11y/useReducedMotion.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "5bada757f0ed12771404202bfcc6d48e01ee1912",
+				"size": 517,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/5bada757f0ed12771404202bfcc6d48e01ee1912"
+			},
+			{
+				"path": "packages/ui/src/answerMessages.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "04a3fc0026caf8a6a9352adf74c64c9d0c822def",
+				"size": 450,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/04a3fc0026caf8a6a9352adf74c64c9d0c822def"
+			},
+			{
+				"path": "packages/ui/src/boundary.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "829aca36d32f4bd6598db210d936cd10299eacca",
+				"size": 3701,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/829aca36d32f4bd6598db210d936cd10299eacca"
+			},
+			{
+				"path": "packages/ui/src/bundle.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e325dd0d9cc116dd5bf5685af4aba3156c1127ba",
+				"size": 2399,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e325dd0d9cc116dd5bf5685af4aba3156c1127ba"
+			},
+			{
+				"path": "packages/ui/src/components",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "f27e50bc49a9e6686e332e8af90498abf48443c7",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/f27e50bc49a9e6686e332e8af90498abf48443c7"
+			},
+			{
+				"path": "packages/ui/src/components/AnswerControl.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "26123aa5d373635d720eaa01eb523b333192466d",
+				"size": 13269,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/26123aa5d373635d720eaa01eb523b333192466d"
+			},
+			{
+				"path": "packages/ui/src/components/AnswersRail.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a0334de868ebbbaef5b28382e3a2e49a64e3dc89",
+				"size": 3251,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a0334de868ebbbaef5b28382e3a2e49a64e3dc89"
+			},
+			{
+				"path": "packages/ui/src/components/AppShell.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ca7203dac93a59c5f16b1d517a7f978baebe20c9",
+				"size": 4872,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ca7203dac93a59c5f16b1d517a7f978baebe20c9"
+			},
+			{
+				"path": "packages/ui/src/components/Button.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "7df3f471b3132c6bccf57afd102af44e90d54ce2",
+				"size": 2060,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/7df3f471b3132c6bccf57afd102af44e90d54ce2"
+			},
+			{
+				"path": "packages/ui/src/components/CheckRow.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "2993f327881f830c118e3a4d421298b231250cef",
+				"size": 3868,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/2993f327881f830c118e3a4d421298b231250cef"
+			},
+			{
+				"path": "packages/ui/src/components/ClauseQuote.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8cae0e72b76ab9cb73ffb8486a1fc95274b357b4",
+				"size": 2116,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8cae0e72b76ab9cb73ffb8486a1fc95274b357b4"
+			},
+			{
+				"path": "packages/ui/src/components/Disclosure.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ba10b439a2e17cbb6c496a8f9d1b9d1634a8f69d",
+				"size": 2037,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ba10b439a2e17cbb6c496a8f9d1b9d1634a8f69d"
+			},
+			{
+				"path": "packages/ui/src/components/Film.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "70dae37652523082a51fb26c43c86af4a14dbb78",
+				"size": 3943,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/70dae37652523082a51fb26c43c86af4a14dbb78"
+			},
+			{
+				"path": "packages/ui/src/components/Ledger.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "140d4ecd0d61ff13e5bd864288f416a529687fc8",
+				"size": 3681,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/140d4ecd0d61ff13e5bd864288f416a529687fc8"
+			},
+			{
+				"path": "packages/ui/src/components/ProofTree.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e1f94d8256f0bab4798935fbce3ad3c49e20709a",
+				"size": 9468,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e1f94d8256f0bab4798935fbce3ad3c49e20709a"
+			},
+			{
+				"path": "packages/ui/src/components/ProportionBar.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8c4374e6b44f06f80e54366a89b5ba6436db5650",
+				"size": 2819,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8c4374e6b44f06f80e54366a89b5ba6436db5650"
+			},
+			{
+				"path": "packages/ui/src/components/QuestionCard.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "08cd1fb1fc6df2251035c23fde91836fffe5ba3e",
+				"size": 5711,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/08cd1fb1fc6df2251035c23fde91836fffe5ba3e"
+			},
+			{
+				"path": "packages/ui/src/components/Sheet.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "448c4c7956444bc82f3f9689bb625312526b7a89",
+				"size": 481,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/448c4c7956444bc82f3f9689bb625312526b7a89"
+			},
+			{
+				"path": "packages/ui/src/components/SourceBadge.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "29699d331b1a7ffcfa3e0b692c6dab643d9c16e1",
+				"size": 1423,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/29699d331b1a7ffcfa3e0b692c6dab643d9c16e1"
+			},
+			{
+				"path": "packages/ui/src/components/StaleLinkNotice.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "f326212ac2053498542f997d0b637e5a94796b37",
+				"size": 2809,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/f326212ac2053498542f997d0b637e5a94796b37"
+			},
+			{
+				"path": "packages/ui/src/components/VerdictHeadline.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "9a6163b13043379aaebcb6c9ce7a7b2b78e0f428",
+				"size": 2691,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/9a6163b13043379aaebcb6c9ce7a7b2b78e0f428"
+			},
+			{
+				"path": "packages/ui/src/components/WhatIfList.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "0c62107f94956e1f0df0e56355f4ace7c0667a61",
+				"size": 1354,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/0c62107f94956e1f0df0e56355f4ace7c0667a61"
+			},
+			{
+				"path": "packages/ui/src/components/XrayStage.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "fd2b78648dc0c8202d6aaa6acbe3dea152019298",
+				"size": 5277,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/fd2b78648dc0c8202d6aaa6acbe3dea152019298"
+			},
+			{
+				"path": "packages/ui/src/components/answerMessages.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "66de86ff4eafb196fb964a1033764b1db7c50199",
+				"size": 3628,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/66de86ff4eafb196fb964a1033764b1db7c50199"
+			},
+			{
+				"path": "packages/ui/src/components/partitionBar.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c34deb21cdfd5abe6768ffcd4b003cdce58ae9ba",
+				"size": 892,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c34deb21cdfd5abe6768ffcd4b003cdce58ae9ba"
+			},
+			{
+				"path": "packages/ui/src/components/proofTreeState.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ad2124bb3cf440b72d42a381de2853d07e5d5375",
+				"size": 5626,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ad2124bb3cf440b72d42a381de2853d07e5d5375"
+			},
+			{
+				"path": "packages/ui/src/components/whatIfText.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "07886bc3ce43ccb8d7dea23e234ad71ccb9d0317",
+				"size": 2495,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/07886bc3ce43ccb8d7dea23e234ad71ccb9d0317"
+			},
+			{
+				"path": "packages/ui/src/components/xrayDevelop.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "0746772c6ba56cf1a1842b036b3110a818603868",
+				"size": 2873,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/0746772c6ba56cf1a1842b036b3110a818603868"
+			},
+			{
+				"path": "packages/ui/src/contract.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "5a178d2b349089b2263c179e8bf5d7ce206ce929",
+				"size": 8861,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/5a178d2b349089b2263c179e8bf5d7ce206ce929"
+			},
+			{
+				"path": "packages/ui/src/deps.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "63a14af625d958b82eb1a288095327334a380732",
+				"size": 1171,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/63a14af625d958b82eb1a288095327334a380732"
+			},
+			{
+				"path": "packages/ui/src/fixtures.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "1c39b2b825ee9ebe5e35d6311aa120de9d185753",
+				"size": 10558,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/1c39b2b825ee9ebe5e35d6311aa120de9d185753"
+			},
+			{
+				"path": "packages/ui/src/fixtures.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "9ac8c096c3cfd467e3261e6f760ba4c9af6ad5a5",
+				"size": 16682,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/9ac8c096c3cfd467e3261e6f760ba4c9af6ad5a5"
+			},
+			{
+				"path": "packages/ui/src/fixtures.types.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "df091d8d5395988b84f823ac8aa57404f9cdf45e",
+				"size": 2952,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/df091d8d5395988b84f823ac8aa57404f9cdf45e"
+			},
+			{
+				"path": "packages/ui/src/fonts.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "42cf03a3f138eb5bb281c4e1c9ec9d66cf4394bc",
+				"size": 3175,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/42cf03a3f138eb5bb281c4e1c9ec9d66cf4394bc"
+			},
+			{
+				"path": "packages/ui/src/format.date.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "49611f82b699586a1836a3f01ea41627717c2aa7",
+				"size": 2579,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/49611f82b699586a1836a3f01ea41627717c2aa7"
+			},
+			{
+				"path": "packages/ui/src/format.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "62399d97df3521eec3ad7200b289deeffd466ba0",
+				"size": 3286,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/62399d97df3521eec3ad7200b289deeffd466ba0"
+			},
+			{
+				"path": "packages/ui/src/format.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "8cbc37d29860c06bd2fd31bdc1355bcf58d13672",
+				"size": 5673,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/8cbc37d29860c06bd2fd31bdc1355bcf58d13672"
+			},
+			{
+				"path": "packages/ui/src/format",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "528623bbba6840bd115d27a43139b5f63866b943",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/528623bbba6840bd115d27a43139b5f63866b943"
+			},
+			{
+				"path": "packages/ui/src/format/entries.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d44f31d0a7abd285b3f312b34bff52ad29e30694",
+				"size": 771,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d44f31d0a7abd285b3f312b34bff52ad29e30694"
+			},
+			{
+				"path": "packages/ui/src/format/label.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "939a3c491512b94b36b29076bf4fe38f27446caf",
+				"size": 655,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/939a3c491512b94b36b29076bf4fe38f27446caf"
+			},
+			{
+				"path": "packages/ui/src/format/money.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "51bd0f00ca4e3c3c3570a9bc5a96a0f11fa743b0",
+				"size": 4727,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/51bd0f00ca4e3c3c3570a9bc5a96a0f11fa743b0"
+			},
+			{
+				"path": "packages/ui/src/format/value.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a5e7b9ae9016ce35b502fa335d31ca31a9f68a09",
+				"size": 1574,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a5e7b9ae9016ce35b502fa335d31ca31a9f68a09"
+			},
+			{
+				"path": "packages/ui/src/formatEntries.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a0951585caaf1478e74e6a30f85dc18c4f68ba42",
+				"size": 1144,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a0951585caaf1478e74e6a30f85dc18c4f68ba42"
+			},
+			{
+				"path": "packages/ui/src/icons",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "86f8e1481a0960629369cec3de46a69531075de4",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/86f8e1481a0960629369cec3de46a69531075de4"
+			},
+			{
+				"path": "packages/ui/src/icons/index.tsx",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a0dd0ed1fa5aed3c42b786440b0a190b9734b3bd",
+				"size": 1909,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a0dd0ed1fa5aed3c42b786440b0a190b9734b3bd"
+			},
+			{
+				"path": "packages/ui/src/index.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "91caec300e90425d71585b06513baa759f39c4a3",
+				"size": 2521,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/91caec300e90425d71585b06513baa759f39c4a3"
+			},
+			{
+				"path": "packages/ui/src/moneyAnswer.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "cec1e228e378599fc285b55510ddbef17c2b8143",
+				"size": 2366,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/cec1e228e378599fc285b55510ddbef17c2b8143"
+			},
+			{
+				"path": "packages/ui/src/partitionBar.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "20240a40962e62c765bc97678cbad3edbe9a835d",
+				"size": 1192,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/20240a40962e62c765bc97678cbad3edbe9a835d"
+			},
+			{
+				"path": "packages/ui/src/partitionBar.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "61d60b49962bb8844a03223084b8b9bd082732ef",
+				"size": 1350,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/61d60b49962bb8844a03223084b8b9bd082732ef"
+			},
+			{
+				"path": "packages/ui/src/proofTreeState.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "869674076816dc281b2473c57248402e006ca469",
+				"size": 5184,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/869674076816dc281b2473c57248402e006ca469"
+			},
+			{
+				"path": "packages/ui/src/proofTreeState.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "29668324e2affab63d74ff2325153ce9e3e775f7",
+				"size": 4139,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/29668324e2affab63d74ff2325153ce9e3e775f7"
+			},
+			{
+				"path": "packages/ui/src/refusals.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "56a04fb567fcf48bd5859121828b7b3aa5ecc929",
+				"size": 4667,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/56a04fb567fcf48bd5859121828b7b3aa5ecc929"
+			},
+			{
+				"path": "packages/ui/src/testkit",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "c77778c8505a82f9ae15acaf0a1aadf23e551b9c",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/c77778c8505a82f9ae15acaf0a1aadf23e551b9c"
+			},
+			{
+				"path": "packages/ui/src/testkit/proofArb.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c8b239c30101b5e47d95afa63d32c33cd240bb14",
+				"size": 996,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c8b239c30101b5e47d95afa63d32c33cd240bb14"
+			},
+			{
+				"path": "packages/ui/src/theme.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a8eeea01522d14c1c6c8613ca88a0c189243e4aa",
+				"size": 3103,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a8eeea01522d14c1c6c8613ca88a0c189243e4aa"
+			},
+			{
+				"path": "packages/ui/src/tokens.contrast.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "91e9ef568371099ceae4b28a8b49fc5b9f052b21",
+				"size": 5150,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/91e9ef568371099ceae4b28a8b49fc5b9f052b21"
+			},
+			{
+				"path": "packages/ui/src/tokens.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "ba3df8dc592c986dc8f99f50dbc47e1e138c494d",
+				"size": 4181,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/ba3df8dc592c986dc8f99f50dbc47e1e138c494d"
+			},
+			{
+				"path": "packages/ui/src/tokens",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "93fa73c96d6b4d8298833b182dfb6d57d7071abe",
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/trees/93fa73c96d6b4d8298833b182dfb6d57d7071abe"
+			},
+			{
+				"path": "packages/ui/src/tokens/contrast.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a8461a399a1dcf414b1118678a794bdd07e218ea",
+				"size": 761,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a8461a399a1dcf414b1118678a794bdd07e218ea"
+			},
+			{
+				"path": "packages/ui/src/types.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c5f9a6b450ac92c47fe5ba57b85e195314bbb227",
+				"size": 1330,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/c5f9a6b450ac92c47fe5ba57b85e195314bbb227"
+			},
+			{
+				"path": "packages/ui/src/useMediaQuery.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "d43aa197315bb66b9ac0486b0cf3156eae8685e7",
+				"size": 444,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/d43aa197315bb66b9ac0486b0cf3156eae8685e7"
+			},
+			{
+				"path": "packages/ui/src/verdictState.props.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e76ce19c1ccf3cc52b0ab27e89a1ab4bc06faa80",
+				"size": 860,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/e76ce19c1ccf3cc52b0ab27e89a1ab4bc06faa80"
+			},
+			{
+				"path": "packages/ui/src/verdictState.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "2dc9ddc3a6793f9763f58d5e3c6c172e0c795bdd",
+				"size": 721,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/2dc9ddc3a6793f9763f58d5e3c6c172e0c795bdd"
+			},
+			{
+				"path": "packages/ui/src/verdictState.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "eeb24160c034a4cf4e82abc14aee04e25938d285",
+				"size": 1217,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/eeb24160c034a4cf4e82abc14aee04e25938d285"
+			},
+			{
+				"path": "packages/ui/src/whatIfText.test.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "997ee477f378b092d2620496c8db1a43fe01abe8",
+				"size": 3491,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/997ee477f378b092d2620496c8db1a43fe01abe8"
+			},
+			{
+				"path": "packages/ui/styles.css",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "954c779fb404cc611097c4f7ae6e044e6663fccc",
+				"size": 70,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/954c779fb404cc611097c4f7ae6e044e6663fccc"
+			},
+			{
+				"path": "packages/ui/theme.css",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "3ee132b04199fb43c6a9774935db02a23c0a0a9c",
+				"size": 4455,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/3ee132b04199fb43c6a9774935db02a23c0a0a9c"
+			},
+			{
+				"path": "packages/ui/tokens.css",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "093bfaeaddc17b8066246089806ce58e58cdce5e",
+				"size": 3429,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/093bfaeaddc17b8066246089806ce58e58cdce5e"
+			},
+			{
+				"path": "playwright.config.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "a4b21533954f4d571a81ec4bdd5967761d394e0f",
+				"size": 1437,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/a4b21533954f4d571a81ec4bdd5967761d394e0f"
+			},
+			{
+				"path": "pnpm-lock.yaml",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "be983e05cc85e7f33e94727ce0747f62687190c0",
+				"size": 75801,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/be983e05cc85e7f33e94727ce0747f62687190c0"
+			},
+			{
+				"path": "pnpm-workspace.yaml",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "6f002730bd6698d8476129a5096358c6465d8b58",
+				"size": 36,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/6f002730bd6698d8476129a5096358c6465d8b58"
+			},
+			{
+				"path": "tsconfig.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "f4191723fed3a4332aed05286895f7f62d043a3b",
+				"size": 402,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/f4191723fed3a4332aed05286895f7f62d043a3b"
+			},
+			{
+				"path": "vitest.config.ts",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "7829f91159bd7df5f6d64e1584b02c7484e6e3d2",
+				"size": 501,
+				"url": "https://api.github.com/repos/chitrakumarsai/dead-certain/git/blobs/7829f91159bd7df5f6d64e1584b02c7484e6e3d2"
+			}
+		],
+		"truncated": false
+	},
+	"recordedAt": "2026-11-18T14:34:56.805Z"
+}
