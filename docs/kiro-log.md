@@ -336,7 +336,7 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 
 - The human answered all nine questions in `apps/claim-check/kb/open-questions.md`. Questions 2, 3, 4, 7, 8 and 9 keep what the rules did. The file now marks every question answered, with the decision beside it.
 - Q1: added one sentence to clause 3.1 in `rulebook/policy.md` and in the clause text of `policy.yaml`: an illness that starts before the policy start date is not covered. No rule changed.
-- Q5: `sum_insured` is now an enum (`rs_300000`, `rs_500000`, `rs_1000000`). `SUM-01` maps it to the money fact `year_cover`, and `ROOM-03` reads `year_cover`. The 31 golden scenarios that gave `sum_insured` as paise now give the enum option.
+- Q5: `sum_insured` is now an enum (`rs_300000`, `rs_500000`, `rs_1000000`). `SUM-01` maps it to the money fact `year_cover`, and `ROOM-03` reads `year_cover`. The 15 golden scenarios that gave `sum_insured` in paise now give the enum option.
 - Q6: added one sentence to clause 1.3 (policy and clause text): no worked-out amount is less than zero. Floored with `max(..., 0)` in `ROOM-02`, `COPAY-02`, `SUM-03` and `PAY-02`. New scenario `G-17` (room charges above the bill) fails without the floor, since the other-charges deduction would be negative.
 - `pnpm dc validate`: clean. `pnpm dc golden`: 31 of 31 pass across both apps, 36 of 36 rules covered. `pnpm biome check apps/claim-check`: clean.
 - Flagged: Claim Check's rulebook is in the knowledge-engineer lane, but the app's input for the sum insured (a three-option choice) now follows the enum, which `apps/claim-check/src` (Claude Code lane) must adopt.
