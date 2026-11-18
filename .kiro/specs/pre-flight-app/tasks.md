@@ -12,7 +12,7 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
 
 - Run every command under Node 22 (`.nvmrc`). Before the first command in a session, run `nvm use` (or an equivalent) and confirm `node -v` prints `v22.x`.
 - Never use watch mode or any long-running process. Run tests with `pnpm vitest run <path>`, `pnpm test:props`, `pnpm e2e` or `pnpm check`. For screenshots use `vite build` plus `vite preview` in a background process you stop afterwards, or ask the human to start a server.
-- **No live API in tests.** Automated tests and e2e never call `api.github.com`. They use the recorded responses. Only the recording script (task 2) touches the network, and only a human runs it, or approves you running it.
+- **No live API in tests.** Automated tests and e2e never call `api.github.com`. They use the recorded responses. Only the recording script (task 2) touches the network. The human has approved you running it.
 - **Dependencies.** Task 1 copies the versions `apps/site` pins for React, Vite and Tailwind. Pin every dependency to an exact version: no `^`, no `~`. If a task needs a package outside React, Vite, Tailwind CSS, Radix primitives, Motion and the workspace packages, **stop and ask the human before adding it**. A gitignore library, an HTTP client, an Octokit package, a Markdown library, a router, a state library, jsdom and Testing Library are all refused. Use the platform `fetch`.
 - **Lanes.** Stay in `apps/pre-flight` (except `kb`, `rulebook`, `golden`), `e2e`, `scripts` and the root configuration you need. Do not touch `.kiro/**`, `packages/ui`, `packages/engine` or `packages/kb-tools`. Do not edit `packages/engine/src/types.ts`. If a task seems to need a change there, stop and seek consent from both lanes. Where the contract or the kit lacks a value, take it as an app-side value, as the design says.
 - **Engine imports.** The app may import values from `@dead-certain/engine` (`audit`, `explain`, `print`, `EngineError`). It never calls `next`, `answer`, `whatIf`, `encode` or `decode`.
@@ -40,7 +40,7 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
   - _Requirements: 1.1 to 1.3, 1.7, 12.1, 12.3_
 
 - [ ] 2. Record the API responses
-  - Ask the human first: which two public repositories to bundle with this one (open question 3), and whether you may run the recording script (open question 4). Stop until you have both answers.
+  - Ask the human first: which two public repositories to bundle with this one (open question 3). Stop until you have the answer. The human has approved you running the recording script.
   - Write `collectors/record.ts`, run with `node` under Node 22 and type-stripping or through the repo's TypeScript runner (no new dependency). For each of the three targets it makes the four requests of the design, with no token and no cookies, and writes `{ url, status, headers, body }` per request to `collectors/recorded/<owner>__<name>/<step>.json`. Keep only the headers listed in the design. Fail if a body looks like it holds a credential.
   - Add the root script `record:snapshots` that runs it. Document it in the app's README section: who runs it, when to re-run it (when `.gitignore` or `.kiro` changes in this repo), and the request count (12).
   - Add synthetic fixtures, marked `"synthetic": true`, for the cases you cannot record safely: metadata 404, a rate-limit 403 with `x-ratelimit-remaining: 0` and a reset time, a 429 with `retry-after`, a truncated tree, an empty-repository 409, a `.gitignore` 404 and a README 404.
@@ -86,14 +86,14 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
 - [ ] 7. Knowledge base and checklists
   - Prerequisite: `apps/pre-flight/kb/*.yaml` exists. If it does not, stop and tell the human.
   - Run `pnpm dc build`, find where the JSON is written, and write `src/kb.ts`: import the JSON, check its shape with a hand-written guard (no validation library), export `kb`, `labelFor`, `defFor`, `clauseFor`, `ruleExpression` (using `print`).
-  - Write `src/checklists.ts` from the knowledge base: for each checklist its id, title, description, goal, groups and checks with severity. Confirm group names, severities and goals with the human (open questions 1 and 2) before you write them. Write `validateChecklists(kb)` and show `LoadFailure` when it fails.
+  - Write `src/checklists.ts` from the knowledge base: `GOAL` (read from `kb.goals`, the single goal with values `ready` and `not_ready`), and for each checklist its id, title, description, groups and checks with severity. Confirm group names, severities and which checks each checklist lists with the human (open questions 1, 2 and 4) before you write them. Write `validateChecklists(kb)` and show `LoadFailure` when it fails.
   - Replace the test extractors with the real table in `collectors/extractors.ts`, one extractor for each non-derived fact the collector can read, and none for the rest. Keep the test knowledge base only for tests that need a case the real one lacks.
-  - Vitest: the guard accepts the real knowledge base and rejects one without `goals`; `validateChecklists` accepts the real set and rejects a missing check, a duplicate check, an unknown fact and an unknown goal; every non-derived fact of the knowledge base has an extractor or a non-empty `ask`.
+  - Vitest: the guard accepts the real knowledge base and rejects one without `goals`; `validateChecklists` accepts the real set and rejects a check listed in no checklist, a check twice in one checklist, an unknown fact, and a knowledge base with no goal or with two; every non-derived fact of the knowledge base has an extractor or a non-empty `ask`.
   - _Requirements: 1.4, 1.8 to 1.10, 3.14 to 3.17_
 
 - [ ] 8. Report logic
   - [ ] 8.1 Write `src/report/audit.ts`, `summary.ts`, `evidence.ts`, `sources.ts` and `questions.ts`, test-first, against the real knowledge base and the recorded snapshots.
-    - Tests first for: collected values win over answers; the Summary sentence for ready, not ready (one and several, blockers only, warnings only) and undecided; evidence lines are de-duplicated and clipped; `relabelSources` marks collected leaves and leaves the rest; `questionFor` picks the first needed question in a check's proof, and boolean questions go inline while others go to the list.
+    - Tests first for: collected values win over answers; the Summary sentence for ready, not ready (one and several, blockers only, warnings only) and undecided, and the two disagreement sentences (goal not ready with no failed row in the view, goal unknown with no unknown row in the view); the state is the same whichever checklist is selected; evidence lines are de-duplicated and clipped; `relabelSources` marks collected leaves and leaves the rest; `questionFor` picks the first needed question in a check's proof, and boolean questions go inline while others go to the list.
     - _Requirements: 5.1 to 5.8, 6.1, 6.4, 6.8, 6.9, 7.4_
   - [ ]* 8.2 Property tests.
     - Property 6: collected values win and answers do not leak.
@@ -154,7 +154,7 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
   - _Requirements: 8.1 to 8.12, 9.6_
 
 - [ ] 18. Bundled snapshots
-  - [ ] 18.1 Run `pnpm record:snapshots` (a human runs it, or approves you running it) and commit the three snapshots and their index. Check by eye, and list in the pull request, why each is public, what it shows (ready, not ready, an unseen fact), and the date. Check that the snapshot of this repository shows `.kiro` present and not ignored.
+  - [ ] 18.1 Run `pnpm record:snapshots` (you may run it; the human has approved the 12 requests) and commit the three snapshots and their index. Check by eye, and list in the pull request, why each is public, what it shows (ready, not ready, an unseen fact), and the date. Check that the snapshot of this repository shows `.kiro` present and not ignored.
     - _Requirements: 9.1 to 9.3, 9.8_
   - [ ] 18.2 Load them through `import()` into their own chunk, and show the snapshot line and date in the Report.
     - Vitest: the three snapshots parse as `RepoSnapshot`; each yields a Report through the same `deriveFacts` and `audit` as a live run; together they hold a ready result, a not-ready result and an unseen fact.
@@ -193,7 +193,7 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
 ## Notes
 
 - Tasks marked `*` are property tests. Run them with the task before them, not later.
-- Questions that block a task: open question 3 and 4 block task 2; open questions 1 and 2 block task 7; open question 5 is not a task.
+- Questions that block a task: open question 3 blocks task 2; open questions 1, 2 and 4 block task 7. The goal, the recording run and the missing replay link are decided.
 - If Phase 2 is late, tasks 1 to 6 and 10 can proceed against the small test knowledge base. Remove it when task 7 lands, except for cases the real knowledge base does not cover.
 - Pre-Flight's golden scenarios (audit mode, from Phase 2) prove the engine and the knowledge base through `pnpm dc golden`. The end-to-end tests here prove the interface and the collector. Both must pass at the final checkpoint.
 - The Kiro lane's gate review checks every requirement above against the evidence, and amends this spec if it accepts a deviation.

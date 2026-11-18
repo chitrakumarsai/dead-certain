@@ -292,3 +292,14 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
   5. No replay link for reports, because they depend on live GitHub data. The human may reverse this.
   6. No gitignore library: a narrow matcher that returns "unsupported" and lets the fact become a question, so nothing is guessed.
 - Both specs hand tasks to Claude Code only. Neither touches `packages/ui` or `packages/engine/src/types.ts`.
+
+### `pre-flight-app` amended after the human's answers (2026-11-16)
+
+- Answers from the human: Claude Code may run the recording script; Pre-Flight reports get no replay link; the knowledge base has a single goal with the values exactly `ready` and `not_ready`, not one goal per checklist. The two other snapshot repositories are still open.
+- Amended in `requirements.md`, `design.md` and `tasks.md`:
+  1. New glossary term Goal. The Summary state is `verdictStateFrom` of that one goal, and is the same for every checklist (requirement 5.2, Property 8). Checklists lose their `goal` field. `src/checklists.ts` exports `GOAL`, and start-up validation requires exactly one goal.
+  2. A checklist is now a view: it lists a subset of checks and counts failures in that subset. The app computes no verdict for a subset. Requirements 5.3 and 5.4 add two sentences for when the view and the goal disagree ("Not ready in owner/name. The failed checks are outside <title>."). Requirement 1.10 allows a check in more than one checklist, and requires it in at least one.
+  3. Recording: task 2 and task 18.1 no longer wait for a human to run the script. Task 2 still stops for the two repository choices.
+  4. Replay link: open question 5 is now a recorded decision, not a question.
+- A decision the answer forced, flagged for the human: with one goal, the checklist picker has nothing to decide on its own. New open question 4 offers the way out. If one checklist is enough, drop the picker, requirement 2.7 and the two sentences.
+- Still open: the two snapshot repositories (task 2), fact and check names, severity and groups (task 7, until Phase 2 delivers the knowledge base).

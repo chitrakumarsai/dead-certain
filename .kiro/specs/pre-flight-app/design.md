@@ -20,7 +20,7 @@ This spec is implemented by the Claude Code lane. Kiro writes the spec only.
 | `Session` is `{ kb, answers }`, with no marker for collected facts. `audit` takes a flat `facts` record. | The app builds `{ kb, answers: facts }` for `explain` and keeps its own set of collected fact names. |
 | `LineItem` has no group, severity or evidence. `FactDef` has `role` and `label` only. | Groups and severity are app-side data in `checklists.ts`, checked against the knowledge base at start-up. Evidence comes from the collector. Open questions 1 and 2. |
 | `CheckRow` takes `item`, `detail`, `question`, `def`, `answerValue`, `onAnswer`, `onOpen`. It asks inline only when `def` is boolean. It prints the state word, the label, the rule id as the "See why" button, and `detail` in the Machine voice. | The report maps each check to one `CheckRow`. Non-boolean questions go in a separate "Needs your answer" list built from `AnswerControl`. |
-| `VerdictHeadline` has `size="summary"` (36/44 at every width) and a state of `ready`, `not_ready` or `undecided`. `verdictStateFrom` maps the strings `ready` and `not_ready`. | The checklist goal's value must be one of those strings. Open question 1. |
+| `VerdictHeadline` has `size="summary"` (36/44 at every width) and a state of `ready`, `not_ready` or `undecided`. `verdictStateFrom` maps the strings `ready` and `not_ready`. | The knowledge base's single goal must have exactly the values `ready` and `not_ready`. That is settled. |
 | `XrayStage`, `ProofTree`, `SourceBadge`, `ClauseQuote` and `AnswersRail` exist. The develop, its reduced-motion fade and focus return live in `XrayStage`. | The app builds no motion. It builds the film content and the target. |
 | The build plan routes by URL hash and lets the check route carry a token. | Pre-Flight routes by hash too: `#/` and `#/report?...`. |
 | `@dead-certain/kb-tools` has the golden loader. Phase 2 writes pre-flight golden scenarios in audit mode. | The app's e2e does not read them. They prove the engine, not the interface. The e2e expectation files are per snapshot (requirement 13.2). |
@@ -75,7 +75,7 @@ Live data and snapshots meet at `RepoSnapshot`. After that point there is one co
 | `collectors/record.ts` | The recording script. Run by a human. Writes both folders | no |
 | `src/main.tsx` | Mount, hash router, `AppShell`, load the knowledge base | no |
 | `src/kb.ts` | Import the JSON, shape check, `labelFor`, `defFor`, `clauseFor`, `ruleExpression` | yes |
-| `src/checklists.ts` | Checklists: id, title, description, goal, groups, checks with severity. The only file with `extractors.ts` that names facts. | yes |
+| `src/checklists.ts` | `GOAL`, the name of the knowledge base's single goal, and the Checklists: id, title, description, groups, checks with severity. With `extractors.ts`, the only file that names facts. | yes |
 | `src/run/controller.ts` | A reducer for the run: `idle`, `collecting`, `error`, `report` | reducer yes |
 | `src/report/audit.ts` | `buildReport(kb, checklist, snapshotFacts, answers)` giving the view model | yes |
 | `src/report/summary.ts` | The state and the sentence | yes |
@@ -227,7 +227,7 @@ Steps:
 2. `verdict = audit(kb, facts)`.
 3. For each check in the checklist's groups, find the `LineItem` with `item.fact === check.fact`. A check missing from `lineItems` is an invariant failure that the start-up check should have caught. It renders as unknown.
 4. For each check: `proof = explain({ kb, answers: facts }, check.fact)`, then `relabelSources`, then `evidenceFor`.
-5. Build the summary from the checklist's goal value and the failed checks' severities.
+5. Build the summary from the goal's value (`verdict.goals[GOAL]`) and the failed checks' severities within the selected checklist.
 
 `audit` and `explain` are both called on every change. Each is under 10 ms (engine benchmark), and a checklist has about twenty checks, so a change takes under about 50 ms, which is not perceived as loading.
 
@@ -246,7 +246,7 @@ Walks the tree. A node with `source: "answered"` becomes `"collected"` when its 
 ### Summary
 
 ```ts
-function summarize(goalValue, checks: CheckView[], repo: string): { state: VerdictState; sentence: string }
+function summarize(goalValue, checks: CheckView[] /* the selected checklist */, repo: string, title: string): { state: VerdictState; sentence: string }
 ```
 
 - `state = verdictStateFrom(goalValue, needed)`.
@@ -254,7 +254,14 @@ function summarize(goalValue, checks: CheckView[], repo: string): { state: Verdi
 - `ready`: "All 14 checks passed in owner/name".
 - `undecided`: "3 checks need your answer in owner/name".
 
-The counts only count the failed rows the engine already decided. The state and the sentence's shape come from the goal. If the goal says `not_ready` and the counts are both 0, the sentence is "Not ready in owner/name", never an invented number.
+The counts only count failed rows in the selected checklist that the engine already decided. The state and the sentence's shape come from the goal.
+
+There is one goal for the whole knowledge base, so a checklist is a view and not a verdict. The picker changes which rows are listed, never the state. Two cases need their own sentence, because the view and the goal can disagree:
+
+- Goal `not_ready` and the view has no failed row: "Not ready in owner/name. The failed checks are outside <title>." The app invents no number.
+- Goal unknown and the view has no unknown row: "Checks outside <title> need your answer in owner/name."
+
+With one checklist that holds every check, neither case can occur.
 
 ### Inline questions
 
@@ -365,18 +372,18 @@ Copy uses `navigator.clipboard.writeText` in a try block; failure shows a read-o
 ## Data Models
 
 ```ts
-// checklists.ts (open question 1 and 2: names are filled in from the knowledge base)
+// checklists.ts (open questions 1 and 2: names are filled in from the knowledge base)
+export const GOAL: string;           // kb.goals[0]; values "ready" | "not_ready"
 interface CheckSpec { fact: string; severity: "blocker" | "warning" }
 interface GroupSpec { title: string; checks: readonly CheckSpec[] }
 interface Checklist {
   id: string; title: string; description: string;
-  goal: string;                       // a goal of the knowledge base, value "ready" | "not_ready"
   groups: readonly GroupSpec[];
 }
 export const CHECKLISTS: readonly Checklist[];
 ```
 
-Start-up validation (`validateChecklists(kb)`, pure): every fact with `role: "check"` appears in exactly one group of exactly one checklist, every listed fact exists and has `role: "check"`, and every `goal` is in `kb.goals`. A failure shows the load-failure notice and names the fact in the console in development only.
+Start-up validation (`validateChecklists(kb)`, pure): `kb.goals` holds exactly one goal and it equals `GOAL`, every fact with `role: "check"` appears in at least one checklist and in exactly one group of each checklist that lists it, and every listed fact exists and has `role: "check"`. A failure shows the load-failure notice and names the fact in the console in development only.
 
 All money is absent; this app has no currency. Dates print with `formatDate` from the kit.
 
@@ -444,7 +451,7 @@ All money is absent; this app has no currency. Dates print with `formatDate` fro
 
 ### Property 8: The summary is the engine's, not the app's
 
-*For any* report view, the Summary state equals `verdictStateFrom` of the goal's value, the failed counts equal the number of rows with value `false` per severity, and a `ready` Summary has no failed row.
+*For any* report view, the Summary state equals `verdictStateFrom` of the goal's value and is the same for every checklist, the failed counts equal the number of rows of the selected checklist with value `false` per severity, and a `ready` Summary has no failed row in any checklist.
 
 **Validates: Requirements 5.2 to 5.6**
 
@@ -514,5 +521,6 @@ Every task ends with Task_Evidence: screenshots at 390, 768 and 1280 px (attache
 | Relabel sources in the app | Change the engine to report "collected" | The engine has no notion of origin. The relabel is small, pure and tested. |
 | Narrow `ignores` that refuses what it does not understand | A full gitignore library | A new dependency is not on the approved list, and a wrong guess breaks the "never guess" rule. |
 | Samples as stored snapshots, not as live calls | Live calls with a cache | A sample must work when the limit is hit. |
-| No replay link for reports | Encode answers in the fragment | The report depends on live data. Open question 5. |
+| No replay link for reports | Encode answers in the fragment | The report depends on live data. Decided by the human. |
+| One goal, checklists as views | A goal per checklist; the app computing readiness for a subset | The knowledge base has one goal, and the app may not decide. A view lists and counts, and the state stays the engine's. Open question 4. |
 | Evidence under the tree | Edit `ProofTree` for per-node detail | The kit stays unchanged. |
