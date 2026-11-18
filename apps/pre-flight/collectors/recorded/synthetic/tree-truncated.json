@@ -1,0 +1,31 @@
+{
+	"url": "https://api.github.com/repos/example/sample/git/trees/main?recursive=1",
+	"status": 200,
+	"headers": {
+		"content-type": "application/json; charset=utf-8",
+		"x-ratelimit-limit": "60",
+		"x-ratelimit-remaining": "57",
+		"x-ratelimit-reset": "1795000000"
+	},
+	"body": {
+		"sha": "0000000000000000000000000000000000000000",
+		"url": "https://api.github.com/repos/example/sample/git/trees/0000000000000000000000000000000000000000",
+		"tree": [
+			{
+				"path": "README.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "1111111111111111111111111111111111111111",
+				"size": 10
+			},
+			{
+				"path": "src",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "2222222222222222222222222222222222222222"
+			}
+		],
+		"truncated": true
+	},
+	"synthetic": true
+}

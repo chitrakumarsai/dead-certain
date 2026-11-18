@@ -1,0 +1,11 @@
+{
+	"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-not-ready/readme",
+	"status": 200,
+	"headers": {
+		"content-type": "application/vnd.github.raw+json; charset=utf-8",
+		"x-ratelimit-limit": "60",
+		"x-ratelimit-remaining": "52",
+		"x-ratelimit-reset": "1795015037"
+	},
+	"body": "# dc-sample-not-ready\n\nA fixture for Dead Certain's Pre-Flight app. It is built to come out **not ready**: it has no licence, and `.kiro` is ignored, so no Kiro files are committed.\n\n## Getting started\n\n    pnpm install\n    pnpm dev\n"
+}

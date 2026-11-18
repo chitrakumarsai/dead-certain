@@ -1,0 +1,107 @@
+{
+	"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-warnings/git/trees/main?recursive=1",
+	"status": 200,
+	"headers": {
+		"content-type": "application/json; charset=utf-8",
+		"x-ratelimit-limit": "60",
+		"x-ratelimit-remaining": "50",
+		"x-ratelimit-reset": "1795015037"
+	},
+	"body": {
+		"sha": "94ea9259c04ecb37b30bfd717907334ef7377bf0",
+		"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-warnings/git/trees/94ea9259c04ecb37b30bfd717907334ef7377bf0",
+		"tree": [
+			{
+				"path": ".gitignore",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "c2658d7d1b31848c3b71960543cb0368e56cd4c7",
+				"size": 14,
+				"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-warnings/git/blobs/c2658d7d1b31848c3b71960543cb0368e56cd4c7"
+			},
+			{
+				"path": ".kiro",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "ae19dd38af811f2776afe2aff371afa69a48b194",
+				"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-warnings/git/trees/ae19dd38af811f2776afe2aff371afa69a48b194"
+			},
+			{
+				"path": ".kiro/specs",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "c2a5dd9e5fa8e15c2252530945f63f34aa6fd543",
+				"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-warnings/git/trees/c2a5dd9e5fa8e15c2252530945f63f34aa6fd543"
+			},
+			{
+				"path": ".kiro/specs/notes",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "e5bd9841203df432014706e0bed6653114bfd8a8",
+				"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-warnings/git/trees/e5bd9841203df432014706e0bed6653114bfd8a8"
+			},
+			{
+				"path": ".kiro/specs/notes/requirements.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "e8489b55eb0c7a3a52db844fecc372504500ce9b",
+				"size": 113,
+				"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-warnings/git/blobs/e8489b55eb0c7a3a52db844fecc372504500ce9b"
+			},
+			{
+				"path": "LICENSE",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "cb43fff53b5da35d38ac85b7f33f92c45b9e7001",
+				"size": 1073,
+				"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-warnings/git/blobs/cb43fff53b5da35d38ac85b7f33f92c45b9e7001"
+			},
+			{
+				"path": "README.md",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "32cacea00f947fad74222d0add6ef73752c37a23",
+				"size": 241,
+				"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-warnings/git/blobs/32cacea00f947fad74222d0add6ef73752c37a23"
+			},
+			{
+				"path": "apps",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "ed8b974dcd8a5012fc2b4d2fd7f2c30368598d83",
+				"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-warnings/git/trees/ed8b974dcd8a5012fc2b4d2fd7f2c30368598d83"
+			},
+			{
+				"path": "apps/api",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "f2b5c442b2ec9547b4b566bc1dc775e3b824711a",
+				"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-warnings/git/trees/f2b5c442b2ec9547b4b566bc1dc775e3b824711a"
+			},
+			{
+				"path": "apps/api/package.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "0fcf9152e4bea44fe0353dcb8c07fdaf12a9845e",
+				"size": 39,
+				"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-warnings/git/blobs/0fcf9152e4bea44fe0353dcb8c07fdaf12a9845e"
+			},
+			{
+				"path": "apps/web",
+				"mode": "040000",
+				"type": "tree",
+				"sha": "d80c5dca11c1f3065592ceb7a0fe67d989da6938",
+				"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-warnings/git/trees/d80c5dca11c1f3065592ceb7a0fe67d989da6938"
+			},
+			{
+				"path": "apps/web/package.json",
+				"mode": "100644",
+				"type": "blob",
+				"sha": "41b70d45cd7bdc50fa63d672d7976f58820b005a",
+				"size": 39,
+				"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-warnings/git/blobs/41b70d45cd7bdc50fa63d672d7976f58820b005a"
+			}
+		],
+		"truncated": false
+	}
+}

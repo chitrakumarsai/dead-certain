@@ -1,0 +1,11 @@
+{
+	"url": "https://api.github.com/repos/chitrakumarsai/dc-sample-not-ready/contents/.gitignore",
+	"status": 200,
+	"headers": {
+		"content-type": "application/vnd.github.raw+json; charset=utf-8",
+		"x-ratelimit-limit": "60",
+		"x-ratelimit-remaining": "53",
+		"x-ratelimit-reset": "1795015037"
+	},
+	"body": "node_modules/\n.kiro/\n"
+}

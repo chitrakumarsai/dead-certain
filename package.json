@@ -12,7 +12,8 @@
 		"test:props": "vitest run .props. --passWithNoTests",
 		"build": "pnpm -r --if-present build",
 		"e2e": "playwright test",
-		"dc": "pnpm -s --filter @dead-certain/kb-tools exec vite build --logLevel warn && node packages/kb-tools/bin/dc.mjs"
+		"dc": "pnpm -s --filter @dead-certain/kb-tools exec vite build --logLevel warn && node packages/kb-tools/bin/dc.mjs",
+		"record:snapshots": "node --experimental-strip-types apps/pre-flight/collectors/record.ts"
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "4.14.0",
