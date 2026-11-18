@@ -17,7 +17,7 @@ Scope: the start screen, the collector contract, live collection steps, the repo
 - **UI_Kit**: The package `@dead-certain/ui`.
 - **Knowledge_Base**: The compiled JSON of `apps/pre-flight/kb/*.yaml`, produced by `pnpm dc build`, typed as `KnowledgeBase`.
 - **Goal**: The Knowledge_Base's single goal. Its value is exactly `ready` or `not_ready`, or unknown while checks are open. It covers every check of the Knowledge_Base.
-- **Checklist**: A named view of the checks, with its groups, declared in `src/checklists.ts`. The user picks one to show. A Checklist has no goal of its own and never changes the Goal's value.
+- **Checklist**: The one list of checks, with its title and Groups, declared in `src/checklists.ts`. It holds every check of the Knowledge_Base. There is no choice of Checklist.
 - **Check**: A fact with `role: "check"`. Its line item is true for pass, false for fail and unknown for open.
 - **Group**: A heading in the report that holds related checks, such as "Repository" or "Kiro usage". Declared in `src/checklists.ts`.
 - **Severity**: "blocker" or "warning", declared per check in `src/checklists.ts`. It only changes how the summary counts a failed check. It never changes a check's value.
@@ -44,7 +44,7 @@ Scope: the start screen, the collector contract, live collection steps, the repo
 
 #### Acceptance Criteria
 
-1. THE Pre_Flight SHALL serve two screens chosen by the fragment route, so that deep links work on static hosting: the start screen at `#/` and the Report at `#/report?repo=<owner/name>&checklist=<id>` or `#/report?sample=<id>&checklist=<id>`.
+1. THE Pre_Flight SHALL serve two screens chosen by the fragment route, so that deep links work on static hosting: the start screen at `#/` and the Report at `#/report?repo=<owner/name>` or `#/report?sample=<id>`.
 2. WHEN the fragment route matches neither screen, THE Pre_Flight SHALL show the start screen.
 3. THE Pre_Flight SHALL render every screen inside the UI_Kit `AppShell` with the app name "Pre-Flight" and the one navigation entry "Pre-Flight".
 4. THE Pre_Flight SHALL load the Knowledge_Base from the compiled JSON of `pnpm dc build` and SHALL NOT parse YAML or compile rules in the browser.
@@ -53,7 +53,7 @@ Scope: the start screen, the collector contract, live collection steps, the repo
 7. THE Pre_Flight SHALL NOT modify `packages/engine/src/types.ts` or any file in `packages/ui`.
 8. THE Pre_Flight SHALL name a fact or a goal in `src/checklists.ts` and in `collectors/extractors.ts` only, and every other module SHALL read definitions, labels, clauses and currency from the Knowledge_Base.
 9. WHEN the Knowledge_Base file is missing or does not satisfy `KnowledgeBase` at start-up, THE Pre_Flight SHALL show a plain-words notice that the rules failed to load and that the page should be reloaded, and SHALL NOT show a blank page.
-10. WHEN the Knowledge_Base loads, THE Pre_Flight SHALL check that the Knowledge_Base has exactly one goal, that every check fact appears in at least one Checklist and in exactly one group of each Checklist that lists it, and that every listed fact exists with `role: "check"`, and IF a check fails, THEN THE Pre_Flight SHALL show the load-failure notice.
+10. WHEN the Knowledge_Base loads, THE Pre_Flight SHALL check that the Knowledge_Base has exactly one goal, that every check fact appears in exactly one group of the Checklist, and that every listed fact exists with `role: "check"`, and IF a check fails, THEN THE Pre_Flight SHALL show the load-failure notice.
 11. THE Pre_Flight SHALL set the document title to the screen's heading followed by "Pre-Flight", and SHALL update it on each screen change.
 
 ### Requirement 2: Start screen
@@ -68,12 +68,11 @@ Scope: the start screen, the collector contract, live collection steps, the repo
 4. THE Pre_Flight SHALL accept an owner of 1 to 39 letters, digits and hyphens that does not start or end with a hyphen, and a name of 1 to 100 letters, digits, `.`, `_` and `-` that is not `.` or `..`.
 5. IF the field is empty, THEN THE Pre_Flight SHALL show "Enter a repository as owner/name or a GitHub URL." under the field.
 6. IF the text is not a Target, or the host of a URL is not `github.com`, THEN THE Pre_Flight SHALL show "This is not a GitHub repository. Use owner/name or a github.com URL." under the field, and SHALL make no request.
-7. THE start screen SHALL show a checklist picker, built from the Checklists, with one Checklist selected by default and each named by its title and a one-line description, and SHALL say that the picker changes which checks are listed and not the verdict.
-8. THE start screen SHALL show a primary Button "Run the checks".
-9. WHEN the user activates "Run the checks" or presses Enter in the field and the Target is valid, THE Pre_Flight SHALL go to the Report route for that Target and Checklist.
-10. THE start screen SHALL show the Bundled_Snapshots as buttons under the heading "Try a sample", each labelled with the repository's `owner/name`.
-11. WHEN the user activates a sample button, THE Pre_Flight SHALL go to the Report route for that sample and Checklist, and SHALL make no network request.
-12. THE start screen SHALL contain no uppercase label, no caption above a heading and no arrow in a button label.
+7. THE start screen SHALL show a primary Button "Run the checks".
+8. WHEN the user activates "Run the checks" or presses Enter in the field and the Target is valid, THE Pre_Flight SHALL go to the Report route for that Target.
+9. THE start screen SHALL show the Bundled_Snapshots as buttons under the heading "Try a sample", each labelled with the repository's `owner/name`.
+10. WHEN the user activates a sample button, THE Pre_Flight SHALL go to the Report route for that sample, and SHALL make no network request.
+11. THE start screen SHALL contain no uppercase label, no caption above a heading and no arrow in a button label.
 
 ### Requirement 3: The collector contract
 
@@ -123,10 +122,10 @@ Scope: the start screen, the collector contract, live collection steps, the repo
 #### Acceptance Criteria
 
 1. THE Report SHALL call `audit(kb, facts)` with the Derived_Facts and the user's answers, and SHALL show the result.
-2. THE Report SHALL show a Summary: a `VerdictHeadline` with `size="summary"`, whose state comes from `verdictStateFrom` applied to the Goal's value, and a sentence in the Document voice. THE state SHALL be the same for every Checklist, because the Goal covers every check.
-3. THE Summary sentence SHALL read "<N> blockers and <M> warnings in <owner/name>" with the counts of failed checks in the selected Checklist by Severity, "1 blocker" and "1 warning" in the singular, and the zero parts left out, WHEN the state is `not_ready` and the selected Checklist has a failed check. WHEN the state is `not_ready` and the selected Checklist has no failed check, THE sentence SHALL read "Not ready in <owner/name>. The failed checks are outside <Checklist title>."
-4. THE Summary sentence SHALL read "All <K> checks passed in <owner/name>" WHEN the state is `ready`, with K the number of checks in the selected Checklist, and "<Q> checks need your answer in <owner/name>" WHEN the state is `undecided`, with Q the number of unknown checks in the selected Checklist and "1 check needs your answer" in the singular. WHEN the state is `undecided` and Q is 0, THE sentence SHALL read "Checks outside <Checklist title> need your answer in <owner/name>."
-5. THE Report SHALL list the selected Checklist's checks in its Groups, with each Group's name as a heading and one `CheckRow` for each check, in the order of `src/checklists.ts`.
+2. THE Report SHALL show a Summary: a `VerdictHeadline` with `size="summary"`, whose state comes from `verdictStateFrom` applied to the Goal's value, and a sentence in the Document voice.
+3. THE Summary sentence SHALL read "<N> blockers and <M> warnings in <owner/name>" with the counts of failed checks by Severity, "1 blocker" and "1 warning" in the singular, and the zero parts left out, WHEN the state is `not_ready`.
+4. THE Summary sentence SHALL read "All <K> checks passed in <owner/name>" WHEN the state is `ready`, with K the number of checks, and "<Q> checks need your answer in <owner/name>" WHEN the state is `undecided`, with Q the number of unknown checks and "1 check needs your answer" in the singular.
+5. THE Report SHALL list the Checklist's checks in its Groups, with each Group's name as a heading and one `CheckRow` for each check, in the order of `src/checklists.ts`.
 6. THE Report SHALL take each row's value from the `LineItem` of `audit`, and SHALL NOT compute or adjust a value.
 7. EACH `CheckRow` SHALL show its state in an icon and a word ("Passed", "Failed" or "Needs your answer"), its label, its rule id as the button that opens the proof, and an Evidence_Line.
 8. THE Evidence_Line of a check SHALL be the Evidence_Lines of the collected facts in the check's proof, without repeats, joined with a line break, and clipped to 200 characters each.
@@ -281,9 +280,9 @@ Decided by the human:
 - **Recording.** Claude Code may run the recording script. At most 12 requests in total are made, well under the unauthenticated limit.
 - **Replay link.** Pre-Flight reports have none. The report depends on live GitHub data, and a link would either re-fetch and drift or need the snapshot inside the URL.
 
-Still open. These do not block the requirements. They block tasks that depend on them, and each task names its question.
+Questions 1 to 3 are still open. They do not block the requirements. They block tasks that depend on them, and each task names its question. Question 4 is answered.
 
 1. **Fact and check names.** The Knowledge_Base does not exist yet. `src/checklists.ts` and `collectors/extractors.ts` need the check facts, their groups and severities, and the non-derived facts the Collector can read. They are filled in when Phase 2 delivers the Knowledge_Base.
 2. **Severity and groups.** The engine contract has neither. They live in `src/checklists.ts` as app-side data, checked against the Knowledge_Base at start-up (requirement 1.10). If the human wants them in the Knowledge_Base, that needs a contract change with both lanes' consent.
 3. **The two other snapshot repositories.** The human picks two public repositories to bundle with this one, so that the set shows ready, not ready and an inline question. The tasks stop at that point to ask.
-4. **What a Checklist is, with one goal.** With a single goal, a Checklist cannot have its own verdict, and the app may not compute one. This spec makes a Checklist a view: it lists a subset of checks and counts failures in that subset, while the state is always the Goal's. The sentences of requirements 5.3 and 5.4 cover the case where the view and the Goal disagree. If the human prefers one checklist and no picker, the picker, requirement 2.7 and those two sentences go, and nothing else changes.
+4. **What a Checklist is, with one goal.** Answered: One checklist, no picker. The Checklist holds every check, so it needs no sentence for a check outside it, and the Report route carries no checklist id.

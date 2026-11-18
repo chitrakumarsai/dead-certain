@@ -86,14 +86,14 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
 - [ ] 7. Knowledge base and checklists
   - Prerequisite: `apps/pre-flight/kb/*.yaml` exists. If it does not, stop and tell the human.
   - Run `pnpm dc build`, find where the JSON is written, and write `src/kb.ts`: import the JSON, check its shape with a hand-written guard (no validation library), export `kb`, `labelFor`, `defFor`, `clauseFor`, `ruleExpression` (using `print`).
-  - Write `src/checklists.ts` from the knowledge base: `GOAL` (read from `kb.goals`, the single goal with values `ready` and `not_ready`), and for each checklist its id, title, description, groups and checks with severity. Confirm group names, severities and which checks each checklist lists with the human (open questions 1, 2 and 4) before you write them. Write `validateChecklists(kb)` and show `LoadFailure` when it fails.
+  - Write `src/checklists.ts` from the knowledge base: `GOAL` (read from `kb.goals`, the single goal with values `ready` and `not_ready`), and the one checklist's title, groups and checks with severity. Confirm group names, severities and which checks it lists with the human (open questions 1 and 2) before you write them. Write `validateChecklists(kb)` and show `LoadFailure` when it fails.
   - Replace the test extractors with the real table in `collectors/extractors.ts`, one extractor for each non-derived fact the collector can read, and none for the rest. Keep the test knowledge base only for tests that need a case the real one lacks.
-  - Vitest: the guard accepts the real knowledge base and rejects one without `goals`; `validateChecklists` accepts the real set and rejects a check listed in no checklist, a check twice in one checklist, an unknown fact, and a knowledge base with no goal or with two; every non-derived fact of the knowledge base has an extractor or a non-empty `ask`.
+  - Vitest: the guard accepts the real knowledge base and rejects one without `goals`; `validateChecklists` accepts the real set and rejects a check listed in no group, a check twice in the checklist, an unknown fact, and a knowledge base with no goal or with two; every non-derived fact of the knowledge base has an extractor or a non-empty `ask`.
   - _Requirements: 1.4, 1.8 to 1.10, 3.14 to 3.17_
 
 - [ ] 8. Report logic
   - [ ] 8.1 Write `src/report/audit.ts`, `summary.ts`, `evidence.ts`, `sources.ts` and `questions.ts`, test-first, against the real knowledge base and the recorded snapshots.
-    - Tests first for: collected values win over answers; the Summary sentence for ready, not ready (one and several, blockers only, warnings only) and undecided, and the two disagreement sentences (goal not ready with no failed row in the view, goal unknown with no unknown row in the view); the state is the same whichever checklist is selected; evidence lines are de-duplicated and clipped; `relabelSources` marks collected leaves and leaves the rest; `questionFor` picks the first needed question in a check's proof, and boolean questions go inline while others go to the list.
+    - Tests first for: collected values win over answers; the Summary sentence for ready, not ready (one and several, blockers only, warnings only) and undecided; evidence lines are de-duplicated and clipped; `relabelSources` marks collected leaves and leaves the rest; `questionFor` picks the first needed question in a check's proof, and boolean questions go inline while others go to the list.
     - _Requirements: 5.1 to 5.8, 6.1, 6.4, 6.8, 6.9, 7.4_
   - [ ]* 8.2 Property tests.
     - Property 6: collected values win and answers do not leak.
@@ -115,9 +115,9 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
   - _Requirements: 4.1 to 4.8, 6.7, 9.4, 9.6_
 
 - [ ] 11. Start screen
-  - Write `src/screens/Start.tsx`: the heading, paragraph and privacy line, the labelled "Repository" field with the two messages, the checklist picker (one `AnswerControl` of type enum or radio cards built from `CHECKLISTS`), "Run the checks", and the "Try a sample" buttons from the snapshot index.
-  - Playwright `e2e/preflight-start.spec.ts`: every accepted form routes to the same Report address; empty and bad input show the two messages and make no request; Enter submits; the picker defaults to the first checklist and changes the route's `checklist`; a sample button routes to the sample address and makes no request; no uppercase text, no arrow glyph; axe clean at three widths.
-  - _Requirements: 2.1 to 2.12_
+  - Write `src/screens/Start.tsx`: the heading, paragraph and privacy line, the labelled "Repository" field with the two messages, "Run the checks", and the "Try a sample" buttons from the snapshot index.
+  - Playwright `e2e/preflight-start.spec.ts`: every accepted form routes to the same Report address; empty and bad input show the two messages and make no request; Enter submits; a sample button routes to the sample address and makes no request; no uppercase text, no arrow glyph; axe clean at three widths.
+  - _Requirements: 2.1 to 2.11_
 
 - [ ] 12. Collection steps
   - Write `src/screens/Steps.tsx`: the four steps with their statuses from the controller, the live-region announcements, and the container that holds its height until the Report mounts.
@@ -193,7 +193,7 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
 ## Notes
 
 - Tasks marked `*` are property tests. Run them with the task before them, not later.
-- Questions that block a task: open question 3 blocks task 2; open questions 1, 2 and 4 block task 7. The goal, the recording run and the missing replay link are decided.
+- Questions that block a task: open question 3 blocks task 2; open questions 1 and 2 block task 7. The goal, the recording run and the missing replay link are decided.
 - If Phase 2 is late, tasks 1 to 6 and 10 can proceed against the small test knowledge base. Remove it when task 7 lands, except for cases the real knowledge base does not cover.
 - Pre-Flight's golden scenarios (audit mode, from Phase 2) prove the engine and the knowledge base through `pnpm dc golden`. The end-to-end tests here prove the interface and the collector. Both must pass at the final checkpoint.
 - The Kiro lane's gate review checks every requirement above against the evidence, and amends this spec if it accepts a deviation.

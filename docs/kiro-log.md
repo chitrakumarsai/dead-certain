@@ -340,3 +340,11 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - Q6: added one sentence to clause 1.3 (policy and clause text): no worked-out amount is less than zero. Floored with `max(..., 0)` in `ROOM-02`, `COPAY-02`, `SUM-03` and `PAY-02`. New scenario `G-17` (room charges above the bill) fails without the floor, since the other-charges deduction would be negative.
 - `pnpm dc validate`: clean. `pnpm dc golden`: 31 of 31 pass across both apps, 36 of 36 rules covered. `pnpm biome check apps/claim-check`: clean.
 - Flagged: Claim Check's rulebook is in the knowledge-engineer lane, but the app's input for the sum insured (a three-option choice) now follows the enum, which `apps/claim-check/src` (Claude Code lane) must adopt.
+
+### Pre-Flight app spec: one checklist, no picker (2026-11-21)
+
+- Amended `.kiro/specs/pre-flight-app` with the human's answer to open question 4: one checklist, no picker. Question 3 (the two snapshot repositories) stays open.
+- `requirements.md`: removed the picker requirement 2.7, so 2.8 to 2.12 are now 2.7 to 2.11. Removed the `checklist=<id>` route parameter from requirements 1.1, 2.8 and 2.10. Removed the two sentences for a view and goal that disagree from 5.3 and 5.4, and the "same for every Checklist" clause from 5.2. Redefined Checklist as the one list, and simplified the start-up check in 1.10. Question 4 is marked answered.
+- `design.md`: dropped the route parameter, the `id` and `description` fields, `CHECKLISTS` (now `CHECKLIST`), the `title` argument of `summarize`, the disagreement cases, and the "same for every checklist" clause of property 8. The decision row now reads "One goal, one checklist".
+- `tasks.md`: removed the picker from task 11 and its test, the disagreement-sentence tests from task 8.1, and question 4 from the blockers of task 7. The requirements reference of task 11 is now 2.1 to 2.11.
+- No code changed. Cross-references to requirements 2.3 to 2.6 and 5.2 to 5.6 are unaffected.

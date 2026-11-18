@@ -75,7 +75,7 @@ Live data and snapshots meet at `RepoSnapshot`. After that point there is one co
 | `collectors/record.ts` | The recording script. Run by a human. Writes both folders | no |
 | `src/main.tsx` | Mount, hash router, `AppShell`, load the knowledge base | no |
 | `src/kb.ts` | Import the JSON, shape check, `labelFor`, `defFor`, `clauseFor`, `ruleExpression` | yes |
-| `src/checklists.ts` | `GOAL`, the name of the knowledge base's single goal, and the Checklists: id, title, description, groups, checks with severity. With `extractors.ts`, the only file that names facts. | yes |
+| `src/checklists.ts` | `GOAL`, the name of the knowledge base's single goal, and the Checklist: title, groups, checks with severity. With `extractors.ts`, the only file that names facts. | yes |
 | `src/run/controller.ts` | A reducer for the run: `idle`, `collecting`, `error`, `report` | reducer yes |
 | `src/report/audit.ts` | `buildReport(kb, checklist, snapshotFacts, answers)` giving the view model | yes |
 | `src/report/summary.ts` | The state and the sentence | yes |
@@ -94,8 +94,8 @@ Pure modules carry the logic and are covered by Vitest and fast-check. Screens o
 | Fragment route | Screen |
 | --- | --- |
 | `#/` and anything unknown | Start |
-| `#/report?repo=<owner/name>&checklist=<id>` | Run a live collection for the target, then the Report |
-| `#/report?sample=<id>&checklist=<id>` | Report from a bundled snapshot, no request |
+| `#/report?repo=<owner/name>` | Run a live collection for the target, then the Report |
+| `#/report?sample=<id>` | Report from a bundled snapshot, no request |
 
 Reloading a live report runs the collection again. That costs four requests. The reload is a deliberate act and the rate-limit fallback exists for it. The user's inline answers are not in the fragment and do not survive a reload (requirement 6.7).
 
@@ -227,7 +227,7 @@ Steps:
 2. `verdict = audit(kb, facts)`.
 3. For each check in the checklist's groups, find the `LineItem` with `item.fact === check.fact`. A check missing from `lineItems` is an invariant failure that the start-up check should have caught. It renders as unknown.
 4. For each check: `proof = explain({ kb, answers: facts }, check.fact)`, then `relabelSources`, then `evidenceFor`.
-5. Build the summary from the goal's value (`verdict.goals[GOAL]`) and the failed checks' severities within the selected checklist.
+5. Build the summary from the goal's value (`verdict.goals[GOAL]`) and the failed checks' severities.
 
 `audit` and `explain` are both called on every change. Each is under 10 ms (engine benchmark), and a checklist has about twenty checks, so a change takes under about 50 ms, which is not perceived as loading.
 
@@ -246,7 +246,7 @@ Walks the tree. A node with `source: "answered"` becomes `"collected"` when its 
 ### Summary
 
 ```ts
-function summarize(goalValue, checks: CheckView[] /* the selected checklist */, repo: string, title: string): { state: VerdictState; sentence: string }
+function summarize(goalValue, checks: CheckView[] /* the checklist */, repo: string): { state: VerdictState; sentence: string }
 ```
 
 - `state = verdictStateFrom(goalValue, needed)`.
@@ -254,14 +254,9 @@ function summarize(goalValue, checks: CheckView[] /* the selected checklist */, 
 - `ready`: "All 14 checks passed in owner/name".
 - `undecided`: "3 checks need your answer in owner/name".
 
-The counts only count failed rows in the selected checklist that the engine already decided. The state and the sentence's shape come from the goal.
+The counts only count failed rows that the engine already decided. The state and the sentence's shape come from the goal.
 
-There is one goal for the whole knowledge base, so a checklist is a view and not a verdict. The picker changes which rows are listed, never the state. Two cases need their own sentence, because the view and the goal can disagree:
-
-- Goal `not_ready` and the view has no failed row: "Not ready in owner/name. The failed checks are outside <title>." The app invents no number.
-- Goal unknown and the view has no unknown row: "Checks outside <title> need your answer in owner/name."
-
-With one checklist that holds every check, neither case can occur.
+There is one goal and one checklist that holds every check, so the state is always the goal's and the counts cover every check.
 
 ### Inline questions
 
@@ -308,7 +303,7 @@ Each error screen keeps the steps list above it, with the failed step marked. Th
 
 `collectors/snapshots/` holds three `RepoSnapshot` JSON files and an index: `{ id, target, takenAt, title }`. They load through `import()` so Vite puts them in their own chunk. Rules:
 
-- A sample button routes to `#/report?sample=<id>&checklist=<id>`. The controller loads the snapshot and goes straight to `report` with `origin: "snapshot"`. No request is made.
+- A sample button routes to `#/report?sample=<id>`. The controller loads the snapshot and goes straight to `report` with `origin: "snapshot"`. No request is made.
 - The rate-limit error offers the same route when the failed target matches a snapshot's target.
 - The app never swaps a failed live run for a snapshot silently (requirement 9.6).
 - The Report for a snapshot shows "Using a snapshot of owner/name taken <date>." and "Snapshot taken <date>" in place of "Checked <time>".
@@ -377,13 +372,13 @@ export const GOAL: string;           // kb.goals[0]; values "ready" | "not_ready
 interface CheckSpec { fact: string; severity: "blocker" | "warning" }
 interface GroupSpec { title: string; checks: readonly CheckSpec[] }
 interface Checklist {
-  id: string; title: string; description: string;
+  title: string;
   groups: readonly GroupSpec[];
 }
-export const CHECKLISTS: readonly Checklist[];
+export const CHECKLIST: Checklist;
 ```
 
-Start-up validation (`validateChecklists(kb)`, pure): `kb.goals` holds exactly one goal and it equals `GOAL`, every fact with `role: "check"` appears in at least one checklist and in exactly one group of each checklist that lists it, and every listed fact exists and has `role: "check"`. A failure shows the load-failure notice and names the fact in the console in development only.
+Start-up validation (`validateChecklists(kb)`, pure): `kb.goals` holds exactly one goal and it equals `GOAL`, every fact with `role: "check"` appears in exactly one group of the checklist, and every listed fact exists and has `role: "check"`. A failure shows the load-failure notice and names the fact in the console in development only.
 
 All money is absent; this app has no currency. Dates print with `formatDate` from the kit.
 
@@ -451,7 +446,7 @@ All money is absent; this app has no currency. Dates print with `formatDate` fro
 
 ### Property 8: The summary is the engine's, not the app's
 
-*For any* report view, the Summary state equals `verdictStateFrom` of the goal's value and is the same for every checklist, the failed counts equal the number of rows of the selected checklist with value `false` per severity, and a `ready` Summary has no failed row in any checklist.
+*For any* report view, the Summary state equals `verdictStateFrom` of the goal's value, the failed counts equal the number of rows with value `false` per severity, and a `ready` Summary has no failed row.
 
 **Validates: Requirements 5.2 to 5.6**
 
@@ -522,5 +517,5 @@ Every task ends with Task_Evidence: screenshots at 390, 768 and 1280 px (attache
 | Narrow `ignores` that refuses what it does not understand | A full gitignore library | A new dependency is not on the approved list, and a wrong guess breaks the "never guess" rule. |
 | Samples as stored snapshots, not as live calls | Live calls with a cache | A sample must work when the limit is hit. |
 | No replay link for reports | Encode answers in the fragment | The report depends on live data. Decided by the human. |
-| One goal, checklists as views | A goal per checklist; the app computing readiness for a subset | The knowledge base has one goal, and the app may not decide. A view lists and counts, and the state stays the engine's. Open question 4. |
+| One goal, one checklist | A goal per checklist; several checklists as views; a picker | The knowledge base has one goal, and the app may not decide. One checklist holds every check, so the state and the counts are the engine's with no special cases. Open question 4, answered. |
 | Evidence under the tree | Edit `ProofTree` for per-node detail | The kit stays unchanged. |
