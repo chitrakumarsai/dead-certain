@@ -4,8 +4,9 @@
 	"headers": {
 		"content-type": "application/vnd.github.raw+json; charset=utf-8",
 		"x-ratelimit-limit": "60",
-		"x-ratelimit-remaining": "48",
+		"x-ratelimit-remaining": "36",
 		"x-ratelimit-reset": "1795015037"
 	},
-	"body": "# dc-sample-warnings\n\nA fixture for Dead Certain's Pre-Flight app. It passes every blocker but fails two warnings: its only spec has no `tasks.md`, and this README has no run-instructions heading.\n\n## About\n\nTwo small apps in one workspace.\n"
+	"body": "# dc-sample-warnings\n\nA fixture for Dead Certain's Pre-Flight app. It passes every blocker but fails two warnings: its only spec has no `tasks.md`, and this README has no run-instructions heading.\n\n## About\n\nTwo small apps in one workspace.\n",
+	"recordedAt": "2026-11-18T14:35:00.550Z"
 }

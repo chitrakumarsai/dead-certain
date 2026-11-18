@@ -9,5 +9,6 @@
 		"message": "You have exceeded a secondary rate limit.",
 		"documentation_url": "https://docs.github.com/rest"
 	},
+	"recordedAt": "2026-11-18T13:30:00.000Z",
 	"synthetic": true
 }

@@ -36,9 +36,13 @@ describe("recorded responses", () => {
 				).toBe(true);
 	});
 
-	it("each have url, status, headers and body, and only the kept headers", () => {
+	it("each have url, status, headers, body and recordedAt, and only the kept headers", () => {
 		for (const [path, data] of files) {
-			for (const key of ["url", "status", "headers", "body"])
+			expect(
+				Number.isNaN(Date.parse(String(data.recordedAt))),
+				`${path} recordedAt`,
+			).toBe(false);
+			for (const key of ["url", "status", "headers", "body", "recordedAt"])
 				expect(data, `${path} ${key}`).toHaveProperty(key);
 			const headers = Object.keys(data.headers as object);
 			expect(

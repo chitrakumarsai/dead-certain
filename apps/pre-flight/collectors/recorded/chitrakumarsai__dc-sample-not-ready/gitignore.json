@@ -4,8 +4,9 @@
 	"headers": {
 		"content-type": "application/vnd.github.raw+json; charset=utf-8",
 		"x-ratelimit-limit": "60",
-		"x-ratelimit-remaining": "53",
+		"x-ratelimit-remaining": "41",
 		"x-ratelimit-reset": "1795015037"
 	},
-	"body": "node_modules/\n.kiro/\n"
+	"body": "node_modules/\n.kiro/\n",
+	"recordedAt": "2026-11-18T14:34:58.877Z"
 }

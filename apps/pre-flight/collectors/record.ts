@@ -31,6 +31,8 @@ export interface Recorded {
 	status: number;
 	headers: Record<string, string>;
 	body: unknown;
+	/** ISO time of the request (requirement 12.7). */
+	recordedAt: string;
 	synthetic?: true;
 }
 
@@ -39,6 +41,7 @@ export const looksLikeCredential = (text: string): boolean =>
 	/token["']?\s*[:=]\s*["']?[A-Za-z0-9_\-.]{21,}/i.test(text);
 
 async function request(url: string, accept: string): Promise<Recorded> {
+	const recordedAt = new Date().toISOString();
 	const response = await fetch(url, {
 		headers: { Accept: accept, "X-GitHub-Api-Version": "2022-11-28" },
 		credentials: "omit",
@@ -59,7 +62,7 @@ async function request(url: string, accept: string): Promise<Recorded> {
 		accept === JSON_ACCEPT
 	)
 		body = JSON.parse(text);
-	return { url, status: response.status, headers, body };
+	return { url, status: response.status, headers, body, recordedAt };
 }
 
 async function record(target: string): Promise<void> {
