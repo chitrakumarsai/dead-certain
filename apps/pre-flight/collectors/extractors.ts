@@ -52,15 +52,32 @@ const list = (items: readonly string[]) => items.join(", ");
 function headings(text: string): string[] {
 	const lines = text.split(/\r?\n/);
 	const out: string[] = [];
+	// A line inside a ``` or ~~~ fence is code, not a heading; an unclosed fence runs to the end.
+	let fence: string | null = null;
 	lines.forEach((line, i) => {
+		const marker = /^ {0,3}(`{3,}|~{3,})/.exec(line)?.[1];
+		if (fence !== null) {
+			if (
+				marker !== undefined &&
+				marker[0] === fence[0] &&
+				marker.length >= fence.length
+			)
+				fence = null;
+			return;
+		}
+		if (marker !== undefined) {
+			fence = marker;
+			return;
+		}
 		const atx = /^ {0,3}#{1,6}[ \t]+(.*?)(?:[ \t]+#+)?[ \t]*$/.exec(line);
 		if (atx?.[1] !== undefined) out.push(atx[1]);
 		const next = lines[i + 1];
+		// No * underline: a line of *** is a thematic break in Markdown.
 		if (
 			line.trim() !== "" &&
 			!/^ {4}/.test(line) &&
 			next !== undefined &&
-			/^ {0,3}([=\-~^*])\1*[ \t]*$/.test(next)
+			/^ {0,3}([=\-~^])\1*[ \t]*$/.test(next)
 		)
 			out.push(line.trim());
 	});
