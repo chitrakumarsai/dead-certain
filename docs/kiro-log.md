@@ -388,4 +388,6 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - Findings for Claude Code: the format error; `Report.tsx` group ids contain spaces ("group-Kiro usage"), which breaks `aria-labelledby`; `headings()` still accepts `~` and `^` underlines, so `Usage` over a `~~~` fence reads as a heading (3.22 allows `=` and `-` only); a failed sample load leaves a blank sheet.
 - Accepted deviations 1 to 15 (8 and 9 with notes). Amended: 9.1 and 9.3, the design's snapshot module rows and "Bundled snapshots" section, and tasks 16.2 and 18. Requirement 7.4's "Worked out" wording is kept; task 16.2 records that no check shows the badge.
 - Flagged for the human: approve the `e2e/fixtures/preflight-*` files after the re-record; a not-ready report shows R-09 as "Needs your answer" with no control, which the spec did not foresee.
-- No task marked complete: the gate waits on the fixes above. No code changed.
+- Tasks were not marked complete at first: the gate waited on the fixes above.
+- Re-checked after Claude Code's fixes (`6125770`, `a125437`): `pnpm check` exits 0 at `a125437`; the format error, the slug ids, the `=`/`-` underline rule with its test and the sample-load error with its test meet items 1 to 4. Marked tasks 6, 6.3 and 7 to 21 and their subtasks complete in `tasks.md`.
+- No code changed.
