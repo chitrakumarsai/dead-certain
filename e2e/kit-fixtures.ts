@@ -5,13 +5,23 @@ import { test as base, expect, type Page } from "@playwright/test";
  * Every kit test fails on a browser console error or warning, and on an
  * uncaught page error (requirement 28.5).
  */
-export const test = base.extend<{ consoleGate: undefined }>({
+export const test = base.extend<{
+	consoleGate: undefined;
+	/**
+	 * Console messages a test expects, such as the browser's own "Failed to load
+	 * resource" line for a deliberate HTTP error. Everything else still fails.
+	 */
+	consoleAllow: RegExp[];
+}>({
+	consoleAllow: [[], { option: true }],
 	consoleGate: [
-		async ({ page }, use) => {
+		async ({ page, consoleAllow }, use) => {
 			const messages: string[] = [];
 			page.on("console", (message) => {
 				if (message.type() === "error" || message.type() === "warning") {
-					messages.push(`${message.type()}: ${message.text()}`);
+					const text = message.text();
+					if (consoleAllow.some((re) => re.test(text))) return;
+					messages.push(`${message.type()}: ${text}`);
 				}
 			});
 			page.on("pageerror", (error) => messages.push(`pageerror: ${error}`));

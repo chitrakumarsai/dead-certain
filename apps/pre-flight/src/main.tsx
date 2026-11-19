@@ -96,9 +96,13 @@ function App({ kb }: { kb: KnowledgeBase }) {
 		);
 	}
 
+	// A run's page is at least one screen tall from its first step, so the
+	// footer starts below the fold and does not jump when the report replaces
+	// the steps (11.8).
+	const onRun = run.phase !== "idle" || hash.startsWith("#/report");
 	return (
 		<AppShell appName="Pre-Flight" nav={NAV} rail={rail}>
-			{page}
+			{onRun ? <div className="min-h-svh">{page}</div> : page}
 		</AppShell>
 	);
 }
