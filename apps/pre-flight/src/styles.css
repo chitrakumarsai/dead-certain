@@ -2,3 +2,57 @@
 @import "@dead-certain/ui/styles.css";
 /* Scan this app's own components and collectors for class names. */
 @source "./";
+
+/* The summary ends with owner/name, one long word that must still wrap at 320 px (11.4). */
+[data-statement] {
+	overflow-wrap: anywhere;
+}
+
+/* A check's evidence lines are joined with a line break (5.8). */
+[data-detail] {
+	white-space: pre-line;
+}
+
+/* A printed report keeps the summary and the grouped checks (5.15). */
+@media print {
+	[data-print-hide],
+	[data-rail-slot],
+	aside,
+	header,
+	footer {
+		display: none;
+	}
+	/* The screen-height floor that keeps the footer still is not wanted on paper. */
+	[data-run-page] {
+		min-height: 0;
+	}
+	/* Tighter rows and a smaller summary line, so the report fits one page. */
+	[data-check] {
+		padding-block: 0.25rem;
+	}
+	[data-report-group] {
+		padding-top: 0.5rem;
+	}
+	[data-statement] {
+		font-size: 1.5rem;
+		line-height: 1.25;
+	}
+	[data-check] p {
+		line-height: 1.3;
+	}
+	[data-detail] {
+		padding-top: 0;
+		font-size: 0.75rem;
+	}
+	[data-note] {
+		padding-top: 0.25rem;
+		font-size: 0.875rem;
+	}
+	[data-report-group] h2 {
+		line-height: 1.3;
+	}
+}
+
+@page {
+	margin: 10mm;
+}

@@ -229,4 +229,32 @@ describe("collect when a step does not answer 200", () => {
 		});
 		expect(fake.calls[0]?.init.signal?.aborted).toBe(true);
 	});
+
+	it("records a tree 404 as an absent tree: no entries, not empty, step done", async () => {
+		const { events, result } = run({ ...REPLIES, [URLS.tree]: json(404, {}) });
+		const r = await result;
+		if (!r.ok) throw new Error("expected a snapshot");
+		expect(r.snapshot.tree).toEqual({
+			entries: [],
+			truncated: false,
+			empty: false,
+		});
+		expect(events).toContainEqual({ step: "tree", status: "done" });
+	});
+
+	it("ends a fetch that ignores the abort signal as unreachable at the timeout", async () => {
+		vi.useFakeTimers();
+		const deaf: typeof fetch = () => new Promise<Response>(() => {});
+		const result = collect(TARGET, {
+			fetch: deaf,
+			now: () => NOW,
+			onStep: () => {},
+			timeoutMs: 10_000,
+		});
+		await vi.advanceTimersByTimeAsync(10_000);
+		expect(await result).toMatchObject({
+			ok: false,
+			error: { kind: "unreachable" },
+		});
+	});
 });

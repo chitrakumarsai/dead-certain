@@ -175,4 +175,36 @@ describe("deriveFacts never guesses", () => {
 		expect(has("Run it")).toBe(false);
 		expect(has("    ## Usage")).toBe(false);
 	});
+
+	describe("readme_has_run_heading skips code and thematic breaks (3.22)", () => {
+		const has = (text: string) =>
+			deriveFacts(
+				{ ...self, readme: { text, clipped: false, name: "README.md" } },
+				kb,
+			).facts.readme_has_run_heading;
+
+		it("does not read a shell comment in a fenced block as a heading", () => {
+			expect(has("# Tool\n\n```sh\n# Install\nnpm i\n```\n")).toBe(false);
+			expect(has("# Tool\n\n~~~\n# Usage\n~~~\n")).toBe(false);
+		});
+
+		it("treats an unclosed fence as running to the end", () => {
+			expect(has("# Tool\n```\n# Install\n")).toBe(false);
+		});
+
+		it("does not read Usage over *** as a heading", () => {
+			expect(has("Usage\n***")).toBe(false);
+		});
+
+		it("reads only = and - as underlines (3.22)", () => {
+			expect(has("Getting started\n~~~~~~~~~~~~~~~")).toBe(false);
+			expect(has("Getting started\n^^^^^^^^^^^^^^^")).toBe(false);
+			expect(has("Getting started\n===============")).toBe(true);
+			expect(has("Getting started\n---------------")).toBe(true);
+		});
+
+		it("still reads a real heading after a closed fence", () => {
+			expect(has("```\n# not this\n```\n## Getting started\n")).toBe(true);
+		});
+	});
 });

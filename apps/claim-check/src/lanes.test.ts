@@ -10,7 +10,7 @@ const base = env.GITHUB_BASE_REF;
 const FORBIDDEN = [
 	/^packages\/ui\//,
 	/^packages\/engine\/src\/types\.ts$/,
-	/^apps\/claim-check\/(kb|rulebook|golden)\//,
+	/^apps\/(claim-check|pre-flight)\/(kb|rulebook|golden)\//,
 	/^\.kiro\//,
 ];
 const git = (...args: string[]): string =>
