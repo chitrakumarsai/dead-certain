@@ -13,7 +13,10 @@ import {
 	VerdictHeadline,
 } from "@dead-certain/ui";
 import { type FormEvent, useEffect, useId, useRef, useState } from "react";
+import { CHECKLIST } from "../checklists";
 import type { ReportView } from "../report/audit";
+import { toMarkdown } from "../report/markdown";
+import { CopyMarkdown } from "./CopyMarkdown";
 
 const time = (iso: string) =>
 	new Intl.DateTimeFormat(undefined, {
@@ -131,6 +134,10 @@ export function Report({
 		if (q) listQuestions.unshift(q);
 	}
 
+	const stamp =
+		origin === "snapshot"
+			? `Snapshot taken ${dateOf(takenAt)}`
+			: `Checked ${time(takenAt)}`;
 	return (
 		<Sheet as="article" aria-labelledby="summary">
 			{origin === "snapshot" && (
@@ -143,11 +150,7 @@ export function Report({
 					size="summary"
 				/>
 			</div>
-			<p className="pt-2 text-sys-small text-text-soft">
-				{origin === "snapshot"
-					? `Snapshot taken ${dateOf(takenAt)}`
-					: `Checked ${time(takenAt)}`}
-			</p>
+			<p className="pt-2 text-sys-small text-text-soft">{stamp}</p>
 			{view.groups.map((group) => (
 				<section
 					key={group.title}
@@ -215,7 +218,10 @@ export function Report({
 					</ul>
 				</section>
 			)}
-			<div className="pt-8" data-print-hide>
+			<div className="flex flex-col gap-4 pt-8" data-print-hide>
+				<CopyMarkdown
+					text={() => toMarkdown(view, { title: CHECKLIST.title, stamp })}
+				/>
 				<Button variant="quiet" onClick={() => (location.hash = "#/")}>
 					Check another repository
 				</Button>
