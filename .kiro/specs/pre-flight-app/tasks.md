@@ -98,7 +98,7 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
   - [x] 8.1 Write `src/report/audit.ts`, `summary.ts`, `evidence.ts`, `sources.ts` and `questions.ts`, test-first, against the real knowledge base and the recorded snapshots.
     - Tests first for: collected values win over answers; the Summary sentence for ready, not ready (one and several, blockers only, warnings only) and undecided; evidence lines are de-duplicated and clipped; `relabelSources` marks collected leaves and leaves the rest; `questionFor` picks the first needed question in a check's proof, and boolean questions go inline while others go to the list.
     - _Requirements: 5.1 to 5.8, 6.1, 6.4, 6.8, 6.9, 7.4_
-  - [ ]* 8.2 Property tests.
+  - [x]* 8.2 Property tests.
     - Property 6: collected values win and answers do not leak.
     - Property 7: relabelling changes sources only.
     - Property 8: the summary is the engine's, not the app's.
@@ -108,7 +108,7 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
 - [x] 9. Markdown export
   - [x] 9.1 Write `src/report/markdown.ts` test-first: `escapeMd`, `codeSpan` and `toMarkdown`. Tests first for the exact output shape in the design; a path with backticks, a `.gitignore` line that starts with `#` or `-`, a path with `<script>`, a label with `*` and `[`; a report in each state; the same report gives the same text.
     - _Requirements: 10.4 to 10.9_
-  - [ ]* 9.2 Property test.
+  - [x]* 9.2 Property test.
     - Property 12: Markdown cannot be injected into.
     - _Requirements: 10.4 to 10.9_
 
