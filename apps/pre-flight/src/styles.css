@@ -2,3 +2,19 @@
 @import "@dead-certain/ui/styles.css";
 /* Scan this app's own components and collectors for class names. */
 @source "./";
+
+/* A check's evidence lines are joined with a line break (5.8). */
+[data-detail] {
+	white-space: pre-line;
+}
+
+/* A printed report keeps the summary and the grouped checks (5.15). */
+@media print {
+	[data-print-hide],
+	[data-rail-slot],
+	aside,
+	header,
+	footer {
+		display: none;
+	}
+}

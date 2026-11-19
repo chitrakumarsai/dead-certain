@@ -13,9 +13,10 @@ import { loadSample } from "./samples";
  * Starts the run the fragment asks for, and aborts it when the route changes.
  * The collector gets the platform fetch with the run's own abort signal.
  */
-export function useRun(hash: string): [Run, (a: Action) => void] {
+export function useRun(hash: string, attempt = 0): [Run, (a: Action) => void] {
 	const [run, dispatch] = useReducer(reducer, initialRun);
 	const nextId = useRef(0);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: attempt is the trigger for "Try again", not a value the effect reads.
 	useEffect(() => {
 		const request = runFor(hash);
 		const runId = ++nextId.current;
@@ -46,6 +47,6 @@ export function useRun(hash: string): [Run, (a: Action) => void] {
 			});
 		}
 		return () => controller.abort();
-	}, [hash]);
+	}, [hash, attempt]);
 	return [run, dispatch];
 }
