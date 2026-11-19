@@ -51,9 +51,8 @@ const passing = (s: RepoSnapshot): RepoSnapshot => ({
 describe("buildReport: the summary (5.2 to 5.4)", () => {
 	it("counts failed blockers and warnings", () => {
 		expect(report(self).summary).toEqual({
-			state: "not_ready",
-			sentence: "1 blocker and 1 warning in chitrakumarsai/dead-certain",
-			note: "Demo video under 3 minutes was not asked, because a failed check already makes this repository not ready.",
+			state: "undecided",
+			sentence: "1 check needs your answer in chitrakumarsai/dead-certain",
 		});
 		expect(report(notReady).summary.sentence).toBe(
 			"3 blockers and 1 warning in chitrakumarsai/dc-sample-not-ready",

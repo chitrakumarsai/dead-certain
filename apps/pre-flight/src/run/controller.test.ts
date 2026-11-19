@@ -171,7 +171,7 @@ describe("samples", () => {
 				owner: "chitrakumarsai",
 				name: "dc-sample-not-ready",
 			});
-			expect(s?.takenAt).toMatch(/^2026-11-18T/);
+			expect(s?.takenAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
 			expect(spy).not.toHaveBeenCalled();
 			const r: CollectResult = { ok: true, snapshot: s as never };
 			expect(r.ok).toBe(true);

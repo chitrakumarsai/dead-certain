@@ -4,9 +4,9 @@
 	"headers": {
 		"content-type": "application/vnd.github.raw+json; charset=utf-8",
 		"x-ratelimit-limit": "60",
-		"x-ratelimit-remaining": "37",
-		"x-ratelimit-reset": "1795015037"
+		"x-ratelimit-remaining": "49",
+		"x-ratelimit-reset": "1795076976"
 	},
 	"body": "node_modules/\n",
-	"recordedAt": "2026-11-18T14:35:00.251Z"
+	"recordedAt": "2026-11-19T07:29:40.120Z"
 }

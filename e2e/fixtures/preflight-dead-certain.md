@@ -1,8 +1,7 @@
-# 1 blocker and 1 warning in `chitrakumarsai/dead-certain`
+# 1 check needs your answer in `chitrakumarsai/dead-certain`
 
 Checklist: Submission checklist
-Snapshot taken November 18, 2026
-Demo video under 3 minutes was not asked, because a failed check already makes this repository not ready\.
+Snapshot taken November 19, 2026
 
 ## Repository
 
@@ -26,11 +25,11 @@ Demo video under 3 minutes was not asked, because a failed check already makes t
 
 ## Project
 
-- Failed: README run instructions (`R-07`)
-  - `README.md has no heading called Getting started, Install, Installation, Run, Running, Usage or Quick start`
-- Failed: Two app folders (`R-08`)
+- Passed: README run instructions (`R-07`)
+  - `README.md has the heading "Getting started"`
+- Passed: Two app folders (`R-08`)
   - `apps holds 3: apps/claim-check, apps/pre-flight, apps/site`
-  - `2 of 3 app directories have a package.json; missing in apps/pre-flight`
+  - `3 of 3 app directories have a package.json`
 
 ## Submission
 

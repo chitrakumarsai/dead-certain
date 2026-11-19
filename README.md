@@ -59,5 +59,4 @@ The samples and the collector's tests use real GitHub responses saved in `apps/p
 
 ### Not finished
 
-- The sample of this repository was recorded from `main` before the README's run heading and Pre-Flight's own `package.json` reached it, so it still fails R-07 and R-08. Re-record it once this work is on `main`.
-- No sample is ready as it stands: the demo video length is always asked, so a report is at best undecided until you answer it.
+Nothing in the spec is left undone. No sample is ready as it stands: the demo video length can never be read from GitHub, so a report is at best undecided until you answer it. The sample of this repository asks only that, and answering under 180 seconds makes it ready.
