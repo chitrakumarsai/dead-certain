@@ -144,7 +144,7 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
   - [ ] 16.1 Write `src/screens/Xray.tsx` over `XrayStage`: target from the check's rule button, title "Why: <label>", `FilmBody` with `explain`, `relabelSources`, `ProofTree` keyed by fact, `ruleExpression`, `clauseFor`, `decidingClause`, `onChangeAnswer` for answered facts only, and the grouped "Evidence" list under the tree. Keep the film in step with new answers.
     - _Requirements: 7.1 to 7.7, 7.9 to 7.13_
   - [ ] 16.2 Playwright `e2e/preflight-xray.spec.ts`.
-    - A failed check opens "Why: <label>"; each rule's sentence comes first and its expression sits behind "Show the rule"; collected facts say "Collected", inline answers say "You answered", derived say "Worked out"; the Evidence list shows each collected fact's line; "Change this answer" appears on an answered fact only, closes the panel and shows the question in its row; the clause shows as a quote.
+    - A failed check opens "Why: <label>"; each rule's sentence comes first and its expression sits behind "Show the rule"; collected facts say "Collected", inline answers say "You answered", a check's root is its rule and shows no "Worked out" badge, since no check rule reads a derived fact; the Evidence list shows each collected fact's line; "Change this answer" appears on an answered fact only, closes the panel and shows the question in its row; the clause shows as a quote.
     - At 1280 px paper and film sit side by side, at 390 px the film is a sheet.
     - Keyboard: arrows move, Enter expands, Escape closes and focus returns to the rule button.
     - Develop: about 500 ms in the default project, a 120 ms fade and no scan line in `reduced-motion`.
@@ -157,9 +157,9 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
   - _Requirements: 8.1 to 8.12, 9.6_
 
 - [ ] 18. Bundled snapshots
-  - [ ] 18.1 Run `pnpm record:snapshots` (you may run it; the human has approved the 12 requests) and commit the three snapshots and their index. Check by eye, and list in the pull request, why each is public, what it shows (ready, not ready, an unseen fact), and the date. Check that the snapshot of this repository shows `.kiro` present and not ignored.
+  - [ ] 18.1 Run `pnpm record:snapshots` (you may run it; the human has approved the 12 requests) and confirm the three recorded sets build into samples (no snapshot JSON is stored). Check by eye, and list in the pull request, why each is public, what it shows (ready, not ready, an unseen fact), and the date. Check that the snapshot of this repository shows `.kiro` present and not ignored.
     - _Requirements: 9.1 to 9.3, 9.8_
-  - [ ] 18.2 Load them through `import()` into their own chunk, and show the snapshot line and date in the Report.
+  - [ ] 18.2 Load them lazily into their own chunk, and show the snapshot line and date in the Report.
     - Vitest: the three snapshots parse as `RepoSnapshot`; each yields a Report through the same `deriveFacts` and `audit` as a live run; together they hold a ready result, a not-ready result and an unseen fact.
     - Build test: the snapshot chunk exists apart from the main bundle and the three together gzip under 60 kB.
     - _Requirements: 9.4, 9.5, 9.7, 11.7_

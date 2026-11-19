@@ -381,3 +381,11 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - Task 5: accepted all 4 deviations (double timeout, tree 404 as empty tree with a `done` step, `not_found` events for absent files, exceptions as `unreadable`). Added requirements 3.8, 3.12 and new 3.20, design "Timeout" and "Step results", and task 5.1. Tasks 5, 5.1 and 5.2 marked complete. Gap: no unit test covers a tree 404 or a `fetch` that ignores the abort signal.
 - Task 6: accepted (a), (b) and (d). Rejected (c) in part: `headings()` counts a line inside a fenced code block, so a README with a shell comment `# Install` in a code block passes `readme_has_run_heading`, and `Usage` over `***` counts as an underlined heading. Both confirmed by probe. Added requirements 3.21 to 3.23, design "The real table" and the `Extractor` shape, and task 6.3's fix text. Tasks 6.1, 6.2 and 6.4 marked complete; 6 and 6.3 stay open.
 - Flagged: the pull request has no Task_Evidence for task 6. Tasks 7 to 21 untouched. No code changed.
+
+### Gate G4 review, tasks 6.3 and 7 to 21: pre-flight-app, pull request #12 (2026-11-19)
+
+- Reviewed `cc/phase4-pre-flight` at `5d8fbd5` against `.kiro/specs/pre-flight-app`. In a clean worktree: `pnpm vitest run` passed (1,623, 1 skipped), `pnpm dc golden` passed (31 scenarios, 36 of 36 rules). `pnpm check` fails on Biome formatting in `e2e/preflight-keyboard.spec.ts`; CI's `check` job fails for the same reason. Did not rerun `pnpm e2e` or `pnpm build`.
+- Findings for Claude Code: the format error; `Report.tsx` group ids contain spaces ("group-Kiro usage"), which breaks `aria-labelledby`; `headings()` still accepts `~` and `^` underlines, so `Usage` over a `~~~` fence reads as a heading (3.22 allows `=` and `-` only); a failed sample load leaves a blank sheet.
+- Accepted deviations 1 to 15 (8 and 9 with notes). Amended: 9.1 and 9.3, the design's snapshot module rows and "Bundled snapshots" section, and tasks 16.2 and 18. Requirement 7.4's "Worked out" wording is kept; task 16.2 records that no check shows the badge.
+- Flagged for the human: approve the `e2e/fixtures/preflight-*` files after the re-record; a not-ready report shows R-09 as "Needs your answer" with no control, which the spec did not foresee.
+- No task marked complete: the gate waits on the fixes above. No code changed.
