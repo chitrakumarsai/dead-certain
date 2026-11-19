@@ -7,7 +7,7 @@ import {
 } from "./preflight-helpers";
 
 const field = (page: import("@playwright/test").Page) =>
-	page.getByLabel("Repository", { exact: true });
+	page.getByRole("textbox", { name: "Repository", exact: true });
 const run = (page: import("@playwright/test").Page) =>
 	page.getByRole("button", { name: "Run the checks" });
 
