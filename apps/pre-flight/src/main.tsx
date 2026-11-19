@@ -14,6 +14,7 @@ import { LoadFailure } from "./screens/LoadFailure";
 import { Report } from "./screens/Report";
 import { Start } from "./screens/Start";
 import { Steps } from "./screens/Steps";
+import { XrayReport } from "./screens/Xray";
 
 const NAV = [{ label: "Pre-Flight", href: "#/", current: true }];
 
@@ -30,11 +31,20 @@ function App({ kb }: { kb: KnowledgeBase }) {
 	const hash = useHash();
 	const [attempt, setAttempt] = useState(0);
 	const [run, dispatch] = useRun(hash, attempt);
-	const onOpen = (_item: LineItem, _opener: HTMLElement) => {};
+	// The check whose proof is open on film; a new run closes it.
+	const [open, setOpen] = useState<{ runId: number; fact: string } | null>(
+		null,
+	);
+	const onOpen = (item: LineItem) => {
+		if (run.phase === "report") setOpen({ runId: run.runId, fact: item.fact });
+	};
 
+	const derived = useMemo(
+		() => (run.phase === "report" ? deriveFacts(run.snapshot, kb) : null),
+		[run, kb],
+	);
 	const report = useMemo(() => {
-		if (run.phase !== "report") return null;
-		const derived = deriveFacts(run.snapshot, kb);
+		if (run.phase !== "report" || derived === null) return null;
 		return buildReport({
 			kb,
 			checklist: CHECKLIST,
@@ -42,7 +52,7 @@ function App({ kb }: { kb: KnowledgeBase }) {
 			derived,
 			answers: run.answers,
 		});
-	}, [run, kb]);
+	}, [run, derived, kb]);
 
 	let page: React.ReactNode;
 	let rail: React.ReactNode;
@@ -74,25 +84,39 @@ function App({ kb }: { kb: KnowledgeBase }) {
 			display: display(value),
 			value,
 		}));
-		if (entries.length > 0)
-			rail = (
+		// On the report the stage hosts the rail, so it folds up beside the film.
+		const railNode =
+			entries.length > 0 ? (
 				<AnswersRail
 					answers={entries}
 					onChange={(fact) => dispatch({ type: "reopen", fact })}
 				/>
-			);
+			) : undefined;
 		page = (
-			<Report
-				key={run.runId}
+			<XrayReport
 				kb={kb}
 				view={report}
-				answers={run.answers}
-				origin={run.origin}
-				takenAt={run.snapshot.takenAt}
-				{...(run.reopened === undefined ? {} : { reopened: run.reopened })}
-				onAnswer={(fact, value) => dispatch({ type: "answer", fact, value })}
-				onOpen={onOpen}
-			/>
+				evidence={derived?.evidence ?? {}}
+				open={open !== null && open.runId === run.runId ? open.fact : null}
+				onClose={() => setOpen(null)}
+				onChangeAnswer={(fact) => {
+					setOpen(null);
+					dispatch({ type: "reopen", fact });
+				}}
+				rail={railNode}
+			>
+				<Report
+					key={run.runId}
+					kb={kb}
+					view={report}
+					answers={run.answers}
+					origin={run.origin}
+					takenAt={run.snapshot.takenAt}
+					{...(run.reopened === undefined ? {} : { reopened: run.reopened })}
+					onAnswer={(fact, value) => dispatch({ type: "answer", fact, value })}
+					onOpen={onOpen}
+				/>
+			</XrayReport>
 		);
 	}
 

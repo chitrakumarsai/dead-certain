@@ -2,33 +2,11 @@ import type { Page } from "@playwright/test";
 import { expect, test } from "./kit-fixtures";
 import {
 	openPreflight,
-	type Reply,
 	recordedReplies,
 	routeGitHub,
 	summary,
+	undecidedReplies,
 } from "./preflight-helpers";
-
-/** This repository as recorded, with R-07 and R-08 passing and the tree truncated, so tree facts are asked. */
-function undecided(): Record<string, Reply> {
-	const replies = recordedReplies("dead-certain");
-	for (const [url, reply] of Object.entries(replies)) {
-		if (url.includes("/git/trees/")) {
-			const tree = JSON.parse(reply.body) as {
-				tree: { path: string; type: string }[];
-				truncated: boolean;
-			};
-			tree.tree.push({ path: "apps/pre-flight/package.json", type: "blob" });
-			tree.truncated = true;
-			replies[url] = { ...reply, body: JSON.stringify(tree) };
-		}
-		if (url.endsWith("/readme"))
-			replies[url] = {
-				...reply,
-				body: "# dead-certain\n\n## Getting started\n",
-			};
-	}
-	return replies;
-}
 
 const row = (page: Page, rule: string) =>
 	page.locator("[data-check]").filter({
@@ -41,7 +19,7 @@ const list = (page: Page) =>
 	page.getByRole("region", { name: "Needs your answer" });
 
 async function openUndecided(page: Page) {
-	await routeGitHub(page, undecided());
+	await routeGitHub(page, undecidedReplies());
 	await openPreflight(page, "#/report?repo=chitrakumarsai/dead-certain");
 	await expect(summary(page)).toBeFocused();
 	await expect(summary(page).locator("[data-state-word]")).toHaveText(

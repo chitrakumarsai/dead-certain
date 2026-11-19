@@ -76,3 +76,25 @@ export async function openPreflight(page: Page, hash = ""): Promise<void> {
 
 /** The report's summary heading. */
 export const summary = (page: Page) => page.locator("#summary h1");
+
+/** This repository as recorded, with R-07 and R-08 passing and the tree truncated, so tree facts are asked. */
+export function undecidedReplies(): Record<string, Reply> {
+	const replies = recordedReplies("dead-certain");
+	for (const [url, reply] of Object.entries(replies)) {
+		if (url.includes("/git/trees/")) {
+			const tree = JSON.parse(reply.body) as {
+				tree: { path: string; type: string }[];
+				truncated: boolean;
+			};
+			tree.tree.push({ path: "apps/pre-flight/package.json", type: "blob" });
+			tree.truncated = true;
+			replies[url] = { ...reply, body: JSON.stringify(tree) };
+		}
+		if (url.endsWith("/readme"))
+			replies[url] = {
+				...reply,
+				body: "# dead-certain\n\n## Getting started\n",
+			};
+	}
+	return replies;
+}
