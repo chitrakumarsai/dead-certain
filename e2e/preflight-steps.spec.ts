@@ -1,6 +1,11 @@
 import type { Page, Route } from "@playwright/test";
 import { expect, test } from "./kit-fixtures";
-import { openPreflight, recordedReplies, summary } from "./preflight-helpers";
+import {
+	GITHUB_CORS,
+	openPreflight,
+	recordedReplies,
+	summary,
+} from "./preflight-helpers";
 
 const REPLIES = recordedReplies("dead-certain");
 const status = (page: Page, step: string) =>
@@ -27,7 +32,7 @@ async function holdGitHub(
 		if (reply === undefined) throw new Error(`no reply for ${url}`);
 		await route.fulfill({
 			status: reply.status,
-			headers: { ...(reply.headers ?? {}), "access-control-allow-origin": "*" },
+			headers: { ...(reply.headers ?? {}), ...GITHUB_CORS },
 			body: reply.body,
 		});
 	};

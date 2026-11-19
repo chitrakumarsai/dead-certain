@@ -9,7 +9,7 @@ import { CHECKLIST, validateChecklists } from "./checklists";
 import { labelFor, kb as loadedKb } from "./kb";
 import { buildReport } from "./report/audit";
 import { useRun } from "./run/useRun";
-import { ErrorScreen } from "./screens/ErrorScreen";
+import { ErrorScreen } from "./screens/Errors";
 import { LoadFailure } from "./screens/LoadFailure";
 import { Report } from "./screens/Report";
 import { Start } from "./screens/Start";

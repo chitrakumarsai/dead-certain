@@ -11,6 +11,13 @@ const RECORDED = new URL(
 	import.meta.url,
 );
 
+/** The CORS headers GitHub sends, so the page can read the rate-limit headers as it can in production. */
+export const GITHUB_CORS = {
+	"access-control-allow-origin": "*",
+	"access-control-expose-headers":
+		"ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+};
+
 export interface Reply {
 	status: number;
 	headers: Record<string, string>;
@@ -55,7 +62,7 @@ export async function routeGitHub(
 		if (reply === undefined) return route.abort();
 		return route.fulfill({
 			status: reply.status,
-			headers: { ...reply.headers, "access-control-allow-origin": "*" },
+			headers: { ...reply.headers, ...GITHUB_CORS },
 			body: reply.body,
 		});
 	});

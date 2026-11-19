@@ -1,8 +1,9 @@
 import { Button, useAnnounce } from "@dead-certain/ui";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CollectError } from "../../collectors/parse";
 import type { Target } from "../../collectors/types";
-import { SAMPLES } from "../run/samples";
+import { loadSample, SAMPLES } from "../run/samples";
+import { dateOf } from "./Report";
 
 const resetTime = (resetAt: number) =>
 	new Intl.DateTimeFormat(undefined, {
@@ -58,6 +59,18 @@ export function ErrorScreen({
 	const sameSample = SAMPLES.find(
 		(s) => s.target.owner === target.owner && s.target.name === target.name,
 	);
+	// The offer names the snapshot's date, read from its recording.
+	const [takenAt, setTakenAt] = useState<string | null>(null);
+	useEffect(() => {
+		if (error.kind !== "rate_limited" || sameSample === undefined) return;
+		let live = true;
+		void loadSample(sameSample.id).then((s) => {
+			if (live && s !== undefined) setTakenAt(s.takenAt);
+		});
+		return () => {
+			live = false;
+		};
+	}, [error.kind, sameSample]);
 	return (
 		<section aria-labelledby="error-heading" className="pt-6">
 			<h2
@@ -85,7 +98,7 @@ export function ErrorScreen({
 						variant="primary"
 						onClick={() => (location.hash = `#/report?sample=${sameSample.id}`)}
 					>
-						{`Use the snapshot of ${sameSample.target.owner}/${sameSample.target.name}`}
+						{`Use the snapshot of ${sameSample.target.owner}/${sameSample.target.name}${takenAt === null ? "" : ` taken ${dateOf(takenAt)}`}`}
 					</Button>
 				)}
 				{error.kind === "rate_limited" &&
