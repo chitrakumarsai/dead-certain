@@ -140,6 +140,8 @@ Scope: the start screen, the collector contract, live collection steps, the repo
 13. THE Report SHALL show a quiet Button "Check another repository" that returns to the start screen.
 14. THE Report SHALL render every string from GitHub as text, never as markup, and SHALL NOT use `dangerouslySetInnerHTML`.
 15. THE Report SHALL fit on one printed page, with the Summary and the grouped checks, when printed.
+16. WHEN the Goal is decided and a check's value is still unknown, THE Report SHALL keep that check's "Needs your answer" state word with no control (requirement 6.8), and SHALL say under the Summary which checks were not asked and why, in the form "<check labels> was not asked, because a failed check already makes this repository not ready." ("were" for more than one). THE Markdown export SHALL carry the same line after the time line.
+17. THE "Needs your answer" list SHALL open with the line "GitHub cannot show these. Your answers complete the checks above."
 
 ### Requirement 6: Inline questions
 

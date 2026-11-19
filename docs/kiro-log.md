@@ -390,4 +390,5 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
 - Flagged for the human: approve the `e2e/fixtures/preflight-*` files after the re-record; a not-ready report shows R-09 as "Needs your answer" with no control, which the spec did not foresee.
 - Tasks were not marked complete at first: the gate waited on the fixes above.
 - Re-checked after Claude Code's fixes (`6125770`, `a125437`): `pnpm check` exits 0 at `a125437`; the format error, the slug ids, the `=`/`-` underline rule with its test and the sample-load error with its test meet items 1 to 4. Marked tasks 6, 6.3 and 7 to 21 and their subtasks complete in `tasks.md`.
+- Amended requirement 5 with criteria 16 and 17 for Claude Code's `54785e0` (the not-asked line under the Summary and in the export, and the line that opens "Needs your answer"), on the human's word. This closes the spec gap flagged above. The three Markdown fixtures changed by one line each and need the human's approval again.
 - No code changed.
