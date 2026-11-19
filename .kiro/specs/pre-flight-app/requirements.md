@@ -64,10 +64,10 @@ Scope: the start screen, the collector contract, live collection steps, the repo
 
 1. THE start screen SHALL show a level-1 heading, a short paragraph in the System voice that says Pre-Flight reads a public repository and returns a pass or fail for each checklist item with the rule and evidence behind it, and the line "Pre-Flight reads public repositories only. Nothing you enter leaves your browser except requests to GitHub."
 2. THE start screen SHALL show a labelled text field "Repository" that accepts `owner/name` or a GitHub URL.
-3. THE Pre_Flight SHALL accept these forms and return the same Target for each: `owner/name`, `github.com/owner/name`, `https://github.com/owner/name`, the same with a trailing slash, with a `.git` suffix, and with a path such as `/tree/main/src`, with surrounding spaces ignored.
+3. THE Pre_Flight SHALL accept these forms and return the same Target for each: `owner/name`, `github.com/owner/name`, `https://github.com/owner/name` and `http://github.com/owner/name`, the same with a trailing slash, with a `.git` suffix, with a query or fragment, and with a path such as `/tree/main/src`, with surrounding spaces ignored. THE Pre_Flight SHALL keep the letter case the user typed in the owner and name, and SHALL match the scheme and host without regard to case. The Collector never requests the `http://` form: it builds its URLs from the Target.
 4. THE Pre_Flight SHALL accept an owner of 1 to 39 letters, digits and hyphens that does not start or end with a hyphen, and a name of 1 to 100 letters, digits, `.`, `_` and `-` that is not `.` or `..`.
 5. IF the field is empty, THEN THE Pre_Flight SHALL show "Enter a repository as owner/name or a GitHub URL." under the field.
-6. IF the text is not a Target, or the host of a URL is not `github.com`, THEN THE Pre_Flight SHALL show "This is not a GitHub repository. Use owner/name or a github.com URL." under the field, and SHALL make no request.
+6. IF the text is not a Target, or the host of a URL is not `github.com` or `www.github.com`, judged from the text as typed (so a port such as `github.com:443`, credentials, or a look-alike host are refused even where a URL parser would accept them), or the scheme is not `http` or `https`, THEN THE Pre_Flight SHALL show "This is not a GitHub repository. Use owner/name or a github.com URL." under the field, and SHALL make no request.
 7. THE start screen SHALL show a primary Button "Run the checks".
 8. WHEN the user activates "Run the checks" or presses Enter in the field and the Target is valid, THE Pre_Flight SHALL go to the Report route for that Target.
 9. THE start screen SHALL show the Bundled_Snapshots as buttons under the heading "Try a sample", each labelled with the repository's `owner/name`.
@@ -87,18 +87,22 @@ Scope: the start screen, the collector contract, live collection steps, the repo
 5. THE Collector SHALL send every request with `Accept` set to a GitHub media type, the header `X-GitHub-Api-Version` set, `credentials: "omit"`, and no `Authorization` header or token.
 6. THE Collector SHALL percent-encode `owner`, `name` and `default_branch` when it builds a URL, and SHALL build a URL only for a Target that satisfies requirement 2.4.
 7. THE Collector SHALL make no request other than these four, SHALL make each at most once per run, and SHALL make no later request after a failure that stops the run.
-8. WHEN the tree request or the README or `.gitignore` request returns 404, THE Collector SHALL record that file as absent and SHALL NOT treat the run as failed.
+8. WHEN the tree request or the README or `.gitignore` request returns 404, THE Collector SHALL record that file as absent and SHALL NOT treat the run as failed. A `.gitignore` or README 404 ends its step as "Not found". A tree 404 records an empty tree (no entries, not truncated, not marked empty) and ends its step as "Done".
 9. WHEN the tree response has `truncated: true`, THE Collector SHALL record the tree as truncated, and every fact that depends on the whole tree SHALL be an Unseen_Fact.
 10. WHEN the tree request returns 409 for an empty repository, THE Collector SHALL record an empty tree.
-11. THE Collector SHALL keep from the tree only each entry's path and type, and SHALL keep at most the first 65,536 bytes of the `.gitignore` file and of the README.
-12. THE Collector SHALL take its `fetch` function, its clock and its progress callback as arguments, SHALL read no global except through them, and SHALL give each request a timeout of 10 seconds through an `AbortSignal`.
+11. THE Collector SHALL keep from the tree only each file's and folder's path and type, SHALL skip submodule entries (type `commit`), SHALL keep at most the first 100,000 entries and mark a longer tree as truncated, and SHALL keep at most the first 65,536 bytes of the `.gitignore` file and of the README.
+12. THE Collector SHALL take its `fetch` function, its clock and its progress callback as arguments, SHALL read no global except through them, and SHALL give each request a timeout of 10 seconds: the request is aborted through an `AbortSignal`, and a `fetch` that ignores the signal still ends as unreachable at the timeout.
 13. THE Collector SHALL return a Snapshot: the Target, the metadata fields it uses, the tree entries, the two file texts or their absence, the `truncated` flag, the time of the run, and the rate-limit headers of the last response.
 14. THE function `deriveFacts(snapshot, kb)` SHALL be pure and SHALL return the facts it can read, one Evidence_Line for each, and the list of Unseen_Facts.
 15. THE function `deriveFacts` SHALL return only facts that are non-derived facts of the Knowledge_Base, with a value of the fact's type.
 16. WHERE a non-derived fact has no extractor, or its extractor cannot read a value from the Snapshot, THE function `deriveFacts` SHALL leave it out and list it as an Unseen_Fact, and SHALL NOT guess a value.
 17. IF the Collector needs a fact the Snapshot cannot give, THEN THE Pre_Flight SHALL ask the user for it through the Engine's `needed` list, and the Collector SHALL NOT ask.
-18. THE Collector SHALL treat every string from GitHub as untrusted data: it SHALL read JSON only, SHALL validate each field it uses by type, and SHALL clip each Evidence_Line to 200 characters.
+18. THE Collector SHALL treat every string from GitHub as untrusted data: it SHALL read JSON only, SHALL validate each field it uses by type (a `default_branch` that is empty or holds a lone surrogate, and a `size` that is negative or not finite, are unreadable), and SHALL clip each Evidence_Line to 200 characters.
 19. THE Collector and its tests SHALL be written test-first against recorded API responses stored in `apps/pre-flight/collectors/recorded/`, and no automated test SHALL call the live API.
+20. IF an unexpected exception occurs inside `collect`, THEN THE Collector SHALL report it as `unreadable` and SHALL resolve, never reject.
+21. THE fact `gitignore_ignores_kiro` SHALL be true only when one of the six lines of the checklist's clause 2.2 (`.kiro`, `.kiro/`, `/.kiro`, `/.kiro/`, `.kiro/*`, `.kiro/**`) is in the root `.gitignore`, and false when the file is absent or no such line is in a complete file. WHERE the matcher's own reading of the file disagrees with that line test (for example a later negation line), or finds a construct it does not support, or the file is clipped and has no such line, the fact SHALL be an Unseen_Fact.
+22. THE fact `readme_has_run_heading` SHALL be true only when a whole heading line of the README equals, ignoring case, one of the seven names of clause 3.1. A heading is an ATX line (one to six `#` signs) or a line underlined with `=` or `-`. A line inside a fenced code block (``` or ~~~) is never a heading. WHEN the README is clipped and no heading matches, the fact SHALL be an Unseen_Fact. WHEN there is no README, the fact SHALL be false.
+23. THE knowledge base declares no "today" fact, so no extractor reads one from `takenAt`. IF a later knowledge base declares one, THEN its extractor SHALL read `takenAt`, not the clock.
 
 ### Requirement 4: Live collection steps
 
@@ -278,11 +282,12 @@ Decided by the human:
 
 - **Goal.** The Knowledge_Base has a single goal, not one per checklist. Its values are exactly `ready` or `not_ready`. The Summary state comes from it.
 - **Recording.** Claude Code may run the recording script. At most 12 requests in total are made, well under the unauthenticated limit.
+- **The snapshot repositories.** Answered on 2026-11-18: the three Bundled_Snapshots are `chitrakumarsai/dead-certain` (this repository), `chitrakumarsai/dc-sample-not-ready` (fails R-02, R-04, R-05 and R-06) and `chitrakumarsai/dc-sample-warnings` (fails only the warnings R-06 and R-07).
 - **Replay link.** Pre-Flight reports have none. The report depends on live GitHub data, and a link would either re-fetch and drift or need the snapshot inside the URL.
 
-Questions 1 to 3 are still open. They do not block the requirements. They block tasks that depend on them, and each task names its question. Question 4 is answered.
+Questions 1 and 2 are still open. They do not block the requirements. They block tasks that depend on them, and each task names its question. Questions 3 and 4 are answered.
 
 1. **Fact and check names.** The Knowledge_Base does not exist yet. `src/checklists.ts` and `collectors/extractors.ts` need the check facts, their groups and severities, and the non-derived facts the Collector can read. They are filled in when Phase 2 delivers the Knowledge_Base.
 2. **Severity and groups.** The engine contract has neither. They live in `src/checklists.ts` as app-side data, checked against the Knowledge_Base at start-up (requirement 1.10). If the human wants them in the Knowledge_Base, that needs a contract change with both lanes' consent.
-3. **The two other snapshot repositories.** The human picks two public repositories to bundle with this one, so that the set shows ready, not ready and an inline question. The tasks stop at that point to ask.
+3. **The two other snapshot repositories.** Answered: `chitrakumarsai/dc-sample-not-ready` and `chitrakumarsai/dc-sample-warnings`, with this repository (see "Decided by the human"). Requirement 9.3 asks that the three show a ready result, a not-ready result and an inline question. Task 18.1 checks this against the recorded data and reports to the human if the set shows no inline question.
 4. **What a Checklist is, with one goal.** Answered: One checklist, no picker. The Checklist holds every check, so it needs no sentence for a check outside it, and the Report route carries no checklist id.

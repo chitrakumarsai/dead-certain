@@ -72,7 +72,7 @@ Live data and snapshots meet at `RepoSnapshot`. After that point there is one co
 | `collectors/gitignore.ts` | `ignores(text, path)` for the one question "is this path ignored", with the line number | yes |
 | `collectors/recorded/*.json` | Real API responses with URL, status, a safe subset of headers and body | data |
 | `collectors/snapshots/*.json` | The three bundled snapshots | data |
-| `collectors/record.ts` | The recording script. Run by a human. Writes both folders | no |
+| `collectors/record.ts` | The recording script. Run by a human. Task 2 writes `recorded/` only. Task 18 adds `snapshots/`, because a snapshot needs the collector | no |
 | `src/main.tsx` | Mount, hash router, `AppShell`, load the knowledge base | no |
 | `src/kb.ts` | Import the JSON, shape check, `labelFor`, `defFor`, `clauseFor`, `ruleExpression` | yes |
 | `src/checklists.ts` | `GOAL`, the name of the knowledge base's single goal, and the Checklist: title, groups, checks with severity. With `extractors.ts`, the only file that names facts. | yes |
@@ -108,7 +108,7 @@ type ParseResult = { ok: true; target: Target } | { ok: false; reason: "empty" |
 function parseTarget(input: string): ParseResult
 ```
 
-Steps, in order: trim; empty gives `empty`. If the text contains `://` or starts with `github.com/` or `www.github.com/`, parse the URL (adding `https://` when absent) and require host `github.com` or `www.github.com`; take the first two path segments. Otherwise require exactly `owner/name` (one slash, no more). Strip a `.git` suffix from the name. Validate owner against `^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$` and name against `^[A-Za-z0-9._-]{1,100}$` and not `.` or `..`. Anything else gives `not_github`. The function never throws and never reads the network.
+Steps, in order: trim; empty gives `empty`. If the text contains `://` or starts with `github.com/` or `www.github.com/` (any case), parse the URL (adding `https://` when absent). Require scheme `http` or `https` and host `github.com` or `www.github.com`, with the host read from the text as typed, up to the first `/`, `?`, `#` or `\`, and compared without regard to case. A port or credentials therefore fail, even where `new URL` would drop a default port. Take the first two path segments. The owner and name keep the case the user typed. Otherwise require exactly `owner/name` (one slash, no more). Strip a `.git` suffix from the name. Validate owner against `^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$` and name against `^[A-Za-z0-9._-]{1,100}$` and not `.` or `..`. Anything else gives `not_github`. The function never throws and never reads the network.
 
 Strict validation is the injection defense. A validated owner and name contain no `/`, `?`, `#` or `%`, so the request URL cannot be bent to another path. The collector still percent-encodes (belt and braces).
 
@@ -158,7 +158,7 @@ interface RepoSnapshot {
 }
 ```
 
-Request plan (each with `Accept: application/vnd.github+json` for JSON, `application/vnd.github.raw+json` for the two file bodies, `X-GitHub-Api-Version: 2022-11-28`, `credentials: "omit"`, `cache: "no-store"`, an `AbortSignal.timeout(timeoutMs)`):
+Request plan (each with `Accept: application/vnd.github+json` for JSON, `application/vnd.github.raw+json` for the two file bodies, `X-GitHub-Api-Version: 2022-11-28`, `credentials: "omit"`, `cache: "no-store"`, an `AbortSignal` from an `AbortController`):
 
 | Step | Request | 200 | 404 | 409 | other |
 | --- | --- | --- | --- | --- | --- |
@@ -166,6 +166,10 @@ Request plan (each with `Accept: application/vnd.github+json` for JSON, `applica
 | tree | `GET /repos/{o}/{n}/git/trees/{branch}?recursive=1` | parse entries, `truncated` | tree absent: empty tree | empty repository: `empty: true` | classify |
 | gitignore | `GET /repos/{o}/{n}/contents/.gitignore` | raw text, clip at 65,536 bytes | `null` (absent) | n/a | classify |
 | readme | `GET /repos/{o}/{n}/readme` | raw text, clip | `null` | n/a | classify |
+
+**Timeout.** Each request has its own `AbortController` and a `setTimeout` of `timeoutMs`. When the timer fires it aborts the signal and rejects a race against the request, so a `fetch` that ignores the signal still ends `unreachable` at `timeoutMs`. The timer cannot be driven by the injected `now`, so tests of the timeout use Vitest's fake timers.
+
+**Step results.** A `.gitignore` or README 404 ends its step as `not_found` and the run goes on. A tree 404 gives `{ entries: [], truncated: false, empty: false }` and the step is `done`. A 409 gives the same with `empty: true`. An unexpected exception inside `collect` is caught and returned as `unreadable`; `collect` never rejects.
 
 The first request runs alone. The tree needs `default_branch`. Then the tree, `.gitignore` and README requests are sent one after another, so the step list shows an honest order and a failure stops the run with the later steps "Not run". Four sequential requests over HTTP/2 take well under a second each.
 
@@ -178,7 +182,9 @@ The first request runs alone. The tree needs `default_branch`. Then the tree, `.
 
 A private repository returns 404 to an unauthenticated request, so it falls under rule 2 with no extra case. A metadata body with `private: true` cannot occur without a token, and if it does it is treated as `not_found`.
 
-**Field checks** (`parse.ts`) read each used field with a type guard. A wrong type is `unreadable`, never a coerced value. Strings from GitHub are clipped when stored (paths 1,024 characters, descriptions 500). Tree entries keep `path` and `type` only, and the tree is capped at 100,000 entries (GitHub's own limit for `recursive=1`). Nothing from the body is ever interpreted as code or markup.
+**Response shape.** `parse.ts` works on `RawResponse { status: number; headers: Record<string, string> /* lower-case names */; body: string }`. The recorded files map onto it directly, and `collect` converts a `fetch` Response into it. The classifier is `classify(step, response, now)`: the step tells it whether a 404 is `not_found` (metadata) or absent, and whether a 409 is an empty tree. It returns `ok`, `absent`, `empty` or a `CollectError`. The README's raw response carries no file name, so `collect` sets `readme.name` from the root README entry of the tree, and to `README` when the tree is truncated or holds none.
+
+**Field checks** (`parse.ts`) read each used field with a type guard. A wrong type is `unreadable`, never a coerced value. Strings from GitHub are clipped when stored (paths 1,024 characters, descriptions 500). Tree entries keep `path` and `type` only. Submodule entries (`commit`) are skipped. The tree is capped at 100,000 entries (GitHub's own limit for `recursive=1`), and a longer one keeps the first 100,000 and is marked truncated. A `default_branch` that is empty or holds a lone surrogate, and a `size` that is negative or not finite, are `unreadable`, so URL encoding cannot throw. Nothing from the body is ever interpreted as code or markup.
 
 **Rate-limit bookkeeping.** `rate.remaining` and `rate.resetAt` are read from the last response's headers. They are stored in the snapshot but never trigger a request.
 
@@ -196,9 +202,14 @@ function deriveFacts(snapshot: RepoSnapshot, kb: KnowledgeBase): Derived
 `extractors.ts` is a table keyed by fact name:
 
 ```ts
-type Extractor = (s: RepoSnapshot) => { value: FactValue; evidence: string } | undefined;
+interface Extractor {
+  reads: "metadata" | "tree" | "gitignore" | "readme";   // "tree": a truncated tree makes the fact unseen
+  read: (s: RepoSnapshot) => { value: FactValue; evidence: string } | undefined;
+}
 const EXTRACTORS: Readonly<Record<string, Extractor>>;
 ```
+
+`deriveFacts(snapshot, kb, extractors = EXTRACTORS)` takes the table as an optional third argument, so a test can pass its own.
 
 Return `undefined` when the snapshot cannot say (for example, any tree-based fact when `tree.truncated`). `deriveFacts` then:
 
@@ -210,7 +221,14 @@ Examples of extractors the knowledge base will need (names are placeholders unti
 
 `ignores` is deliberately narrow: it answers one question for one path, by reading `.gitignore` lines with the gitignore rules a root file needs (comments, blank lines, trailing slash for directories, leading slash anchoring, `!` negation, `*` and `**` globs). It returns `{ ignored: boolean; line?: number; text?: string }`. A construct it does not understand makes the extractor return `undefined`, so the fact is asked and not guessed. This keeps the "never guess" rule of requirement 3.16.
 
-The "today" case: if the knowledge base declares a date fact the app supplies, `extractors.ts` reads it from the snapshot's `takenAt`, so that an audit of a stored snapshot is the same on any day.
+**The real table (task 6).** The knowledge base existed when task 6 ran, so `extractors.ts` holds the real extractors, one for each collected fact of `apps/pre-flight/kb`, and no test table exists. `demo_video_seconds` has none and is always asked. The meanings follow the facts' `ask` text and `kb/open-questions.md`:
+
+- `license_detected` is false when GitHub reports no licence or `NOASSERTION` (question 1).
+- `kiro_dir_has_file` counts a file anywhere under `.kiro/` (question 3).
+- `gitignore_ignores_kiro` follows requirement 3.21 (question 4). The six lines are compared as text after trailing spaces are removed; the matcher is then asked about `.kiro/` and `.kiro/x`, and a disagreement makes the fact unseen.
+- `readme_has_run_heading` follows requirement 3.22 (questions 6 and 7). The README is whatever file the tree names as the root README.
+
+The "today" case: the knowledge base declares no such fact (requirement 3.23). If it ever declares a date fact the app supplies, `extractors.ts` reads it from the snapshot's `takenAt`, so that an audit of a stored snapshot is the same on any day.
 
 ### The audit
 
@@ -307,9 +325,9 @@ Each error screen keeps the steps list above it, with the failed step marked. Th
 - The rate-limit error offers the same route when the failed target matches a snapshot's target.
 - The app never swaps a failed live run for a snapshot silently (requirement 9.6).
 - The Report for a snapshot shows "Using a snapshot of owner/name taken <date>." and "Snapshot taken <date>" in place of "Checked <time>".
-- `pnpm record:snapshots` (a root script added by the Claude Code lane) calls `collectors/record.ts` for the three targets, writes the raw responses to `recorded/` and the snapshot to `snapshots/`. Only a human runs it.
+- `pnpm record:snapshots` (a root script added by the Claude Code lane) runs `collectors/record.ts` with `node --experimental-strip-types`, so no TypeScript runner is added. The script writes the raw responses to `recorded/`. From task 18 it also builds each snapshot with the collector and writes it to `snapshots/`. Only a human runs it.
 
-Snapshot choice: this repository (shows `.kiro` present and not ignored), and two public repositories the human picks, so that together they show ready, not ready, and a repository where one fact is unseen and asked. Open question 3.
+Snapshot choice (answered by the human, 2026-11-18): this repository (shows `.kiro` present and not ignored), `chitrakumarsai/dc-sample-not-ready` (fails R-02, R-04, R-05 and R-06) and `chitrakumarsai/dc-sample-warnings` (fails only the warnings R-06 and R-07). Together they should show ready, not ready, and a repository where one fact is unseen and asked. Task 18.1 checks that against the recorded data.
 
 ### X-ray
 
@@ -464,7 +482,7 @@ All money is absent; this app has no currency. Dates print with `formatDate` fro
 
 ### Property 11: Errors are classified, never thrown
 
-*For any* status, header set and body, `collect` resolves to a snapshot or to one of the four `CollectError` kinds, never rejects, and a rate-limit response is never reported as `not_found` or `unreadable`.
+*For any* status, header set and body, `classify` and the parsers return a result or one of the four `CollectError` kinds, never throw, and a rate-limit response is never reported as `not_found` or `unreadable`. The property is proved in two steps: task 4.2 for `classify` and the parsers, and task 5.2 for `collect`, which resolves and never rejects.
 
 **Validates: Requirements 8.1, 8.2, 8.6, 8.7, 3.18**
 
@@ -495,7 +513,7 @@ Each collector task runs in three beats and records them in the task's evidence:
 
 ### Recorded responses
 
-`record.ts` stores, per request, `{ url, status, headers, body }`, where `headers` keeps only `content-type`, `x-ratelimit-limit`, `x-ratelimit-remaining`, `x-ratelimit-reset`, `retry-after` and `etag` is dropped. It sends no token and strips cookies. The recorder fails if the body contains the string `"token"` followed by a value longer than 20 characters, as a guard against leaking a credential. Error responses (404 repository, a rate-limit 403) are recorded once from a real run where possible, and otherwise written by hand as small fixtures marked `"synthetic": true` with the status and headers GitHub documents. Synthetic fixtures are named as such in the tests.
+`record.ts` stores, per request, `{ url, status, headers, body, recordedAt }`, where `recordedAt` is the ISO time of the request (requirement 12.7), and where `headers` keeps only `content-type`, `x-ratelimit-limit`, `x-ratelimit-remaining`, `x-ratelimit-reset`, `retry-after` and `etag` is dropped. It sends no token and strips cookies. The recorder fails if the body contains the string `"token"` followed by a value longer than 20 characters, as a guard against leaking a credential. Error responses (404 repository, a rate-limit 403) are recorded once from a real run where possible, and otherwise written by hand as small fixtures marked `"synthetic": true` with the status and headers GitHub documents. Synthetic fixtures are named as such in the tests.
 
 ### End-to-end
 
