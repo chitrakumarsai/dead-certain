@@ -71,8 +71,8 @@ Live data and snapshots meet at `RepoSnapshot`. After that point there is one co
 | `collectors/extractors.ts` | The table `fact name -> (snapshot) => { value, evidence } or undefined`. Names facts. | yes |
 | `collectors/gitignore.ts` | `ignores(text, path)` for the one question "is this path ignored", with the line number | yes |
 | `collectors/recorded/*.json` | Real API responses with URL, status, a safe subset of headers and body | data |
-| `collectors/snapshots/*.json` | The three bundled snapshots | data |
-| `collectors/record.ts` | The recording script. Run by a human. Task 2 writes `recorded/` only. Task 18 adds `snapshots/`, because a snapshot needs the collector | no |
+| `src/run/samples.ts` | `SAMPLES` and `loadSample(id)`: the collector over the recorded responses | no |
+| `collectors/record.ts` | The recording script. Run by a human. Task 2 writes `recorded/` only. `snapshots/` is not written (see "Bundled snapshots and the fallback") | no |
 | `src/main.tsx` | Mount, hash router, `AppShell`, load the knowledge base | no |
 | `src/kb.ts` | Import the JSON, shape check, `labelFor`, `defFor`, `clauseFor`, `ruleExpression` | yes |
 | `src/checklists.ts` | `GOAL`, the name of the knowledge base's single goal, and the Checklist: title, groups, checks with severity. With `extractors.ts`, the only file that names facts. | yes |
@@ -319,7 +319,7 @@ Each error screen keeps the steps list above it, with the failed step marked. Th
 
 ### Bundled snapshots and the fallback
 
-`collectors/snapshots/` holds three `RepoSnapshot` JSON files and an index: `{ id, target, takenAt, title }`. They load through `import()` so Vite puts them in their own chunk. Rules:
+A bundled snapshot is built in the app (`src/run/samples.ts`): the collector runs over the committed `recorded/` responses with a replaying `fetch` and the recording date as its clock. No `snapshots/` JSON is stored, because `record.ts` runs under type stripping and cannot import the collector. The recorded files load through `import.meta.glob`, so Vite puts them in their own chunk. A sample cannot drift from a live run of the same responses. Rules:
 
 - A sample button routes to `#/report?sample=<id>`. The controller loads the snapshot and goes straight to `report` with `origin: "snapshot"`. No request is made.
 - The rate-limit error offers the same route when the failed target matches a snapshot's target.

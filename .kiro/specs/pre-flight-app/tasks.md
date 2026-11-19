@@ -71,14 +71,14 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
     - Property 11, second step: `collect` resolves and never rejects, for any status, headers and body.
     - _Requirements: 3.1, 3.7, 3.12, 3.13, 4.2_
 
-- [ ] 6. Fact derivation
+- [x] 6. Fact derivation
   - The knowledge base existed when task 6 ran, so `extractors.ts` holds the real table and no test table was made (accepted, design "The real table"). Task 7 does not replace it.
   - [x] 6.1 Write `collectors/gitignore.ts` test-first. Tests first for: comments, blank lines, a trailing slash for directories, a leading slash, `!` negation, `*`, `**`, `?`, escaped `#` and `!`, and the later line winning. An unsupported construct (for example a character class) returns an `unsupported` result. The function returns the matching line number and text.
     - _Requirements: 3.14, 3.16_
   - [x]* 6.2 Property test.
     - Property 5: the gitignore matcher agrees with its own evidence.
     - _Requirements: 3.14, 3.16_
-  - [ ] 6.3 Write `collectors/derive.ts` and `collectors/extractors.ts` test-first. Tests first for: a fact is returned only when its value matches its type; a missing extractor or an `undefined` result goes to `unseen`; evidence is clipped to 200 characters; a truncated tree makes every tree fact unseen; the knowledge base has no "today" fact, so none is read (requirement 3.23).
+  - [x] 6.3 Write `collectors/derive.ts` and `collectors/extractors.ts` test-first. Tests first for: a fact is returned only when its value matches its type; a missing extractor or an `undefined` result goes to `unseen`; evidence is clipped to 200 characters; a truncated tree makes every tree fact unseen; the knowledge base has no "today" fact, so none is read (requirement 3.23).
     - _Requirements: 3.9, 3.14 to 3.17_
     - Reopened by Kiro's review of task 6 (requirement 3.22): `headings()` in `extractors.ts` reads a line inside a fenced code block as a heading, so a README with a shell comment `# Install` in a code block makes `readme_has_run_heading` true, a false pass. Skip every line from a ``` or ~~~ fence to its closing fence (an unclosed fence runs to the end of the text). Drop `*` from the underline characters: `Usage` over `***` is a thematic break in Markdown, not a heading. Write the tests first and keep the red runs: a fenced `# Install`, an unclosed fence, `Usage` over `***`, and a real heading after a closed fence. Change nothing else in the extractors. Attach the Task_Evidence for task 6, which the pull request does not have yet. Tick tasks 6 and 6.3 only after Kiro's re-review.
   - [x]* 6.4 Property tests.
@@ -86,7 +86,7 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
     - Property 4: nothing is guessed from a truncated tree.
     - _Requirements: 3.9, 3.14 to 3.16_
 
-- [ ] 7. Knowledge base and checklists
+- [x] 7. Knowledge base and checklists
   - Prerequisite: `apps/pre-flight/kb/*.yaml` exists. If it does not, stop and tell the human.
   - Run `pnpm dc build`, find where the JSON is written, and write `src/kb.ts`: import the JSON, check its shape with a hand-written guard (no validation library), export `kb`, `labelFor`, `defFor`, `clauseFor`, `ruleExpression` (using `print`).
   - Write `src/checklists.ts` from the knowledge base: `GOAL` (read from `kb.goals`, the single goal with values `ready` and `not_ready`), and the one checklist's title, groups and checks with severity. Confirm group names, severities and which checks it lists with the human (open questions 1 and 2) before you write them. Write `validateChecklists(kb)` and show `LoadFailure` when it fails.
@@ -94,99 +94,99 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
   - Vitest: the guard accepts the real knowledge base and rejects one without `goals`; `validateChecklists` accepts the real set and rejects a check listed in no group, a check twice in the checklist, an unknown fact, and a knowledge base with no goal or with two; every non-derived fact of the knowledge base has an extractor or a non-empty `ask`.
   - _Requirements: 1.4, 1.8 to 1.10, 3.14 to 3.17_
 
-- [ ] 8. Report logic
-  - [ ] 8.1 Write `src/report/audit.ts`, `summary.ts`, `evidence.ts`, `sources.ts` and `questions.ts`, test-first, against the real knowledge base and the recorded snapshots.
+- [x] 8. Report logic
+  - [x] 8.1 Write `src/report/audit.ts`, `summary.ts`, `evidence.ts`, `sources.ts` and `questions.ts`, test-first, against the real knowledge base and the recorded snapshots.
     - Tests first for: collected values win over answers; the Summary sentence for ready, not ready (one and several, blockers only, warnings only) and undecided; evidence lines are de-duplicated and clipped; `relabelSources` marks collected leaves and leaves the rest; `questionFor` picks the first needed question in a check's proof, and boolean questions go inline while others go to the list.
     - _Requirements: 5.1 to 5.8, 6.1, 6.4, 6.8, 6.9, 7.4_
-  - [ ]* 8.2 Property tests.
+  - [x]* 8.2 Property tests.
     - Property 6: collected values win and answers do not leak.
     - Property 7: relabelling changes sources only.
     - Property 8: the summary is the engine's, not the app's.
     - Property 9: an inline answer changes only what depends on it.
     - _Requirements: 5.2 to 5.6, 6.2, 6.6, 6.8, 6.9, 7.4, 7.8_
 
-- [ ] 9. Markdown export
-  - [ ] 9.1 Write `src/report/markdown.ts` test-first: `escapeMd`, `codeSpan` and `toMarkdown`. Tests first for the exact output shape in the design; a path with backticks, a `.gitignore` line that starts with `#` or `-`, a path with `<script>`, a label with `*` and `[`; a report in each state; the same report gives the same text.
+- [x] 9. Markdown export
+  - [x] 9.1 Write `src/report/markdown.ts` test-first: `escapeMd`, `codeSpan` and `toMarkdown`. Tests first for the exact output shape in the design; a path with backticks, a `.gitignore` line that starts with `#` or `-`, a path with `<script>`, a label with `*` and `[`; a report in each state; the same report gives the same text.
     - _Requirements: 10.4 to 10.9_
-  - [ ]* 9.2 Property test.
+  - [x]* 9.2 Property test.
     - Property 12: Markdown cannot be injected into.
     - _Requirements: 10.4 to 10.9_
 
-- [ ] 10. Run controller
+- [x] 10. Run controller
   - Write `src/run/controller.ts`: the reducer over `idle`, `collecting`, `error`, `report`, with run ids that drop stale events, the abort on route change, and the `answer` and `reopen` actions. Add the lazy loader for snapshots.
   - Vitest: steps move only on collector events; an event from an older run is ignored; an abort by navigation leaves no error; `answer` keeps answers for the current report and clears them on a new run; a snapshot run makes no request (assert with a fetch that fails the test if called).
   - _Requirements: 4.1 to 4.8, 6.7, 9.4, 9.6_
 
-- [ ] 11. Start screen
+- [x] 11. Start screen
   - Write `src/screens/Start.tsx`: the heading, paragraph and privacy line, the labelled "Repository" field with the two messages, "Run the checks", and the "Try a sample" buttons from the snapshot index.
   - Playwright `e2e/preflight-start.spec.ts`: every accepted form routes to the same Report address; empty and bad input show the two messages and make no request; Enter submits; a sample button routes to the sample address and makes no request; no uppercase text, no arrow glyph; axe clean at three widths.
   - _Requirements: 2.1 to 2.11_
 
-- [ ] 12. Collection steps
+- [x] 12. Collection steps
   - Write `src/screens/Steps.tsx`: the four steps with their statuses from the controller, the live-region announcements, and the container that holds its height until the Report mounts.
   - Playwright `e2e/preflight-steps.spec.ts` with routed responses that are held and released one by one: a step shows "Waiting", then "Reading" only after its request is sent, then its final status only after its response; no percentage or other progress element exists; later steps read "Not run" after a failure; reduced motion shows no movement; the snapshot route shows the snapshot line and no steps; layout shift stays below 0.05 when the Report replaces the steps.
   - _Requirements: 4.1 to 4.8, 11.8_
 
-- [ ] 13. The report
+- [x] 13. The report
   - Write `src/screens/Report.tsx`: the Summary, the grouped `CheckRow`s with evidence, the "Needs your answer" list, the "Checked <time>" or "Snapshot taken <date>" line, "Check another repository", and the print rule. Build it from `buildReport`.
   - Playwright `e2e/preflight-report.spec.ts`, on routed recorded responses for each bundled repository: the Summary state word, icon and sentence; each check's state word, label, rule id and Evidence_Line; paths in the Machine voice; no placeholder where a check has no evidence; the time line; the report fits one printed page; hostile strings (build a recorded fixture with a path of `<img src=x onerror=alert(1)>` and a name with Markdown syntax) render as text and run no script.
   - _Requirements: 5.1 to 5.15_
 
-- [ ] 14. Inline questions and the answers rail
+- [x] 14. Inline questions and the answers rail
   - Wire `CheckRow` questions, the "Needs your answer" list and `AnswersRail` ("Your answers", reopen on change). Announce each Summary change through the polite live region.
   - Playwright `e2e/preflight-questions.spec.ts`: answering a boolean question changes the row and the Summary at once with no loading state; a non-boolean question appears in the list and has the same effect; the rail lists the answer and changing it shows the question in its row filled in; answers clear on "Check another repository"; a fact that is both collected and answered keeps the collected value; no question appears that the engine did not list.
   - _Requirements: 6.1 to 6.9_
 
-- [ ] 15. Checkpoint: collect and report
+- [x] 15. Checkpoint: collect and report
   - Run `pnpm check`, `pnpm test:props` and `pnpm e2e` for the Pre-Flight specs. Record the results. Ask the human whether anything is unclear before the X-ray, error and snapshot work.
 
-- [ ] 16. X-ray on any check
-  - [ ] 16.1 Write `src/screens/Xray.tsx` over `XrayStage`: target from the check's rule button, title "Why: <label>", `FilmBody` with `explain`, `relabelSources`, `ProofTree` keyed by fact, `ruleExpression`, `clauseFor`, `decidingClause`, `onChangeAnswer` for answered facts only, and the grouped "Evidence" list under the tree. Keep the film in step with new answers.
+- [x] 16. X-ray on any check
+  - [x] 16.1 Write `src/screens/Xray.tsx` over `XrayStage`: target from the check's rule button, title "Why: <label>", `FilmBody` with `explain`, `relabelSources`, `ProofTree` keyed by fact, `ruleExpression`, `clauseFor`, `decidingClause`, `onChangeAnswer` for answered facts only, and the grouped "Evidence" list under the tree. Keep the film in step with new answers.
     - _Requirements: 7.1 to 7.7, 7.9 to 7.13_
-  - [ ] 16.2 Playwright `e2e/preflight-xray.spec.ts`.
-    - A failed check opens "Why: <label>"; each rule's sentence comes first and its expression sits behind "Show the rule"; collected facts say "Collected", inline answers say "You answered", derived say "Worked out"; the Evidence list shows each collected fact's line; "Change this answer" appears on an answered fact only, closes the panel and shows the question in its row; the clause shows as a quote.
+  - [x] 16.2 Playwright `e2e/preflight-xray.spec.ts`.
+    - A failed check opens "Why: <label>"; each rule's sentence comes first and its expression sits behind "Show the rule"; collected facts say "Collected", inline answers say "You answered", a check's root is its rule and shows no "Worked out" badge, since no check rule reads a derived fact; the Evidence list shows each collected fact's line; "Change this answer" appears on an answered fact only, closes the panel and shows the question in its row; the clause shows as a quote.
     - At 1280 px paper and film sit side by side, at 390 px the film is a sheet.
     - Keyboard: arrows move, Enter expands, Escape closes and focus returns to the rule button.
     - Develop: about 500 ms in the default project, a 120 ms fade and no scan line in `reduced-motion`.
     - Answering while the film is open updates the proof.
     - _Requirements: 7.1 to 7.13_
 
-- [ ] 17. Errors
+- [x] 17. Errors
   - Write `src/screens/Errors.tsx` for the four `CollectError` kinds, with the exact copy, the reset time in the user's locale, "Try again", the sample buttons, and the snapshot offer when the target matches a bundled snapshot. Keep the steps visible above the error with the failed step marked, and move focus to the heading.
   - Playwright `e2e/preflight-errors.spec.ts` with synthetic responses: 404 shows the private-or-missing message; a rate limit with a reset header shows a local time, one without shows "Try again in about an hour.", and both offer samples; a rate limit for this repository's target also offers the snapshot, and choosing it shows the snapshot Report with no request; an aborted fetch shows the unreachable message and "Try again" runs the collection again; a 500 and a body that is not JSON show the unreadable message; no message shows GitHub's own text; the app never swaps in a snapshot on its own; the app never retries on its own (count requests); axe clean at three widths on each.
   - _Requirements: 8.1 to 8.12, 9.6_
 
-- [ ] 18. Bundled snapshots
-  - [ ] 18.1 Run `pnpm record:snapshots` (you may run it; the human has approved the 12 requests) and commit the three snapshots and their index. Check by eye, and list in the pull request, why each is public, what it shows (ready, not ready, an unseen fact), and the date. Check that the snapshot of this repository shows `.kiro` present and not ignored.
+- [x] 18. Bundled snapshots
+  - [x] 18.1 Run `pnpm record:snapshots` (you may run it; the human has approved the 12 requests) and confirm the three recorded sets build into samples (no snapshot JSON is stored). Check by eye, and list in the pull request, why each is public, what it shows (ready, not ready, an unseen fact), and the date. Check that the snapshot of this repository shows `.kiro` present and not ignored.
     - _Requirements: 9.1 to 9.3, 9.8_
-  - [ ] 18.2 Load them through `import()` into their own chunk, and show the snapshot line and date in the Report.
+  - [x] 18.2 Load them lazily into their own chunk, and show the snapshot line and date in the Report.
     - Vitest: the three snapshots parse as `RepoSnapshot`; each yields a Report through the same `deriveFacts` and `audit` as a live run; together they hold a ready result, a not-ready result and an unseen fact.
     - Build test: the snapshot chunk exists apart from the main bundle and the three together gzip under 60 kB.
     - _Requirements: 9.4, 9.5, 9.7, 11.7_
 
-- [ ] 19. Markdown export screen
+- [x] 19. Markdown export screen
   - Wire "Copy report as Markdown": copy, announce "Report copied", and the read-only text area with "Copy this text by hand." when the clipboard refuses.
   - Playwright `e2e/preflight-export.spec.ts`: the copied text equals the expected Markdown for each bundled repository (expected text in `e2e/fixtures/`, approved by the human); a fixture with Markdown syntax in a path exports escaped; a refused clipboard shows the text area with the text selected; the same report exports the same text twice.
   - _Requirements: 10.1 to 10.9_
 
-- [ ] 20. End-to-end journeys
-  - [ ] 20.1 Write `e2e/fixtures/preflight-<id>.json` for each bundled repository: per check the state, label, rule id and evidence lines, from the recorded responses. Ask the human to approve each file. Write `e2e/preflight-journey.spec.ts`: for each repository, run it as a live journey with routed recorded responses, then from its sample button, and assert both give the expected Report.
+- [x] 20. End-to-end journeys
+  - [x] 20.1 Write `e2e/fixtures/preflight-<id>.json` for each bundled repository: per check the state, label, rule id and evidence lines, from the recorded responses. Ask the human to approve each file. Write `e2e/preflight-journey.spec.ts`: for each repository, run it as a live journey with routed recorded responses, then from its sample button, and assert both give the expected Report.
     - Assert a live run makes exactly four requests to the four URLs in order, with no `Authorization` header, and that any request to another host fails the test.
     - _Requirements: 13.1 to 13.4_
-  - [ ] 20.2 Keyboard-only run from the start screen through the Report, an inline answer, the X-ray and the export, with a visible focus ring at each stop. Write `e2e/preflight-keyboard.spec.ts`.
+  - [x] 20.2 Keyboard-only run from the start screen through the Report, an inline answer, the X-ray and the export, with a visible focus ring at each stop. Write `e2e/preflight-keyboard.spec.ts`.
     - _Requirements: 11.2, 13.10_
-  - [ ] 20.3 Accessibility sweep: axe at 390, 768 and 1280 on the start screen, the steps, the Report in each state, the open X-ray and each error screen; touch targets of at least 44 px; no horizontal scroll at 320 px and at 200% zoom with a very long path and a very long `.gitignore` line. Write `e2e/preflight-a11y.spec.ts`.
+  - [x] 20.3 Accessibility sweep: axe at 390, 768 and 1280 on the start screen, the steps, the Report in each state, the open X-ray and each error screen; touch targets of at least 44 px; no horizontal scroll at 320 px and at 200% zoom with a very long path and a very long `.gitignore` line. Write `e2e/preflight-a11y.spec.ts`.
     - _Requirements: 11.1, 11.3, 11.4_
-  - [ ] 20.4 Copy and refusals scan on every screen for exclamation marks, uppercase labels, arrow glyphs in buttons, shadows, gradients and apologies. Write `e2e/preflight-refusals.spec.ts`.
+  - [x] 20.4 Copy and refusals scan on every screen for exclamation marks, uppercase labels, arrow glyphs in buttons, shadows, gradients and apologies. Write `e2e/preflight-refusals.spec.ts`.
     - _Requirements: 11.5, 11.6_
-  - [ ] 20.5 Privacy: fail on any storage write, any cookie, any request that is not to `api.github.com`, and any `Authorization` header. Write `e2e/preflight-privacy.spec.ts`.
+  - [x] 20.5 Privacy: fail on any storage write, any cookie, any request that is not to `api.github.com`, and any `Authorization` header. Write `e2e/preflight-privacy.spec.ts`.
     - _Requirements: 1.5, 1.6_
-  - [ ] 20.6 Budgets: a build test gzips the main JavaScript (excluding the develop and snapshot chunks) and fails above 200 kB, reporting both chunk sizes; a layout-shift check below 0.05 on each screen; a Vitest benchmark that one `audit` over a snapshot's facts takes under 10 ms.
+  - [x] 20.6 Budgets: a build test gzips the main JavaScript (excluding the develop and snapshot chunks) and fails above 200 kB, reporting both chunk sizes; a layout-shift check below 0.05 on each screen; a Vitest benchmark that one `audit` over a snapshot's facts takes under 10 ms.
     - _Requirements: 11.7 to 11.9_
-  - [ ] 20.7 A guard test that fails in a Claude Code pull request if the diff touches `packages/ui`, `packages/engine/src/types.ts` or any file under `apps/pre-flight/{kb,rulebook,golden}`. Skip it outside CI.
+  - [x] 20.7 A guard test that fails in a Claude Code pull request if the diff touches `packages/ui`, `packages/engine/src/types.ts` or any file under `apps/pre-flight/{kb,rulebook,golden}`. Skip it outside CI.
     - _Requirements: 1.7, 12.3 to 12.5_
 
-- [ ] 21. Final checkpoint
+- [x] 21. Final checkpoint
   - Run `pnpm check`, `pnpm test:props`, `pnpm build`, `pnpm dc validate`, `pnpm dc golden` and `pnpm e2e`. All must pass.
   - Attach the Task_Evidence for the whole app: the start screen, the steps, the Report in each state, the open X-ray, each error and the export at 390, 768 and 1280 px, and the reduced-motion X-ray.
   - Update `README.md` with a short Pre-Flight section: what it is, how to run it, the four requests it makes and why, how to re-record the snapshots. State anything you could not finish.

@@ -140,6 +140,8 @@ Scope: the start screen, the collector contract, live collection steps, the repo
 13. THE Report SHALL show a quiet Button "Check another repository" that returns to the start screen.
 14. THE Report SHALL render every string from GitHub as text, never as markup, and SHALL NOT use `dangerouslySetInnerHTML`.
 15. THE Report SHALL fit on one printed page, with the Summary and the grouped checks, when printed.
+16. WHEN the Goal is decided and a check's value is still unknown, THE Report SHALL keep that check's "Needs your answer" state word with no control (requirement 6.8), and SHALL say under the Summary which checks were not asked and why, in the form "<check labels> was not asked, because a failed check already makes this repository not ready." ("were" for more than one). THE Markdown export SHALL carry the same line after the time line.
+17. THE "Needs your answer" list SHALL open with the line "GitHub cannot show these. Your answers complete the checks above."
 
 ### Requirement 6: Inline questions
 
@@ -202,9 +204,9 @@ Scope: the start screen, the collector contract, live collection steps, the repo
 
 #### Acceptance Criteria
 
-1. THE Pre_Flight SHALL bundle three Snapshots in `apps/pre-flight/collectors/snapshots/`, one of them of this repository.
+1. THE Pre_Flight SHALL bundle three Snapshots in `apps/pre-flight/collectors/snapshots/`, one of them of this repository. A Bundled_Snapshot is the Collector run over the committed recorded responses with a replaying `fetch`, loaded on demand; no separate snapshot file is stored.
 2. THE Bundled_Snapshots SHALL be recorded by the Collector's recording script from real responses, SHALL hold public data only, and SHALL carry the date they were taken.
-3. THE Bundled_Snapshots SHALL be chosen so that the three together show a ready result, a not-ready result with failed checks, and a result with at least one inline question.
+3. THE Bundled_Snapshots SHALL be chosen so that the three together show a ready result, a not-ready result with failed checks, and a result with at least one question. A not-ready report asks nothing (6.8), so a question shows where a sample is undecided: a boolean one in its row, any other in "Needs your answer". A ready result may be reached by answering.
 4. THE Pre_Flight SHALL read a Bundled_Snapshot through the same `deriveFacts` and the same `audit` as a live Snapshot, with no other code path.
 5. THE Pre_Flight SHALL load the snapshots on demand, in a chunk apart from the main bundle, and the three together SHALL weigh less than 60 kB gzipped.
 6. THE Pre_Flight SHALL NOT use a Bundled_Snapshot unless the user chose it by a button, and SHALL NOT replace a failed live run with a snapshot on its own.
