@@ -44,8 +44,15 @@
 		padding-top: 0;
 		font-size: 0.75rem;
 	}
+	[data-note] {
+		padding-top: 0.25rem;
+		font-size: 0.875rem;
+	}
+	[data-report-group] h2 {
+		line-height: 1.3;
+	}
 }
 
 @page {
-	margin: 12mm;
+	margin: 10mm;
 }

@@ -58,11 +58,12 @@ describe("toMarkdown", () => {
 	it("writes the design's shape for a not-ready report", () => {
 		const md = toMarkdown(notReady, META);
 		const lines = md.split("\n");
-		expect(lines.slice(0, 4)).toEqual([
+		expect(lines.slice(0, 5)).toEqual([
 			"# 3 blockers and 1 warning in `chitrakumarsai/dc-sample-not-ready`",
 			"",
 			"Checklist: Submission checklist",
 			"Checked 14:02",
+			"Demo video under 3 minutes was not asked, because a failed check already makes this repository not ready\\.",
 		]);
 		expect(md).toContain("\n## Repository\n\n");
 		expect(md).toContain("- Passed: ");

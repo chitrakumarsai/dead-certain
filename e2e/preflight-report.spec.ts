@@ -177,3 +177,15 @@ test("hostile paths render as text and run no script (5.14)", async ({
 	await expect(page.locator("main img")).toHaveCount(0);
 	await expect(page.locator("main a[href^='javascript']")).toHaveCount(0);
 });
+
+test("a decided report says why an unknown check was not asked", async ({
+	page,
+}) => {
+	await live(page, "dc-sample-not-ready");
+	await expect(page.locator("[data-note]")).toHaveText(
+		"Demo video under 3 minutes was not asked, because a failed check already makes this repository not ready.",
+	);
+	await expect(row(page, "R-09").locator("[data-check-word]")).toHaveText(
+		"Needs your answer",
+	);
+});

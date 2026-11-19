@@ -53,6 +53,7 @@ describe("buildReport: the summary (5.2 to 5.4)", () => {
 		expect(report(self).summary).toEqual({
 			state: "not_ready",
 			sentence: "1 blocker and 1 warning in chitrakumarsai/dead-certain",
+			note: "Demo video under 3 minutes was not asked, because a failed check already makes this repository not ready.",
 		});
 		expect(report(notReady).summary.sentence).toBe(
 			"3 blockers and 1 warning in chitrakumarsai/dc-sample-not-ready",
@@ -111,6 +112,21 @@ describe("buildReport: rows (5.5 to 5.10)", () => {
 		expect(
 			rows.find((c) => c.item.fact === "video_under_limit")?.evidence,
 		).toBe("");
+	});
+});
+
+describe("the not-asked note (explicit for a decided report)", () => {
+	it("says why an unknown check was not asked once a failed check decides the result", () => {
+		expect(report(notReady).summary.note).toBe(
+			"Demo video under 3 minutes was not asked, because a failed check already makes this repository not ready.",
+		);
+	});
+
+	it("has no note while the result is undecided or ready", () => {
+		expect(report(passing(self)).summary.note).toBeUndefined();
+		expect(
+			report(passing(self), { demo_video_seconds: 150 }).summary.note,
+		).toBeUndefined();
 	});
 });
 

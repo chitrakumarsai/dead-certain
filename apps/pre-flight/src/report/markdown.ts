@@ -54,6 +54,9 @@ export function toMarkdown(
 		"",
 		`Checklist: ${escapeMd(meta.title)}`,
 		escapeMd(meta.stamp),
+		...(report.summary.note === undefined
+			? []
+			: [escapeMd(report.summary.note)]),
 	];
 	for (const group of report.groups) {
 		out.push("", `## ${escapeMd(group.title)}`, "");

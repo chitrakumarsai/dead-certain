@@ -69,6 +69,7 @@ const ALLOWED = [
 	/^$/,
 	/^Checklist: /,
 	/^Checked /,
+	/ (was|were) not asked, because a failed check /,
 	/^## /,
 	/^- (Passed|Failed|Needs your answer): /,
 	/^ {2}- `/,

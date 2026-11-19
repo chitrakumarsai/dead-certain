@@ -47,6 +47,10 @@ test("a number question sits in Needs your answer and has the same effect (6.4)"
 	await expect(list(page)).toContainText(
 		"How long is the demo video, in seconds?",
 	);
+	await expect(list(page)).toContainText(
+		"GitHub cannot show these. Your answers complete the checks above.",
+	);
+	await expect(page.locator("[data-note]")).toHaveCount(0);
 	const video = list(page)
 		.getByRole("listitem")
 		.filter({ hasText: "How long is the demo video, in seconds?" });

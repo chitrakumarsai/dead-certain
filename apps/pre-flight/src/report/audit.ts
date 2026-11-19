@@ -91,7 +91,11 @@ export function buildReport(input: {
 	const repo = `${snapshot.target.owner}/${snapshot.target.name}`;
 	const summary = summarize(
 		verdict.goals[GOAL],
-		all.map((c) => ({ severity: c.severity, value: c.item.value })),
+		all.map((c) => ({
+			severity: c.severity,
+			value: c.item.value,
+			label: c.item.label,
+		})),
 		verdict.needed.length,
 		repo,
 	);

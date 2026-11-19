@@ -168,6 +168,11 @@ export function Report({
 				/>
 			</div>
 			<p className="pt-2 text-sys-small text-text-soft">{stamp}</p>
+			{view.summary.note && (
+				<p data-note className="max-w-column pt-2 text-sys-body">
+					{view.summary.note}
+				</p>
+			)}
 			{view.groups.map((group) => (
 				<section
 					key={group.title}
@@ -222,6 +227,9 @@ export function Report({
 					<h2 id="needs-heading" className="text-sys-body font-semibold">
 						Needs your answer
 					</h2>
+					<p className="max-w-column pt-1 text-sys-body text-text-soft">
+						GitHub cannot show these. Your answers complete the checks above.
+					</p>
 					<ul>
 						{listQuestions.map((q) => (
 							<ListQuestion
