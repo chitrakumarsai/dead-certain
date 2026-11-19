@@ -6,7 +6,7 @@ Claim Check works out how much of a hospital bill a sample health policy pays. I
 
 The rules come from `apps/claim-check/kb/policy.yaml`, compiled at build time. A deterministic engine decides in the browser. Nothing is sent anywhere and nothing is stored.
 
-### Run it
+### Getting started
 
 ```sh
 pnpm install
