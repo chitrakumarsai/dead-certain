@@ -36,6 +36,7 @@ export type Action =
 	| { type: "step"; runId: number; event: StepEvent }
 	| { type: "done"; runId: number; result: CollectResult }
 	| { type: "sample"; runId: number; snapshot: RepoSnapshot }
+	| { type: "sampleFailed"; runId: number; target: Target }
 	| { type: "answer"; fact: string; value: FactValue }
 	| { type: "reopen"; fact: string }
 	| { type: "reset" };
@@ -69,6 +70,20 @@ export function reducer(run: Run, action: Action): Run {
 				snapshot: action.snapshot,
 				origin: "snapshot",
 				answers: {},
+			};
+		case "sampleFailed":
+			// The files are bundled, so this should not happen; if it does, say so instead of a blank page.
+			return {
+				phase: "error",
+				runId: action.runId,
+				target: action.target,
+				error: { kind: "unreadable" },
+				steps: {
+					metadata: "not_run",
+					tree: "not_run",
+					gitignore: "not_run",
+					readme: "not_run",
+				},
 			};
 		case "step":
 			if (run.phase !== "collecting" || !current) return run;

@@ -112,6 +112,25 @@ describe("the run reducer", () => {
 	});
 });
 
+describe("a sample that fails to load", () => {
+	it("shows the unreadable error for the sample's repository, not a blank page", () => {
+		expect(
+			reducer(initialRun, { type: "sampleFailed", runId: 4, target: TARGET }),
+		).toEqual({
+			phase: "error",
+			runId: 4,
+			target: TARGET,
+			error: { kind: "unreadable" },
+			steps: {
+				metadata: "not_run",
+				tree: "not_run",
+				gitignore: "not_run",
+				readme: "not_run",
+			},
+		});
+	});
+});
+
 describe("runFor (the route to a run)", () => {
 	it("reads a live repository, a sample, or nothing", () => {
 		expect(runFor("#/report?repo=chitrakumarsai%2Fdead-certain")).toEqual({

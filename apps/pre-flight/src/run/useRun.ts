@@ -7,7 +7,7 @@ import {
 	reducer,
 	runFor,
 } from "./controller";
-import { loadSample } from "./samples";
+import { loadSample, SAMPLES } from "./samples";
 
 /**
  * Starts the run the fragment asks for, and aborts it when the route changes.
@@ -23,10 +23,16 @@ export function useRun(hash: string, attempt = 0): [Run, (a: Action) => void] {
 		const controller = new AbortController();
 		if (request.kind === "none") dispatch({ type: "reset" });
 		else if (request.kind === "sample")
-			void loadSample(request.id).then((snapshot) => {
-				if (snapshot !== undefined && !controller.signal.aborted)
-					dispatch({ type: "sample", runId, snapshot });
-			});
+			void loadSample(request.id)
+				.catch(() => undefined)
+				.then((snapshot) => {
+					if (controller.signal.aborted) return;
+					const target = SAMPLES.find((s) => s.id === request.id)?.target;
+					if (snapshot !== undefined)
+						dispatch({ type: "sample", runId, snapshot });
+					else if (target !== undefined)
+						dispatch({ type: "sampleFailed", runId, target });
+				});
 		else {
 			dispatch({ type: "start", runId, target: request.target });
 			const runFetch: typeof fetch = (input, init) =>

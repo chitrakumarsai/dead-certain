@@ -72,12 +72,12 @@ function headings(text: string): string[] {
 		const atx = /^ {0,3}#{1,6}[ \t]+(.*?)(?:[ \t]+#+)?[ \t]*$/.exec(line);
 		if (atx?.[1] !== undefined) out.push(atx[1]);
 		const next = lines[i + 1];
-		// No * underline: a line of *** is a thematic break in Markdown.
+		// Only = and - underline a heading (3.22); a line of *** is a thematic break.
 		if (
 			line.trim() !== "" &&
 			!/^ {4}/.test(line) &&
 			next !== undefined &&
-			/^ {0,3}([=\-~^])\1*[ \t]*$/.test(next)
+			/^ {0,3}([=-])\1*[ \t]*$/.test(next)
 		)
 			out.push(line.trim());
 	});

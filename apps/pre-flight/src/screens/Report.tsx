@@ -81,6 +81,9 @@ function ListQuestion({
 	);
 }
 
+/** An id-safe form of a group title: "Kiro usage" gives "kiro-usage" (an id with a space breaks aria-labelledby). */
+const slug = (title: string) => title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
 /** The sentence, with a line-break opportunity after the slash of owner/name, so it wraps there first. */
 function withSlashBreak(sentence: string, repo: string) {
 	const at = sentence.lastIndexOf(repo);
@@ -169,11 +172,11 @@ export function Report({
 				<section
 					key={group.title}
 					data-report-group
-					aria-labelledby={`group-${group.title}`}
+					aria-labelledby={`group-${slug(group.title)}`}
 					className="pt-6"
 				>
 					<h2
-						id={`group-${group.title}`}
+						id={`group-${slug(group.title)}`}
 						className="text-sys-body font-semibold"
 					>
 						{group.title}

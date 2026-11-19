@@ -196,6 +196,13 @@ describe("deriveFacts never guesses", () => {
 			expect(has("Usage\n***")).toBe(false);
 		});
 
+		it("reads only = and - as underlines (3.22)", () => {
+			expect(has("Getting started\n~~~~~~~~~~~~~~~")).toBe(false);
+			expect(has("Getting started\n^^^^^^^^^^^^^^^")).toBe(false);
+			expect(has("Getting started\n===============")).toBe(true);
+			expect(has("Getting started\n---------------")).toBe(true);
+		});
+
 		it("still reads a real heading after a closed fence", () => {
 			expect(has("```\n# not this\n```\n## Getting started\n")).toBe(true);
 		});
