@@ -1,0 +1,69 @@
+{
+	"repo": "chitrakumarsai/dead-certain",
+	"state": "Not ready",
+	"sentence": "1 blocker and 1 warning in chitrakumarsai/dead-certain",
+	"checks": [
+		{
+			"rule": "R-01",
+			"label": "Public repository",
+			"state": "Passed",
+			"evidence": ["GitHub reports the repository as public"]
+		},
+		{
+			"rule": "R-02",
+			"label": "Open-source licence",
+			"state": "Passed",
+			"evidence": ["GitHub detects the MIT licence", "LICENSE is at the root"]
+		},
+		{
+			"rule": "R-03",
+			"label": "Not archived",
+			"state": "Passed",
+			"evidence": ["GitHub reports the repository as not archived"]
+		},
+		{
+			"rule": "R-04",
+			"label": ".kiro directory",
+			"state": "Passed",
+			"evidence": [".kiro holds 51 files"]
+		},
+		{
+			"rule": "R-05",
+			"label": ".kiro committed",
+			"state": "Passed",
+			"evidence": [
+				".kiro holds 51 files",
+				".gitignore has no line that ignores .kiro"
+			]
+		},
+		{
+			"rule": "R-06",
+			"label": "At least one spec",
+			"state": "Passed",
+			"evidence": [".kiro/specs/claim-check-app/tasks.md is in the repository"]
+		},
+		{
+			"rule": "R-07",
+			"label": "README run instructions",
+			"state": "Failed",
+			"evidence": [
+				"README.md has no heading called Getting started, Install, Installation, Run, Running, Usage or Quick start"
+			]
+		},
+		{
+			"rule": "R-08",
+			"label": "Two app folders",
+			"state": "Failed",
+			"evidence": [
+				"apps holds 3: apps/claim-check, apps/pre-flight, apps/site",
+				"2 of 3 app directories have a package.json; missing in apps/pre-flight"
+			]
+		},
+		{
+			"rule": "R-09",
+			"label": "Demo video under 3 minutes",
+			"state": "Needs your answer",
+			"evidence": []
+		}
+	]
+}

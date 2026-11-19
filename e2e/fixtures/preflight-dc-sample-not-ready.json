@@ -1,0 +1,70 @@
+{
+	"repo": "chitrakumarsai/dc-sample-not-ready",
+	"state": "Not ready",
+	"sentence": "3 blockers and 1 warning in chitrakumarsai/dc-sample-not-ready",
+	"checks": [
+		{
+			"rule": "R-01",
+			"label": "Public repository",
+			"state": "Passed",
+			"evidence": ["GitHub reports the repository as public"]
+		},
+		{
+			"rule": "R-02",
+			"label": "Open-source licence",
+			"state": "Failed",
+			"evidence": [
+				"GitHub detects no licence",
+				"None of LICENSE, LICENSE.md, LICENSE.txt, COPYING, COPYING.md is at the root"
+			]
+		},
+		{
+			"rule": "R-03",
+			"label": "Not archived",
+			"state": "Passed",
+			"evidence": ["GitHub reports the repository as not archived"]
+		},
+		{
+			"rule": "R-04",
+			"label": ".kiro directory",
+			"state": "Failed",
+			"evidence": ["There is no .kiro directory at the root"]
+		},
+		{
+			"rule": "R-05",
+			"label": ".kiro committed",
+			"state": "Failed",
+			"evidence": [
+				"There is no .kiro directory at the root",
+				".gitignore line 2: .kiro/"
+			]
+		},
+		{
+			"rule": "R-06",
+			"label": "At least one spec",
+			"state": "Failed",
+			"evidence": ["No .kiro/specs/<spec>/tasks.md in the repository"]
+		},
+		{
+			"rule": "R-07",
+			"label": "README run instructions",
+			"state": "Passed",
+			"evidence": ["README.md has the heading \"Getting started\""]
+		},
+		{
+			"rule": "R-08",
+			"label": "Two app folders",
+			"state": "Passed",
+			"evidence": [
+				"apps holds 2: apps/api, apps/web",
+				"2 of 2 app directories have a package.json"
+			]
+		},
+		{
+			"rule": "R-09",
+			"label": "Demo video under 3 minutes",
+			"state": "Needs your answer",
+			"evidence": []
+		}
+	]
+}
