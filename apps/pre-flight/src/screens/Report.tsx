@@ -81,6 +81,20 @@ function ListQuestion({
 	);
 }
 
+/** The sentence, with a line-break opportunity after the slash of owner/name, so it wraps there first. */
+function withSlashBreak(sentence: string, repo: string) {
+	const at = sentence.lastIndexOf(repo);
+	const slash = repo.indexOf("/");
+	if (at < 0 || slash < 0) return sentence;
+	return (
+		<>
+			{sentence.slice(0, at + slash + 1)}
+			<wbr />
+			{sentence.slice(at + slash + 1)}
+		</>
+	);
+}
+
 export function Report({
 	kb,
 	view,
@@ -146,7 +160,7 @@ export function Report({
 			<div id="summary">
 				<VerdictHeadline
 					state={view.summary.state}
-					statement={sentence}
+					statement={withSlashBreak(sentence, view.repo)}
 					size="summary"
 				/>
 			</div>

@@ -26,12 +26,38 @@ Nothing in the spec is left undone. Two cases are tested only in unit tests, bec
 
 ## Pre-Flight
 
-Pre-Flight checks a public GitHub repository against a submission checklist. It is being built in Phase 4.
+Pre-Flight checks a public GitHub repository against a submission checklist of nine checks (R-01 to R-09). Each check passes, fails or waits for your answer, with the rule and the evidence behind it, and "Why" opens its proof. A facts-only collector reads the repository; the same deterministic engine as Claim Check decides. The demo video's length cannot be read from GitHub, so Pre-Flight asks for it, and asks anything else it cannot see.
 
-### Recorded responses
+### Getting started
 
-The collector is tested against real GitHub responses saved in `apps/pre-flight/collectors/recorded/`. Tests never call GitHub.
+```sh
+pnpm install
+pnpm dc build apps/pre-flight   # compiles the knowledge base the app imports
+pnpm --filter @dead-certain/pre-flight dev
+```
 
-- `pnpm record:snapshots` records them: four unauthenticated requests for each of three repositories (this one, `dc-sample-not-ready` and `dc-sample-warnings`), 12 in all. It sends no token and keeps only the rate-limit and content-type headers.
-- A maintainer runs it by hand, and re-runs it when this repository's `.gitignore` or `.kiro` folder changes.
+Enter `owner/name` or a GitHub URL, or try one of the three samples. `pnpm --filter @dead-certain/pre-flight build` builds it for GitHub Pages under `/dead-certain/pre-flight/`.
+
+### The four requests
+
+A live run makes four unauthenticated requests to `api.github.com`, one after another, and nothing else:
+
+1. `GET /repos/{owner}/{name}`: public or private, archived, the licence GitHub detects, and the default branch.
+2. `GET /repos/{owner}/{name}/git/trees/{branch}?recursive=1`: the file tree (a licence file, `.kiro`, specs, app folders).
+3. `GET /repos/{owner}/{name}/contents/.gitignore`: whether `.kiro` is ignored.
+4. `GET /repos/{owner}/{name}/readme`: whether the README has run instructions.
+
+No token, cookie or storage is used. GitHub allows 60 such requests an hour per browser; when that runs out, Pre-Flight says when to try again and offers the samples, which make no request.
+
+### Samples and recorded responses
+
+The samples and the collector's tests use real GitHub responses saved in `apps/pre-flight/collectors/recorded/`. A sample is the collector run over those files, so it matches a live run of the same responses. Tests never call GitHub.
+
+- `pnpm record:snapshots` records them: four requests for each of three repositories (this one, `dc-sample-not-ready` and `dc-sample-warnings`), 12 in all. It keeps only the rate-limit and content-type headers.
+- A maintainer runs it by hand, and re-runs it when this repository's `.gitignore`, `.kiro` folder, README or app folders change.
 - Responses that cannot be recorded safely, such as a rate limit or an empty repository, are hand-written in `recorded/synthetic/` and marked `"synthetic": true`.
+
+### Not finished
+
+- The sample of this repository was recorded from `main` before the README's run heading and Pre-Flight's own `package.json` reached it, so it still fails R-07 and R-08. Re-record it once this work is on `main`.
+- No sample is ready as it stands: the demo video length is always asked, so a report is at best undecided until you answer it.
