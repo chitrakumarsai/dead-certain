@@ -28,6 +28,8 @@ export interface CheckView {
 
 export interface ReportView {
 	verdict: Verdict;
+	/** owner/name, as parsed from the user's text. */
+	repo: string;
 	facts: Record<string, FactValue>;
 	summary: Summary;
 	groups: { title: string; checks: CheckView[] }[];
@@ -93,5 +95,5 @@ export function buildReport(input: {
 		verdict.needed.length,
 		repo,
 	);
-	return { verdict, facts, summary, groups, listQuestions: list };
+	return { verdict, repo, facts, summary, groups, listQuestions: list };
 }
