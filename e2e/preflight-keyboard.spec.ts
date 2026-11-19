@@ -22,11 +22,9 @@ test("start to report, an inline answer, the X-ray and the export, with no point
 	await expect(summary(page)).toBeFocused();
 
 	// An inline answer: R-02 asks whether a licence file is at the root; 1 picks "Yes".
-	const licence = page
-		.locator("[data-check]")
-		.filter({
-			has: page.getByRole("button", { name: /rule R-02\. See why$/ }),
-		});
+	const licence = page.locator("[data-check]").filter({
+		has: page.getByRole("button", { name: /rule R-02\. See why$/ }),
+	});
 	await tabTo(page, licence.getByRole("radio").first());
 	await page.keyboard.press("1");
 	await expect(licence.locator("[data-check-word]")).toHaveText("Passed");
