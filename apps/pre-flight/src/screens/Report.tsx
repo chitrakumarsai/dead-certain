@@ -151,6 +151,7 @@ export function Report({
 			{view.groups.map((group) => (
 				<section
 					key={group.title}
+					data-report-group
 					aria-labelledby={`group-${group.title}`}
 					className="pt-6"
 				>

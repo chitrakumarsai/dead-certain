@@ -102,7 +102,13 @@ function App({ kb }: { kb: KnowledgeBase }) {
 	const onRun = run.phase !== "idle" || hash.startsWith("#/report");
 	return (
 		<AppShell appName="Pre-Flight" nav={NAV} rail={rail}>
-			{onRun ? <div className="min-h-svh">{page}</div> : page}
+			{onRun ? (
+				<div data-run-page className="min-h-svh">
+					{page}
+				</div>
+			) : (
+				page
+			)}
 		</AppShell>
 	);
 }
