@@ -3,6 +3,11 @@
 /* Scan this app's own components and collectors for class names. */
 @source "./";
 
+/* The summary ends with owner/name, one long word that must still wrap at 320 px (11.4). */
+[data-statement] {
+	overflow-wrap: anywhere;
+}
+
 /* A check's evidence lines are joined with a line break (5.8). */
 [data-detail] {
 	white-space: pre-line;
