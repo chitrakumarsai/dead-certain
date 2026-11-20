@@ -37,6 +37,8 @@ __pycache__/
 /.claude/settings.local.json
 !/apps/*/rulebook/**
 !/apps/*/kb/**
+# The app template's rulebook and open questions, which pnpm new-app copies into a new app.
+!/templates/app/**/*.md
 # ...but not the JSON that `pnpm dc build` compiles from them.
 /apps/*/kb/dist/
 !/docs/kb-format.md
