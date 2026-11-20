@@ -1,0 +1,54 @@
+kb: __APP_NAME__
+scenarios:
+  - id: G-01
+    title: "An adult is 10 days late with no waiver card: 250 cents, under the cap"
+    facts:
+      days_late: 10
+      member_type: adult
+      waiver_card: false
+    expect:
+      goals:
+        outcome: fine_due
+      line_items:
+        cap_deduction: 0
+        waiver_deduction: 0
+      fires: [RATE-02, FINE-01, CAP-02, CAP-03, CAP-04, WAIV-01, OUT-03]
+  - id: G-02
+    title: "A child is 100 days late: the cap of 500 cents cuts the fine of 1000"
+    facts:
+      days_late: 100
+      member_type: child
+      waiver_card: false
+    expect:
+      goals:
+        outcome: fine_due
+      line_items:
+        cap_deduction: 500
+        waiver_deduction: 0
+      fires: [RATE-01, CAP-01, CAP-04, OUT-03]
+  - id: G-03
+    title: "A senior is 4 days late with a waiver card: the fine of 60 cents is cancelled"
+    facts:
+      days_late: 4
+      member_type: senior
+      waiver_card: true
+    expect:
+      goals:
+        outcome: waived
+      line_items:
+        cap_deduction: 0
+        waiver_deduction: 60
+      fires: [RATE-03, WAIV-01, OUT-02]
+  - id: G-04
+    title: "An adult returns the book on time: no fine"
+    facts:
+      days_late: 0
+      member_type: adult
+      waiver_card: false
+    expect:
+      goals:
+        outcome: no_fine
+      line_items:
+        cap_deduction: 0
+        waiver_deduction: 0
+      fires: [OUT-01]
