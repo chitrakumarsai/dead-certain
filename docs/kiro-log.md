@@ -431,3 +431,4 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
     2. `pnpm dc golden` prints the warning `TOO_FEW_SCENARIOS` (4 scenarios, the build plan asks for 12). Requirement 4.4 asks for no warning only from `validate`, and requirement 4.2 sets the minimum at 3, so this stays.
     3. The money is in cents with `currency: USD`. The amounts are printed in `because` sentences as raw cents, as the engine fills them.
     4. The spec files were read from `kiro/5-specs`, which is not merged into this branch's base yet.
+  - `templates/app/rulebook/starter.md` was never committed, because `.gitignore` hid it. Main now tracks Markdown under `templates/app/` (PR #16). Kiro checked the file against the knowledge base (four clauses, the same rates and caps, `__APP_TITLE__` in the heading) and committed it without a force-add.
