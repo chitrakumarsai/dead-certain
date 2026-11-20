@@ -443,3 +443,12 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
     5. `apps/pre-flight/kb/dist` was missing in this checkout, so two Pre-Flight tests failed before any of this work. `pnpm dc build` generated it (gitignored).
   - The property tests import `packages/kb-tools/src/testkit` by relative path for knowledge-base and answer generators, since neither testkit is exported. Nothing in `packages/engine` or `packages/kb-tools` changed.
   - Task 7.1: `"disabled": false` for `dead-certain` in `.kiro/settings/mcp.json`, in its own commit. The session stops here. Tasks 7.2 and 7.3 need a new Kiro session from the repo root, which loads the server. Tasks 8 and 9 follow.
+
+## 2026-11-21
+
+- `mcp-server` tasks 7.2, 7.3, 8 and 9 (Kiro CLI, branch `kiro/5-mcp-server`). The new session loaded `dead-certain` from `.kiro/settings/mcp.json` and listed all four tools. No hook ran.
+  - Calls through the server: `list_kbs` returned `claim-check/policy` (36 facts, 12 askable, 26 rules, 11 clauses) and `pre-flight/checklist`, both ok. `consult` with no answers asked `claimed` (clause 1.2). With `cause` and `claimed` it asked `policy_start_date` (clause 3.1). With the full `G-01` answers it returned a verdict.
+  - The verdict matches `G-01`'s `expect` block: `payable` 13200000, `outcome` `reduced`, and all eight line items (0, 0, 0, 1200000, 500000, 2800000, 3300000, 0) with rules `ANNEX-01`, `ROOM-05`, `ROOM-07`, `COPAY-03`. `explain` on `payable` and `outcome` showed `PAY-02` and `OUT-03`, so the six rules in `fires` all appear. Every leaf was `answered`. `explain` on `room_rent_deduction` gave 500000 by `ROOM-05`, clause 4.2. `validate` on `pre-flight/checklist`: 0 errors, 0 warnings. No difference found.
+  - What it showed: `explain` on a goal is large. `payable` came back at about 81,000 characters and `outcome` at about 158,000. Both are under the server's 200,000 cap but over the 30,000 the Kiro CLI shows inline, so it kept a preview and saved the rest to a file. The proof repeats shared subtrees. `room_rent_deduction` is small. Not changed; a smaller default would be a design change.
+  - Task 8: README "MCP server" section, and `tech.md` pins `@modelcontextprotocol/sdk` at 1.32.2.
+  - Branch note: commit `7ff9bb8` (the library-fine Starter_KB, from another session) is on this branch and was left alone, as the human asked. Its `templates/` files show in `git diff main...HEAD`, outside the list in task 9.

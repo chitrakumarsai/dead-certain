@@ -60,3 +60,52 @@ The samples and the collector's tests use real GitHub responses saved in `apps/p
 ### Not finished
 
 Nothing in the spec is left undone. No sample is ready as it stands: the demo video length can never be read from GitHub, so a report is at best undecided until you answer it. The sample of this repository asks only that, and answering under 180 seconds makes it ready.
+
+## MCP server
+
+`packages/mcp` is a Model Context Protocol server over the same engine. An agent such as Kiro can run a knowledge base and read its proofs without opening a browser. It is read-only (it never writes a file), makes no network call and has no LLM in it: every answer comes from the deterministic engine.
+
+| Tool | Does |
+| --- | --- |
+| `list_kbs` | Lists the knowledge bases in `apps/*/kb/*.yaml`, compiled fresh, with goals and counts. Call it first. |
+| `consult` | Takes `kb` and the answers so far. Returns the next question (with why it matters and its clause) or the verdict with line items, and a replay token. |
+| `explain` | Takes `kb`, a `fact` and the same answers or token. Returns the proof of that fact as JSON and as an indented outline, with the clauses it cites. |
+| `validate` | Runs the same checks as `pnpm dc validate` on the YAML on disk. |
+
+Add it to `.kiro/settings/mcp.json` (other MCP clients take the same command), then start a new session from the repo root:
+
+```json
+{
+  "mcpServers": {
+    "dead-certain": {
+      "command": "pnpm",
+      "args": ["-s", "--filter", "@dead-certain/mcp", "start"]
+    }
+  }
+}
+```
+
+The launcher rebuilds `dist/server.mjs` when the source is newer, so no separate build step is needed.
+
+Example: `consult` on `claim-check/policy` with no answers.
+
+```json
+{ "kb": "claim-check/policy" }
+```
+
+```json
+{
+  "status": "question",
+  "question": {
+    "fact": "claimed",
+    "text": "What is the total on the final hospital bill?",
+    "why": "The policy pays the hospital bill less its deductions, and never more than the bill.",
+    "clause": "1.2",
+    "type": "money"
+  },
+  "answers": {},
+  "token": "AatnA4A26XRDn5MfWyyQLVIA"
+}
+```
+
+Money is an integer in minor units. With all of golden scenario `G-01` the result is `status: "verdict"`, `payable` 13200000 and `outcome` `reduced`.

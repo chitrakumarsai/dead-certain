@@ -113,26 +113,26 @@ This plan builds the MCP server in `packages/mcp` (package `@dead-certain/mcp`),
   - [x]* 6.8 Property 8: Payloads are bounded and stable.
     - _Requirements: 3.7, 6.3, 6.4_
 
-- [ ] 7. Check inside Kiro
+- [x] 7. Check inside Kiro
   - [x] 7.1 Turn the server on
     - Run `pnpm check`, `pnpm test:props` and the smoke test. All must pass.
     - In `.kiro/settings/mcp.json`, set `"disabled": false` on `dead-certain`. Change nothing else in the file. Commit this alone, so the change is easy to find.
     - Tell the human that a new Kiro session from the repo root is needed to load the server (decided: a new session does 7.2 and 7.3). Stop the session here unless the human says the server has loaded.
     - _Requirements: 9.1_
-  - [ ] 7.2 Call it from Kiro
+  - [x] 7.2 Call it from Kiro
     - In the new session, confirm the four tools are listed. Call `list_kbs`; `consult` on `claim-check/policy` with no answers, with two answers and with the full `G-01` answers; `explain` on `payable` and on `room_rent_deduction`; `validate` on `pre-flight/checklist`.
     - Compare the final `consult` Payload with `G-01`'s `expect` block, goal by goal and line by line. Report any difference as a failure.
     - _Requirements: 9.2, 9.3, 9.4_
-  - [ ] 7.3 Record it
+  - [x] 7.3 Record it
     - Append a dated entry to `docs/kiro-log.md`: the Kiro surface, the calls and what came back (short), what the server caught or what failed. Do not paste the whole Payloads.
     - _Requirements: 9.5, 10.3_
 
-- [ ] 8. Docs and pin
+- [x] 8. Docs and pin
   - Add the "MCP server" section to `README.md` (requirement 10.1): the four tools, the `mcp.json` entry, one `consult` call and its result, read-only and no LLM.
   - Replace "(add when installed)" in `.kiro/steering/tech.md` with the SDK's exact version.
   - _Requirements: 10.1, 10.2_
 
-- [ ] 9. Final checkpoint
+- [x] 9. Final checkpoint
   - Run `pnpm check`, `pnpm test:props`, `pnpm build` and `pnpm dc validate`. All must pass.
   - Confirm `git diff --stat main...HEAD` shows changes only under `packages/mcp`, `.kiro/settings/mcp.json`, `.kiro/steering/tech.md`, `README.md`, `docs/kiro-log.md`, `pnpm-lock.yaml` and this spec's `tasks.md`.
   - Open the pull request for gate G5. State what was verified inside Kiro and what was not.
