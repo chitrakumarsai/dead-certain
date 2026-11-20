@@ -8,7 +8,7 @@
         "@dead-certain/mcp",
         "start"
       ],
-      "disabled": true
+      "disabled": false
     },
     "context7": {
       "command": "npx",

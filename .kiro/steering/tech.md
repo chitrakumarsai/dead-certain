@@ -16,7 +16,7 @@ inclusion: always
 | fast-check | 4.10.2 |
 | Biome | 2.6.7 |
 | Playwright | 1.65.0 |
-| `@modelcontextprotocol/sdk` | (add when installed) |
+| `@modelcontextprotocol/sdk` | 1.32.2 |
 
 Vitest is the unit and integration test runner. fast-check is the property-test library (files named `*.props.test.ts`). Playwright drives end-to-end and accessibility tests.
 
