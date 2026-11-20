@@ -31,7 +31,7 @@ This plan builds the MCP server in `packages/mcp` (package `@dead-certain/mcp`),
     - Pick the SDK version: the latest stable release at execution time, found with context7 or the registry. Record it in the task's notes.
     - Create `vite.config.ts` as an SSR build of `src/main.ts` to `dist/server.mjs`: `ssr.noExternal` `["@dead-certain/engine", "@dead-certain/kb-tools"]`, `ssr.external` `["@modelcontextprotocol/sdk", "zod", "yaml"]`, `target` `node22`, `minify` false, `sourcemap` true, `emptyOutDir` true. Mirror `packages/kb-tools/vite.config.ts`.
     - Create stub `src/main.ts` that exits at once, and run `pnpm --filter @dead-certain/mcp build`.
-    - Confirm `tsc --noEmit` passes with the SDK imported in a stub. IF it fails for want of `@types/node`, stop and ask the human (open question 1). Do not add the package.
+    - Confirm `tsc --noEmit` passes with the SDK imported in a stub. IF it fails for want of `@types/node`, stop and ask the human (decided: declare locally first, then ask). Do not add the package.
     - Run `pnpm check`.
     - _Requirements: 1.1, 1.4, 7.4_
 
@@ -116,7 +116,7 @@ This plan builds the MCP server in `packages/mcp` (package `@dead-certain/mcp`),
   - [ ] 7.1 Turn the server on
     - Run `pnpm check`, `pnpm test:props` and the smoke test. All must pass.
     - In `.kiro/settings/mcp.json`, set `"disabled": false` on `dead-certain`. Change nothing else in the file. Commit this alone, so the change is easy to find.
-    - Tell the human that a new Kiro session from the repo root is needed to load the server (open question 4). Stop the session here unless the human says the server has loaded.
+    - Tell the human that a new Kiro session from the repo root is needed to load the server (decided: a new session does 7.2 and 7.3). Stop the session here unless the human says the server has loaded.
     - _Requirements: 9.1_
   - [ ] 7.2 Call it from Kiro
     - In the new session, confirm the four tools are listed. Call `list_kbs`; `consult` on `claim-check/policy` with no answers, with two answers and with the full `G-01` answers; `explain` on `payable` and on `room_rent_deduction`; `validate` on `pre-flight/checklist`.
@@ -140,6 +140,6 @@ This plan builds the MCP server in `packages/mcp` (package `@dead-certain/mcp`),
 ## Notes
 
 - Tasks marked `*` are property tests. The build plan asks for them in every Kiro-lane spec, so run them all and keep them in CI. They run under `pnpm check` because the root Vitest config includes `packages/**`.
-- Questions that block a task: open question 1 blocks task 1.1 if the SDK needs `@types/node`. Open question 4 splits task 7 across two sessions.
+- All six open questions are answered (see the requirements). Task 1.1 still stops and asks if `@types/node` turns out to be needed. Task 7 spans two sessions.
 - Task 7.2 is the only part of the build plan's Phase 5 line "Confirm Kiro can call `consult` and `explain`" that a unit test cannot prove. The smoke test proves the protocol, and 7.2 proves the client.
 - The Claude Code lane has nothing to do in this spec.

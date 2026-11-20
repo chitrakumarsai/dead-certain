@@ -6,7 +6,7 @@ This plan builds `pnpm new-app <name>` and `templates/app` in TypeScript strict 
 
 **This spec is implemented by Claude Code, not Kiro.** Kiro wrote the spec and creates no file under `scripts`, `templates`, `e2e`, `.github` or the root. Every task below is addressed to Claude Code. Do the tasks one at a time, in order. Do not start a task while another is in progress.
 
-**Prerequisite from the Kiro lane.** The Starter_KB (`kb/starter.yaml`, `rulebook/starter.md`, `golden/scenarios.yaml`, requirement 4) is written by Kiro on `kiro/5-template-kb` and merged before task 4.1. Tasks 1 to 3 do not need it. Until it merges, task 4 builds against a throwaway knowledge base kept under `scripts/fixtures/` that is deleted when the real one lands. Do not commit a Starter_KB of your own. The human's answer to open questions 1 and 2 decides who writes it and what it is about.
+**Prerequisite from the Kiro lane.** The Starter_KB (`kb/starter.yaml`, `rulebook/starter.md`, `golden/scenarios.yaml`, requirement 4) is written by Kiro on `kiro/5-template-kb` and merged before task 4.1. Tasks 1 to 3 do not need it. Until it merges, task 4 builds against a throwaway knowledge base kept under `scripts/fixtures/` that is deleted when the real one lands. Do not commit a Starter_KB of your own. The human decided that Kiro writes it, once, and that the domain is "Library fine".
 
 ## Working rules for every task
 
@@ -100,7 +100,7 @@ This plan builds `pnpm new-app <name>` and `templates/app` in TypeScript strict 
     - Tests: the real README; a README with the block moved; a README with no heading; a block with Windows line endings.
     - _Requirements: 9.2, 10.2_
   - [ ] 6.2 The job
-    - Add the `scaffold` job to `ci.yml` as the design shows, with `PNPM_CONFIG_FROZEN_LOCKFILE: "false"` and its comment, the changes step (open question 7, recommended answer), and no upload or commit. `check` is unchanged.
+    - Add the `scaffold` job to `ci.yml` as the design shows, with `PNPM_CONFIG_FROZEN_LOCKFILE: "false"` and its comment, the changes step (decided: path filters), and no upload or commit. `check` is unchanged.
     - Push the branch and show the job's green run in the pull request. Show also a red run: break the README block locally in a throwaway commit and show the job fail, then revert it.
     - _Requirements: 9.1 to 9.5_
 
@@ -119,7 +119,7 @@ This plan builds `pnpm new-app <name>` and `templates/app` in TypeScript strict 
 ## Notes
 
 - Tasks marked `*` are property tests. Run them with the task before them, not later.
-- Questions that block a task: open questions 1 and 2 block task 4.1. Question 3 (Markers or discovery) blocks task 1. Question 7 changes task 6.2.
+- All seven open questions are answered (see the requirements). The only wait is the Kiro-lane pull request `kiro/5-template-kb`, which task 4.1 needs.
 - Phase 5 also has the human's own task: scaffold a third app from the README alone, time it, and record the screen. The time goes into the README by hand (requirement 10.6).
 - The human's run in Phase 5 is the real test of "from the README alone". Task 5 and the Scaffold_Job make it likely to pass. They do not replace it.
 - The Kiro lane's gate review checks every requirement against the evidence, rewrites `.kiro/steering/new-app.md` (requirement 12.3) and amends this spec if it accepts a deviation.

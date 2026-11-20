@@ -59,14 +59,14 @@ This plan builds the landing page in `apps/site` in TypeScript strict mode. The 
 
 - [ ] 4. The three steps
   - `steps.ts` and `Steps.tsx` as the design describes. Choose `STEP_RULE`: a rule in the proof of `room_rent_deduction` whose printed expression is at most 90 characters. Record the id in `hero/config.ts`. Add a test that fails when the rule is not in that proof, is missing, or is longer than 90 characters.
-  - The first step shows the cited clause in a `ClauseQuote` and the link to `claim-check/#/rulebook?clause=<id>`. The second shows the rule. The third has the anchor that opens the verdict's proof.
+  - The first step shows the cited clause in a `ClauseQuote` and the link to `claim-check/#/rulebook?clause=<id>`. The second shows the rule. The third has the anchor that opens the verdict's proof. Under the three steps add the one sentence about the tools and the `.kiro` link (requirement 4.8).
   - Test the missing-rule and missing-clause fall-backs.
   - [ ]* Property 4: quoted text is the knowledge base's text.
-  - _Requirements: 4.1 to 4.7, 8.3_
+  - _Requirements: 4.1 to 4.8, 8.3_
 
 - [ ] 5. The two apps and the scaffold command
   - `Apps.tsx` and `Scaffold.tsx` as the design describes, with links built from `import.meta.env.BASE_URL`. "Copy command" copies `pnpm new-app my-app`, announces "Copied", and falls back to selecting the text.
-  - The link to the README section goes to the repository's README (open question 7 decides the exact address). Add the source link to the nav.
+  - The link to the README section goes to the repository's README (the address is decided: the repository's README, with `#add-a-third-app` once that section exists). Add the source link to the nav.
   - [ ]* Property 6: links are built from the base.
   - _Requirements: 5.1 to 5.6_
 
@@ -91,6 +91,6 @@ This plan builds the landing page in `apps/site` in TypeScript strict mode. The 
 ## Notes
 
 - Tasks marked `*` are property tests. Run them with the task before them, not later.
-- Questions that block a task: open question 3 (the sample claim) blocks task 2.1. Open question 7 sets the link in task 5. Questions 1, 4, 5 and 6 change scope: answer them before task 3 so no work is redone.
+- All eight open questions are answered (see the requirements). None blocks a task.
 - The pull request's checks run the apps' builds too, since the site's `dist` takes copies of them in CI. A change to Claim Check's facts breaks the golden pin in task 2.1 on purpose.
 - The Kiro lane's gate review checks every requirement against the evidence, and amends this spec if it accepts a deviation.

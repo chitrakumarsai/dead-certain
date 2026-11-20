@@ -170,11 +170,13 @@ Decided by the brief:
 - **Four tools.** `list_kbs`, `consult`, `explain`, `validate`, as in section 6 of the build plan. `audit` and `whatIf` are not tools. By the engine's mode-agreement property, `consult` with all facts equals `audit`, and its `needed` list says what is still open.
 - **Design-First.** The build plan lists this spec as Requirements-First. The human asked for Design-First for the Phase 5 specs.
 
-Open, for the human:
+Decided by the human (2026-11-20), each taking the recommendation:
 
-1. **The SDK's type needs.** `@modelcontextprotocol/sdk` may need `@types/node` for its stdio transport types, and the repo has none by rule (the engine and kb-tools declare the few Node names they use). If task 1 finds that `tsc --noEmit` fails without it, the choices are: add `@types/node` to `packages/mcp` only, or declare the few names locally and skip library checking for the SDK (`skipLibCheck` is already on). Recommended: declare locally first, and ask before adding a dependency.
-2. **Build on every start.** `start` rebuilds the bundle when the source is newer. The alternative, a shim that fails with a message when the bundle is missing (as `bin/dc.mjs` does), is faster but leaves Kiro with a silent failed server on a fresh clone. Recommended: build on start, quietly.
-3. **KB_Ref form.** `claim-check/policy` (app and file stem) is proposed over the knowledge base's `id` field (`claim-check`), because an app may hold two files and `id` is not unique by rule. Say if you prefer the bare `id` when it is unique.
-4. **Where the Kiro check runs.** Requirement 9 needs a Kiro session that starts after `mcp.json` changes, so the executing session cannot do it alone. Recommended: the executing session stops at task 7 and tells you; you start a new CLI session in the repo root, and the second session does tasks 7.2 and 7.3.
-5. **Write tools.** Should a later spec let the server propose a rule or a golden scenario? This spec says no: it is read-only on purpose, and the `knowledge-engineer` agent is the only writer of `kb/`.
-6. **Who writes the README section.** `AGENTS.md` does not assign `README.md` to a lane, and Claude Code wrote the two app sections. Task 8 has Kiro write the "MCP server" section, since it describes Kiro's package. Say if Claude Code should write it instead.
+1. **The SDK's type needs.** Declare the few Node names locally first, as the engine and kb-tools do. If `tsc --noEmit` still fails, ask before adding `@types/node` (task 1.1).
+2. **Build on every start.** `start` rebuilds the bundle quietly when the source is newer (requirement 1.3).
+3. **KB_Ref form.** `<app>/<stem>`, such as `claim-check/policy` (requirement 2).
+4. **Where the Kiro check runs.** The executing session stops at task 7.1 and tells the human. The human starts a new CLI session in the repo root, and that session does tasks 7.2 and 7.3.
+5. **Write tools.** None. The server stays read-only, and the `knowledge-engineer` agent is the only writer of `kb/`.
+6. **README section.** Kiro writes the "MCP server" section (task 8).
+
+No open question remains.

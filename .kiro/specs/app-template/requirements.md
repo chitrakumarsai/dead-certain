@@ -201,12 +201,14 @@ Decided by the brief:
 - **Base.** The Template is based on `apps/claim-check` (the consultation app), with Pre-Flight's `collectors/` and `tsconfig.json` left out, because a generic consultation app needs neither.
 - **Lane for the command.** `scripts` and `templates` are Claude Code's, as `AGENTS.md` says. The command is Claude Code's.
 
-Open, for the human:
+Decided by the human (2026-11-20):
 
-1. **Who writes the starter knowledge.** `AGENTS.md` gives `templates` to Claude Code and `apps/*/kb`, `apps/*/rulebook` to Kiro and the human. The Starter_KB is rules, so this spec assigns it to Kiro (requirement 12.2), in a pull request that puts the files under `templates/app/`. That crosses the table's letter, since `templates/app/kb` is not `apps/*/kb`. Recommended: allow it, once, for these three files. The other choice is Claude Code writing them, which breaks "Kiro writes every rule".
-2. **The toy domain.** The Starter_KB needs a subject. A small one that is clearly not a product, such as "Library fine": days late, member type, a cap, a waiver. Say if you want another, or if the Kiro lane may choose.
-3. **Markers in shared files, or discovery.** The design uses Markers because the edit is small and easy to read in the diff. The alternative is to make `playwright.config.ts` and `ci.yml` find apps by looking in `apps/*` (a loop in CI, a list built from the folder in the config), so the command touches no shared file. Discovery means rewriting the Reference_Apps' wiring. Recommended: Markers now. Say if you prefer discovery.
-4. **The look of a generic verdict.** Requirement 5.5 and 5.6 give a plain verdict for unknown goal words and the kit's headline for known ones. Claim Check's richer verdict (proportion bar, ledger, what-if) depends on money facts the template cannot assume. Say if the generated app should include a ledger for money line items anyway.
-5. **A rulebook page.** The generated app has none (requirement 5.12). Claim Check's page is large. Say if the template should carry a cut-down version (clauses and which rules cite them).
-6. **A time target.** Requirement 10.6 leaves the README_Block's time to be measured. Say if there is a figure it must beat, for the video.
-7. **Scaffold_Job cost.** The job installs, builds and runs one Playwright project on every pull request. It runs in parallel, but it is minutes of CI. The alternative is to run it only when `scripts/`, `templates/`, `README.md`, `playwright.config.ts` or `ci.yml` change. Recommended: path filters.
+1. **Who writes the starter knowledge.** Kiro writes the three starter files under `templates/app/` once, on `kiro/5-template-kb` (requirement 12.2). This is a single, approved crossing of the `AGENTS.md` table, which gives `templates` to Claude Code. It does not widen Kiro's lane.
+2. **The toy domain.** "Library fine": days late, member type, a cap and a waiver.
+3. **Markers or discovery.** Markers (requirement 6). The Reference_Apps' wiring stays as it is.
+4. **The look of a generic verdict.** Plain: the kit's headline when the goal word is one it knows, otherwise a heading and the goal values. No ledger (requirement 5.5 and 5.6).
+5. **A rulebook page.** None in the generated app (requirement 5.12).
+6. **A time target.** None. The README states the measured time once the human has measured it (requirement 10.6).
+7. **Scaffold_Job cost.** Path filters: the job's later steps run only when `scripts/`, `templates/`, `README.md`, `playwright.config.ts` or `ci.yml` change (design, "The Scaffold_Job"; task 6.2).
+
+No open question remains.

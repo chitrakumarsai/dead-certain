@@ -93,6 +93,7 @@ Scope: the root page, its hero, the three steps, the two app cards, the scaffold
 5. THE text of the clause, the rule's sentence and its expression SHALL be read from the Claim_KB at build or run time, and SHALL NOT be typed into the page.
 6. EACH step SHALL be one or two sentences plus its quoted data, and SHALL carry no uppercase label and no caption above its title.
 7. THE first step SHALL link to the clause on Claim Check's rulebook page (`claim-check/#/rulebook?clause=<id>`, built from `import.meta.env.BASE_URL`). THE page SHALL make no other deep link into an app, and SHALL NOT link to an address that the apps do not serve.
+8. UNDER the Steps, THE Landing_Page SHALL show one sentence in the System voice: "The specs, the engine and the rules were written with Kiro. The interface was built with Claude Code.", with a link named "The .kiro folder" to `https://github.com/chitrakumarsai/dead-certain/tree/main/.kiro`.
 
 ### Requirement 5: The two apps and the scaffold command
 
@@ -181,13 +182,15 @@ Decided by the brief and the build plan:
 - **Components.** The kit's, unchanged.
 - **Footer and 404.** The dry lines are allowed there only (section 8).
 
-Open, for the human:
+Decided by the human (2026-11-20):
 
-1. **Fixed or editable hero.** This spec fixes the claim (requirement 2.9), so the page is a still frame of a real computation. One editable answer (room rent, say) would show "instant" and "same answers, same verdict" at once, but it adds validation, a live region for changes and a second set of tests. Recommended: fixed for now. Say if you want one editable answer.
-2. **Copy or share the verdict code.** The Hero_Module repeats about 150 lines of Claim Check's `verdict/parts.ts`, `verdict/statement.ts`, `xray/because.ts` and its value printer (ledger rows, the proportion parts, the statement, and the proof sentences with money printed as money), and a test forbids importing from `apps/claim-check/src` (requirement 1.7). The alternative is to move that code into a shared package, which needs your approval for a package change and touches the other lane. Recommended: copy.
-3. **The sample claim.** The Hero_Claim is `G-01` (₹1,32,000 of ₹2,10,000, four deductions, outcome "Paid in part"). The wireframe in section 8 uses ₹1,42,500, with two deductions. A claim with fewer deductions is easier to read in the ledger and the proof. Say if you want another golden scenario, or a new one (the Kiro lane would add it).
-4. **Mention the tools.** The page says nothing about Kiro or Claude Code. The submission asks for transparency about tools, and the README covers it. Say if the page should carry one sentence ("Specs, engine and rules were written with Kiro; the interface with Claude Code") and a link to `.kiro`. Recommended: yes, one sentence under the three steps.
-5. **Link preview image.** Requirement 1.10 sets text-only Open Graph tags. A preview image helps the social post (the Social Blitz bonus) but is a new binary asset, and the design refuses decoration. Say if you want one, and from where: a screenshot of the hero at 1280 px is the honest candidate.
-6. **The 404 page now.** It is cheap, but it is a second page and a second test. Say if it should wait until Phase 6.
-7. **Repository URL and the README link.** The placeholder links to `https://github.com/chitrakumarsai/dead-certain`. Confirm the public address, and confirm that the README section "Add a third app" (from the `app-template` spec) is the right target for requirement 5.3. Until that section exists, the link goes to the README's top.
-8. **Lighthouse.** Section 10 asks for a mobile Lighthouse score of 95 and 100 for accessibility. Lighthouse is not in the tech list, and the apps check the budgets with size, layout-shift and axe tests instead. Requirement 9 keeps to those. Say if a Lighthouse run should be added by hand for the submission, outside CI.
+1. **Fixed hero.** The claim is fixed, with no editable answer (requirement 2.9).
+2. **Verdict code.** Copy it into the Hero_Module. Do not import from the apps and do not add a shared package (requirement 1.7).
+3. **The sample claim.** Golden scenario `G-01` (requirement 2.5).
+4. **Mention the tools.** The page carries one sentence under the three steps that says the specs, engine and rules were written with Kiro and the interface with Claude Code, with a link to the `.kiro` folder in the repository (requirement 4.8).
+5. **Link preview image.** None. Open Graph tags are text only (requirement 1.10).
+6. **The 404 page.** Built now (requirement 6.3).
+7. **Repository URL.** `https://github.com/chitrakumarsai/dead-certain`. The link to the README section "Add a third app" uses this address with the `#add-a-third-app` anchor once the `app-template` spec has added the section, and the README's top until then (requirement 5.3).
+8. **Lighthouse.** Not in CI. The budgets use the size, layout-shift and axe tests (requirement 9). A manual Lighthouse run for the submission stays the human's choice.
+
+No open question remains.
