@@ -24,6 +24,7 @@ jobs:
       # The apps import their compiled knowledge base, which is not committed.
       - run: pnpm dc build apps/claim-check
       - run: pnpm dc build apps/pre-flight
+      # new-app:dc-build
       - run: pnpm check
       - run: pnpm dc validate
       - run: pnpm dc golden
@@ -43,6 +44,7 @@ jobs:
       # One Pages site: each app is served under the site at its own folder.
       - run: cp -R apps/claim-check/dist apps/site/dist/claim-check
       - run: cp -R apps/pre-flight/dist apps/site/dist/pre-flight
+      # new-app:copy
       - if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
