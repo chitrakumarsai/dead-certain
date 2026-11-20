@@ -431,6 +431,7 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
     2. `pnpm dc golden` prints the warning `TOO_FEW_SCENARIOS` (4 scenarios, the build plan asks for 12). Requirement 4.4 asks for no warning only from `validate`, and requirement 4.2 sets the minimum at 3, so this stays.
     3. The money is in cents with `currency: USD`. The amounts are printed in `because` sentences as raw cents, as the engine fills them.
     4. The spec files were read from `kiro/5-specs`, which is not merged into this branch's base yet.
+  - `templates/app/rulebook/starter.md` was never committed, because `.gitignore` hid it. Main now tracks Markdown under `templates/app/` (PR #16). Kiro checked the file against the knowledge base (four clauses, the same rates and caps, `__APP_TITLE__` in the heading) and committed it without a force-add.
 
 - `mcp-server` tasks 1 to 7.1 (CLI, branch `kiro/5-mcp-server`). Executed from `.kiro/specs/mcp-server/tasks.md`, handlers test-first (failing output kept, then passing). No hook ran. The branch started level with `main`, so it was fast-forwarded to `kiro/5-specs` to get the spec.
   - Built `packages/mcp`: package and Vite bundle, `bin/start.mjs` (rebuilds quietly when the source is newer), host, workspace discovery, `kbs.ts`, the four tools, `server.ts`, `main.ts`. SDK `@modelcontextprotocol/sdk` 1.32.2 (latest stable). `tsc --noEmit` passed with Node names declared locally, so `@types/node` was not added. The only package added besides the SDK is `zod` 4.6.7, which the spec lists.
