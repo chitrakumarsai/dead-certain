@@ -94,23 +94,23 @@ This plan builds the MCP server in `packages/mcp` (package `@dead-certain/mcp`),
   - Run it under a 30-second test timeout. No watch mode.
   - _Requirements: 1.2, 1.5, 1.6, 1.7, 7.1, 7.2_
 
-- [ ] 6. Property tests
+- [x] 6. Property tests
   - Write them with the task before them if it is quick; otherwise here. Run every one at least 100 times.
-  - [ ]* 6.1 Property 1: `consult` relays the engine. Use the engine's `testkit` arbitraries for knowledge bases and sessions, and build the workspace in memory.
+  - [x]* 6.1 Property 1: `consult` relays the engine. Use the engine's `testkit` arbitraries for knowledge bases and sessions, and build the workspace in memory.
     - _Requirements: 3.2, 3.4, 3.5, 8.1_
-  - [ ]* 6.2 Property 2: answer order does not show.
+  - [x]* 6.2 Property 2: answer order does not show.
     - _Requirements: 3.7, 8.2_
-  - [ ]* 6.3 Property 3: the Replay_Token round-trips, and `answers` win over `token`.
+  - [x]* 6.3 Property 3: the Replay_Token round-trips, and `answers` win over `token`.
     - _Requirements: 3.3, 8.3_
-  - [ ]* 6.4 Property 4: `explain` agrees with `consult`.
+  - [x]* 6.4 Property 4: `explain` agrees with `consult`.
     - _Requirements: 4.2, 4.3, 8.4_
-  - [ ]* 6.5 Property 5: handlers are total. Generate arbitrary JSON, `__proto__` keys and non-finite numbers.
+  - [x]* 6.5 Property 5: handlers are total. Generate arbitrary JSON, `__proto__` keys and non-finite numbers.
     - _Requirements: 6.2, 6.5, 8.5_
-  - [ ]* 6.6 Property 6: a KB_Ref reaches only a discovered file. Wrap the in-memory Host to record every read.
+  - [x]* 6.6 Property 6: a KB_Ref reaches only a discovered file. Wrap the in-memory Host to record every read.
     - _Requirements: 2.8, 6.6, 7.1, 8.6_
-  - [ ]* 6.7 Property 7: `validate` agrees with `validateText`.
+  - [x]* 6.7 Property 7: `validate` agrees with `validateText`.
     - _Requirements: 5.2, 5.3, 5.4_
-  - [ ]* 6.8 Property 8: Payloads are bounded and stable.
+  - [x]* 6.8 Property 8: Payloads are bounded and stable.
     - _Requirements: 3.7, 6.3, 6.4_
 
 - [ ] 7. Check inside Kiro
