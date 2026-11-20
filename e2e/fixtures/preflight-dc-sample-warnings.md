@@ -1,7 +1,7 @@
 # 2 warnings in `chitrakumarsai/dc-sample-warnings`
 
 Checklist: Submission checklist
-Snapshot taken November 18, 2026
+Snapshot taken November 19, 2026
 Demo video under 3 minutes was not asked, because a failed check already makes this repository not ready\.
 
 ## Repository

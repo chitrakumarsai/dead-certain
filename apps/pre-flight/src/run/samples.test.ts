@@ -60,4 +60,19 @@ describe("the bundled samples (requirement 9)", () => {
 			),
 		).toBe(true);
 	});
+
+	it("this repository asks only the video length, and is ready once it is under 180 seconds (9.3)", async () => {
+		const before = await reportOf("dead-certain");
+		expect(before.summary.state).toBe("undecided");
+		expect(before.verdict.needed.map((q) => q.fact)).toEqual([
+			"demo_video_seconds",
+		]);
+		expect(before.listQuestions.map((q) => q.fact)).toEqual([
+			"demo_video_seconds",
+		]);
+		expect(
+			(await reportOf("dead-certain", { demo_video_seconds: 150 })).summary
+				.state,
+		).toBe("ready");
+	});
 });

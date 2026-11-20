@@ -26,11 +26,9 @@ describe("deriveFacts on the recorded repositories", () => {
 			kiro_dir_has_file: true,
 			kiro_spec_with_tasks: true,
 			apps_dir_count: 3,
-			// apps/pre-flight has no package.json on main yet.
-			apps_with_package_json: 2,
+			apps_with_package_json: 3,
 			gitignore_ignores_kiro: false,
-			// The README's run heading is "Run it", not one of the seven names.
-			readme_has_run_heading: false,
+			readme_has_run_heading: true,
 		});
 		expect(d.unseen).toEqual(["demo_video_seconds"]);
 	});

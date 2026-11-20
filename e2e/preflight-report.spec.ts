@@ -12,7 +12,7 @@ const P: Word = "Passed";
 const F: Word = "Failed";
 const Q: Word = "Needs your answer";
 
-/** What each recorded repository shows, rule by rule, as recorded on 2026-11-18. */
+/** What each recorded repository shows, rule by rule, as recorded on 2026-11-19. */
 const CASES: {
 	name: string;
 	state: string;
@@ -21,8 +21,8 @@ const CASES: {
 }[] = [
 	{
 		name: "dead-certain",
-		state: "Not ready",
-		sentence: "1 blocker and 1 warning in chitrakumarsai/dead-certain",
+		state: "More answers needed",
+		sentence: "1 check needs your answer in chitrakumarsai/dead-certain",
 		rows: {
 			"R-01": P,
 			"R-02": P,
@@ -30,8 +30,8 @@ const CASES: {
 			"R-04": P,
 			"R-05": P,
 			"R-06": P,
-			"R-07": F,
-			"R-08": F,
+			"R-07": P,
+			"R-08": P,
 			"R-09": Q,
 		},
 	},

@@ -1,7 +1,7 @@
 {
 	"repo": "chitrakumarsai/dead-certain",
-	"state": "Not ready",
-	"sentence": "1 blocker and 1 warning in chitrakumarsai/dead-certain",
+	"state": "More answers needed",
+	"sentence": "1 check needs your answer in chitrakumarsai/dead-certain",
 	"checks": [
 		{
 			"rule": "R-01",
@@ -45,18 +45,16 @@
 		{
 			"rule": "R-07",
 			"label": "README run instructions",
-			"state": "Failed",
-			"evidence": [
-				"README.md has no heading called Getting started, Install, Installation, Run, Running, Usage or Quick start"
-			]
+			"state": "Passed",
+			"evidence": ["README.md has the heading \"Getting started\""]
 		},
 		{
 			"rule": "R-08",
 			"label": "Two app folders",
-			"state": "Failed",
+			"state": "Passed",
 			"evidence": [
 				"apps holds 3: apps/claim-check, apps/pre-flight, apps/site",
-				"2 of 3 app directories have a package.json; missing in apps/pre-flight"
+				"3 of 3 app directories have a package.json"
 			]
 		},
 		{

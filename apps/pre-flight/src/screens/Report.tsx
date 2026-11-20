@@ -223,7 +223,11 @@ export function Report({
 				</section>
 			))}
 			{listQuestions.length > 0 && (
-				<section aria-labelledby="needs-heading" className="pt-6">
+				<section
+					aria-labelledby="needs-heading"
+					className="pt-6"
+					data-print-hide
+				>
 					<h2 id="needs-heading" className="text-sys-body font-semibold">
 						Needs your answer
 					</h2>

@@ -4,8 +4,8 @@
 	"headers": {
 		"content-type": "application/json; charset=utf-8",
 		"x-ratelimit-limit": "60",
-		"x-ratelimit-remaining": "39",
-		"x-ratelimit-reset": "1795015037"
+		"x-ratelimit-remaining": "51",
+		"x-ratelimit-reset": "1795076976"
 	},
 	"body": {
 		"id": 1462684250,
@@ -119,5 +119,5 @@
 		"network_count": 0,
 		"subscribers_count": 0
 	},
-	"recordedAt": "2026-11-18T14:34:59.498Z"
+	"recordedAt": "2026-11-19T07:29:39.432Z"
 }
