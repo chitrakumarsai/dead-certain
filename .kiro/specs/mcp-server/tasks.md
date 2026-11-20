@@ -42,53 +42,53 @@ This plan builds the MCP server in `packages/mcp` (package `@dead-certain/mcp`),
     - Test (`start.test.ts`): in a copy of the package in a temporary directory, delete `dist`, run `node bin/start.mjs` with standard input closed at once, and expect exit 0, empty standard output, and a rebuilt `dist/server.mjs`. Touch a source file and expect a rebuild. Leave the sources and expect none.
     - _Requirements: 1.2, 1.3, 1.5, 1.7_
 
-- [ ] 2. Host, workspace and discovery
-  - [ ] 2.1 Write `host.ts`, `workspace.ts` and `payload.ts`
+- [x] 2. Host, workspace and discovery
+  - [x] 2.1 Write `host.ts`, `workspace.ts` and `payload.ts`
     - `host.ts`: `readFileSync`, `readdirSync` with types, `lstatSync`, `cwd`. Read only. A symlink is reported as `other`.
     - `workspace.ts`: the `Workspace` interface and `makeWorkspace(host)`. `root()` walks up from `cwd` to the nearest `pnpm-workspace.yaml`. `listKbFiles()` lists `apps/*/kb/*.yaml` as `{ ref, path }`, sorted in code-unit order, regular files only, `kb/dist` ignored.
     - `payload.ts` and `limits.ts`: `ok`, `fail`, the 200,000-character cap, `clip`, the limits of requirement 6.3.
     - Test with an in-memory Host: nested apps, a symlink, a `dist` folder, a file named `x.yml`, a missing `apps/`, no workspace marker.
     - _Requirements: 2.1, 2.2, 2.3, 6.3, 6.4, 7.1_
 
-  - [ ] 2.2 Write `kbs.ts`
+  - [x] 2.2 Write `kbs.ts`
     - `resolve(ws, ref)` looks the string up in the discovered list and returns the file, or `UNKNOWN_KB` listing the valid refs. `compile(ws, ref)` reads with `readKbFile`, runs `compileText`, and returns the `KnowledgeBase` or `KB_INVALID` with the first 20 diagnostics.
     - Test: a valid KB, a KB with an error, a KB over 1 MiB, an unreadable file, a `kb` of `../../etc/passwd`, `claim-check/../pre-flight/checklist` and the empty string. None reads a file outside the list.
     - _Requirements: 2.8, 3.9, 5.5, 6.6_
 
-- [ ] 3. The tools, one at a time
-  - [ ] 3.1 `list_kbs`
+- [x] 3. The tools, one at a time
+  - [x] 3.1 `list_kbs`
     - Write `tools/list.ts`: the entries of requirements 2.5 to 2.7. `askable` counts facts without `derived: true`.
     - Test: the real workspace lists `claim-check/policy` and `pre-flight/checklist` with their goals; a broken file gives `ok: false` and the error count; an empty workspace gives `[]`.
     - _Requirements: 2.4, 2.5, 2.6, 2.7_
 
-  - [ ] 3.2 `consult`
+  - [x] 3.2 `consult`
     - Write `tools/consult.ts` with `buildSession` and the two Payload shapes. Sorted answer order. `undefined` becomes `null`. Keys in the fixed order of the design.
     - Test: no answers gives a question with `why` and `clause`; a full set from golden `G-01` gives `status: "verdict"` with `payable` 13,200,000 and `outcome` `reduced`; a wrong type, a float for money, an unknown fact and a bad token give the engine's codes; `answers` over `token`; the token in the Payload replays.
     - _Requirements: 3.1 to 3.10_
 
-  - [ ] 3.3 `explain`
+  - [x] 3.3 `explain`
     - Write `tools/explain.ts` with `proofText` and the `clauses` map.
     - Test: on `G-01`, `payable` and `room_rent_deduction`: the root value, every leaf `answered`, the text indented two spaces per depth, the clause text present. An unknown fact in the tree prints `unknown`. An unknown fact name gives `UNKNOWN_FACT`.
     - _Requirements: 4.1 to 4.8_
 
-  - [ ] 3.4 `validate`
+  - [x] 3.4 `validate`
     - Write `tools/validate.ts`: one file or all, `validateText`, counts, diagnostics in the library's order.
     - Test: the clean pre-flight knowledge base passes; a copy with a removed clause gives the same diagnostics as `validateText`; the output equals what `pnpm dc validate` prints for it (run the command in the test through the kb-tools `runCli` with a Host).
     - _Requirements: 5.1 to 5.5_
 
-- [ ] 4. Wire the server
-  - [ ] 4.1 Write `server.ts` and `main.ts`
+- [x] 4. Wire the server
+  - [x] 4.1 Write `server.ts` and `main.ts`
     - Read the SDK's current docs first. Register the four tools with their zod schemas, descriptions and read-only annotations. Map each handler's result to a Tool_Result: the JSON text, the same object as `structuredContent`, `isError` for a Tool_Error.
     - `main.ts` builds the Workspace over the real Host and connects the stdio transport. It writes `dead-certain mcp: ready` to standard error once.
     - Write the tool descriptions for a model reader, as the design says.
     - Test: `createServer` over an in-memory Workspace, called through the SDK's in-memory transport if it has one, or through the stdio smoke test in task 5: the four tool names, the annotations, an invalid-params error for `consult` with no `kb`, and `.strict()` refusal of an extra argument.
     - _Requirements: 1.4, 1.6, 6.1_
 
-  - [ ] 4.2 Source-scan test
+  - [x] 4.2 Source-scan test
     - `source-scan.test.ts` reads `src/**` and fails on `console.log`, `process.stdout`, `child_process`, `fetch`, `writeFile`, `appendFile`, `process.env`, and on a `node:` import outside `host.ts` and `main.ts`. Also check that `bin/start.mjs` is the only file that names `child_process`.
     - _Requirements: 1.5, 7.1, 7.2, 7.3_
 
-- [ ] 5. Stdio smoke test
+- [x] 5. Stdio smoke test
   - Spawn `node bin/start.mjs` in a temporary workspace with one valid knowledge base. Send `initialize`, `notifications/initialized`, `tools/list`, and one `tools/call` for each tool, over standard input. Read standard output line by line.
   - Expect: every line on standard output parses as JSON-RPC; `tools/list` returns exactly the four names; `consult` and `explain` return the expected Payloads; closing standard input ends the process with status 0 within 2 seconds; nothing was written to the workspace (compare a listing before and after).
   - Run it under a 30-second test timeout. No watch mode.
