@@ -114,7 +114,7 @@ This plan builds the MCP server in `packages/mcp` (package `@dead-certain/mcp`),
     - _Requirements: 3.7, 6.3, 6.4_
 
 - [ ] 7. Check inside Kiro
-  - [ ] 7.1 Turn the server on
+  - [x] 7.1 Turn the server on
     - Run `pnpm check`, `pnpm test:props` and the smoke test. All must pass.
     - In `.kiro/settings/mcp.json`, set `"disabled": false` on `dead-certain`. Change nothing else in the file. Commit this alone, so the change is easy to find.
     - Tell the human that a new Kiro session from the repo root is needed to load the server (decided: a new session does 7.2 and 7.3). Stop the session here unless the human says the server has loaded.
