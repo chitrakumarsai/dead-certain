@@ -25,17 +25,18 @@ This plan builds the MCP server in `packages/mcp` (package `@dead-certain/mcp`),
 
 ## Tasks
 
-- [ ] 1. Package, build and launcher
-  - [ ] 1.1 Create the package
+- [x] 1. Package, build and launcher
+  - [x] 1.1 Create the package
     - Create `packages/mcp/package.json`: `name` `@dead-certain/mcp`, `version` `0.0.0`, `private`, `"type": "module"`, scripts `build` (`vite build`) and `start` (`node bin/start.mjs`), the dependencies in the working rules. Run `pnpm install`.
     - Pick the SDK version: the latest stable release at execution time, found with context7 or the registry. Record it in the task's notes.
     - Create `vite.config.ts` as an SSR build of `src/main.ts` to `dist/server.mjs`: `ssr.noExternal` `["@dead-certain/engine", "@dead-certain/kb-tools"]`, `ssr.external` `["@modelcontextprotocol/sdk", "zod", "yaml"]`, `target` `node22`, `minify` false, `sourcemap` true, `emptyOutDir` true. Mirror `packages/kb-tools/vite.config.ts`.
     - Create stub `src/main.ts` that exits at once, and run `pnpm --filter @dead-certain/mcp build`.
     - Confirm `tsc --noEmit` passes with the SDK imported in a stub. IF it fails for want of `@types/node`, stop and ask the human (decided: declare locally first, then ask). Do not add the package.
     - Run `pnpm check`.
+    - Notes: SDK `@modelcontextprotocol/sdk` 1.32.2 (latest stable on the registry, checked with context7). `tsc --noEmit` passes with the SDK imported, so `@types/node` is not needed so far. `pnpm install` changed `pnpm-lock.yaml`.
     - _Requirements: 1.1, 1.4, 7.4_
 
-  - [ ] 1.2 Write `bin/start.mjs`
+  - [x] 1.2 Write `bin/start.mjs`
     - Compare the modification time of `dist/server.mjs` with the newest file under `src/` and `package.json`. IF the bundle is missing or older, run `vite build --logLevel silent` with standard output sent to standard error, and exit with its status if it fails. Then `await import` the bundle.
     - Write nothing to standard output itself.
     - Test (`start.test.ts`): in a copy of the package in a temporary directory, delete `dist`, run `node bin/start.mjs` with standard input closed at once, and expect exit 0, empty standard output, and a rebuilt `dist/server.mjs`. Touch a source file and expect a rebuild. Leave the sources and expect none.
