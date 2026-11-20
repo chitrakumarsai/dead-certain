@@ -1,0 +1,140 @@
+id: __APP_NAME__
+currency: USD
+goals: [outcome]
+
+# A toy domain: the fine for a late library book. Money is in cents.
+
+facts:
+  # Facts the member answers
+  days_late:
+    type: number
+    ask: How many days late was the book returned?
+    why: The fine grows with each day the book is late. Enter 0 if it came back on time.
+    label: Days late
+  member_type:
+    type: enum
+    options: [adult, child, senior]
+    ask: What kind of member are you?
+    why: The daily rate and the cap depend on the kind of membership.
+    label: Member type
+  waiver_card:
+    type: boolean
+    ask: Do you hold a fine waiver card?
+    why: A waiver card cancels a fine that is left after the cap.
+    label: Waiver card held
+
+  # Facts the rules work out
+  daily_rate: { type: money, derived: true, label: Daily rate }
+  fine_before_cap: { type: money, derived: true, label: Fine before the cap }
+  fine_cap: { type: money, derived: true, label: Fine cap }
+  fine_after_cap: { type: money, derived: true, label: Fine after the cap }
+
+  # Line items
+  cap_deduction:
+    type: money
+    derived: true
+    role: deduction
+    label: Cut by the cap
+  waiver_deduction:
+    type: money
+    derived: true
+    role: deduction
+    label: Cancelled by the waiver card
+
+  # Goal
+  outcome:
+    type: enum
+    options: [no_fine, fine_due, waived]
+    derived: true
+    label: Outcome
+
+rules:
+  # 1 Daily rate
+  - id: RATE-01
+    cite: "1"
+    set: daily_rate
+    when: member_type == 'child'
+    to: 10
+    because: A child member is charged 10 cents for each day a book is late.
+  - id: RATE-02
+    cite: "1"
+    set: daily_rate
+    when: member_type == 'adult'
+    to: 25
+    because: An adult member is charged 25 cents for each day a book is late.
+  - id: RATE-03
+    cite: "1"
+    set: daily_rate
+    when: member_type == 'senior'
+    to: 15
+    because: A senior member is charged 15 cents for each day a book is late.
+  - id: FINE-01
+    cite: "1"
+    set: fine_before_cap
+    to: round(max(days_late, 0) * daily_rate)
+    because: A book that is {days_late} days late at {daily_rate} cents a day costs {fine_before_cap} cents before the cap.
+
+  # 2 The cap
+  - id: CAP-01
+    cite: "2"
+    set: fine_cap
+    when: member_type == 'child'
+    to: 500
+    because: A child member's fine for one book never goes above 500 cents.
+  - id: CAP-02
+    cite: "2"
+    set: fine_cap
+    when: member_type != 'child'
+    to: 1000
+    because: An adult or senior member's fine for one book never goes above 1000 cents.
+  - id: CAP-03
+    cite: "2"
+    set: fine_after_cap
+    to: min(fine_before_cap, fine_cap)
+    because: The fine is the lesser of {fine_before_cap} cents and the cap of {fine_cap} cents.
+  - id: CAP-04
+    cite: "2"
+    set: cap_deduction
+    to: fine_before_cap - fine_after_cap
+    because: The part of the fine above the cap, {cap_deduction} cents, is not charged.
+
+  # 3 The waiver card
+  - id: WAIV-01
+    cite: "3"
+    set: waiver_deduction
+    to: if(waiver_card, fine_after_cap, 0)
+    because: A waiver card cancels the fine that is left after the cap. The amount cancelled is {waiver_deduction} cents.
+
+  # 4 The result
+  - id: OUT-01
+    cite: "4"
+    set: outcome
+    when: days_late <= 0
+    to: "'no_fine'"
+    because: The book came back on time, so there is no fine.
+  - id: OUT-02
+    cite: "4"
+    set: outcome
+    when: days_late > 0 and waiver_card
+    to: "'waived'"
+    because: The book was late, but the waiver card cancels the fine of {fine_after_cap} cents.
+  - id: OUT-03
+    cite: "4"
+    set: outcome
+    when: days_late > 0 and not waiver_card
+    to: "'fine_due'"
+    because: The book was late and there is no waiver card, so a fine of {fine_after_cap} cents is due.
+
+clauses:
+  "1":
+    title: Daily rate
+    text: A late book is fined for each full day it is late. The rate is 10 cents a day for a child member, 25 cents for an adult member and 15 cents for a senior member.
+  "2":
+    title: Cap on the fine
+    text: The fine for one book never goes above 500 cents for a child member and 1000 cents for any other member.
+  "3":
+    title: Waiver card
+    text: A member who holds a fine waiver card pays no fine. The card cancels the fine that is left after the cap.
+  "4":
+    title: Result
+    text: A book returned on time carries no fine. A late book carries the fine from clauses 1 and 2, unless a waiver card cancels it under clause 3.
