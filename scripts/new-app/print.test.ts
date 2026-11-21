@@ -1,11 +1,14 @@
 // @ts-expect-error TS2591: no type definitions for node:fs
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { nextPort } from "./markers.ts";
 import { planFor } from "./plan.ts";
 import { formatPlan, nextSteps } from "./print.ts";
 
 const read = (p: string) =>
 	readFileSync(new URL(`../../${p}`, import.meta.url), "utf8") as string;
+// The next free port in the real file: 4176 today, more after a scaffold.
+const PORT = nextPort(read("playwright.config.ts"));
 const plan = planFor(
 	{
 		templateFiles: [
@@ -35,7 +38,7 @@ describe("nextSteps (1.6)", () => {
 		expect(
 			at("pnpm exec playwright test e2e/loan-check-smoke.spec.ts"),
 		).toBeGreaterThan(at("pnpm --filter @dead-certain/loan-check dev"));
-		expect(text).toContain("http://localhost:4176/dead-certain/loan-check/");
+		expect(text).toContain(`http://localhost:${PORT}/dead-certain/loan-check/`);
 		expect(text).not.toMatch(/!/);
 	});
 });
@@ -46,7 +49,7 @@ describe("formatPlan (1.4)", () => {
 		for (const f of plan.create) expect(text).toContain(f.path);
 		for (const e of plan.edits)
 			for (const line of e.inserted) expect(text).toContain(line.trim());
-		expect(text).toContain("4176");
+		expect(text).toContain(`${PORT}`);
 		expect(text).toMatch(/^Dry run/);
 	});
 });

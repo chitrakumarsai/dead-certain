@@ -1,11 +1,14 @@
 // @ts-expect-error TS2591: no type definitions for node:fs
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { nextPort } from "./markers.ts";
 import { type Inputs, planFor } from "./plan.ts";
 import { substitute } from "./substitute.ts";
 
 const read = (p: string) =>
 	readFileSync(new URL(`../../${p}`, import.meta.url), "utf8") as string;
+// The next free port in the real file: 4176 today, more after a scaffold.
+const PORT = nextPort(read("playwright.config.ts"));
 
 /** A small Template, standing in for templates/app until task 4 makes it. */
 const FIXTURE = [
@@ -71,8 +74,8 @@ describe("planFor", () => {
 			name: "loan-check",
 			title: "Loan Check",
 			slugConst: "LOAN_CHECK",
-			port: 4176,
-			url: "http://localhost:4176/dead-certain/loan-check/",
+			port: PORT,
+			url: `http://localhost:${PORT}/dead-certain/loan-check/`,
 		});
 		expect(plan.create.map((f) => f.path)).toEqual([
 			"apps/loan-check/package.json",
@@ -83,7 +86,7 @@ describe("planFor", () => {
 		]);
 		for (const f of plan.create) expect(f.text, f.path).not.toContain("__APP_");
 		expect(plan.create.at(-1)?.text).toContain(
-			'"http://localhost:4176/dead-certain/loan-check/"',
+			`"http://localhost:${PORT}/dead-certain/loan-check/"`,
 		);
 	});
 
@@ -93,10 +96,10 @@ describe("planFor", () => {
 		const pw = plan.edits.find((e) => e.path === "playwright.config.ts");
 		const ci = plan.edits.find((e) => e.path === ".github/workflows/ci.yml");
 		expect(pw?.after).toContain(
-			'export const LOAN_CHECK_URL = "http://localhost:4176/dead-certain/loan-check/";',
+			`export const LOAN_CHECK_URL = "http://localhost:${PORT}/dead-certain/loan-check/";`,
 		);
 		expect(pw?.after).toContain(
-			"pnpm --filter @dead-certain/loan-check build && pnpm --filter @dead-certain/loan-check preview --port 4176 --strictPort",
+			`pnpm --filter @dead-certain/loan-check build && pnpm --filter @dead-certain/loan-check preview --port ${PORT} --strictPort`,
 		);
 		expect(pw?.after).toContain("url: LOAN_CHECK_URL,");
 		expect(ci?.after).toContain(

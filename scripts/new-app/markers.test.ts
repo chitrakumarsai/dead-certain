@@ -53,8 +53,14 @@ describe("insertAtMarker", () => {
 });
 
 describe("nextPort", () => {
-	it("gives one more than the highest localhost port: 4176 today (6.5)", () => {
-		expect(nextPort(PLAYWRIGHT)).toBe(4176);
+	it("gives one more than the highest localhost port (6.5)", () => {
+		const text = `const A = "http://localhost:4173/";\nconst B = "http://localhost:4175/";\n  preview --port 4174`;
+		expect(nextPort(text)).toBe(4176);
+		// The real file: above every port it names, whichever apps exist.
+		const ports = [...PLAYWRIGHT.matchAll(/localhost:(\d+)/g)].map((m) =>
+			Number(m[1]),
+		);
+		expect(nextPort(PLAYWRIGHT)).toBe(Math.max(...ports) + 1);
 	});
 
 	it("gives 4174 when there is none", () => {
