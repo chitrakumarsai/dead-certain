@@ -1,6 +1,6 @@
 # dead-certain
 
-## Add another app (throwaway: breaks the scaffold job on purpose)
+## Add a third app
 
 The two apps below are built on a skeleton you can reuse. These three commands make a new consultation app called `my-app` (use your own name: lower case, digits and hyphens):
 
