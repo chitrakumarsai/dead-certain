@@ -50,6 +50,48 @@ jobs:
         with:
           path: apps/site/dist
 
+  # Proves the README's "Add a third app" commands work (app-template requirement 9).
+  # It reads the commands from the README, so the README cannot drift from them.
+  scaffold:
+    runs-on: ubuntu-latest
+    env:
+      # A new workspace package changes pnpm-lock.yaml, which pnpm refuses under
+      # CI=true. Only this job allows it; check keeps --frozen-lockfile.
+      PNPM_CONFIG_FROZEN_LOCKFILE: "false"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # Path filter (open question 7): on a pull request, run only when the
+      # scaffold's inputs change. On main it always runs.
+      - id: changes
+        env:
+          BASE: ${{ github.base_ref }}
+        run: |
+          if [ -z "$BASE" ] || git diff --name-only "origin/$BASE...HEAD" | grep -qE '^(scripts/|templates/|README\.md$|playwright\.config\.ts$|\.github/workflows/ci\.yml$)'; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.changes.outputs.run == 'true'
+        uses: pnpm/action-setup@v4
+      - if: steps.changes.outputs.run == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      # shell: bash adds -o pipefail, so a missing README block fails the step.
+      - if: steps.changes.outputs.run == 'true'
+        shell: bash
+        run: node --experimental-strip-types scripts/readme-block.ts ci-probe | sh -e
+      # The apps import their compiled knowledge base, which is not committed.
+      - if: steps.changes.outputs.run == 'true'
+        run: pnpm dc validate && pnpm dc golden && pnpm dc build
+      - if: steps.changes.outputs.run == 'true'
+        run: pnpm check && pnpm build
+      - if: steps.changes.outputs.run == 'true'
+        run: pnpm exec playwright install --with-deps chromium
+      - if: steps.changes.outputs.run == 'true'
+        run: pnpm exec playwright test --project=1280 e2e/ci-probe-smoke.spec.ts
+
   deploy:
     if: github.ref == 'refs/heads/main'
     needs: check
