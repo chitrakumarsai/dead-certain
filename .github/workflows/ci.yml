@@ -54,10 +54,6 @@ jobs:
   # It reads the commands from the README, so the README cannot drift from them.
   scaffold:
     runs-on: ubuntu-latest
-    env:
-      # A new workspace package changes pnpm-lock.yaml, which pnpm refuses under
-      # CI=true. Only this job allows it; check keeps --frozen-lockfile.
-      PNPM_CONFIG_FROZEN_LOCKFILE: "false"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -78,6 +74,12 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
+      # A new workspace package changes pnpm-lock.yaml, which pnpm refuses under
+      # CI=true. pnpm 10 ignores PNPM_CONFIG_FROZEN_LOCKFILE and user config
+      # there, so this job writes a project .npmrc on the runner only. It is
+      # never committed, and check keeps --frozen-lockfile.
+      - if: steps.changes.outputs.run == 'true'
+        run: echo "frozen-lockfile=false" >> .npmrc
       # shell: bash adds -o pipefail, so a missing README block fails the step.
       - if: steps.changes.outputs.run == 'true'
         shell: bash
