@@ -1,7 +1,5 @@
-/* The kit's fonts, tokens and Tailwind theme. It already imports tokens.css. */
-@import "@dead-certain/ui/styles.css";
-/* Scan the landing page's components for class names. */
-@source "./";
+/* The kit's stylesheet comes from @dead-certain/ui/styles.css, imported as the
+   kit pages do, so the site builds it once. This file adds only print rules. */
 
 /* Print the verdict sheet and the steps; drop the navigation and the controls (7.9). */
 @media print {

@@ -1,6 +1,7 @@
 import { AppShell } from "@dead-certain/ui";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import "@dead-certain/ui/styles.css";
 import "./styles.css";
 import { NAV } from "./config";
 import { NotFound } from "./NotFound";

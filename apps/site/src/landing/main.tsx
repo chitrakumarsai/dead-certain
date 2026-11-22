@@ -1,6 +1,7 @@
 import { AppShell, type XrayTarget } from "@dead-certain/ui";
 import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
+import "@dead-certain/ui/styles.css";
 import "./styles.css";
 import { Apps } from "./Apps";
 import { compiledKb, NAV } from "./config";
