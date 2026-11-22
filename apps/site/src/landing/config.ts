@@ -6,6 +6,8 @@ import compiled from "../../../claim-check/kb/dist/policy.json";
 export const compiledKb: unknown = compiled;
 
 export const REPO_URL = "https://github.com/chitrakumarsai/dead-certain";
+/** The README section "Add a third app" (open question 7). */
+export const README_SECTION_URL = `${REPO_URL}#add-a-third-app`;
 
 /** Internal links, built from Vite's base so they follow it (requirement 5.2). */
 export const linksFor = (base: string) => ({
