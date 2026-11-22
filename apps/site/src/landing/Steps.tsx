@@ -84,12 +84,10 @@ export function Steps({
 			</ol>
 			<p className="pt-12 text-sys-body">
 				The specs, the engine and the rules were written with Kiro. The
-				interface was built with Claude Code.{" "}
-				{/* Inline in a sentence, so the 44 px target rule's inline exception applies. */}
-				<a
-					href={`${REPO_URL}/tree/main/.kiro`}
-					className="underline underline-offset-4"
-				>
+				interface was built with Claude Code.
+			</p>
+			<p>
+				<a href={`${REPO_URL}/tree/main/.kiro`} className={LINK}>
 					The .kiro folder
 				</a>
 			</p>
