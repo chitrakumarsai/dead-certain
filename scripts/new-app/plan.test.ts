@@ -127,6 +127,16 @@ describe("planFor", () => {
 		});
 	});
 
+	it("plans a name that is only the start of another app's name (Kiro's G5 review)", () => {
+		// "apps/claim" sits inside "apps/claim-check" in both shared files.
+		for (const name of ["claim", "pre", "claim-check-two"])
+			expect(planFor(inputs(), name), name).toHaveProperty("create");
+		const named = `${inputs().ci}\n# apps/claim\n`;
+		expect(planFor(inputs({ ci: named }), "claim")).toMatchObject({
+			code: "EXISTS",
+		});
+	});
+
 	it("refuses a bad name, a reserved one, a missing marker, a path outside, and an unknown placeholder (2.1, 2.4, 3.6, 8.1)", () => {
 		expect(planFor(inputs(), "Loan")).toMatchObject({ code: "BAD_NAME" });
 		expect(planFor(inputs(), "kit")).toMatchObject({ code: "RESERVED" });

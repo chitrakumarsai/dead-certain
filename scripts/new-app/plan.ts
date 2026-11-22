@@ -74,15 +74,18 @@ export function planFor(inputs: Inputs, name: string): Plan | Refusal {
 		};
 	const port = nextPort(inputs.playwright);
 	const url = `http://localhost:${port}/dead-certain/${name}/`;
+	// Whole segments and words only: "apps/claim" must not match "apps/claim-check".
+	// A valid name holds only [a-z0-9-], so it needs no escaping in a pattern.
+	const mentions = [
+		new RegExp(`apps/${name}(?![a-z0-9-])`),
+		new RegExp(`/dead-certain/${name}/`),
+		new RegExp(`\\b${slugConst}_URL\\b`),
+	];
 	for (const [path, text] of [
 		["playwright.config.ts", inputs.playwright],
 		[".github/workflows/ci.yml", inputs.ci],
 	] as const)
-		if (
-			text.includes(`apps/${name}`) ||
-			text.includes(`/dead-certain/${name}/`) ||
-			text.includes(`${slugConst}_URL`)
-		)
+		if (mentions.some((re) => re.test(text)))
 			return { code: "EXISTS", message: `${path} already mentions ${name}.` };
 
 	const values = {
