@@ -18,7 +18,7 @@ This spec is implemented by the Claude Code lane. Nothing here touches `packages
 | --- | --- |
 | `apps/site/index.html` is a static placeholder: an `<h1>` with the tagline, two paragraphs, a link and a footer line, styled by `src/placeholder.css`. `e2e/site.spec.ts` checks only the `<h1>`. | The page is replaced, not extended. The `<h1>` text is unchanged, so that assertion survives, and the new suite replaces the file (requirement 9.4). |
 | `apps/site/vite.config.ts` has `base: "/dead-certain/"` and four Rolldown inputs: `index.html` and the three `kit/*.html` pages. The site's `package.json` has `@dead-certain/ui`, React and Tailwind, and no engine. | Add `404.html` as an input. Add `@dead-certain/engine` and `@dead-certain/kb-tools`, both `workspace:*` (kb-tools only so that `dc` is on the path, as in the apps). |
-| The apps' `build` is `pnpm -w run dc build apps/<name> && vite build`. The site's is `vite build`. CI already runs `pnpm dc build apps/claim-check` before `pnpm check`, but Playwright's web server runs `pnpm --filter @dead-certain/site build` on its own. | The site's build compiles the Claim_KB first, so it works from a clean checkout. It must not rebuild kb-tools: three parallel `dc` rebuilds delete `dist/dc.mjs` under each other (the gate's CI run failed that way). |
+| The apps' `build` was `pnpm -w run dc build apps/<name> && vite build`, which rebuilds kb-tools' `dist` on every call. Since the gate G5 review it is `node ../../packages/kb-tools/bin/dc.mjs build apps/<name> && vite build`, in the apps, the site and the Template. The site's was `vite build`. CI already runs `pnpm dc build apps/claim-check` before `pnpm check`, but Playwright's web server runs `pnpm --filter @dead-certain/site build` on its own. | The site's build compiles the Claim_KB first, so it works from a clean checkout. It must not rebuild kb-tools: three parallel `dc` rebuilds delete `dist/dc.mjs` under each other (the gate's CI run failed that way). |
 | The gallery's static screens, `apps/site/src/kit/claimScreens.tsx`, build Claim Check screens from the kit's fixtures with no engine. | The gallery is unchanged. The landing page is the first site page that runs the engine. |
 | `AppShell` takes `appName`, `nav`, `rail`, `footer`, `children`, and defaults the footer to "No guesses were made in the production of this verdict." | The page passes no footer. The nav has four entries. |
 | `VerdictHeadline` renders a heading at level 1 or 2 (`headingLevel`). The page's one `<h1>` is the tagline. | The hero passes `headingLevel={2}` so that the page has one level-1 heading (requirement 2.2). |
@@ -74,7 +74,7 @@ graph TD
 | `src/landing/NotFound.tsx` and `404.tsx` | The 404 page | no |
 | `src/landing/styles.css` | The print rules only. `main.tsx` imports `@dead-certain/ui/styles.css` once, as the kit pages do: importing it again here built the font faces twice and failed the kit's refusals test. | n/a |
 | `vite.config.ts` | Add the `404.html` input | n/a |
-| `package.json` | `build` runs `dc build` first. Add the two workspace dependencies | n/a |
+| `package.json` | `build` runs `dc.mjs build apps/claim-check` first, without rebuilding kb-tools. Add the two workspace dependencies | n/a |
 
 ### Page layout
 

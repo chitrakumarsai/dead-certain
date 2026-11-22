@@ -26,8 +26,8 @@ This plan builds the landing page in `apps/site` in TypeScript strict mode. The 
 
 ## Tasks
 
-- [ ] 1. Build wiring and the data check
-  - In `apps/site/package.json` set `build` to `pnpm -w run dc build apps/claim-check && vite build` and add `@dead-certain/engine` (dependencies) and `@dead-certain/kb-tools` (devDependencies), both `workspace:*`. Run `pnpm install` and commit the lockfile change.
+- [x] 1. Build wiring and the data check
+  - In `apps/site/package.json` set `build` to `node ../../packages/kb-tools/bin/dc.mjs build apps/claim-check && vite build` and add `@dead-certain/engine` (dependencies) and `@dead-certain/kb-tools` (devDependencies), both `workspace:*`. Run `pnpm install` and commit the lockfile change.
   - Create `src/landing/config.ts` (imports the compiled JSON as `unknown`, with a `json.d.ts` declaration) and `src/landing/kbShape.ts` (copy of the apps' shape check). Add a unit test with a good and several broken inputs.
   - Replace `index.html` with the new entry (title, description, Open Graph text tags, the three font preloads as the apps' pages have them, `<noscript>`, `#root`, the module script). Delete `src/placeholder.css`. Add `src/landing/styles.css` and a `main.tsx` that mounts `AppShell` with the four nav entries and the default footer, and an empty `<main>`.
   - Keep `/kit/` building as before. Run `pnpm build` and `pnpm e2e` for the `kit-*` specs (all four projects).
@@ -81,7 +81,7 @@ This plan builds the landing page in `apps/site` in TypeScript strict mode. The 
   - Run the full `pnpm e2e`. The existing kit specs pass unchanged.
   - _Requirements: 8.5, 9.1, 9.2, 9.4 to 9.7_
 
-- [ ] 8. Final checkpoint
+- [x] 8. Final checkpoint
   - Run `pnpm check`, `pnpm test:props`, `pnpm build`, `pnpm dc validate`, `pnpm dc golden` and `pnpm e2e`. All must pass.
   - Attach the Task_Evidence for the whole page: the hero closed and open, a row's proof, the steps, the cards and the scaffold block, the 404 page, the failure notice and the print preview, at 390, 768 and 1280 px, and the reduced-motion X-ray.
   - Confirm `git diff --stat main...HEAD` shows changes only in `apps/site`, `e2e`, `pnpm-lock.yaml` and nothing else.
@@ -90,10 +90,8 @@ This plan builds the landing page in `apps/site` in TypeScript strict mode. The 
 
 ## Notes
 
-- Gate G5 review (Kiro, 2026-11-22): tasks 2 to 7 are ticked. Tasks 1 and 8 stay open for two changes, both in Claude Code's lane:
-  1. The site's `build` runs `pnpm -w run dc build apps/claim-check`, and each `dc` call rebuilds kb-tools' `dist`. With the two apps' builds that makes three rebuilds at once. The CI run on `7fc0729` failed in `pnpm build` with `dist/dc.mjs is missing`. Compile the knowledge base without rebuilding kb-tools: `pnpm -r` has already built kb-tools, since each package lists it as a dev dependency. The apps' own `build` scripts have the same race, which also failed once in a local `pnpm build` of PR #19's head (pre-flight, the same message), so change them too.
-  2. Pass `appName=""` to `AppShell` on the landing page and the 404 page (requirement 6.1, amended), so the header reads "Dead Certain" once.
-  After both changes, tick 1 and 8 once CI is green.
+- Gate G5 review (Kiro, 2026-11-22): changes were requested, then re-reviewed at `4eefdcf`. Both landed: the apps', the site's and the Template's `build` scripts run `dc.mjs` directly (`pnpm -r build` passed twice from a clean `dist`, and CI is green), and the shell is given an empty `appName` (the header reads "Dead Certain" once at 390, 768 and 1280 px on the landing page and the 404 page). All eight tasks are ticked.
+- Follow-ups, not blocking: a `focusOnMount` option for `VerdictHeadline` and Escape on the side film's heading, both in the kit (`ui-kit` spec).
 
 - Tasks marked `*` are property tests. Run them with the task before them, not later.
 - All eight open questions are answered (see the requirements). None blocks a task.
