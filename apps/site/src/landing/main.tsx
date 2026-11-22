@@ -4,12 +4,17 @@ import { createRoot } from "react-dom/client";
 import "./styles.css";
 import { compiledKb, NAV } from "./config";
 import { Hero } from "./Hero";
+import { STEP_RULE } from "./hero/config";
 import { heroModel } from "./hero/model";
 import { isKnowledgeBase } from "./kbShape";
+import { Steps } from "./Steps";
+import { steps } from "./stepsData";
 
 const kb = isKnowledgeBase(compiledKb) ? compiledKb : null;
 // Worked out once, before the first paint, so the verdict needs no placeholder (2.10).
 const model = kb === null ? null : heroModel(kb);
+const stepsData = kb === null ? null : steps(kb, STEP_RULE);
+const hasVerdict = model !== null && !("kind" in model);
 
 function Landing() {
 	const [open, setOpen] = useState<XrayTarget | null>(null);
@@ -20,6 +25,12 @@ function Landing() {
 				open={open}
 				onOpen={setOpen}
 				onClose={() => setOpen(null)}
+			/>
+			<Steps
+				data={stepsData}
+				{...(hasVerdict
+					? { onOpenProof: () => setOpen({ kind: "verdict" }) }
+					: {})}
 			/>
 		</AppShell>
 	);

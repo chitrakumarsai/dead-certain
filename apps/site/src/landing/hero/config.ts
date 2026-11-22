@@ -25,5 +25,5 @@ export const STATE_GOAL = "outcome";
 export const CLAIMED_FACT = "claimed";
 /** The line item whose proof the steps quote from (requirement 4.3). */
 export const STEP_FACT = "room_rent_deduction";
-/** A rule in STEP_FACT's proof, short enough to read on a phone. Chosen in task 4. */
-export const STEP_RULE = "ROOM-05";
+/** A rule in STEP_FACT's proof whose printed expression reads on a phone (at most 90 characters). */
+export const STEP_RULE = "ROOM-03";
