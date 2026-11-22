@@ -1,4 +1,5 @@
 import { expect, test } from "./kit-fixtures";
+import { openLanding, proofTree, seeWhy } from "./site-helpers";
 
 /**
  * Screenshots for the pull request, not assertions: every static screen and
@@ -46,4 +47,21 @@ test("screenshots of every gallery section", async ({ page }, testInfo) => {
 			path: `${outDir(testInfo.project.name)}/${file}`,
 		});
 	}
+});
+
+test("screenshots of the landing page and its 404", async ({
+	page,
+}, testInfo) => {
+	const dir = outDir(testInfo.project.name);
+	await openLanding(page);
+	await page.screenshot({ path: `${dir}/site-landing.png`, fullPage: true });
+
+	await seeWhy(page).click();
+	await expect(proofTree(page)).toBeVisible();
+	await expect(page.locator("[data-scan-line]")).toHaveClass(/\binvisible\b/);
+	await page.screenshot({ path: `${dir}/site-landing-proof.png` });
+
+	await page.goto("404.html");
+	await page.evaluate(() => document.fonts.ready);
+	await page.screenshot({ path: `${dir}/site-404.png`, fullPage: true });
 });
