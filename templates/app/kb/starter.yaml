@@ -1,6 +1,6 @@
 id: __APP_NAME__
 currency: USD
-goals: [outcome]
+goals: [outcome, amount_due]
 
 # A toy domain: the fine for a late library book. Money is in cents.
 
@@ -41,7 +41,8 @@ facts:
     role: deduction
     label: Cancelled by the waiver card
 
-  # Goal
+  # Goals
+  amount_due: { type: money, derived: true, label: Fine to pay }
   outcome:
     type: enum
     options: [no_fine, fine_due, waived]
@@ -95,17 +96,29 @@ rules:
   - id: CAP-04
     cite: "2"
     set: cap_deduction
-    to: fine_before_cap - fine_after_cap
+    to: if(days_late <= 0, 0, fine_before_cap - fine_after_cap)
     because: The part of the fine above the cap, {cap_deduction} cents, is not charged.
 
   # 3 The waiver card
   - id: WAIV-01
     cite: "3"
     set: waiver_deduction
-    to: if(waiver_card, fine_after_cap, 0)
+    to: if(days_late <= 0 or not waiver_card, 0, fine_after_cap)
     because: A waiver card cancels the fine that is left after the cap. The amount cancelled is {waiver_deduction} cents.
 
   # 4 The result
+  - id: AMT-01
+    cite: "4"
+    set: amount_due
+    when: days_late <= 0
+    to: 0
+    because: The book came back on time, so the fine to pay is 0 cents.
+  - id: AMT-02
+    cite: "4"
+    set: amount_due
+    when: days_late > 0
+    to: fine_after_cap - waiver_deduction
+    because: The fine to pay is the fine of {fine_after_cap} cents less the {waiver_deduction} cents the waiver card cancels.
   - id: OUT-01
     cite: "4"
     set: outcome
@@ -137,4 +150,4 @@ clauses:
     text: A member who holds a fine waiver card pays no fine. The card cancels the fine that is left after the cap.
   "4":
     title: Result
-    text: A book returned on time carries no fine. A late book carries the fine from clauses 1 and 2, unless a waiver card cancels it under clause 3.
+    text: A book returned on time carries no fine. A late book carries the fine from clauses 1 and 2, unless a waiver card cancels it under clause 3. The fine to pay is 0 for a book returned on time, and for a late book it is the fine after the cap less the amount a waiver card cancels.

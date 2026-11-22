@@ -20,4 +20,4 @@ A member who holds a fine waiver card pays no fine. The card cancels the fine th
 
 ## 4. Result
 
-A book returned on time carries no fine. A late book carries the fine from clauses 1 and 2, unless a waiver card cancels it under clause 3.
+A book returned on time carries no fine. A late book carries the fine from clauses 1 and 2, unless a waiver card cancels it under clause 3. The fine to pay is 0 for a book returned on time, and for a late book it is the fine after the cap less the amount a waiver card cancels.
