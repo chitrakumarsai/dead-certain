@@ -40,8 +40,8 @@ Scope: the root page, its hero, the three steps, the two app cards, the scaffold
 
 1. THE Landing_Page SHALL be a React page built by Vite from `apps/site/index.html`, served at `/dead-certain/`, and SHALL replace the placeholder page and `src/placeholder.css`.
 2. THE Site SHALL keep building the `/kit/` gallery pages exactly as before, and the Landing_Page SHALL link to the gallery.
-3. THE Site's `build` script SHALL compile the Claim_KB first (`pnpm -w run dc build apps/claim-check`) and then run `vite build`, as the apps' build scripts do, and the Site SHALL declare `@dead-certain/engine` as a dependency and `@dead-certain/kb-tools` as a dev dependency, both `workspace:*`.
-4. THE Landing_Page SHALL load the Claim_KB from the compiled JSON, SHALL check its shape at start-up, and WHEN the check fails, SHALL still show the headline, the paragraph, the Steps' text without data, the App_Cards and the footer, and a plain notice in place of the Hero verdict that says the sample failed to load.
+3. THE Site's `build` script SHALL compile the Claim_KB first (`node ../../packages/kb-tools/bin/dc.mjs build apps/claim-check`) and then run `vite build`, as the apps' build scripts now do, and the Site SHALL declare `@dead-certain/engine` as a dependency and `@dead-certain/kb-tools` as a dev dependency, both `workspace:*`. THE Site SHALL also declare `fast-check` `4.10.2` as a dev dependency, for the property tests (a package of section 7 of the build plan, approved by the human). BECAUSE `pnpm build` runs the Site's and both apps' builds in parallel, and each `dc` call rebuilds kb-tools' `dist`, which deletes `dc.mjs` under a build that is reading it, THE Site's `build` script SHALL compile the Claim_KB without rebuilding kb-tools. (Amended 2026-11-22: the first version named `pnpm -w run dc build`, which made three parallel rebuilds, and the gate's CI run failed with "dist/dc.mjs is missing".)
+4. THE Landing_Page SHALL load the Claim_KB from the compiled JSON, SHALL check its shape at start-up, and WHEN the check fails, SHALL still show the headline, the paragraph, the Steps' text without data, the App_Cards and the footer, and a plain notice in place of the Hero verdict that says the sample failed to load. The notice SHALL be a level-2 heading and text, since the page keeps its one level-1 heading.
 5. THE Landing_Page SHALL make no network request after the page and its own assets have loaded, SHALL load no third-party font, script or style, and SHALL use no `localStorage`, `sessionStorage`, cookie or analytics.
 6. THE Landing_Page SHALL NOT modify `packages/ui`, `packages/engine` or any file under `apps/claim-check` or `apps/pre-flight`.
 7. THE Landing_Page SHALL NOT import from `apps/claim-check/src` or `apps/pre-flight/src`. It may read `apps/claim-check/kb/dist/policy.json` only.
@@ -75,9 +75,9 @@ Scope: the root page, its hero, the three steps, the two app cards, the scaffold
 1. THE Verdict_Sheet SHALL show the control "See why" for the verdict and, on each ledger row, the kit's row control that opens that row's proof.
 2. WHEN the visitor activates "See why", THE Hero SHALL develop the verdict into the X-ray through `XrayStage`, titled "Why", with the film showing the proof tree of the outcome goal, and WHEN the visitor activates a ledger row, THE X-ray SHALL show that row's proof, titled "Why: <row label>".
 3. THE X-ray film SHALL show a `ProofTree` built from the Engine's `explain` on the Hero_Claim's session, each rule's sentence first and its expression behind "Show the rule", each answered fact with the source "You answered" (kit label), and the cited clause in a `ClauseQuote` with the deciding sentence marked.
-4. THE X-ray SHALL follow the kit's behaviour without change: the 500 ms develop and its 120 ms reduced-motion fade, the ARIA tree keys, Escape to close with focus back on the control that opened it, the bottom sheet below 1280 px and the side-by-side layout from 1280 px.
+4. THE X-ray SHALL follow the kit's behaviour without change: the 500 ms develop and its 120 ms reduced-motion fade, the ARIA tree keys, Escape to close with focus back on the control that opened it, the bottom sheet below 1280 px and the side-by-side layout from 1280 px. (Amended 2026-11-22: Escape closes the X-ray from inside the proof tree at every width, and from anywhere below 1280 px. At 1280 px the side film's "Why" heading does not take Escape. Claim Check behaves the same. This is a kit finding, listed in the review.)
 5. THE Hero SHALL NOT offer "Change this answer" in the X-ray, because the Hero_Claim is fixed.
-6. THE page SHALL keep every control reachable by keyboard in the reading order, with the visible focus ring of the design system.
+6. THE page SHALL keep every control reachable by keyboard in the reading order, with the visible focus ring of the design system. `VerdictHeadline` takes focus when it mounts, so the Hero SHALL hand focus back to the top of the page once on load, and the first Tab SHALL reach the first navigation entry.
 7. THE X-ray SHALL be the only choreographed motion on the page.
 
 ### Requirement 4: The three steps
@@ -88,7 +88,7 @@ Scope: the root page, its hero, the three steps, the two app cards, the scaffold
 
 1. THE Landing_Page SHALL show an ordered list of exactly three steps, headed by a level-2 heading, with the titles "The rulebook", "The rules" and "The verdict".
 2. THE first step SHALL show the clause that the rule in the second step cites, taken from the Claim_KB and shown in a `ClauseQuote` in the Document voice, with its id and title.
-3. THE second step SHALL show one rule from the Claim_KB that appears in the proof of the Hero's `room_rent_deduction` row: the rule's id in the Machine voice, its plain sentence (`because`, with its placeholders left as written), its expression printed with the Engine's `print`, and the id of the clause it cites. The Hero_Module SHALL name the rule's id, and the rule SHALL be one whose printed expression is at most 90 characters, so that it reads on a phone.
+3. THE second step SHALL show one rule from the Claim_KB that appears in the proof of the Hero's `room_rent_deduction` row: the rule's id in the Machine voice, its plain sentence (`because`, with its placeholders left as written), its expression printed with the Engine's `print`, and the id of the clause it cites. The Hero_Module SHALL name the rule's id, and the rule SHALL be one whose printed expression is at most 90 characters, so that it reads on a phone. (Decided at the gate G5 review: `ROOM-03`, "The room rent limit is 1% of the sum insured for each day.", a 36-character expression citing clause 4.2. `ROOM-05`, the first choice, prints at 112 characters.)
 4. THE third step SHALL say that the engine applies the rules to the answers and returns the verdict above with its proof, and SHALL link to "See why" in the Hero (an anchor that moves focus to that control).
 5. THE text of the clause, the rule's sentence and its expression SHALL be read from the Claim_KB at build or run time, and SHALL NOT be typed into the page.
 6. EACH step SHALL be one or two sentences plus its quoted data, and SHALL carry no uppercase label and no caption above its title.
@@ -114,7 +114,7 @@ Scope: the root page, its hero, the three steps, the two app cards, the scaffold
 
 #### Acceptance Criteria
 
-1. THE Landing_Page SHALL render inside the UI_Kit `AppShell` with the app name "Dead Certain" and the navigation entries "Claim Check", "Pre-Flight", "Component kit" and "Source". The "Source" entry SHALL link to the repository.
+1. THE Landing_Page SHALL render inside the UI_Kit `AppShell` with the app name "Dead Certain" and the navigation entries "Claim Check", "Pre-Flight", "Component kit" and "Source". The "Source" entry SHALL link to the repository. (Amended 2026-11-22: THE `AppShell` SHALL be given an empty `appName`, because the shell prints "Dead Certain" itself and the app name after it, so the name "Dead Certain" read twice.)
 2. THE footer SHALL be the shell's default: "No guesses were made in the production of this verdict."
 3. THE Site SHALL build `404.html` as an additional page. It SHALL render in the same shell, show a level-1 heading and one dry sentence (no money is at stake there, section 8), and a link back to the Landing_Page.
 4. THE 404 page SHALL load every asset by an absolute path under the base, so that it renders at any depth under `/dead-certain/` (GitHub Pages serves it for an unknown path).
@@ -144,7 +144,7 @@ Scope: the root page, its hero, the three steps, the two app cards, the scaffold
 
 1. A unit test SHALL run `audit` on the Hero_Claim and the compiled Claim_KB and fail when any value differs from golden scenario `G-01`'s `expect` block.
 2. A unit test SHALL fail when a fact the Hero_Module names is missing from the Claim_KB, or has a different type than the Hero_Module assumes, or when the Hero_Claim is rejected by the Engine.
-3. A unit test SHALL fail when the clause, rule sentence or expression shown in the Steps differs from the Claim_KB's own text.
+3. A unit test SHALL fail when the clause, rule sentence or expression shown in the Steps differs from the Claim_KB's own text. THE tests MAY compile `policy.yaml` with kb-tools' `compileText`, the compiler that `dc build` runs, so that they do not depend on an earlier `dc build`.
 4. A unit test SHALL fail when any file under `apps/site/src/landing` imports from `apps/claim-check/src` or `apps/pre-flight/src`.
 5. WHEN the Claim_KB's shape check fails, THE Landing_Page SHALL behave as requirement 1.4 states, and an end-to-end test SHALL cover it with the compiled JSON replaced.
 6. THE ledger rows' deductions SHALL add up: the claimed amount minus the sum of the rows equals the payable amount, and IF it does not, THEN the Hero SHALL show the failure notice instead of a verdict (as Claim Check's above-bill refusal does), and a unit test SHALL cover the case.
@@ -157,7 +157,7 @@ Scope: the root page, its hero, the three steps, the two app cards, the scaffold
 
 1. THE Landing_Page's JavaScript, including the Engine, the Claim_KB and the UI_Kit, SHALL be under 200 kB gzipped, not counting the X-ray develop's on-demand chunk, which the kit loads when the stage mounts.
 2. THE Landing_Page's cumulative layout shift SHALL be under 0.05, including font loading, and `index.html` SHALL preload the three above-the-fold font files as the apps' pages do.
-3. THE Hero_Verdict SHALL compute in under 10 ms, checked by a benchmark test as in the apps.
+3. THE Hero_Verdict SHALL compute in under 10 ms, checked by a benchmark test as in the apps. THE Hero_Module SHALL build the `explain` session as `{ kb, answers }` after `audit` has validated both, and SHALL NOT replay `answer` for each fact: the replay re-validates the knowledge base each time and took 12 ms.
 4. THE end-to-end suite SHALL replace `e2e/site.spec.ts`, and SHALL cover at 390, 768 and 1280 px and with reduced motion: the heading, the hero statement and ledger, "See why" opening and Escape closing with focus returned, a ledger row opening its own proof, the keyboard path through the page, the links' targets, "Copy command", the 404 page, and a zero-violation axe result for the page and with the X-ray open.
 5. A privacy test SHALL fail when the page requests any URL outside its own host, and when it writes to any storage or cookie.
 6. A budget test SHALL read the built assets and fail when requirement 9.1 is broken.

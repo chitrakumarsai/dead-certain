@@ -206,6 +206,7 @@ Amended after the gate G5 review (2026-11-22). Kiro accepted these deviations of
 - Requirement 9.1: the runner-only `.npmrc` replaces the environment variable.
 - Requirement 9.2: `readme-block.ts` validates the name it is given.
 - Requirement 9.3: `pnpm dc build` runs before `pnpm check`.
+- Template `package.json`: its `build` script runs `node ../../packages/kb-tools/bin/dc.mjs build apps/__APP_NAME__ && vite build`, as the landing-page review changed the Reference_Apps' scripts to. The drift test compares dependencies only, so it is unaffected. Accepted 2026-11-22.
 - Requirement 11.3: `fast-check` is a root dev dependency.
 - Design: three font preloads, `session/progress.ts` and `screens/CopyLink.tsx` in the Template's table, and the `scaffold` job as built.
 
