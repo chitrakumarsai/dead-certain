@@ -85,7 +85,7 @@ Scope: the command, the template, the starter knowledge, the generic app, the sh
 1. THE Template SHALL include `kb/starter.yaml`, `rulebook/starter.md` and `golden/scenarios.yaml`, describing one toy domain that is not a real product, with a fictional notice in the rulebook.
 2. THE Starter_KB SHALL be small: between 3 and 5 askable facts, at least one derived fact, one goal, at least two line items with `role`, at least two clauses, and one golden scenario for each distinct verdict the rules can reach, with at least 3 scenarios.
 3. THE rulebook SHALL number its clauses, and every rule in the Starter_KB SHALL cite a clause that exists.
-4. IN a Generated_App, `pnpm dc validate apps/<App_Name>` SHALL report no error and no warning, `pnpm dc build apps/<App_Name>` SHALL write `kb/dist/starter.json`, and `pnpm dc golden apps/<App_Name>` SHALL pass every scenario and cover every rule.
+4. IN a Generated_App, `pnpm dc validate apps/<App_Name>` SHALL report no error and no warning, `pnpm dc build apps/<App_Name>` SHALL write `kb/dist/starter.json`, and `pnpm dc golden apps/<App_Name>` SHALL pass every scenario and cover every rule. (A `TOO_FEW_SCENARIOS` warning from `dc golden` is accepted: the build plan asks for 12 scenarios and requirement 4.2 asks for 3.)
 5. THE Starter_KB's knowledge-base `id` SHALL be `__APP_NAME__`.
 6. THE Starter_KB SHALL be the work of the Kiro_Lane (requirement 12.2), reviewed by the human, and the Claude_Code_Lane SHALL NOT edit its rules.
 
@@ -150,9 +150,9 @@ Scope: the command, the template, the starter knowledge, the generic app, the sh
 
 #### Acceptance Criteria
 
-1. THE CI workflow SHALL have a job `scaffold`, in parallel with `check`, that checks out the pull request and runs the README_Block's commands with the App_Name `ci-probe`. BECAUSE a new workspace package changes `pnpm-lock.yaml` and pnpm refuses that under `CI=true`, THE job SHALL set `PNPM_CONFIG_FROZEN_LOCKFILE=false` for its install steps and say why in a comment. THE `check` job SHALL keep `--frozen-lockfile`.
-2. THE job SHALL read the commands from the README_Block, replace the example name `my-app` with `ci-probe`, run them in order, and SHALL NOT repeat them in the workflow. IF the README_Block cannot be found, THEN the job SHALL fail.
-3. AFTER the commands, THE job SHALL run, for `ci-probe`: `pnpm dc validate`, `pnpm dc golden`, `pnpm check`, `pnpm build`, and `pnpm e2e` limited to the `1280` project and the `ci-probe` smoke spec.
+1. THE CI workflow SHALL have a job `scaffold`, in parallel with `check`, that checks out the pull request and runs the README_Block's commands with the App_Name `ci-probe`. BECAUSE a new workspace package changes `pnpm-lock.yaml` and pnpm refuses that under `CI=true`, THE job SHALL turn the frozen lockfile off for its own installs by writing `frozen-lockfile=false` to a project `.npmrc` on the runner, and say why in a comment. THE `.npmrc` SHALL NOT be committed. THE `check` job SHALL keep `--frozen-lockfile`. (Amended 2026-11-22: the first version named the environment variable `PNPM_CONFIG_FROZEN_LOCKFILE=false`. pnpm 10 ignores it under `CI=true`, as it ignores the lower-case and `npm_config_` forms and the user config. The first CI run failed for that reason.)
+2. THE job SHALL read the commands from the README_Block, replace the example name `my-app` with `ci-probe`, run them in order, and SHALL NOT repeat them in the workflow. IF the README_Block cannot be found, THEN the job SHALL fail. BECAUSE the commands are piped to a shell, `readme-block.ts` SHALL refuse a name that `validateName` refuses, and exit with status 2.
+3. AFTER the commands, THE job SHALL run, for `ci-probe`: `pnpm dc validate`, `pnpm dc golden`, `pnpm dc build` (the apps' tests import their compiled knowledge base, which is not committed, so it comes before `pnpm check`), `pnpm check`, `pnpm build`, and `pnpm e2e` limited to the `1280` project and the `ci-probe` smoke spec.
 4. THE job SHALL discard the scaffolded files, and SHALL NOT commit or upload them.
 5. THE `check` job SHALL NOT scaffold, so that its runtime does not grow.
 
@@ -179,7 +179,7 @@ Scope: the command, the template, the starter knowledge, the generic app, the sh
 
 1. THE script's pure functions (`validateName`, `planFor`, `substitute`, `insertAtMarker`, `nextPort`) SHALL have Vitest tests and the properties of the design.
 2. THE root `vitest.config.ts` SHALL include `scripts/**/*.test.ts`, so that `pnpm check` runs them. THE `tsconfig.json` SHALL include `scripts` and set `allowImportingTsExtensions`, because Node's type stripping needs explicit `.ts` extensions in imports between the script's modules.
-3. THE Generated_App's pure modules SHALL have Vitest tests, and the property tests of the design SHALL use fast-check `4.10.2` and run each property at least 100 times.
+3. THE Generated_App's pure modules SHALL have Vitest tests, and the property tests of the design SHALL use fast-check `4.10.2` and run each property at least 100 times. THE root `package.json` SHALL list `fast-check` `4.10.2` as a dev dependency, because the tests in `scripts/` cannot resolve the app's copy. (Amended 2026-11-22. It is a package of section 7 of the build plan at the pinned version.)
 4. EVERY task SHALL end with the Task_Evidence, attached to the pull request and not committed.
 5. THE Reference_Apps SHALL behave as before: `pnpm check`, `pnpm e2e` and `pnpm build` SHALL pass with the Markers added and nothing else in them changed.
 
@@ -200,6 +200,14 @@ Decided by the brief:
 
 - **Base.** The Template is based on `apps/claim-check` (the consultation app), with Pre-Flight's `collectors/` and `tsconfig.json` left out, because a generic consultation app needs neither.
 - **Lane for the command.** `scripts` and `templates` are Claude Code's, as `AGENTS.md` says. The command is Claude Code's.
+
+Amended after the gate G5 review (2026-11-22). Kiro accepted these deviations of the Claude Code lane and changed the spec to match the code:
+
+- Requirement 9.1: the runner-only `.npmrc` replaces the environment variable.
+- Requirement 9.2: `readme-block.ts` validates the name it is given.
+- Requirement 9.3: `pnpm dc build` runs before `pnpm check`.
+- Requirement 11.3: `fast-check` is a root dev dependency.
+- Design: three font preloads, `session/progress.ts` and `screens/CopyLink.tsx` in the Template's table, and the `scaffold` job as built.
 
 Decided by the human (2026-11-20):
 

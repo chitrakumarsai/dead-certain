@@ -19,11 +19,11 @@ This spec is implemented by the Claude Code lane. The Starter_KB (three files of
 | `.kiro/steering/new-app.md` describes a layout that does not exist: it lists `src/main.tsx` only, says `deploy.yml` (the workflow is `ci.yml`), puts golden scenarios in `kb/golden.yaml` (they are in `apps/<app>/golden/scenarios.yaml`), and omits the Playwright wiring. | The steering is Kiro's. Requirement 12.3 has Kiro rewrite it after the gate. The command is the source of truth, and this spec is written from the apps, not from the steering. |
 | Each Reference_App has: `package.json`, `vite.config.ts`, `index.html`, `src/` (with `main.tsx`, `config.ts`, `kb.ts`, `kbShape.ts`, `json.d.ts`, `styles.css`, `route.ts`, `useTitle.ts`, `lanes.test.ts`, `session/`, `screens/`, `verdict/`, `xray/`), `kb/`, `rulebook/`, `golden/`. Pre-Flight adds `tsconfig.json` and `collectors/`. | The Template is Claim Check's shape without `rulebook/` screens, `verdict/` money code and `xray/because.ts`'s Claim Check specifics. Pre-Flight's `tsconfig.json` is not needed: the root `tsconfig.json` includes `apps/*/src`. |
 | The two apps' `package.json` files are identical apart from the name, and the scripts are `dev`, `build` (`pnpm -w run dc build apps/<name> && vite build`) and `preview`. All versions are exact. | The Template's `package.json` is Claim Check's with placeholders. The drift test compares them (requirement 7). |
-| `vite.config.ts` sets `base: "/dead-certain/<name>/"` and nothing else. `index.html` preloads four font files from `packages/ui/node_modules/@fontsource/...`. | The Template copies both, with the base and the title as the only differences. |
+| `vite.config.ts` sets `base: "/dead-certain/<name>/"` and nothing else. `index.html` preloads three font files from `packages/ui/node_modules/@fontsource/...` (Sans 400, Sans 600, Serif 600). | The Template copies both, with the base and the title as the only differences. |
 | `playwright.config.ts` exports `CLAIM_CHECK_URL` and `PRE_FLIGHT_URL` (ports 4174 and 4175), and has one `webServer` entry for each app, built with `pnpm --filter ... build` and previewed with `--strictPort`. | The command inserts one constant and one entry, with the next port. The Markers go where a person adding the third would add it. |
 | `ci.yml` has `pnpm dc build apps/claim-check` and `apps/pre-flight` before `pnpm check`, because the apps import `kb/dist`, which is not committed. It copies each app's `dist` into `apps/site/dist/<app>` after `pnpm build`. | The command inserts one `dc build` line and one `cp -R` line. |
 | `pnpm dc build apps/<name>` needs a `kb/*.yaml` file to compile. A scaffolded app with no knowledge base cannot build. | The Template ships the Starter_KB. Without it "runs from the README alone" is not true. |
-| In CI, `pnpm install` implies `--frozen-lockfile`, and a new workspace package changes `pnpm-lock.yaml`. | The Scaffold_Job turns the frozen lockfile off for its installs (requirement 9.1). The README tells a person to commit the lockfile (requirement 10.7). |
+| In CI, `pnpm install` implies `--frozen-lockfile`, and a new workspace package changes `pnpm-lock.yaml`. | The Scaffold_Job turns the frozen lockfile off for its installs with a runner-only `.npmrc` (requirement 9.1). The README tells a person to commit the lockfile (requirement 10.7). |
 | Root `vitest.config.ts` includes `packages/**` and `apps/**` tests only, and `tsconfig.json` includes no `scripts`. | Requirement 11.2: add `scripts/**/*.test.ts` and `scripts` to them. Root configuration is Claude Code's. |
 | The deployed site has `/kit/`, `/assets/` and the two apps at its root. | The reserved names (requirement 2.2). |
 | `apps/claim-check/src/lanes.test.ts` names the two apps in a regular expression. It is a CI-only test that skips locally. | The Template's copy names `apps/__APP_NAME__/`. It does not guard the Template itself. |
@@ -63,7 +63,7 @@ graph TD
 | `scripts/new-app/markers.ts` | `insertAtMarker(text, marker, line)` and `nextPort(playwrightText)` | yes |
 | `scripts/new-app/apply.ts` | `apply(plan, fs)`: write with rollback, over an injected `Fs` | no (injected) |
 | `scripts/new-app/print.ts` | `formatPlan(plan)`, `nextSteps(plan)` | yes |
-| `scripts/readme-block.ts` | `extractBlock(readme)`: the commands under "Add a third app". Used by the Scaffold_Job. | yes |
+| `scripts/readme-block.ts` | `extractBlock(readme)`: the commands under "Add a third app". Its command line refuses a name `validateName` refuses, because the output is piped to a shell. Used by the Scaffold_Job. | yes (the command line is not) |
 | `templates/app/**` | See the table below | n/a |
 | `.github/workflows/ci.yml` | New job `scaffold`, and two Markers | n/a |
 
@@ -93,7 +93,7 @@ type Refusal = { code: "BAD_NAME" | "RESERVED" | "EXISTS" | "MARKER" | "PATH"; m
 | --- | --- | --- |
 | `package.json` | `apps/<name>/package.json` | Claim Check's, with `@dead-certain/__APP_NAME__` and the same scripts and pins |
 | `vite.config.ts` | `apps/<name>/vite.config.ts` | `base: "/dead-certain/__APP_NAME__/"` |
-| `index.html` | `apps/<name>/index.html` | Title `__APP_TITLE__`. The four font preloads as in Claim Check. |
+| `index.html` | `apps/<name>/index.html` | Title `__APP_TITLE__`. The three font preloads as in Claim Check (the drift test requires it). |
 | `src/main.tsx` | same | Mount, hash route, `AppShell`, the screens |
 | `src/config.ts` | same | The only file that names facts and goals (see below) |
 | `src/kb.ts`, `src/kbShape.ts`, `src/json.d.ts` | same | `kb.ts` imports `../kb/dist/starter.json` |
@@ -101,6 +101,8 @@ type Refusal = { code: "BAD_NAME" | "RESERVED" | "EXISTS" | "MARKER" | "PATH"; m
 | `src/route.ts`, `src/useTitle.ts` | same | Fragment routes `#/` and anything else as not found |
 | `src/session/{path,replay,store}.ts` | same | Copied from Claim Check, with skipped-notes and what-if left out |
 | `src/screens/{Start,Consult,Verdict,Xray,LoadFailure,NotFound,Stale}.tsx` | same | Generic, see below |
+| `src/screens/CopyLink.tsx` | same | The "Copy link to this verdict" control, used by `Verdict`. Added in the build. |
+| `src/session/progress.ts` | same | `progress(kb, answers, currentFact)`: the position and the upper bound of questions left, for `Consult`'s progress line. Added in the build. |
 | `src/lanes.test.ts` | same | The lane guard, with this app's folder |
 | `src/session/*.test.ts` | same | Session, replay and path tests, carried over |
 | `kb/starter.yaml`, `rulebook/starter.md`, `golden/scenarios.yaml` | same | The Starter_KB (Kiro lane) |
@@ -161,22 +163,31 @@ A marker is a comment (`// new-app:urls` and `# new-app:dc-build`), so the Marke
 ```yaml
 scaffold:
   runs-on: ubuntu-latest
-  env:
-    # A new workspace package changes pnpm-lock.yaml, which pnpm refuses under CI=true.
-    PNPM_CONFIG_FROZEN_LOCKFILE: "false"
   steps:
     - uses: actions/checkout@v4
+      with: { fetch-depth: 0 }
+    - id: changes            # path filter: on a pull request, run only when the inputs change
+      env: { BASE: "${{ github.base_ref }}" }
+      run: |
+        if [ -z "$BASE" ] || git diff --name-only "origin/$BASE...HEAD" | grep -qE '^(scripts/|templates/|README\.md$|playwright\.config\.ts$|\.github/workflows/ci\.yml$)'; then
+          echo "run=true" >> "$GITHUB_OUTPUT"
+        fi
+    # Each later step has: if: steps.changes.outputs.run == 'true'
     - uses: pnpm/action-setup@v4
     - uses: actions/setup-node@v4
       with: { node-version-file: .nvmrc, cache: pnpm }
-    - run: node --experimental-strip-types scripts/readme-block.ts ci-probe | sh -e
-    - run: pnpm dc validate && pnpm dc golden
+    # A new workspace package changes pnpm-lock.yaml, which pnpm refuses under CI=true.
+    # pnpm 10 ignores the environment variable there, so write a project .npmrc on the runner only.
+    - run: echo "frozen-lockfile=false" >> .npmrc
+    - shell: bash          # adds -o pipefail, so a missing README block fails the step
+      run: node --experimental-strip-types scripts/readme-block.ts ci-probe | sh -e
+    - run: pnpm dc validate && pnpm dc golden && pnpm dc build
     - run: pnpm check && pnpm build
     - run: pnpm exec playwright install --with-deps chromium
     - run: pnpm exec playwright test --project=1280 e2e/ci-probe-smoke.spec.ts
 ```
 
-`scripts/readme-block.ts <name>` prints the commands of the README_Block with `my-app` replaced by `<name>`, and exits 1 if the block is missing. The job pipes it to a shell with `-e`. `pnpm check` on the scaffolded repo covers the new app's unit tests, Biome and `tsc`, because the app now sits in the workspace. A path filter on the job (open question 7) uses `paths:` on the trigger, so it needs its own workflow file or a changes check step. The design uses a `changes` step in the same file: `git diff --name-only origin/$BASE...HEAD | grep -E '^(scripts|templates|README.md|playwright.config.ts|\.github/workflows/ci.yml)'`, and skips the later steps when nothing matches. This is the recommended answer to question 7. Without a decision, the job runs every time.
+`scripts/readme-block.ts <name>` prints the commands of the README_Block with `my-app` replaced by `<name>`, and exits 1 if the block is missing. The job pipes it to a shell with `-e`. `pnpm check` on the scaffolded repo covers the new app's unit tests, Biome and `tsc`, because the app now sits in the workspace. The path filter (decided, question 7) is the `changes` step above, in the same file, since `paths:` on the trigger would apply to the whole workflow. On main there is no base, so the job always runs. When no input changed, the job ends green with its later steps skipped.
 
 ### The README section
 
@@ -314,4 +325,6 @@ Task 1 adds a test, `scripts/template.test.ts`, that runs `planFor` for a fixed 
 | A drift test against Claim Check | Generate the Template from Claim Check at build time | A generated Template cannot be read or linted as itself. A test is cheaper and catches the same drift. |
 | Reserved names in the planner | Rely on the folder check | `kit` and `assets` do not exist under `apps/` but collide on the deployed site. |
 | `readme-block.ts` feeds the Scaffold_Job | Repeat the commands in the workflow | One copy of the instruction means the README is what is tested. |
+| A runner-only `.npmrc` turns the frozen lockfile off | `PNPM_CONFIG_FROZEN_LOCKFILE`, `npm_config_*`, user config | pnpm 10 ignores all of those under `CI=true`. The first CI run showed it. A project `.npmrc` is read, and the job never commits it. |
+| `fast-check` as a root dev dependency | Import the app's copy from `scripts/` | `scripts/` is outside every workspace package and cannot resolve the app's copy. Same pin, a section 7 package. |
 | Node's `--experimental-strip-types` for the script | `tsx`, or compile the script | The repo already runs `record.ts` this way and adds no dependency. That file imports only `node:fs`. A script of several modules must import them with explicit `.ts` extensions, which `tsc` accepts only with `allowImportingTsExtensions` (safe here, since `noEmit` is on). Task 1 adds that option to the root `tsconfig.json`. |
