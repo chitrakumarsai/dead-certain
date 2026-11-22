@@ -73,16 +73,18 @@ function VerdictSheet({
 					A sample claim on a sample policy written for this project. The
 					verdict was worked out in your browser.
 				</p>
-				<Disclosure title="Answers used for this claim">
-					<dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sys-body">
-						{model.answers.map((entry) => (
-							<div key={entry.fact} className="contents">
-								<dt className="text-text-soft">{entry.label}</dt>
-								<dd className="tabular-nums">{entry.display}</dd>
-							</div>
-						))}
-					</dl>
-				</Disclosure>
+				<div data-print-hide>
+					<Disclosure title="Answers used for this claim">
+						<dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sys-body">
+							{model.answers.map((entry) => (
+								<div key={entry.fact} className="contents">
+									<dt className="text-text-soft">{entry.label}</dt>
+									<dd className="tabular-nums">{entry.display}</dd>
+								</div>
+							))}
+						</dl>
+					</Disclosure>
+				</div>
 			</div>
 		</Sheet>
 	);

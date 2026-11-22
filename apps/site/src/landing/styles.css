@@ -2,3 +2,12 @@
 @import "@dead-certain/ui/styles.css";
 /* Scan the landing page's components for class names. */
 @source "./";
+
+/* Print the verdict sheet and the steps; drop the navigation and the controls (7.9). */
+@media print {
+	header,
+	footer,
+	[data-print-hide] {
+		display: none;
+	}
+}

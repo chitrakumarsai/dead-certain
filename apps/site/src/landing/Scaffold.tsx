@@ -35,7 +35,11 @@ export function Scaffold() {
 	};
 
 	return (
-		<section aria-labelledby="scaffold-heading" className="max-w-column pt-16">
+		<section
+			data-print-hide
+			aria-labelledby="scaffold-heading"
+			className="max-w-column pt-16"
+		>
 			<h2
 				id="scaffold-heading"
 				className="font-doc text-question font-semibold"

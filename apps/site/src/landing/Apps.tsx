@@ -18,7 +18,11 @@ const APPS = [
 /** The two apps on the same engine (requirement 5.1). */
 export function Apps() {
 	return (
-		<section aria-labelledby="apps-heading" className="max-w-column pt-16">
+		<section
+			data-print-hide
+			aria-labelledby="apps-heading"
+			className="max-w-column pt-16"
+		>
 			<h2 id="apps-heading" className="font-doc text-question font-semibold">
 				Two apps on the same engine
 			</h2>
