@@ -18,7 +18,7 @@ This spec is implemented by the Claude Code lane. Nothing here touches `packages
 | --- | --- |
 | `apps/site/index.html` is a static placeholder: an `<h1>` with the tagline, two paragraphs, a link and a footer line, styled by `src/placeholder.css`. `e2e/site.spec.ts` checks only the `<h1>`. | The page is replaced, not extended. The `<h1>` text is unchanged, so that assertion survives, and the new suite replaces the file (requirement 9.4). |
 | `apps/site/vite.config.ts` has `base: "/dead-certain/"` and four Rolldown inputs: `index.html` and the three `kit/*.html` pages. The site's `package.json` has `@dead-certain/ui`, React and Tailwind, and no engine. | Add `404.html` as an input. Add `@dead-certain/engine` and `@dead-certain/kb-tools`, both `workspace:*` (kb-tools only so that `dc` is on the path, as in the apps). |
-| The apps' `build` is `pnpm -w run dc build apps/<name> && vite build`. The site's is `vite build`. CI already runs `pnpm dc build apps/claim-check` before `pnpm check`, but Playwright's web server runs `pnpm --filter @dead-certain/site build` on its own. | The site's build compiles the Claim_KB first, so it works from a clean checkout. |
+| The apps' `build` is `pnpm -w run dc build apps/<name> && vite build`. The site's is `vite build`. CI already runs `pnpm dc build apps/claim-check` before `pnpm check`, but Playwright's web server runs `pnpm --filter @dead-certain/site build` on its own. | The site's build compiles the Claim_KB first, so it works from a clean checkout. It must not rebuild kb-tools: three parallel `dc` rebuilds delete `dist/dc.mjs` under each other (the gate's CI run failed that way). |
 | The gallery's static screens, `apps/site/src/kit/claimScreens.tsx`, build Claim Check screens from the kit's fixtures with no engine. | The gallery is unchanged. The landing page is the first site page that runs the engine. |
 | `AppShell` takes `appName`, `nav`, `rail`, `footer`, `children`, and defaults the footer to "No guesses were made in the production of this verdict." | The page passes no footer. The nav has four entries. |
 | `VerdictHeadline` renders a heading at level 1 or 2 (`headingLevel`). The page's one `<h1>` is the tagline. | The hero passes `headingLevel={2}` so that the page has one level-1 heading (requirement 2.2). |
@@ -67,12 +67,12 @@ graph TD
 | `src/landing/hero/Film.tsx` | The proof body for a target: `ProofTree`, then the deciding clause | no |
 | `src/landing/Hero.tsx` | Headline, paragraph, `XrayStage` with the Verdict_Sheet, the answers `Disclosure`, the link "Check your own claim" | no |
 | `src/landing/Steps.tsx` | The three steps from `steps(kb, stepRule)` | no |
-| `src/landing/steps.ts` | `steps(kb, ruleId)`: the rule, its clause and expression, or a failure | yes |
+| `src/landing/stepsData.ts` | `steps(kb, ruleId)`: the rule, its clause and expression, or a failure | yes |
 | `src/landing/Apps.tsx` | The two App_Cards | no |
 | `src/landing/Scaffold.tsx` | The command, its explanation, "Copy command", the live region | no |
-| `src/landing/SampleFailed.tsx` | The notice for requirement 1.4 and 8.6 | no |
+| `src/landing/SampleFailed.tsx` | The notice for requirement 1.4 and 8.6, a level-2 heading | no |
 | `src/landing/NotFound.tsx` and `404.tsx` | The 404 page | no |
-| `src/landing/styles.css` | `@import "@dead-certain/ui/styles.css"`, `@source "./"`, print rules | n/a |
+| `src/landing/styles.css` | The print rules only. `main.tsx` imports `@dead-certain/ui/styles.css` once, as the kit pages do: importing it again here built the font faces twice and failed the kit's refusals test. | n/a |
 | `vite.config.ts` | Add the `404.html` input | n/a |
 | `package.json` | `build` runs `dc build` first. Add the two workspace dependencies | n/a |
 
@@ -115,7 +115,7 @@ The hero is the only section inside `XrayStage`. When the stage opens at 1280 px
 
 ```ts
 interface HeroModel {
-  session: Session;                   // { kb, answers: HERO_FACTS }
+  session: Session;                   // { kb, answers: HERO_FACTS }, built after audit without replaying answer (under 10 ms)
   verdict: Verdict;                   // audit(kb, HERO_FACTS)
   state: VerdictState;                // verdictStateFrom(goal STATE_GOAL, needed.length)
   statement: string;                  // "₹1,32,000 of ₹2,10,000 will be paid"
@@ -175,7 +175,7 @@ The cards are `<article>`s with a level-3 heading holding the app link, a senten
 ```json
 "scripts": {
   "dev": "vite",
-  "build": "pnpm -w run dc build apps/claim-check && vite build",
+  "build": "<compile apps/claim-check without rebuilding kb-tools> && vite build",
   "preview": "vite preview"
 },
 "dependencies": { "@dead-certain/engine": "workspace:*", "@dead-certain/ui": "workspace:*", "react": "19.3.1", "react-dom": "19.3.1" },
@@ -197,10 +197,10 @@ export const HERO_FACTS: Readonly<Record<string, FactValue>> = {
 export const AMOUNT_GOAL = "payable";
 export const STATE_GOAL = "outcome";
 export const CLAIMED_FACT = "claimed";
-export const STEP_RULE = "ROOM-05"; // replaced by the rule the task picks (requirement 4.3)
+export const STEP_RULE = "ROOM-03"; // chosen at the gate review (requirement 4.3)
 ```
 
-`HERO_FACTS` mirrors `G-01` exactly. The unit test reads `scenarios.yaml` through kb-tools' golden loader and compares, so the literal cannot drift from the scenario. `STEP_RULE` is shown as `ROOM-05` only as a placeholder: its expression is longer than 90 characters, so the task chooses another rule from the same proof.
+`HERO_FACTS` mirrors `G-01` exactly. The unit test reads `scenarios.yaml` through kb-tools' golden loader and compares, so the literal cannot drift from the scenario. `ROOM-05`, the first choice, prints at 112 characters, so the build chose `ROOM-03` from the same proof (36 characters), and the review accepted it.
 
 ## Error Handling
 

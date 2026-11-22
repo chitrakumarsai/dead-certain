@@ -12,7 +12,7 @@ This plan builds the landing page in `apps/site` in TypeScript strict mode. The 
 
 - Run every command under Node 22 (`.nvmrc`). Before the first command in a session, run `nvm use` (or an equivalent) and confirm `node -v` prints `v22.x`.
 - Never use watch mode or any long-running process. Run tests with `pnpm vitest run <path>`, `pnpm test:props`, `pnpm e2e` or `pnpm check`. For screenshots use `vite build` plus `vite preview` in a background process you stop afterwards.
-- **Dependencies.** Task 1 adds `@dead-certain/engine` and `@dead-certain/kb-tools` (both `workspace:*`) to the site. No other package is added. Pin existing versions to what the site already uses. If a task seems to need another package, stop and ask the human.
+- **Dependencies.** Task 1 adds `@dead-certain/engine` and `@dead-certain/kb-tools` (both `workspace:*`) to the site, and `fast-check` `4.10.2` as a dev dependency (approved by the human). No other package is added. Pin existing versions to what the site already uses. If a task seems to need another package, stop and ask the human.
 - **Lanes.** Stay in `apps/site`, `e2e` and the root configuration you need. Do not touch `.kiro/**`, `packages/**`, `apps/claim-check`, `apps/pre-flight` or any `kb`, `rulebook` or `golden` folder. Do not edit `packages/engine/src/types.ts`.
 - **No imports from the apps' source.** Nothing under `apps/site/src/landing` imports from `apps/claim-check/src` or `apps/pre-flight/src`. Copy the small functions the design names, and keep the copies pinned by tests. The one file read from an app is `apps/claim-check/kb/dist/policy.json`.
 - **Names.** Only `hero/config.ts` names a fact or a goal.
@@ -33,50 +33,50 @@ This plan builds the landing page in `apps/site` in TypeScript strict mode. The 
   - Keep `/kit/` building as before. Run `pnpm build` and `pnpm e2e` for the `kit-*` specs (all four projects).
   - _Requirements: 1.1 to 1.4, 1.6, 1.9, 1.10, 6.1, 6.2, 9.7_
 
-- [ ] 2. The hero model, test-first
-  - [ ] 2.1 Config and golden pin
+- [x] 2. The hero model, test-first
+  - [x] 2.1 Config and golden pin
     - `hero/config.ts` with the `G-01` facts and the goal and fact names. Write `hero/hero.golden.test.ts` first: read `apps/claim-check/golden/scenarios.yaml` with kb-tools' golden loader, check `HERO_FACTS` equals `G-01`'s facts, and check `audit` on the compiled KB equals its `expect` block (goals and all eight line items). Run it red, then green.
     - _Requirements: 2.5, 8.1, 8.2_
-  - [ ] 2.2 `heroModel`
+  - [x] 2.2 `heroModel`
     - `hero/model.ts` and `hero/because.ts`: copy `ledgerFrom`, `partsFrom`, `statementFor`, `withPrintedBecause` and `printValue` from `apps/claim-check/src` (verdict/parts.ts, verdict/statement.ts, xray/because.ts, session/relevance.ts), with the Claim Check names replaced by `hero/config.ts`. Add `heroModel(kb)` returning a model or a `HeroFailure`, never throwing, with the ledger check.
     - Tests: the model for `HERO_FACTS` (statement "₹1,32,000 of ₹2,10,000 will be paid", state `reduced`, four non-zero rows); a renamed fact gives `engine_error`; a wrong goal type gives `kb_mismatch`; a ledger that does not add up gives `ledger_mismatch`; the benchmark under 10 ms.
-    - [ ]* Property 1: the hero relays the engine. [ ]* Property 2: the ledger adds up or the page refuses. [ ]* Property 5: proof sentences print money as money.
+    - [x]* Property 1: the hero relays the engine. [x]* Property 2: the ledger adds up or the page refuses. [x]* Property 5: proof sentences print money as money.
     - _Requirements: 2.3, 2.4, 8.1, 8.2, 8.6, 9.3_
-  - [ ] 2.3 Lane scan
+  - [x] 2.3 Lane scan
     - `landing/lane.test.ts`: fail on an import from `apps/claim-check/src` or `apps/pre-flight/src`, on `fetch`, `XMLHttpRequest`, `localStorage`, `sessionStorage` and `document.cookie` anywhere under `apps/site/src/landing`.
     - _Requirements: 1.5, 1.7, 8.4_
 
-- [ ] 3. The Hero and its X-ray
-  - [ ] 3.1 The verdict sheet
+- [x] 3. The Hero and its X-ray
+  - [x] 3.1 The verdict sheet
     - `Hero.tsx`: the `<h1>` "LLMs guess. The dead are certain.", the paragraph (at most 40 words), and the Verdict_Sheet in a `Sheet` with `VerdictHeadline` (`headingLevel={2}`), `ProportionBar`, `Ledger`, the honesty line, "See why", "Check your own claim" (a native anchor styled as the kit's secondary button) and the `Disclosure` "Answers used for this claim". Show `SampleFailed` for a `HeroFailure`.
     - Wire it into `main.tsx`. No X-ray yet.
     - _Requirements: 2.1 to 2.4, 2.6 to 2.10, 7.4, 8.5_
-  - [ ] 3.2 The X-ray
+  - [x] 3.2 The X-ray
     - Wrap the sheet in `XrayStage` with the titles "Why" and "Why: <label>". Add `hero/Film.tsx` (the proof body) as the design describes. "See why" and each ledger row set the target and pass the opener.
     - Check by hand and in a test: Escape returns focus to the control that opened it; the film is a bottom sheet below 1280 px and side by side from 1280 px; with reduced motion there is no scan line; no "Change this answer" control appears.
-    - [ ]* Property 3: every ledger row has a proof that agrees.
+    - [x]* Property 3: every ledger row has a proof that agrees.
     - _Requirements: 3.1 to 3.7, 7.5, 7.6, 7.8_
 
-- [ ] 4. The three steps
+- [x] 4. The three steps
   - `steps.ts` and `Steps.tsx` as the design describes. Choose `STEP_RULE`: a rule in the proof of `room_rent_deduction` whose printed expression is at most 90 characters. Record the id in `hero/config.ts`. Add a test that fails when the rule is not in that proof, is missing, or is longer than 90 characters.
   - The first step shows the cited clause in a `ClauseQuote` and the link to `claim-check/#/rulebook?clause=<id>`. The second shows the rule. The third has the anchor that opens the verdict's proof. Under the three steps add the one sentence about the tools and the `.kiro` link (requirement 4.8).
   - Test the missing-rule and missing-clause fall-backs.
-  - [ ]* Property 4: quoted text is the knowledge base's text.
+  - [x]* Property 4: quoted text is the knowledge base's text.
   - _Requirements: 4.1 to 4.8, 8.3_
 
-- [ ] 5. The two apps and the scaffold command
+- [x] 5. The two apps and the scaffold command
   - `Apps.tsx` and `Scaffold.tsx` as the design describes, with links built from `import.meta.env.BASE_URL`. "Copy command" copies `pnpm new-app my-app`, announces "Copied", and falls back to selecting the text.
   - The link to the README section goes to the repository's README (the address is decided: the repository's README, with `#add-a-third-app` once that section exists). Add the source link to the nav.
-  - [ ]* Property 6: links are built from the base.
+  - [x]* Property 6: links are built from the base.
   - _Requirements: 5.1 to 5.6_
 
-- [ ] 6. The 404 page and print styles
+- [x] 6. The 404 page and print styles
   - Add `404.html`, `404.tsx` and `NotFound.tsx` and the `notfound` input in `vite.config.ts`. One level-1 heading, one dry sentence, a link home, absolute asset paths.
   - Add print rules to `styles.css`: print the Verdict_Sheet and the Steps, hide the nav and the controls.
   - Check the built `dist/404.html` loads its assets from `/dead-certain/` paths.
   - _Requirements: 6.3 to 6.5, 7.9_
 
-- [ ] 7. End-to-end, budgets and privacy
+- [x] 7. End-to-end, budgets and privacy
   - Replace `e2e/site.spec.ts` with the cases in the design's "End-to-end cases", at all four projects. Add the axe checks (page, X-ray open, 404), the privacy test (requests and storage), the failure-path test (compiled JSON replaced by a route) and the budget test (gzipped JavaScript under 200 kB without the develop chunk, layout shift under 0.05) as `e2e/site-*.spec.ts` files next to it.
   - Run the full `pnpm e2e`. The existing kit specs pass unchanged.
   - _Requirements: 8.5, 9.1, 9.2, 9.4 to 9.7_
@@ -89,6 +89,11 @@ This plan builds the landing page in `apps/site` in TypeScript strict mode. The 
   - _Requirements: all_
 
 ## Notes
+
+- Gate G5 review (Kiro, 2026-11-22): tasks 2 to 7 are ticked. Tasks 1 and 8 stay open for two changes, both in Claude Code's lane:
+  1. The site's `build` runs `pnpm -w run dc build apps/claim-check`, and each `dc` call rebuilds kb-tools' `dist`. With the two apps' builds that makes three rebuilds at once. The CI run on `7fc0729` failed in `pnpm build` with `dist/dc.mjs is missing`. Compile the knowledge base without rebuilding kb-tools: `pnpm -r` has already built kb-tools, since each package lists it as a dev dependency. The apps' own `build` scripts have the same race, which also failed once in a local `pnpm build` of PR #19's head (pre-flight, the same message), so change them too.
+  2. Pass `appName=""` to `AppShell` on the landing page and the 404 page (requirement 6.1, amended), so the header reads "Dead Certain" once.
+  After both changes, tick 1 and 8 once CI is green.
 
 - Tasks marked `*` are property tests. Run them with the task before them, not later.
 - All eight open questions are answered (see the requirements). None blocks a task.
