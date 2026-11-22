@@ -1,5 +1,37 @@
 # dead-certain
 
+## Add a third app
+
+The two apps below are built on a skeleton you can reuse. These three commands make a new consultation app called `my-app` (use your own name: lower case, digits and hyphens):
+
+```sh
+pnpm install
+pnpm new-app my-app
+pnpm install
+```
+
+`pnpm new-app` copies `templates/app` to `apps/my-app` and its smoke test to `e2e/my-app-smoke.spec.ts`. It edits two shared files: `playwright.config.ts` gets the app's address and preview server, and `.github/workflows/ci.yml` gets the steps that compile the app's rules and publish it. The second `pnpm install` adds the new app to the workspace. Commit `pnpm-lock.yaml` with the app, because CI installs with a frozen lockfile.
+
+The new app works at once. It runs a toy rulebook, the fine for a late library book: a few questions, a result, each line with its rule and clause, and "See why" for the proof.
+
+### Run it
+
+```sh
+pnpm --filter @dead-certain/my-app dev
+```
+
+The dev server prints the address, `http://localhost:5173/dead-certain/my-app/`.
+
+### Replace the rules
+
+1. Write your rulebook in `apps/my-app/rulebook/`, with numbered clauses.
+2. Run Kiro's `knowledge-engineer` agent with the prompt in section 12 of the build plan, with `apps/my-app` in place of `apps/claim-check` and the golden scenarios in `apps/my-app/golden/`.
+3. Review every rule against its clause.
+4. Run `pnpm dc validate apps/my-app`, `pnpm dc build apps/my-app` and `pnpm dc golden apps/my-app`.
+5. Set `verdictGoal` in `apps/my-app/src/config.ts` to your goal. It is the one file that names a fact.
+
+The site does not link to the new app on its own. Add the link by hand in `apps/site/index.html`, beside the other apps.
+
 ## Claim Check
 
 Claim Check works out how much of a hospital bill a sample health policy pays. It asks one question at a time, only the ones that matter, and then shows the amount paid, each deduction and the clause behind it. "See why" opens the proof of any line: the rules that fired, the facts they used and the clause each rule cites. The policy is written for this project; no real insurer's document is used.
