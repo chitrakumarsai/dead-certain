@@ -10,7 +10,7 @@ const root = document.getElementById("root");
 if (!root) throw new Error("404.html has no #root element");
 createRoot(root).render(
 	<StrictMode>
-		<AppShell appName="Dead Certain" nav={NAV}>
+		<AppShell appName="" nav={NAV}>
 			<NotFound />
 		</AppShell>
 	</StrictMode>,

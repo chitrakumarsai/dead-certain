@@ -22,7 +22,7 @@ const hasVerdict = model !== null && !("kind" in model);
 function Landing() {
 	const [open, setOpen] = useState<XrayTarget | null>(null);
 	return (
-		<AppShell appName="Dead Certain" nav={NAV}>
+		<AppShell appName="" nav={NAV}>
 			<Hero
 				model={model}
 				open={open}
