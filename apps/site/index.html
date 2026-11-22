@@ -3,20 +3,24 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="description" content="A lean expert-system skeleton: deterministic verdicts with a proof for every one." />
-		<title>Dead Certain</title>
-		<link rel="stylesheet" href="/src/placeholder.css" />
+		<title>Dead Certain. LLMs guess. The dead are certain.</title>
+		<meta name="description" content="A model drafts the rules once; a small engine decides every verdict in your browser and shows the proof." />
+		<meta property="og:title" content="Dead Certain. LLMs guess. The dead are certain." />
+		<meta property="og:description" content="A model drafts the rules once; a small engine decides every verdict in your browser and shows the proof." />
+		<meta property="og:type" content="website" />
+		<!-- The three faces above the fold, as packages/ui/fonts.css asks, so text does not shift when they arrive. -->
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="../../packages/ui/node_modules/@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2" />
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="../../packages/ui/node_modules/@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-600-normal.woff2" />
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="../../packages/ui/node_modules/@fontsource/ibm-plex-serif/files/ibm-plex-serif-latin-600-normal.woff2" />
 	</head>
 	<body>
-		<main>
+		<noscript>
 			<h1>LLMs guess. The dead are certain.</h1>
-			<p>
-				Dead Certain is a lean expert-system skeleton. A language model drafts rules from a rulebook once, at build
-				time. A small deterministic engine decides from then on, with a proof for every verdict.
-			</p>
-			<p>Two apps are being built on it: Claim Check and Pre-Flight. This page is a placeholder until they land.</p>
-			<p><a href="https://github.com/chitrakumarsai/dead-certain">Read the source</a></p>
-		</main>
-		<footer>No guesses were made in the production of this verdict.</footer>
+			<p>This page runs its sample verdict in your browser, which needs JavaScript. The two apps are here:</p>
+			<p><a href="claim-check/">Claim Check</a></p>
+			<p><a href="pre-flight/">Pre-Flight</a></p>
+		</noscript>
+		<div id="root"></div>
+		<script type="module" src="/src/landing/main.tsx"></script>
 	</body>
 </html>

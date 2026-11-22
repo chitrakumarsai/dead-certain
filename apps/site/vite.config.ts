@@ -10,6 +10,8 @@ export default defineConfig({
 		rolldownOptions: {
 			input: {
 				main: "index.html",
+				// GitHub Pages serves 404.html for any unknown path under the site.
+				notfound: "404.html",
 				kit: "kit/index.html",
 				shell: "kit/shell.html",
 				screen: "kit/screen.html",

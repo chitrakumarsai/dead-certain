@@ -5,18 +5,21 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build",
+		"build": "node ../../packages/kb-tools/bin/dc.mjs build apps/claim-check && vite build",
 		"preview": "vite preview"
 	},
 	"devDependencies": {
+		"@dead-certain/kb-tools": "workspace:*",
 		"@tailwindcss/vite": "4.3.5",
 		"@types/react": "19.3.0",
 		"@types/react-dom": "19.3.0",
 		"@vitejs/plugin-react": "6.3.0",
+		"fast-check": "4.10.2",
 		"tailwindcss": "4.3.5",
 		"vite": "8.3.8"
 	},
 	"dependencies": {
+		"@dead-certain/engine": "workspace:*",
 		"@dead-certain/ui": "workspace:*",
 		"react": "19.3.1",
 		"react-dom": "19.3.1"
