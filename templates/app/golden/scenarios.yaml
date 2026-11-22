@@ -9,10 +9,11 @@ scenarios:
     expect:
       goals:
         outcome: fine_due
+        amount_due: 250
       line_items:
         cap_deduction: 0
         waiver_deduction: 0
-      fires: [RATE-02, FINE-01, CAP-02, CAP-03, CAP-04, WAIV-01, OUT-03]
+      fires: [RATE-02, FINE-01, CAP-02, CAP-03, CAP-04, WAIV-01, AMT-02, OUT-03]
   - id: G-02
     title: "A child is 100 days late: the cap of 500 cents cuts the fine of 1000"
     facts:
@@ -22,10 +23,11 @@ scenarios:
     expect:
       goals:
         outcome: fine_due
+        amount_due: 500
       line_items:
         cap_deduction: 500
         waiver_deduction: 0
-      fires: [RATE-01, CAP-01, CAP-04, OUT-03]
+      fires: [RATE-01, CAP-01, CAP-04, AMT-02, OUT-03]
   - id: G-03
     title: "A senior is 4 days late with a waiver card: the fine of 60 cents is cancelled"
     facts:
@@ -35,20 +37,34 @@ scenarios:
     expect:
       goals:
         outcome: waived
+        amount_due: 0
       line_items:
         cap_deduction: 0
         waiver_deduction: 60
-      fires: [RATE-03, WAIV-01, OUT-02]
+      fires: [RATE-03, WAIV-01, AMT-02, OUT-02]
   - id: G-04
-    title: "An adult returns the book on time: no fine"
+    title: "A book returned on time: only the days late are asked, and there is no fine"
     facts:
       days_late: 0
-      member_type: adult
-      waiver_card: false
     expect:
       goals:
         outcome: no_fine
+        amount_due: 0
       line_items:
         cap_deduction: 0
         waiver_deduction: 0
-      fires: [OUT-01]
+      fires: [OUT-01, AMT-01]
+  - id: G-05
+    title: "A late book with no waiver card: the engine still asks for the member type"
+    facts:
+      days_late: 10
+      waiver_card: false
+    expect:
+      ask: member_type
+  - id: G-06
+    title: "A late book with a waiver card: the engine still asks for the member type, to show what the card cancels"
+    facts:
+      days_late: 10
+      waiver_card: true
+    expect:
+      ask: member_type
