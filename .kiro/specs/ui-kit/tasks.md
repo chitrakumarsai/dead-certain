@@ -455,9 +455,9 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - **Validates: Requirements 2.7, 2.9, 2.10, 2.11, 32.5, 32.6, 33.1, 33.2, 33.3, 33.4, 33.5, 33.7**
     - Close with Task_Evidence.
 
-- [ ] 13. AppShell and command menu (redesign, Claude Code lane)
+- [x] 13. AppShell and command menu (redesign, Claude Code lane)
   - Pass 1 of 13.1 landed in PR #27 (centred shell, `ThemeToggle` in the wide header). It is not ticked: `Kbd`, the command trigger and the phone toggle are missing (Review of PR #27 (Kiro, 2026-11-23)).
-  - [ ] 13.1 Add `Kbd` and extend `AppShell`
+  - [x] 13.1 Add `Kbd` and extend `AppShell`
     - `Kbd` (Mono 13/20). `AppShell` gains the command trigger (showing its `Kbd` hint) and the `ThemeToggle` in the header, both at least 44 px and in the keyboard order after the navigation. Keep the skip link first. Update `kit/shell.html`.
     - Playwright: order, names, 44 px, the shell page passes axe at every width in both themes.
     - Close with Task_Evidence.
@@ -469,12 +469,12 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - Cover the `wax` Button in `kit-button.spec.ts` (target, press, hover, focus ring, disabled, both themes).
     - **Property 11: Contrast floor** (hero pair aligned)
     - _Requirements: 34.1, 36.1, 38.1, 38.3, 38.6_
-  - [ ] 13.4 Close the coverage gaps of 13.1 and 13.2 (found in the review of PR #29)
+  - [x] 13.4 Close the coverage gaps of 13.1 and 13.2 (found in the review of PR #29)
     - `command-menu.spec.ts` skips below 768 px, so the phone placement has no test. Add a phone test at 390 px and 320 px: Menu opens, the "Go to" trigger in the panel opens the dialog, Escape closes it and focus returns to the trigger, no horizontal scroll with the panel open, axe with the dialog open.
     - Add: Home and End; an item with `onSelect` runs it and closes the menu; a unit test that `MAX_COMMANDS` cuts a list of 70 items to 60; the open menu passes axe in both themes (the light and dark projects).
     - Kiro checked the phone path by hand (Escape returns focus to the trigger, no overflow at 320 px, Ctrl+K does nothing while the panel is closed), which is not evidence for the tick.
     - _Requirements: 36.3, 36.4, 38.11, 38.12_
-  - [ ] 13.2 Add `CommandMenu`
+  - [x] 13.2 Add `CommandMenu`
     - Radix Dialog, items as a prop, filtering by hand over at most about 60 items, combobox and listbox roles, Ctrl+K and Cmd+K, arrows, Enter, Escape, focus return, result count in the Live_Region, `--dur-menu` open and close (120 ms fade under reduced motion). No new dependency.
     - Playwright: every key path, focus return, the count announcement, no more than 60 rendered items, clean console, axe in both themes.
     - Close with Task_Evidence.
@@ -521,6 +521,7 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
 
 ## Notes
 
+- Re-review of PR #29 at `c90ae20` (Kiro, 2026-11-23): 13.4, 13.1, 13.2 and 13 ticked. Evidence: the phone path at 320 and 390 px (trigger in the Menu panel, dialog, axe, Escape and focus return, no overflow), Home and End and an `onSelect` item on `kit/shell.html`, `visibleCommands` cutting 70 to the first 60, and the open-menu axe test in the dark and light projects. Non-blocking: axe runs while the dialog's 150 ms fade is still in progress, and one local run failed `color-contrast` on one node (it passed 104 of 104 repeats afterwards), so wait for opacity 1 before axe.
 - Review of PR #29 (Kiro, 2026-11-23): 13.3 ticked. 13.1 and 13.2 stay unticked until task 13.4 lands (phone placement, Home and End, `onSelect`, the 60-item cut). Accepted deviations are in requirements 36.7 and 38.11 to 38.13: the trigger in the Menu panel on phones with the shortcut live only while it is open, a fade on open only, and landing commands left to landing 9.1.
 
 - Review of PR #26 (Kiro, 2026-11-23): tasks 12.1 to 12.4 and 12 ticked. Evidence: `pnpm check` 1,919 passed locally (Kiro, fresh worktree), CI `check` green with `pnpm e2e` 2,102 passed and 133 skipped over five projects, the contrast pairs match the steering tables, storage is in one file. Accepted deviations: the system fallback is `prefers-color-scheme: light` and there is no `dark` query (dark is the default); a boot script is inlined in each page's `<head>`; the Tailwind-word scan reads the built CSS. The steering and requirements 32.5 and 33.3 are amended to match. Not accepted yet: the `scaffold` job is red (see the review comment): the Template's own `src/lanes.test.ts` still forbids `packages/ui/`.
