@@ -8,6 +8,9 @@ for (const screen of SCREENS)
 	test(`${screen.name}: none of the refused patterns`, async ({ page }) => {
 		await screen.open(page);
 		const found = await page.evaluate(() => {
+			const DEPTH =
+				".halo-paper, .glow-wax-soft, .glow-wax-pulse, .highlight-inset";
+			const GRADIENT = ".bg-hero, .text-hero-fill";
 			const out: string[] = [];
 			const text = document.querySelector("main")?.textContent ?? "";
 			if (text.includes("!")) out.push("an exclamation mark");
@@ -20,8 +23,10 @@ for (const screen of SCREENS)
 				const s = getComputedStyle(el);
 				const name = `${el.tagName.toLowerCase()} "${(el.textContent ?? "").trim().slice(0, 30)}"`;
 				if (s.textTransform === "uppercase") out.push(`uppercase ${name}`);
-				if (s.boxShadow !== "none") out.push(`a shadow on ${name}`);
-				if (s.backgroundImage.includes("gradient"))
+				// Depth only through the four depth tokens (steering, What this design refuses).
+				if (s.boxShadow !== "none" && !el.matches(DEPTH))
+					out.push(`a shadow on ${name}`);
+				if (s.backgroundImage.includes("gradient") && !el.matches(GRADIENT))
 					out.push(`a gradient on ${name}`);
 			}
 			return out;

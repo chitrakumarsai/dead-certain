@@ -6,7 +6,10 @@ import type { StepsData } from "./stepsData";
 
 const LINK =
 	"inline-flex min-h-touch items-center text-sys-body underline underline-offset-4";
-const TITLE = "text-sys-body font-semibold";
+const TITLE = "text-question font-semibold";
+const CARD =
+	"flex flex-col gap-4 rounded-card border border-border-default bg-surface-2 p-6 highlight-inset";
+const STEP = "pr-2 font-mono text-mono text-text-tertiary";
 
 /**
  * Rulebook, rules, verdict: the same claim's clause and rule, quoted from the
@@ -27,13 +30,27 @@ export function Steps({
 		onOpenProof?.();
 	};
 	return (
-		<section aria-labelledby="steps-heading" className="max-w-column pt-16">
-			<h2 id="steps-heading" className="font-doc text-question font-semibold">
-				From rulebook to verdict
-			</h2>
-			<ol className="list-decimal space-y-12 pt-6 pl-8 marker:font-mono marker:text-text-soft">
-				<li className="space-y-4">
-					<h3 className={TITLE}>The rulebook</h3>
+		<section aria-labelledby="steps-heading" className="pt-24">
+			<div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+				<h2
+					id="steps-heading"
+					className="max-w-xl font-doc text-h2 font-semibold"
+				>
+					From rulebook to verdict
+				</h2>
+				<p className="max-w-md text-sys-body text-text-secondary">
+					Three steps, and only the first uses a language model. A person checks
+					its output before anything ships.
+				</p>
+			</div>
+			<ol className="grid gap-4 pt-12 lg:grid-cols-3">
+				<li className={CARD}>
+					<h3 className={TITLE}>
+						<span aria-hidden="true" className={STEP}>
+							01
+						</span>{" "}
+						The rulebook
+					</h3>
 					<p className="text-sys-body">
 						Each app starts from a rulebook written in plain words.
 						{data &&
@@ -48,14 +65,19 @@ export function Steps({
 						</>
 					)}
 				</li>
-				<li className="space-y-4">
-					<h3 className={TITLE}>The rules</h3>
+				<li className={CARD}>
+					<h3 className={TITLE}>
+						<span aria-hidden="true" className={STEP}>
+							02
+						</span>{" "}
+						The rules
+					</h3>
 					<p className="text-sys-body">
 						A model drafted each rule from its clause, once, at build time, and
 						a person checked it against the clause.
 					</p>
 					{data && (
-						<div className="space-y-2 rounded-control border border-divider p-4">
+						<div className="space-y-2 rounded-control border border-border-strong bg-bg-base p-4">
 							<p className="font-mono text-mono text-text-soft">
 								{data.rule.id}
 							</p>
@@ -69,8 +91,13 @@ export function Steps({
 						</div>
 					)}
 				</li>
-				<li className="space-y-4">
-					<h3 className={TITLE}>The verdict</h3>
+				<li className={CARD}>
+					<h3 className={TITLE}>
+						<span aria-hidden="true" className={STEP}>
+							03
+						</span>{" "}
+						The verdict
+					</h3>
 					<p className="text-sys-body">
 						The engine applies the rules to the answers and returns the verdict
 						above, with its proof. Nothing in it is guessed.
@@ -82,7 +109,7 @@ export function Steps({
 					)}
 				</li>
 			</ol>
-			<p className="pt-12 text-sys-body">
+			<p className="pt-12 text-sys-body text-text-secondary">
 				The specs, the engine and the rules were written with Kiro. The
 				interface was built with Claude Code.
 			</p>

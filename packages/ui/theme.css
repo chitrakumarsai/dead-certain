@@ -81,6 +81,7 @@
 	--spacing-touch: var(--touch-min);
 	--spacing-rail: var(--rail-width);
 	--container-column: var(--column-max);
+	--container-page: var(--page-max);
 
 	--radius-paper: var(--radius-paper);
 	--radius-control: var(--radius-control);
@@ -152,6 +153,22 @@
 
 @utility halo-paper {
 	box-shadow: var(--halo-paper);
+}
+
+/* Landing hero only: radial glow over the graph-paper grid. */
+@utility bg-hero {
+	background: var(--glow-hero), var(--grid-calibration);
+}
+
+/* Landing headline only. Forced colours drop the fill for plain system text. */
+@utility text-hero-fill {
+	background: var(--fill-hero-text);
+	background-clip: text;
+	color: transparent;
+	@media (forced-colors: active) {
+		background: none;
+		color: CanvasText;
+	}
 }
 
 /*

@@ -59,27 +59,29 @@ export function Consult({
 	return (
 		<>
 			<h1 className="sr-only">Check a hospital claim</h1>
-			<Sheet>
-				<QuestionCard
-					question={question}
-					def={def}
-					{...(clause === undefined ? {} : { clause })}
-					value={draft}
-					onChange={(next) => {
-						setDraft(next);
-						setLocalError(null);
-					}}
-					onSubmit={submit}
-					{...(at.index > 1
-						? { onBack: () => dispatch({ type: "back" }) }
-						: {})}
-					progress={at}
-					{...(error === undefined ? {} : { externalError: error })}
-					{...(unit === undefined ? {} : { unit })}
-					{...(question.fact === config.claimedFact ? { min: 1 } : {})}
-					format={formatFor(kb)}
-				/>
-			</Sheet>
+			<div className="mx-auto w-full max-w-column pt-4 md:pt-8">
+				<Sheet>
+					<QuestionCard
+						question={question}
+						def={def}
+						{...(clause === undefined ? {} : { clause })}
+						value={draft}
+						onChange={(next) => {
+							setDraft(next);
+							setLocalError(null);
+						}}
+						onSubmit={submit}
+						{...(at.index > 1
+							? { onBack: () => dispatch({ type: "back" }) }
+							: {})}
+						progress={at}
+						{...(error === undefined ? {} : { externalError: error })}
+						{...(unit === undefined ? {} : { unit })}
+						{...(question.fact === config.claimedFact ? { min: 1 } : {})}
+						format={formatFor(kb)}
+					/>
+				</Sheet>
+			</div>
 		</>
 	);
 }

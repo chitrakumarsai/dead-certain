@@ -18,30 +18,30 @@ const APPS = [
 /** The two apps on the same engine (requirement 5.1). */
 export function Apps() {
 	return (
-		<section
-			data-print-hide
-			aria-labelledby="apps-heading"
-			className="max-w-column pt-16"
-		>
-			<h2 id="apps-heading" className="font-doc text-question font-semibold">
+		<section data-print-hide aria-labelledby="apps-heading" className="pt-24">
+			<h2
+				id="apps-heading"
+				className="text-center font-doc text-h2 font-semibold"
+			>
 				Two apps on the same engine
 			</h2>
-			<div className="grid gap-6 pt-6 md:grid-cols-2">
+			<div className="grid gap-4 pt-12 md:grid-cols-2">
 				{APPS.map((app) => (
 					<article
 						key={app.name}
-						className="space-y-2 rounded-paper border border-divider bg-surface p-6"
+						className="relative flex flex-col gap-3 rounded-card border border-border-default bg-surface-2 p-8 highlight-inset transition-colors duration-(--dur-hover) ease-kit has-[a:hover]:border-wax"
 					>
-						<h3 className="text-sys-body font-semibold">
+						<h3 className="font-doc text-h2 font-semibold">
+							{/* The whole card is the link's target; the name stays the link. */}
 							<a
 								href={app.href}
-								className="inline-flex min-h-touch items-center underline underline-offset-4"
+								className="inline-flex min-h-touch items-center after:absolute after:inset-0 after:rounded-card"
 							>
 								{app.name}
 							</a>
 						</h3>
-						<p className="text-sys-body">{app.does}</p>
-						<p className="text-sys-small text-text-soft">{app.mode}</p>
+						<p className="text-sys-body text-text-secondary">{app.does}</p>
+						<p className="text-sys-small text-text-tertiary">{app.mode}</p>
 					</article>
 				))}
 			</div>

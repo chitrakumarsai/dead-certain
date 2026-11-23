@@ -79,6 +79,7 @@
 
 	/* Layout */
 	--column-max: 680px;
+	--page-max: 1120px;
 	--rail-width: 240px;
 	--touch-min: 44px;
 	/* ProportionBar: the paper gap between segments, and the narrowest visible part. */
@@ -129,6 +130,22 @@
 	--leading-mono: 22px;
 	--text-kbd: 13px;
 	--leading-kbd: 20px;
+
+	/* Hero only: the named gradients (steering, What this design refuses). */
+	--glow-hero: radial-gradient(
+		60% 50% at 50% 0%,
+		var(--wax-muted),
+		transparent 70%
+	);
+	--grid-calibration:
+		linear-gradient(var(--border-subtle) 1px, transparent 1px) 0 0 / 48px 48px,
+		linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px) 0 0 / 48px
+		48px;
+	--fill-hero-text: linear-gradient(
+		180deg,
+		var(--text-primary) 35%,
+		var(--text-tertiary)
+	);
 }
 
 /* Light theme: the lightbox. Film stays dark in both themes. */
@@ -145,6 +162,11 @@
 	--text-secondary: var(--ink-soft);
 	--text-tertiary: #5b6b74;
 	--halo-paper: none;
+	--glow-hero: radial-gradient(
+		60% 50% at 50% 0%,
+		rgb(31 111 235 / 8%),
+		transparent 70%
+	);
 	--surface: var(--bg-base);
 	--text: var(--text-primary);
 	--text-soft: var(--text-secondary);
@@ -168,6 +190,11 @@
 		--text-secondary: var(--ink-soft);
 		--text-tertiary: #5b6b74;
 		--halo-paper: none;
+		--glow-hero: radial-gradient(
+			60% 50% at 50% 0%,
+			rgb(31 111 235 / 8%),
+			transparent 70%
+		);
 		--surface: var(--bg-base);
 		--text: var(--text-primary);
 		--text-soft: var(--text-secondary);

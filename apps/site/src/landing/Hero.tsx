@@ -18,6 +18,12 @@ import { SampleFailed } from "./SampleFailed";
 export const HEADLINE = "LLMs guess. The dead are certain.";
 export const SEE_WHY_ID = "see-why";
 
+/** The landing's call to action: a wax fill, never wax text. */
+const WAX_LINK =
+	"inline-flex min-h-touch items-center justify-center rounded-control bg-wax px-6 text-sys-body font-semibold text-on-wax glow-wax-soft transition-colors duration-(--dur-hover) ease-kit hover:bg-wax-hover";
+const GHOST_LINK =
+	"inline-flex min-h-touch items-center justify-center rounded-control border border-control-border px-6 text-sys-body font-semibold text-text transition-colors duration-(--dur-hover) ease-kit hover:bg-surface-3";
+
 /** The kit's secondary button, on a native anchor (requirement 2.8). */
 const SECONDARY_LINK =
 	"inline-flex min-h-touch min-w-touch items-center justify-center rounded-control border border-control-border px-4 text-sys-body font-semibold text-text transition-colors duration-(--dur-press) ease-kit hover:bg-text/10 active:bg-text/20";
@@ -117,13 +123,23 @@ export function Hero({
 		document.body.removeAttribute("tabindex");
 	}, []);
 	const intro = (
-		<div className="max-w-column pb-8">
-			<h1 className="font-doc text-verdict font-semibold">{HEADLINE}</h1>
-			<p className="pt-4 text-sys-body">
+		<div className="bg-hero -mx-4 px-4 pt-16 pb-16 text-center md:-mx-6 md:px-6 md:pt-24">
+			<h1 className="mx-auto max-w-3xl font-doc text-display font-semibold text-hero-fill">
+				{HEADLINE}
+			</h1>
+			<p className="mx-auto max-w-column pt-6 text-sys-body text-text-secondary">
 				A language model drafts the rules from a rulebook once, at build time.
 				From then on a small engine decides, in your browser, and every verdict
 				comes with its proof. Here is one, worked out as this page loaded.
 			</p>
+			<div data-print-hide className="flex flex-wrap justify-center gap-3 pt-8">
+				<a href={links.claimCheck} className={WAX_LINK}>
+					Check a hospital claim
+				</a>
+				<a href={links.preFlight} className={GHOST_LINK}>
+					Audit a repository
+				</a>
+			</div>
 		</div>
 	);
 	if (model === null || "kind" in model)
@@ -137,17 +153,19 @@ export function Hero({
 	return (
 		<>
 			{intro}
-			<XrayStage
-				target={open}
-				title={(t) =>
-					t.kind === "verdict" ? "Why" : `Why: ${labelFor(kb, t.fact)}`
-				}
-				onClose={onClose}
-				sheet={<VerdictSheet model={model} open={open} onOpen={onOpen} />}
-				film={(t) => (
-					<Film session={model.session} target={t} onClose={onClose} />
-				)}
-			/>
+			<div className="pt-4">
+				<XrayStage
+					target={open}
+					title={(t) =>
+						t.kind === "verdict" ? "Why" : `Why: ${labelFor(kb, t.fact)}`
+					}
+					onClose={onClose}
+					sheet={<VerdictSheet model={model} open={open} onOpen={onOpen} />}
+					film={(t) => (
+						<Film session={model.session} target={t} onClose={onClose} />
+					)}
+				/>
+			</div>
 		</>
 	);
 }

@@ -3,6 +3,7 @@ import { type KeyboardEvent, type ReactNode, useRef, useState } from "react";
 import { LiveRegion } from "../a11y/LiveRegion";
 import { Close, Menu } from "../icons";
 import { useMediaQuery } from "../useMediaQuery";
+import { ThemeToggle } from "./ThemeToggle";
 
 export interface AppShellProps {
 	/** "Claim Check". */
@@ -25,14 +26,14 @@ function NavList({
 }: Pick<AppShellProps, "nav"> & { onNavigate: () => void }) {
 	return (
 		<nav aria-label="Main">
-			<ul className="flex flex-col gap-1 md:flex-row md:gap-4">
+			<ul className="flex flex-col gap-1 md:flex-row md:gap-1">
 				{nav.map((item) => (
 					<li key={item.href}>
 						<a
 							href={item.href}
 							aria-current={item.current ? "page" : undefined}
 							onClick={onNavigate}
-							className="inline-flex min-h-touch items-center rounded-control px-2 text-sys-body text-text underline-offset-4 hover:underline aria-[current=page]:font-semibold aria-[current=page]:underline"
+							className="inline-flex min-h-touch items-center rounded-control px-3 text-sys-small text-text-soft transition-colors duration-(--dur-hover) hover:bg-surface-3 hover:text-text aria-[current=page]:font-semibold aria-[current=page]:text-text"
 						>
 							{item.label}
 						</a>
@@ -104,18 +105,22 @@ function Frame({ appName, nav, rail, footer, children }: AppShellProps) {
 			>
 				Skip to the content
 			</a>
-			<header className="border-b border-divider px-4 py-2 md:px-6">
-				{isPhone ? (
-					<PhoneMenu nav={nav} brand={brand} />
-				) : (
-					<div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
-						{brand}
-						<NavList nav={nav} onNavigate={() => undefined} />
-					</div>
-				)}
+			<header className="border-b border-border-subtle px-4 py-2 md:px-6">
+				<div className="mx-auto w-full max-w-page">
+					{isPhone ? (
+						<PhoneMenu nav={nav} brand={brand} />
+					) : (
+						<div className="flex flex-wrap items-center gap-x-2 gap-y-2">
+							{brand}
+							<span className="flex-1" />
+							<NavList nav={nav} onNavigate={() => undefined} />
+							<ThemeToggle />
+						</div>
+					)}
+				</div>
 			</header>
 			{/* Below 1024 px the rail is a disclosure above the content. */}
-			<div className="flex flex-1 flex-col gap-6 px-4 py-6 md:px-6 lg:flex-row lg:items-start">
+			<div className="mx-auto flex w-full max-w-page flex-1 flex-col gap-6 px-4 py-6 md:px-6 lg:flex-row lg:items-start">
 				{rail && (
 					<div data-rail-slot className="shrink-0">
 						{rail}
@@ -131,8 +136,10 @@ function Frame({ appName, nav, rail, footer, children }: AppShellProps) {
 					{children}
 				</main>
 			</div>
-			<footer className="border-t border-divider px-4 py-4 text-sys-small text-text-soft md:px-6">
-				{footer ?? DEFAULT_FOOTER}
+			<footer className="border-t border-border-subtle px-4 py-6 text-sys-small text-text-soft md:px-6">
+				<div className="mx-auto w-full max-w-page">
+					{footer ?? DEFAULT_FOOTER}
+				</div>
 			</footer>
 		</div>
 	);
