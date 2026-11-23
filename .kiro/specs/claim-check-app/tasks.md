@@ -193,6 +193,8 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 
 ## Notes
 
+- Review of PR #27 (Kiro, 2026-11-23): tasks 17 to 22 stay unticked. The start screen and the question card are restyled (accepted, requirement 19) and the theme toggle arrives through `AppShell`. Open: the command menu and `Toast` (task 17), the answers rail (18), the verdict and X-ray (19), the rulebook, stale-link and 404 screens (20), the privacy, a11y and refusals specs in both themes at all three widths (21), and Task_Evidence at 390, 768 and 1280 px (the pull request shows 1280 px only).
+
 - Tasks marked `*` are property tests. Run them with the task before them, not later.
 - Tasks 2, 14 and the three e2e tasks that need real scenarios depend on Phase 2. If Phase 2 is late, tasks 1, 3 to 5 and 6 can proceed against a small test knowledge base kept in `apps/claim-check/src/testing/`; remove it when task 2 lands.
 - Questions that block a task: open questions 1 and 2 block task 2; open question 3 shapes task 12.1; open question 4 is settled in task 1 and confirmed in the pull request.

@@ -137,10 +137,10 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 
 #### Acceptance Criteria
 
-1. THE Button SHALL offer the variants `primary`, `secondary` and `quiet`, with `secondary` as the default.
+1. THE Button SHALL offer the variants `primary`, `secondary`, `quiet` and `wax`, with `secondary` as the default. The `wax` variant is a `--wax` fill with `--on-wax` text and is the one call to action on a screen (Requirement 38.1).
 2. THE Button SHALL render the primary variant as `--ink` fill with `--paper` text on Paper, and as `--bone` fill with `--film` text on Film.
 3. THE Button SHALL render the secondary variant with a `--control-border` outline, and the quiet variant as underlined text.
-4. THE Button SHALL present a minimum target of 44 by 44 px and a 6 px radius.
+4. THE Button SHALL present a minimum target of 44 by 44 px and an 8 px radius (Requirement 32.3).
 5. WHEN a user presses the Button, THE Button SHALL change colour over 120 ms with zero movement and zero shadow.
 6. WHILE the Button is disabled, THE Button SHALL set `aria-disabled`, stay in the tab order, and leave the reason in nearby text and not in a tooltip.
 7. THE Button SHALL display a visible focus ring from `:focus-visible` on every state.
@@ -594,7 +594,7 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 2. THE UI_Kit SHALL default to the dark theme and SHALL offer a light theme. Film SHALL be `#0B1C26` in both themes.
 3. THE UI_Kit SHALL set radius to 4 px for paper, 8 px for controls, 12 px for film and cards, and 999 px for pills.
 4. THE Tokens_Stylesheet SHALL define `--highlight-inset`, `--glow-wax-soft`, `--glow-wax-pulse`, `--halo-paper`, `--dur-hover` (110 ms), `--dur-enter` (200 ms), `--dur-page` (250 ms) and `--dur-menu` (150 ms), and SHALL keep `--dur-press` (120 ms), `--dur-panel` (200 ms), `--dur-xray` (500 ms), `--dur-reduced` (120 ms) and `--ease`.
-5. THE ThemeToggle SHALL store the choice in `localStorage` under the single key `dc-theme`, inside `try/catch`. WHEN no value is stored or storage throws, THE UI_Kit SHALL follow `prefers-color-scheme`.
+5. THE ThemeToggle SHALL store the choice in `localStorage` under the single key `dc-theme`, inside `try/catch`. WHEN no value is stored or storage throws, THE UI_Kit SHALL follow `prefers-color-scheme`. The theme is the `data-theme` attribute on `<html>`, and a boot script built from `theme/storage.ts` and placed first in each page's `<head>` applies a stored choice before first paint.
 6. THE UI_Kit SHALL contain `localStorage` in exactly one file, `packages/ui/src/theme/storage.ts`.
 7. THE UI_Kit SHALL use `--control-border-dark` for the boundary of every input, radio card and toggle on the dark theme, and SHALL use the three rgba borders only on decorative card edges and dividers.
 8. THE UI_Kit SHALL draw the focus ring in `--wax` on the dark theme and on Film, and in `--focus-paper` on paper and light surfaces.
@@ -609,7 +609,7 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 
 1. THE Built_CSS SHALL contain a `box-shadow` other than `none` only where its value is a token (`--highlight-inset`, `--glow-wax-soft`, `--glow-wax-pulse`, `--halo-paper`), and SHALL use none that suggests elevation.
 2. THE Built_CSS SHALL contain `linear-gradient`, `radial-gradient` or `conic-gradient` only for the hero radial glow, the hero headline fill, the graph-paper grid, film grain and the scan line, and only through a token.
-3. THE Built_CSS SHALL contain `prefers-color-scheme: dark` in `tokens.css` only.
+3. THE Built_CSS SHALL contain no `prefers-color-scheme: dark`. Because dark is the default, the system fallback is `prefers-color-scheme: light`, and it appears in `tokens.css` only.
 4. THE Built_CSS SHALL keep zero `text-transform: uppercase` declarations and zero `https://` URLs, and no rendered Button label SHALL contain an arrow glyph.
 5. THE UI_Kit SHALL contain no scroll-triggered entrance animation. THE Landing_Page alone MAY fade and raise a section by 16 px once.
 6. THE UI_Kit SHALL keep these refusals: no caption above a heading, sentence case, no exclamation mark, no apology in an error, colour never alone, and no pumpkins, bats or blood.
@@ -644,8 +644,8 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 
 #### Acceptance Criteria
 
-1. THE AppShell SHALL render a command trigger and the ThemeToggle in the header, reachable by keyboard and at least 44 by 44 px.
-2. THE ThemeToggle SHALL be a real button or switch with an accessible name that states the theme it will set, and SHALL show its state with an icon and a word.
+1. THE AppShell SHALL render a command trigger and the ThemeToggle in the header at every width, including below 768 px, reachable by keyboard and at least 44 by 44 px.
+2. THE ThemeToggle SHALL be a real button or switch with an accessible name that states the theme it will set, and SHALL show its state with an icon and a word. Below 768 px the word MAY be visually hidden (`sr-only`), provided the icon stays visible and the accessible name still starts with the word and says the theme it will set (WCAG 2.5.3). The Sun and Moon are distinct shapes.
 3. THE CommandMenu SHALL open from the trigger and from Ctrl+K and Cmd+K, SHALL be built on the Radix Dialog, and SHALL filter by hand over at most about 60 items.
 4. THE CommandMenu SHALL follow the combobox and listbox pattern: arrow keys move, Enter runs the item, Escape closes it, and focus returns to the control that opened it.
 5. THE CommandMenu SHALL announce the result count through the polite Live_Region.
@@ -664,3 +664,20 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 4. THE Gallery SHALL render every specimen in both themes, with a theme switch on the page, and SHALL add specimens for each new component in each of its states.
 5. THE Kit_Test_Suite SHALL run axe on the full Gallery and on every Static_Screen at each width in both themes, with a clean console.
 6. THE Kit_Test_Suite SHALL keep the gzipped Kit_Bundle under 50 kB.
+
+### Requirement 38: Redesign pass 1, accepted deviations
+
+Review of PR #27 (Kiro, 2026-11-23), with Review of PR #26 (Kiro, 2026-11-23). Requirements 38.1 to 38.8 record what the first visible pass built. Each is accepted and now part of the spec.
+
+#### Acceptance Criteria
+
+1. THE Button's `wax` variant SHALL be one of four variants, and `contract.test.ts` SHALL pin all four. A screen SHALL show at most one `wax` Button.
+2. THE Sheet SHALL carry the `halo-paper` depth utility.
+3. THE AppShell SHALL centre its header, main area and footer at `--page-max` (1120 px). THE ThemeToggle SHALL sit in the header at every width (Requirement 36.1).
+4. THE XrayStage SHALL centre the sheet while the film is closed, and SHALL centre the sheet and film together while it is open.
+5. THE Tokens_Stylesheet SHALL define `--page-max`, `--glow-hero`, `--grid-calibration` and `--fill-hero-text`, and `theme.css` SHALL define `bg-hero` and `text-hero-fill`. The only gradients in the kit SHALL live in the named gradient tokens (`--glow-hero`, `--grid-calibration`, `--fill-hero-text`, `grain`, `scan-line`).
+6. THE `text-hero-fill` utility SHALL fall back to `CanvasText` while `forced-colors: active` applies. THE hero headline gradient SHALL end at `--text-tertiary`, so its darkest stop meets the 4.5 text floor on both themes.
+7. THE light-theme `--glow-hero` SHALL be focus blue at 8%.
+8. THE apps' refusal end-to-end specs SHALL allow a `box-shadow` only on an element with `halo-paper`, `glow-wax-soft`, `glow-wax-pulse` or `highlight-inset`, and a gradient only on `bg-hero` or `text-hero-fill`. THE `tokens.test.ts` comparison of the light block with its system fallback SHALL collapse whitespace.
+9. THE Kit_Test_Suite SHALL scan the built CSS, not the sources, for the Tailwind `uppercase`, `ring` and `shadow` utilities (a deviation from Requirement 33.7, accepted: an unused class does not compile, and a used one cannot ship).
+10. THE AppShell's phone header SHALL hold the brand (the wordmark above the app name), the ThemeToggle and "Menu", and SHALL not scroll sideways at 320 px (accepted at the re-review of PR #27, `a2dce41`).

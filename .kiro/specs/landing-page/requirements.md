@@ -43,7 +43,7 @@ Scope: the root page, its hero, the three steps, the two app cards, the scaffold
 3. THE Site's `build` script SHALL compile the Claim_KB first (`node ../../packages/kb-tools/bin/dc.mjs build apps/claim-check`) and then run `vite build`, as the apps' build scripts now do, and the Site SHALL declare `@dead-certain/engine` as a dependency and `@dead-certain/kb-tools` as a dev dependency, both `workspace:*`. THE Site SHALL also declare `fast-check` `4.10.2` as a dev dependency, for the property tests (a package of section 7 of the build plan, approved by the human). BECAUSE `pnpm build` runs the Site's and both apps' builds in parallel, and each `dc` call rebuilds kb-tools' `dist`, which deletes `dc.mjs` under a build that is reading it, THE Site's `build` script SHALL compile the Claim_KB without rebuilding kb-tools. (Amended 2026-11-22: the first version named `pnpm -w run dc build`, which made three parallel rebuilds, and the gate's CI run failed with "dist/dc.mjs is missing".)
 4. THE Landing_Page SHALL load the Claim_KB from the compiled JSON, SHALL check its shape at start-up, and WHEN the check fails, SHALL still show the headline, the paragraph, the Steps' text without data, the App_Cards and the footer, and a plain notice in place of the Hero verdict that says the sample failed to load. The notice SHALL be a level-2 heading and text, since the page keeps its one level-1 heading.
 5. THE Landing_Page SHALL make no network request after the page and its own assets have loaded, SHALL load no third-party font, script or style, and SHALL use no `localStorage` (except the kit's theme choice, `dc-theme`, written only by `packages/ui/src/theme/storage.ts`), no `sessionStorage`, cookie or analytics.
-6. THE Landing_Page SHALL NOT modify `packages/ui`, `packages/engine` or any file under `apps/claim-check` or `apps/pre-flight`.
+6. THE Landing_Page SHALL NOT modify `packages/engine` or any file under `apps/claim-check/{kb,rulebook,golden}` or `apps/pre-flight/{kb,rulebook,golden}`. The redesign (requirements 11 to 14) is one Claude Code lane effort, so its pull requests may change `packages/ui`, `apps/claim-check/src` and `apps/pre-flight/src` together with the page.
 7. THE Landing_Page SHALL NOT import from `apps/claim-check/src` or `apps/pre-flight/src`. It may read `apps/claim-check/kb/dist/policy.json` only.
 8. THE Landing_Page SHALL name a fact or a goal in the Hero_Module only. Every other module SHALL read labels, clauses and rules from the Claim_KB.
 9. THE Landing_Page SHALL give the page content in the HTML a `<noscript>` message with the headline and the links to both apps, so that the page is not blank without JavaScript.
@@ -234,3 +234,16 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 1. THE site tests SHALL mirror the storage exception in `apps/site/src/landing/lane.test.ts`: `localStorage` is allowed in no file under `apps/site/src/landing`, and the page reaches the theme only through the kit.
 2. THE site tests SHALL run the page at 390, 768 and 1280 px in both themes and in the reduced-motion project, with a clean console and zero axe violations.
 3. THE site tests SHALL assert that the page makes no request after load and writes no storage except `dc-theme`.
+
+### Requirement 14: Redesign pass 1, accepted deviations
+
+Review of PR #27 (Kiro, 2026-11-23).
+
+#### Acceptance Criteria
+
+1. THE Hero SHALL centre its headline and paragraph on a `bg-hero` area, with the headline in `text-hero-fill`, and SHALL show two calls to action as native anchors built from the base path: a wax link "Check a hospital claim" to Claim Check and a secondary link "Audit a repository" to Pre-Flight. This adds to requirement 2.1 and keeps 2.8.
+2. THE Steps SHALL be three cards in an ordered list. Each step number ("01", "02", "03") SHALL sit inside its level-3 heading in a span with `aria-hidden="true"`, so it is not a caption above the heading and is not read. This amends requirement 4.6.
+3. THE App_Cards SHALL be whole-card links: the app's name stays the link and its target covers the card. The card SHALL show its hover state as a border change only.
+4. THE Scaffold_Command SHALL sit in a panel on `--bg-surface-1`.
+5. THE page's own sizes (`max-w-3xl`, `max-w-xl`, `max-w-md`) are Tailwind's scale, not a new token. They are accepted for this pass.
+6. THE command menu, landing motion (blur-in, section rise, tilt, spotlight, shine), SEO and OG images, `FeatureCard` use, the footer and the 404 page restyle remain open. Tasks 9.1 to 9.5 stay unticked.

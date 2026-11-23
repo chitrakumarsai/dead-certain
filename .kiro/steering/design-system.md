@@ -92,7 +92,7 @@ Dark surfaces, base / surface-1 / surface-2 / surface-3. Floor 4.5 for text.
 | `--reduced-dark` | 8.38 | 7.75 | 7.12 | 6.15 |
 | `--denied-dark` | 6.43 | 5.95 | 5.46 | 4.72 |
 
-Other dark pairs: hero gradient end (bone at 60%) on base 5.95 (floor 3, large text); `--on-wax` on `--wax` 11.14; `--on-wax` on `--wax-hover` 12.51; bone on `--wax-muted` 10.91; wax on `--wax-muted` 8.09; `--control-border-dark` on surface-2 6.26 (floor 3). `--border-subtle`, `--border-default` and `--border-strong` on base are 1.13, 1.25 and 1.59 and are decorative only.
+Other dark pairs: the hero headline gradient ends at `--text-tertiary` (7.37 on base dark, 4.89 on the lightbox), so it meets the 4.5 text floor and the old figure of bone at 60% (5.95, floor 3) no longer applies; `--on-wax` on `--wax` 11.14; `--on-wax` on `--wax-hover` 12.51; bone on `--wax-muted` 10.91; wax on `--wax-muted` 8.09; `--control-border-dark` on surface-2 6.26 (floor 3). `--border-subtle`, `--border-default` and `--border-strong` on base are 1.13, 1.25 and 1.59 and are decorative only.
 
 Light surfaces, ink / ink-soft / `--text-tertiary`: base 14.38 / 6.33 / 4.89; surface-1 16.05 / 7.06 / 5.46; surface-2 15.19 / 6.69 / 5.17; surface-3 13.31 / 5.86 / 4.53. Paper pairs are unchanged: `--ink` 16.05, `--ink-soft` 7.06, `--paid` 6.16, `--reduced` 6.31, `--denied` 7.01, `--focus-paper` 4.58.
 
@@ -104,9 +104,10 @@ Color never carries meaning alone. Every verdict state uses an icon and a word a
 
 ## Theme
 
-- The toggle (`ThemeToggle`) stores the choice in `localStorage` under one key, `dc-theme`, inside `try/catch`. With no stored value, or when storage throws, the theme follows `prefers-color-scheme`.
+- The toggle (`ThemeToggle`) stores the choice in `localStorage` under one key, `dc-theme`, inside `try/catch`. With no stored value, or when storage throws, the theme follows `prefers-color-scheme`. The theme is the `data-theme` attribute (`light` or `dark`) on `<html>`. Dark applies when the attribute is absent and the system is not light.
 - Storage code lives in exactly one file, `packages/ui/src/theme/storage.ts`.
-- `prefers-color-scheme: dark` appears only in `packages/ui/tokens.css`.
+- Dark is the default, so the system fallback is the query `prefers-color-scheme: light`, in `packages/ui/tokens.css` only. `prefers-color-scheme: dark` appears nowhere.
+- A small inline boot script, built from `theme/storage.ts` and added at the top of every page's `<head>` by `themeBoot()`, applies a stored choice before first paint. It is the only inline script and holds no third-party code.
 
 ## Typography: one family, three voices
 
@@ -139,10 +140,12 @@ Every monetary amount uses tabular lining figures.
 - Spacing scale (4 px base): 4, 8, 12, 16, 24, 32, 48, 64, 96.
 - Border radius: paper 4 px, controls 8 px, film and cards 12 px, pills 999 px (full).
 - Text column max-width: 680 px (keeps lines under 80 characters).
+- Page max-width: `--page-max`, 1120 px. The header, the main area and the footer are centred at it.
 - Margin rail: 240 px, appears from 1024 px wide.
 - Breakpoints: 390 (base), 768, 1024, 1280.
 - Depth comes only from the tokens `--highlight-inset` (`inset 0 1px 0 rgb(255 255 255 / 4%)`), `--glow-wax-soft`, `--glow-wax-pulse` and `--halo-paper`, used through `@utility` classes in `theme.css`. Nothing suggests elevation.
-- Paper has a hairline border. Film has a `--border-strong` edge and grain.
+- Paper has a hairline border and carries `halo-paper` (a glow on the dark room, none on the light theme). Film has a `--border-strong` edge and grain.
+- Named gradient tokens, used through `@utility` classes in `theme.css`: `--glow-hero`, `--grid-calibration` (`bg-hero`, the landing hero only) and `--fill-hero-text` (`text-hero-fill`, the landing headline only, `CanvasText` in forced colours). The light-theme `--glow-hero` is focus blue at 8%, because wax is nearly invisible on the lightbox. `grain` and `scan-line` are the other two gradient tokens.
 
 ## Motion
 
@@ -187,7 +190,9 @@ Content is left-aligned on one sheet. Answers sit in the margin rail like notes 
 
 `Sheet`, `Film`, `QuestionCard`, `AnswerControl`, `AnswersRail`, `ClauseQuote`, `VerdictHeadline`, `Ledger`, `ProportionBar`, `ProofTree`, `SourceBadge`, `CheckRow`, `Button`, `Disclosure`, `AppShell`, `CommandMenu`, `ThemeToggle`, `Toast`, `Kbd`, `Pill`, `FeatureCard`, `Illustration`.
 
-`CommandMenu` is built on the Radix Dialog already installed, with filtering done by hand over at most about 60 items. `AppShell` carries the command trigger and the theme toggle. `Toast` reuses the single polite live region. `Illustration` and every icon use the kit's own inline SVG set, redrawn at 16 px with a 1.5 px stroke. Add no icon package.
+`Button` has four variants: `primary`, `secondary`, `quiet` and `wax`. `wax` is a wax fill with `--on-wax` text, the one call to action on a screen, never wax text.
+
+`CommandMenu` is built on the Radix Dialog already installed, with filtering done by hand over at most about 60 items. `AppShell` carries the command trigger and the theme toggle, in the header at every width. `Toast` reuses the single polite live region. `Illustration` and every icon use the kit's own inline SVG set, redrawn at 16 px with a 1.5 px stroke. Add no icon package.
 
 Render every component in every state, in both themes, in the `/kit` gallery at `apps/site`. The gallery is the first deliverable of the design phase and the baseline for screenshot tests.
 

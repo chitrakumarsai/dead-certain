@@ -1125,7 +1125,7 @@ For every `VerdictState`, check state and `FactSource`, the rendered output cont
 For every pair in the contrast table, the computed ratio meets its floor. `hairline` is used by no text and no control border. The table now holds every pair in section 1 of `docs/redesign-proposal.md`, for both themes:
 
 - Dark theme: `text-primary`, `text-secondary`, `text-tertiary`, `wax`, `paid-dark`, `reduced-dark` and `denied-dark` on `bg-base`, `bg-surface-1`, `bg-surface-2` and `bg-surface-3` (floor 4.5). The lowest is `denied-dark` on surface-3 at 4.72.
-- The hero gradient end (bone at 60%) on `bg-base`, 5.95 (floor 3, large text).
+- The hero headline gradient end, `text-tertiary` (7.37 on `bg-base` dark, 4.89 on the lightbox, floor 4.5). The earlier pair, bone at 60% (5.95, floor 3), is replaced (accepted 2026-11-23).
 - `on-wax` on `wax` (11.14) and on `wax-hover` (12.51); `bone` on `wax-muted` (10.91); `wax` on `wax-muted` (8.09).
 - `control-border-dark` on `bg-surface-2`, 6.26 (floor 3).
 - Light theme: `ink`, `ink-soft` and `text-tertiary` (`#5B6B74`) on `lightbox`, `paper`, `#F4F8F9` and `#E2EAEC` (floor 4.5; the lowest is `text-tertiary` on surface-3 at 4.53), and `paid`, `reduced` and `denied` on every light surface (at least 5.12).
@@ -1137,9 +1137,9 @@ For every pair in the contrast table, the computed ratio meets its floor. `hairl
 
 ### Property 12: No refused patterns
 
-The built CSS contains a `box-shadow` other than `none` only where the value is a shadow token, and a `linear-gradient`, `radial-gradient` or `conic-gradient` only for the five allowed uses (hero radial glow, hero headline fill, graph-paper grid, film grain, scan line) and only through a token. `prefers-color-scheme: dark` appears in `tokens.css` only. It contains no `text-transform: uppercase` and no `https://` URL. No rendered button label contains an arrow glyph. `localStorage` appears in exactly one file, `packages/ui/src/theme/storage.ts`, and the landing page's `lane.test.ts` mirrors that exception. Tailwind's `uppercase`, `ring` and `shadow` words are absent from the sources. The old refusals of global dark mode, of every shadow and of every gradient are dropped.
+The built CSS contains a `box-shadow` other than `none` only where the value is a shadow token, and a `linear-gradient`, `radial-gradient` or `conic-gradient` only for the five allowed uses (hero radial glow, hero headline fill, graph-paper grid, film grain, scan line) and only through a token. no `prefers-color-scheme: dark` exists, and the `light` fallback query is in `tokens.css` only. It contains no `text-transform: uppercase` and no `https://` URL. No rendered button label contains an arrow glyph. `localStorage` appears in exactly one file, `packages/ui/src/theme/storage.ts`, and the landing page's `lane.test.ts` mirrors that exception. Tailwind's `uppercase`, `ring` and `shadow` words are absent from the sources. The old refusals of global dark mode, of every shadow and of every gradient are dropped.
 
-**Validates: Requirements 2.7, 2.9, 2.10, 2.11, 32.5, 32.6, 33.1, 33.2, 33.3, 33.4, 33.5, 33.7**
+**Validates: Requirements 2.7, 2.9, 2.10, 2.11, 32.5, 32.6, 33.1, 33.2, 33.3, 33.4, 33.5, 33.7, 38.5, 38.8, 38.9**
 
 ### Property 13: No runtime engine import
 
@@ -1318,9 +1318,14 @@ Fixtures grow alongside each slice. A fixture is added in the task that first ne
 Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-proposal.md`, approved by the human on 2026-11-23: JSON-LD Organization, no new dependencies).
 
 - **Source of truth.** The token tables, the contrast ratios, the motion table and the refusals are in `.kiro/steering/design-system.md`. This section records only how the kit builds them. Requirements 32 to 37 hold the acceptance criteria.
-- **Theme mechanism.** `tokens.css` defines the dark values on `:root` and the light values under a theme attribute on `<html>` (`data-theme="light"`). `prefers-color-scheme` appears in `tokens.css` only, to choose the first theme when nothing is stored. `theme/storage.ts` is the only file that reads or writes `dc-theme`, inside `try/catch`, and applies the attribute. Claude Code may choose the exact attribute name and records it in the pull request. Avoid a flash of the wrong theme and a layout shift.
+- **Theme mechanism.** `tokens.css` defines the dark values on `:root` and the light values under a theme attribute on `<html>` (`data-theme="light"`). `prefers-color-scheme: light` appears in `tokens.css` only, as the system fallback when nothing is stored; no `dark` query exists. `themeBoot()` in `packages/ui/vite.ts` inlines a boot script from `theme/storage.ts` at the top of every page's `<head>`, so a stored choice applies before first paint. `theme/storage.ts` is the only file that reads or writes `dc-theme`, inside `try/catch`, and applies the attribute. Claude Code may choose the exact attribute name and records it in the pull request. Avoid a flash of the wrong theme and a layout shift.
 - **Tailwind.** `theme.css` maps the new tokens. Glows and the inset highlight are `@utility` classes (`glow-wax-soft`, `glow-wax-pulse`, `halo-paper`, `highlight-inset`). The words `uppercase`, `ring` and `shadow` stay out of the sources.
 - **Film.** `Film` adds grain (an inline SVG `feTurbulence` data URI, so no image request), a `--border-strong` edge and bone strokes. `Sheet`, cards and `FeatureCard` do not.
 - **New components.** `CommandMenu` (Radix Dialog, items as a prop, hand filtering, combobox and listbox roles), `ThemeToggle`, `Toast` (the existing live region), `Kbd`, `Pill`, `FeatureCard` and `Illustration`. `AppShell` gains the command trigger and the toggle.
 - **Gallery.** `/kit` gets a theme switch. Every specimen renders in both themes. The Playwright projects run both themes. The earlier rule of no committed pixel baselines stays.
 - **Risks the design accepts.** Backdrop blur on the header, the blur-in on the LCP headline, the tilt and grain all cost paint time. Mitigations: the h1 starts at opacity 0.01, the tilt is CSS-only and static where `animation-timeline` is unsupported, and grain is drawn on film only.
+
+### Redesign pass 1, accepted (Kiro, 2026-11-23)
+
+- `Button` takes a fourth variant, `wax` (fill `--wax`, text `--on-wax`, `glow-wax-soft`, hover `--wax-hover`). `Sheet` adds `halo-paper`. `AppShell` wraps its header, main and footer in a `max-w-page` container (`--container-page`) and puts `ThemeToggle` in the header, in the wide branch and, after the review, in the phone branch beside "Menu". `XrayStage`'s row uses `justify-center`.
+- `tokens.css` holds `--page-max`, `--glow-hero`, `--grid-calibration` and `--fill-hero-text`. `theme.css` holds `bg-hero` (`background: var(--glow-hero), var(--grid-calibration)`) and `text-hero-fill` (clip to text, `CanvasText` in forced colours). Axe cannot measure text whose colour is `transparent` over a clip, so the contrast test checks the gradient's two stops as token pairs.
