@@ -36,12 +36,32 @@ const ROOT = {
 	"--denied": "#a8261c",
 	"--focus-paper": "#1f6feb",
 	"--focus-film": "var(--wax)",
-	"--surface": "var(--paper)",
-	"--text": "var(--ink)",
-	"--text-soft": "var(--ink-soft)",
-	"--control-border": "var(--ink-soft)",
-	"--divider": "var(--hairline)",
-	"--focus": "var(--focus-paper)",
+	"--bg-base": "#07131a",
+	"--bg-surface-1": "var(--film)",
+	"--bg-surface-2": "#10242f",
+	"--bg-surface-3": "#16303c",
+	"--border-subtle": "rgb(220 232 235 / 6%)",
+	"--border-default": "rgb(220 232 235 / 10%)",
+	"--border-strong": "rgb(220 232 235 / 18%)",
+	"--control-border-dark": "var(--bone-soft)",
+	"--text-primary": "var(--bone)",
+	"--text-secondary": "#b4c6cc",
+	"--text-tertiary": "var(--bone-soft)",
+	"--wax-hover": "#f6cf55",
+	"--wax-muted": "rgb(242 193 46 / 12%)",
+	"--wax-glow": "rgb(242 193 46 / 25%)",
+	"--on-wax": "#07131a",
+	"--paid-dark": "#4cc38a",
+	"--reduced-dark": "#e3a03c",
+	"--denied-dark": "#f0705f",
+	"--focus-dark": "var(--wax)",
+	"--highlight-inset": "inset 0 1px 0 rgb(255 255 255 / 4%)",
+	"--surface": "var(--bg-base)",
+	"--text": "var(--text-primary)",
+	"--text-soft": "var(--text-secondary)",
+	"--control-border": "var(--control-border-dark)",
+	"--divider": "var(--border-default)",
+	"--focus": "var(--focus-dark)",
 	"--space-1": "4px",
 	"--space-2": "8px",
 	"--space-3": "12px",
@@ -52,8 +72,10 @@ const ROOT = {
 	"--space-16": "64px",
 	"--space-24": "96px",
 	"--radius-paper": "4px",
-	"--radius-control": "6px",
-	"--radius-film": "8px",
+	"--radius-control": "8px",
+	"--radius-film": "12px",
+	"--radius-card": "12px",
+	"--radius-pill": "999px",
 	"--column-max": "680px",
 	"--rail-width": "240px",
 	"--touch-min": "44px",
@@ -72,7 +94,7 @@ const ROOT = {
 	"--leading-verdict": "44px",
 	"--text-summary": "36px",
 	"--leading-summary": "44px",
-	"--text-sys-body": "17px",
+	"--text-sys-body": "16px",
 	"--leading-sys-body": "26px",
 	"--text-question": "21px",
 	"--leading-question": "28px",
@@ -86,7 +108,7 @@ test("root defines every token with the steering value", () => {
 	const root = block(":root");
 
 	expect(Object.fromEntries(root)).toMatchObject(ROOT);
-	expect(css).toMatch(/:root \{\s*color-scheme: light;/);
+	expect(css).toMatch(/:root \{\s*color-scheme: dark;/);
 	for (const family of ["--font-doc", "--font-sys", "--font-mono"]) {
 		expect(root.has(family), family).toBe(true);
 	}
@@ -135,4 +157,43 @@ test("focus is a 2 px outline in the surface focus colour with a 2 px offset", (
 	expect(css).toMatch(
 		/:focus-visible \{\s*outline: 2px solid var\(--focus\);\s*outline-offset: 2px;\s*\}/,
 	);
+});
+
+test("the light theme and the system-light fallback set the same values", () => {
+	const light = block(':root[data-theme="light"]');
+	const media = css.slice(css.indexOf("@media (prefers-color-scheme: light)"));
+	const fallback = block(':root:not([data-theme="dark"])');
+
+	expect(media).toContain(':root:not([data-theme="dark"]) {');
+	expect(Object.fromEntries(fallback)).toEqual(Object.fromEntries(light));
+	expect(light.get("--bg-base")).toBe("var(--lightbox)");
+	expect(light.get("--focus")).toBe("var(--focus-paper)");
+	expect(light.has("--film")).toBe(false);
+});
+
+test("every control boundary uses a control token, never a decorative border", () => {
+	const contexts = [
+		block(":root"),
+		block(':root[data-theme="light"]'),
+		block('[data-surface="paper"]'),
+		block('[data-surface="film"]'),
+	];
+
+	for (const context of contexts) {
+		expect(context.get("--control-border")).not.toMatch(
+			/border-(subtle|default|strong)|hairline/,
+		);
+		expect(context.get("--text")).not.toMatch(/wax/);
+		expect(context.get("--text-soft")).not.toMatch(/wax/);
+	}
+});
+
+test("reduced motion turns enter, page and menu motion into the 120 ms fade", () => {
+	const reduced = css.slice(
+		css.indexOf("@media (prefers-reduced-motion: reduce)"),
+	);
+
+	for (const token of ["--dur-enter", "--dur-page", "--dur-menu"]) {
+		expect(reduced).toContain(`${token}: var(--dur-reduced);`);
+	}
 });

@@ -3,6 +3,7 @@ import {
 	CheckRow,
 	type CheckRowProps,
 	ProofTree,
+	Sheet,
 	StaleLinkNotice,
 	VerdictHeadline,
 	XrayStage,
@@ -134,46 +135,48 @@ export function PreflightScreen() {
 		verdict.needed.find((question) => question.fact === ASKED_FOR[item.fact]);
 	const [answer, setAnswer] = useState<CheckRowProps["answerValue"]>();
 	return (
-		<div className="max-w-column space-y-8">
-			<VerdictHeadline
-				state="not_ready"
-				size="summary"
-				statement={`${failed} checks failed and ${unknown} needs your answer in owner/name`}
-			/>
-			{groupByClause(verdict.lineItems, GROUP_TITLES).map((group) => (
-				<section
-					key={group.key}
-					data-group={group.key}
-					aria-labelledby={`group-${group.key}`}
-				>
-					<h2
-						id={`group-${group.key}`}
-						className="border-b border-divider pb-2 text-sys-body font-semibold"
+		<Sheet as="article">
+			<div className="space-y-8">
+				<VerdictHeadline
+					state="not_ready"
+					size="summary"
+					statement={`${failed} checks failed and ${unknown} needs your answer in owner/name`}
+				/>
+				{groupByClause(verdict.lineItems, GROUP_TITLES).map((group) => (
+					<section
+						key={group.key}
+						data-group={group.key}
+						aria-labelledby={`group-${group.key}`}
 					>
-						{group.title}
-					</h2>
-					<ul>
-						{group.items.map((item) => (
-							<CheckRow
-								key={item.fact}
-								item={item}
-								detail={EVIDENCE[item.fact]}
-								question={questionFor(item)}
-								def={factDefFixtures[questionFor(item)?.fact ?? ""]}
-								answerValue={answer}
-								onAnswer={(_, value) => setAnswer(value)}
-								onOpen={() => undefined}
-								format={claimFormat}
-							/>
-						))}
-					</ul>
-				</section>
-			))}
-			<div className="flex flex-wrap items-center justify-between gap-4">
-				<Button>Copy report as Markdown</Button>
-				<p className="text-sys-small text-text-soft">Checked 14:02</p>
+						<h2
+							id={`group-${group.key}`}
+							className="border-b border-divider pb-2 text-sys-body font-semibold"
+						>
+							{group.title}
+						</h2>
+						<ul>
+							{group.items.map((item) => (
+								<CheckRow
+									key={item.fact}
+									item={item}
+									detail={EVIDENCE[item.fact]}
+									question={questionFor(item)}
+									def={factDefFixtures[questionFor(item)?.fact ?? ""]}
+									answerValue={answer}
+									onAnswer={(_, value) => setAnswer(value)}
+									onOpen={() => undefined}
+									format={claimFormat}
+								/>
+							))}
+						</ul>
+					</section>
+				))}
+				<div className="flex flex-wrap items-center justify-between gap-4">
+					<Button>Copy report as Markdown</Button>
+					<p className="text-sys-small text-text-soft">Checked 14:02</p>
+				</div>
 			</div>
-		</div>
+		</Sheet>
 	);
 }
 

@@ -1,5 +1,6 @@
 import { Button, useAnnounce } from "@dead-certain/ui";
 import { OnFilm } from "./OnFilm";
+import { OnPaper } from "./OnPaper";
 import { Specimen } from "./Specimen";
 
 const VARIANTS = [
@@ -60,7 +61,11 @@ function ButtonSpecimen({
 					: note
 			}
 		>
-			{surface === "film" ? <OnFilm>{button}</OnFilm> : button}
+			{surface === "film" ? (
+				<OnFilm>{button}</OnFilm>
+			) : (
+				<OnPaper>{button}</OnPaper>
+			)}
 		</Specimen>
 	);
 }

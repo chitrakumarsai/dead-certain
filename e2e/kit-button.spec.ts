@@ -37,7 +37,7 @@ test("the gallery has all twelve button specimens", async ({ page }) => {
 	);
 });
 
-test("every gallery button is at least 44 by 44 px with a 6 px radius", async ({
+test("every gallery button is at least 44 by 44 px with an 8 px radius", async ({
 	page,
 }) => {
 	await page.goto("./kit/#button-primary-default-paper");
@@ -48,7 +48,7 @@ test("every gallery button is at least 44 by 44 px with a 6 px radius", async ({
 		const box = await each.boundingBox();
 		expect(box?.width).toBeGreaterThanOrEqual(44);
 		expect(box?.height).toBeGreaterThanOrEqual(44);
-		await expect(each).toHaveCSS("border-radius", "6px");
+		await expect(each).toHaveCSS("border-radius", "8px");
 	}
 });
 

@@ -1,4 +1,9 @@
-import { Button, contrast, useReducedMotion } from "@dead-certain/ui";
+import {
+	Button,
+	contrast,
+	ThemeToggle,
+	useReducedMotion,
+} from "@dead-certain/ui";
 import { useState } from "react";
 import { Specimen } from "./Specimen";
 
@@ -25,10 +30,35 @@ const PAIRS: { fg: string; bg: string; floor: Floor; use: string }[] = [
 	{ fg: "wax", bg: "film", floor: 3, use: "Focus ring on film" },
 	{ fg: "focus-paper", bg: "paper", floor: 3, use: "Focus ring on paper" },
 	{ fg: "hairline", bg: "paper", floor: null, use: "Decorative only" },
+	// The room follows the theme, so these ratios change with the toggle.
+	{ fg: "text-primary", bg: "bg-base", floor: 4.5, use: "Text in the room" },
+	{
+		fg: "text-secondary",
+		bg: "bg-surface-2",
+		floor: 4.5,
+		use: "Secondary text on a raised surface",
+	},
+	{
+		fg: "text-tertiary",
+		bg: "bg-surface-3",
+		floor: 4.5,
+		use: "Hints on a menu",
+	},
+	{ fg: "on-wax", bg: "wax", floor: 4.5, use: "Primary button label" },
+	{
+		fg: "control-border",
+		bg: "bg-surface-2",
+		floor: 3,
+		use: "Control boundary",
+	},
 ];
 
 function Swatch({ fg, bg, floor, use }: (typeof PAIRS)[number]) {
-	const ratio = contrast(token(fg), token(bg)).toFixed(2);
+	const [fgValue, bgValue] = [token(fg), token(bg)];
+	// Forced colours hands the context tokens to system colours, which have no ratio.
+	const ratio = [fgValue, bgValue].every((v) => /^#[0-9a-f]{6}$/i.test(v))
+		? `${contrast(fgValue, bgValue).toFixed(2)}:1`
+		: "System colours";
 	return (
 		<li className="border border-divider rounded-paper">
 			<div
@@ -41,11 +71,14 @@ function Swatch({ fg, bg, floor, use }: (typeof PAIRS)[number]) {
 					<span className="block h-12 w-12 rounded-control border-2 border-current" />
 				)}
 			</div>
-			<dl className="border-t border-divider bg-paper p-3 text-sys-small">
+			<dl
+				data-surface="paper"
+				className="border-t border-divider bg-paper p-3 text-sys-small text-text"
+			>
 				<dt className="font-mono text-mono">
 					{fg} on {bg}
 				</dt>
-				<dd className="figures">{ratio}:1</dd>
+				<dd className="figures">{ratio}</dd>
 				<dd className="text-text-soft">
 					{use}
 					{floor ? `, floor ${floor}:1` : ""}
@@ -109,16 +142,22 @@ const RADII = [
 	{ name: "paper", px: 4, className: "border border-divider bg-paper" },
 	{
 		name: "control",
-		px: 6,
+		px: 8,
 		className: "border border-control-border bg-paper",
 	},
-	{ name: "film", px: 8, className: "bg-film" },
+	{ name: "film", px: 12, className: "bg-film" },
+	{ name: "card", px: 12, className: "border border-divider bg-surface-1" },
+	{ name: "pill", px: 999, className: "border border-control-border" },
 ];
 
 const DURATIONS = [
 	{ name: "press", ms: 120, use: "Button press" },
 	{ name: "panel", ms: 200, use: "Panel open and close" },
 	{ name: "xray", ms: 500, use: "X-ray develop" },
+	{ name: "hover", ms: 110, use: "Hover" },
+	{ name: "menu", ms: 150, use: "Menu and command menu" },
+	{ name: "enter", ms: 200, use: "An element appearing" },
+	{ name: "page", ms: 250, use: "Page change" },
 ];
 
 function Replay({ name, ms, use }: (typeof DURATIONS)[number]) {
@@ -130,7 +169,7 @@ function Replay({ name, ms, use }: (typeof DURATIONS)[number]) {
 			</Button>
 			<div className="h-2 grow bg-divider" aria-hidden="true">
 				<div
-					className="h-full origin-left bg-ink transition-transform ease-kit"
+					className="h-full origin-left bg-text transition-transform ease-kit"
 					style={{
 						transitionDuration: `var(--dur-${name})`,
 						transform: `scaleX(${isOn ? 1 : 0})`,
@@ -145,6 +184,7 @@ function Replay({ name, ms, use }: (typeof DURATIONS)[number]) {
 }
 
 export const TOKEN_SPECIMENS = [
+	{ id: "tokens-theme", title: "Theme" },
 	{ id: "tokens-colour", title: "Colour" },
 	{ id: "tokens-type", title: "Type" },
 	{ id: "tokens-spacing", title: "Spacing" },
@@ -159,6 +199,14 @@ export function TokensSection() {
 			<h2 id="tokens-heading" className="font-doc text-verdict font-semibold">
 				Tokens
 			</h2>
+
+			<Specimen
+				id="tokens-theme"
+				title="Theme"
+				note="Dark is the default. The choice is stored on this device; with none stored, the system setting decides."
+			>
+				<ThemeToggle />
+			</Specimen>
 
 			<Specimen
 				id="tokens-colour"
@@ -203,7 +251,7 @@ export function TokensSection() {
 								space-{step}
 							</span>
 							<span
-								className="block h-4 bg-ink"
+								className="block h-4 bg-text"
 								style={{ width: `var(--space-${step})` }}
 							/>
 						</li>

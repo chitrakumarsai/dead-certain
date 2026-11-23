@@ -35,7 +35,7 @@ test("the hero shows G-01's statement and its four deductions with their clauses
 
 test("See why opens the proof; Escape closes it and returns focus", async ({
 	page,
-}, info) => {
+}) => {
 	await openLanding(page);
 	await seeWhy(page).click();
 	await expect(
@@ -44,9 +44,7 @@ test("See why opens the proof; Escape closes it and returns focus", async ({
 	await expect(proofTree(page)).toBeVisible();
 	const side = await page.locator("[data-film=side]").count();
 	expect(side, "side by side only from 1280 px").toBe(
-		info.project.name === "1280" || info.project.name === "reduced-motion"
-			? 1
-			: 0,
+		(page.viewportSize()?.width ?? 0) >= 1280 ? 1 : 0,
 	);
 	await expect(page.getByRole("button", { name: /change/i })).toHaveCount(0);
 	await escapeFromTree(page);

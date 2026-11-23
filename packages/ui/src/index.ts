@@ -51,6 +51,7 @@ export {
 	StaleLinkNotice,
 	type StaleLinkNoticeProps,
 } from "./components/StaleLinkNotice";
+export { ThemeToggle } from "./components/ThemeToggle";
 export {
 	VerdictHeadline,
 	type VerdictHeadlineProps,
@@ -73,8 +74,17 @@ export {
 	InfoCircle,
 	Menu,
 	MinusCircle,
+	Moon,
 	QuestionCircle,
+	Sun,
 } from "./icons";
+export {
+	applyTheme,
+	currentTheme,
+	readStoredTheme,
+	THEME_KEY,
+	type Theme,
+} from "./theme/storage";
 export { contrast } from "./tokens/contrast";
 export type {
 	AnswerEntry,
