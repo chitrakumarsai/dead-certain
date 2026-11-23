@@ -647,10 +647,10 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 1. THE AppShell SHALL render a command trigger and the ThemeToggle in the header at every width, including below 768 px, reachable by keyboard and at least 44 by 44 px.
 2. THE ThemeToggle SHALL be a real button or switch with an accessible name that states the theme it will set, and SHALL show its state with an icon and a word. Below 768 px the word MAY be visually hidden (`sr-only`), provided the icon stays visible and the accessible name still starts with the word and says the theme it will set (WCAG 2.5.3). The Sun and Moon are distinct shapes.
 3. THE CommandMenu SHALL open from the trigger and from Ctrl+K and Cmd+K, SHALL be built on the Radix Dialog, and SHALL filter by hand over at most about 60 items.
-4. THE CommandMenu SHALL follow the combobox and listbox pattern: arrow keys move, Enter runs the item, Escape closes it, and focus returns to the control that opened it.
-5. THE CommandMenu SHALL announce the result count through the polite Live_Region.
+4. THE CommandMenu SHALL follow the combobox and listbox pattern: arrow keys move, Enter runs the item, Escape closes it, and focus returns to the control that opened it. Arrows wrap, Home and End jump to the first and last item, and Enter follows an item's `href` or runs its `onSelect`. Focus returns to the command trigger, also when Ctrl+K or Cmd+K opened the menu.
+5. THE CommandMenu SHALL announce the result count through the polite Live_Region as the query changes ("N results", "1 result" or "No results"), and not when the menu opens.
 6. THE CommandMenu SHALL take its items as a prop, so that each app and the landing page supply their own. THE kit SHALL name no app item.
-7. THE CommandMenu SHALL open and close within `--dur-menu`, and under reduced motion SHALL fade in 120 ms.
+7. THE CommandMenu SHALL open with a fade of `--dur-menu`, and under reduced motion SHALL fade in 120 ms. It has no close animation, because Radix unmounts the dialog on close (accepted at the review of PR #29).
 
 ### Requirement 37: New components and the gallery in both themes
 
@@ -681,3 +681,6 @@ Review of PR #27 (Kiro, 2026-11-23), with Review of PR #26 (Kiro, 2026-11-23). R
 8. THE apps' refusal end-to-end specs SHALL allow a `box-shadow` only on an element with `halo-paper`, `glow-wax-soft`, `glow-wax-pulse` or `highlight-inset`, and a gradient only on `bg-hero` or `text-hero-fill`. THE `tokens.test.ts` comparison of the light block with its system fallback SHALL collapse whitespace.
 9. THE Kit_Test_Suite SHALL scan the built CSS, not the sources, for the Tailwind `uppercase`, `ring` and `shadow` utilities (a deviation from Requirement 33.7, accepted: an unused class does not compile, and a used one cannot ship).
 10. THE AppShell's phone header SHALL hold the brand (the wordmark above the app name), the ThemeToggle and "Menu", and SHALL not scroll sideways at 320 px (accepted at the re-review of PR #27, `a2dce41`).
+11. THE AppShell SHALL take an optional `commands` prop for the CommandMenu and default it to the navigation links. THE CommandMenu SHALL hold at most `MAX_COMMANDS` (60) items and SHALL filter by hand over label, group and keywords.
+12. Below 768 px the command trigger SHALL sit in the Menu panel, not in the header row, so the header fits at 320 px. THE Ctrl+K and Cmd+K shortcut SHALL work there only while the panel is open, because Radix unmounts the closed panel (a limitation accepted at the review of PR #29). At 768 px and wider the trigger sits after the navigation and before the ThemeToggle.
+13. THE landing page's own commands (its sections, the rulebook and the theme) belong to landing task 9.1, not to the kit.
