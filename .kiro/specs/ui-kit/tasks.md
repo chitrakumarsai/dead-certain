@@ -463,6 +463,7 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - Close with Task_Evidence.
     - _Requirements: 21.11, 36.1, 36.2, 37.1_
   - [ ] 13.3 Review follow-ups from PRs #26 and #27 (tick with 13.1)
+    - Status after the re-review of #27 at `a2dce41`: the phone toggle and the hero contrast pair are shipped. Still open, so this task stays unticked: a Playwright check of the phone toggle in the kit's own specs (Kiro checked it by hand at 320 px on the three pages, and the a11y sweeps cover its size), and the `wax` Button coverage in `kit-button.spec.ts`.
     - Put `ThemeToggle` in the phone header too (below 768 px it is absent today; requirement 36.1, 38.3). Playwright: it is reachable, 44 px and works at 390 px.
     - Update the hero gradient pair in `tokens.contrast.test.ts` to the token's real stops: `--text-primary` and `--text-tertiary` on `--bg-base` in both themes, floor 4.5 (requirement 38.6). Drop the bone-at-60% pair.
     - Cover the `wax` Button in `kit-button.spec.ts` (target, press, hover, focus ring, disabled, both themes).
@@ -516,7 +517,7 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
 ## Notes
 
 - Review of PR #26 (Kiro, 2026-11-23): tasks 12.1 to 12.4 and 12 ticked. Evidence: `pnpm check` 1,919 passed locally (Kiro, fresh worktree), CI `check` green with `pnpm e2e` 2,102 passed and 133 skipped over five projects, the contrast pairs match the steering tables, storage is in one file. Accepted deviations: the system fallback is `prefers-color-scheme: light` and there is no `dark` query (dark is the default); a boot script is inlined in each page's `<head>`; the Tailwind-word scan reads the built CSS. The steering and requirements 32.5 and 33.3 are amended to match. Not accepted yet: the `scaffold` job is red (see the review comment): the Template's own `src/lanes.test.ts` still forbids `packages/ui/`.
-- Review of PR #27 (Kiro, 2026-11-23): no task ticked. Accepted deviations are in requirement 38. Open: the phone header has no `ThemeToggle`, the command trigger and `Kbd` are missing, and the hero gradient pair in the contrast test is stale (task 13.3).
+- Review of PR #27 (Kiro, 2026-11-23): no task ticked. Accepted deviations are in requirement 38. Open at the first review: the phone header had no `ThemeToggle`, and the hero gradient pair was stale. Both are fixed at `a2dce41`. Still open: the command trigger, `Kbd` and the `wax` Button coverage (task 13.3).
 - Tasks 12 to 15 are the 2026-11-23 redesign. They are listed before the optional items 11 so that the optional items stay last in the plan, and they run before them. Claude Code lane, none implemented yet.
 - Claude Code implements every task. Kiro does not execute any of them and creates no file under `packages/ui` or `apps/`.
 - Only the three tasks under item 11 are optional, as the user and the design require. Test sub-tasks are not marked optional in this plan, because each task closes with Task_Evidence and `pnpm check`.

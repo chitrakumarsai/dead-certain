@@ -645,7 +645,7 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 #### Acceptance Criteria
 
 1. THE AppShell SHALL render a command trigger and the ThemeToggle in the header at every width, including below 768 px, reachable by keyboard and at least 44 by 44 px.
-2. THE ThemeToggle SHALL be a real button or switch with an accessible name that states the theme it will set, and SHALL show its state with an icon and a word.
+2. THE ThemeToggle SHALL be a real button or switch with an accessible name that states the theme it will set, and SHALL show its state with an icon and a word. Below 768 px the word MAY be visually hidden (`sr-only`), provided the icon stays visible and the accessible name still starts with the word and says the theme it will set (WCAG 2.5.3). The Sun and Moon are distinct shapes.
 3. THE CommandMenu SHALL open from the trigger and from Ctrl+K and Cmd+K, SHALL be built on the Radix Dialog, and SHALL filter by hand over at most about 60 items.
 4. THE CommandMenu SHALL follow the combobox and listbox pattern: arrow keys move, Enter runs the item, Escape closes it, and focus returns to the control that opened it.
 5. THE CommandMenu SHALL announce the result count through the polite Live_Region.
@@ -680,3 +680,4 @@ Review of PR #27 (Kiro, 2026-11-23), with Review of PR #26 (Kiro, 2026-11-23). R
 7. THE light-theme `--glow-hero` SHALL be focus blue at 8%.
 8. THE apps' refusal end-to-end specs SHALL allow a `box-shadow` only on an element with `halo-paper`, `glow-wax-soft`, `glow-wax-pulse` or `highlight-inset`, and a gradient only on `bg-hero` or `text-hero-fill`. THE `tokens.test.ts` comparison of the light block with its system fallback SHALL collapse whitespace.
 9. THE Kit_Test_Suite SHALL scan the built CSS, not the sources, for the Tailwind `uppercase`, `ring` and `shadow` utilities (a deviation from Requirement 33.7, accepted: an unused class does not compile, and a used one cannot ship).
+10. THE AppShell's phone header SHALL hold the brand (the wordmark above the app name), the ThemeToggle and "Menu", and SHALL not scroll sideways at 320 px (accepted at the re-review of PR #27, `a2dce41`).
