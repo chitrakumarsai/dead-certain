@@ -112,3 +112,36 @@ test("switching the theme moves nothing on the page", async ({ page }) => {
 		await page.evaluate(() => (window as unknown as { shift: number }).shift),
 	).toBe(0);
 });
+
+// ui-kit 13.3, requirements 36.1 and 38.3: the phone header carries the toggle too.
+for (const width of [320, 390]) {
+	test(`at ${width} px the header toggle is reachable, 44 px and switches the theme`, async ({
+		page,
+	}) => {
+		await page.setViewportSize({ width, height: 800 });
+		await page.goto("./");
+		const toggle = page
+			.getByRole("banner")
+			.getByRole("button", { name: /^Dark theme\. Switch to light theme$/ });
+
+		await expect(toggle).toBeVisible();
+		const box = await toggle.boundingBox();
+		expect(box?.width).toBeGreaterThanOrEqual(44);
+		expect(box?.height).toBeGreaterThanOrEqual(44);
+		expect(
+			await page.evaluate(
+				() => document.documentElement.scrollWidth - innerWidth,
+			),
+		).toBe(0);
+
+		await toggle.focus();
+		await page.keyboard.press("Enter");
+		expect(await theme(page)).toBe("light");
+		await expect(
+			page
+				.getByRole("banner")
+				.getByRole("button", { name: /^Light theme\. Switch to dark theme$/ }),
+		).toBeFocused();
+		await expectNoAxeViolations(page, "header");
+	});
+}

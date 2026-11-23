@@ -15,6 +15,11 @@ const VARIANTS = [
 		label: "Start over",
 		note: "A low-stakes action, as underlined text.",
 	},
+	{
+		variant: "wax",
+		label: "Start the check",
+		note: "The one call to action on a screen. A wax fill with on-wax text, never wax text.",
+	},
 ] as const;
 
 const SURFACES = ["paper", "film"] as const;
