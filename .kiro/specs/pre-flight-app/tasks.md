@@ -221,6 +221,8 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 
 ## Notes
 
+- Review of PR #27 (Kiro, 2026-11-23): tasks 22 to 28 stay unticked. The start screen is restyled (accepted, requirement 17, with one copy change requested for the second tile's text). Open: the command menu and `Toast` (22), the steps and sample buttons (23), the Report, checks and inline question (24), the X-ray, export and errors (25), the journeys (26), the specs in both themes at all three widths (27).
+
 - Tasks marked `*` are property tests. Run them with the task before them, not later.
 - Questions that block a task: open questions 1 and 2 block task 7. The goal, the recording run, the snapshot repositories and the missing replay link are decided.
 - If Phase 2 is late, tasks 1 to 6 and 10 can proceed against the small test knowledge base. It was not needed: the real knowledge base existed at task 6. Keep it only for cases the real one does not cover.

@@ -313,6 +313,16 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 3. THE refusals test SHALL follow the narrowed list in the `ui-kit` spec (Requirement 33).
 4. THE budgets of Requirement 11 SHALL hold.
 
+### Requirement 17: Redesign pass 1, accepted deviations
+
+Review of PR #27 (Kiro, 2026-11-23). The redesign pull requests (requirements 14 to 17) are one Claude Code lane effort and may change the kit and the app together, so the ban on editing `packages/ui` in requirement 12.5 does not apply to them.
+
+#### Acceptance Criteria
+
+1. THE start screen SHALL be an intro centred on the room, with the heading in the display style, the two paragraphs of requirement 2.1 and the form inside a Sheet below the intro. THE "Run the checks" Button SHALL be the `wax` variant (replacing the primary variant of 2.7).
+2. THE start screen SHALL show three feature tiles: "Facts from GitHub", "Only what it cannot see" and "Rule and evidence". Each tile's text SHALL be true of the checklist: it SHALL name only facts the Collector reads (repository visibility, the licence file, archived state, the `.kiro` folder, specs, the README and the two app folders), and SHALL NOT name CI or branch protection, which the checklist does not check.
+3. THE refusals end-to-end spec SHALL allow a shadow only on an element with `halo-paper`, `glow-wax-soft`, `glow-wax-pulse` or `highlight-inset`, and a gradient only on `bg-hero` or `text-hero-fill`.
+
 ## Open questions and decisions
 
 Decided by the human:

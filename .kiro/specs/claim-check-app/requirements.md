@@ -251,9 +251,9 @@ Scope of this spec: the start screen, the consultation flow, the verdict, the X-
 2. IF a task needs a package outside that list, THEN THE Claude_Code_Lane SHALL stop and ask the human before adding it.
 3. THE Claude_Code_Lane SHALL write only in `apps/claim-check/src`, `apps/claim-check` configuration files, `e2e` and the root configuration it needs, and SHALL NOT write in `.kiro/**`, `apps/claim-check/kb`, `apps/claim-check/rulebook` or `apps/claim-check/golden`.
 4. IF the app needs a value that `packages/engine/src/types.ts` does not carry, THEN THE Claude_Code_Lane SHALL take it as an app-side prop or open a question for the Kiro_Lane, and SHALL NOT change the contract.
-5. IF the app needs a component or prop that the UI_Kit does not offer, THEN THE Claude_Code_Lane SHALL compose it in the app from existing components and SHALL NOT edit `packages/ui`.
+5. IF the app needs a component or prop that the UI_Kit does not offer, THEN THE Claude_Code_Lane SHALL compose it in the app from existing components and SHALL NOT edit `packages/ui`. The redesign pull requests (requirements 16 to 19) are the exception: one Claude Code lane effort may change the kit and the app together.
 6. THE CI workflow SHALL run `pnpm dc build apps/claim-check` before `pnpm check`, because unit tests and `tsc` import the compiled Knowledge_Base, which is not committed.
-7. THE Claude_Code_Lane MAY add a CI-only test that fails when a Claude Code commit on a pull request touches a path of the Kiro_Lane. It SHALL skip outside CI.
+7. THE Claude_Code_Lane MAY add a CI-only test that fails when a Claude Code commit on a pull request touches a path of the Kiro_Lane. It SHALL skip outside CI. Since 2026-11-23 that test lists only Kiro-lane paths (`packages/engine/src/types.ts`, the knowledge-base folders and `.kiro/`), not `packages/ui`.
 
 ### Requirement 15: A Playwright test for every golden scenario
 
@@ -307,6 +307,19 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 2. THE privacy test SHALL fail on any storage write except `dc-theme`, and on any request after load.
 3. THE refusals test SHALL follow the narrowed list in the `ui-kit` spec (Requirement 33).
 4. THE budgets of Requirement 13 SHALL hold: JavaScript under 200 kB gzipped, layout shift under 0.05, one step under 10 ms.
+
+### Requirement 19: Redesign pass 1, accepted deviations
+
+Review of PR #27 (Kiro, 2026-11-23).
+
+#### Acceptance Criteria
+
+1. THE start screen SHALL be an intro centred on the room with no Sheet, replacing the Sheet of requirement 2.1. Its heading SHALL use the display style of the type scale (replacing the 36/44 of 2.2).
+2. THE start screen's call to action "Start the check" SHALL be the Button's `wax` variant (replacing the primary variant of 2.4).
+3. THE start screen SHALL show "Uses a sample policy written for this demo." and "Your answers stay in your browser." as one small paragraph (replacing the two lines of 2.5). Both sentences SHALL stay verbatim.
+4. THE start screen SHALL show three feature tiles: "One question at a time" ("Only the questions that can change the amount are asked."), "Every deduction cited" ("Each line shows the policy clause and the rule behind it.") and "Stays in your browser" ("The engine runs on this page. No account and no server."). Each tile's text SHALL be true of the app.
+5. THE question card SHALL sit on a Sheet centred in the column.
+6. THE refusals end-to-end spec SHALL allow a shadow only on an element with `halo-paper`, `glow-wax-soft`, `glow-wax-pulse` or `highlight-inset`, and a gradient only on `bg-hero` or `text-hero-fill`.
 
 ## Open questions for the human and the Kiro lane
 

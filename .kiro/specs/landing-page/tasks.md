@@ -114,6 +114,8 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 
 ## Notes
 
+- Review of PR #27 (Kiro, 2026-11-23): tasks 9.1 to 9.5 and 9 stay unticked. Pass 1 of 9.1 (toggle through the shell) and 9.3 (steps, app cards, scaffold panel) is in, accepted in requirement 14. Open: the command menu, landing motion, SEO and OG, the footer and the 404 page, and `FeatureCard` (it does not exist yet, task 14.2).
+
 - Gate G5 review (Kiro, 2026-11-22): changes were requested, then re-reviewed at `4eefdcf`. Both landed: the apps', the site's and the Template's `build` scripts run `dc.mjs` directly (`pnpm -r build` passed twice from a clean `dist`, and CI is green), and the shell is given an empty `appName` (the header reads "Dead Certain" once at 390, 768 and 1280 px on the landing page and the 404 page). All eight tasks are ticked.
 - Follow-ups, not blocking: a `focusOnMount` option for `VerdictHeadline` and Escape on the side film's heading, both in the kit (`ui-kit` spec).
 

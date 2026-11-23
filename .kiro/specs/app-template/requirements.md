@@ -141,7 +141,7 @@ Scope: the command, the template, the starter knowledge, the generic app, the sh
 
 1. THE command SHALL write only under `apps/<App_Name>/`, `e2e/` and in the two Shared_Files, and SHALL refuse to run a Plan that names any other path.
 2. THE command SHALL NOT write under `.kiro`, `packages`, `docs`, `.claude`, `.github` other than `workflows/ci.yml`, or `templates`.
-3. THE Template SHALL include `src/lanes.test.ts`, the lane guard of the Reference_Apps, forbidding a Claude Code commit from touching `apps/<App_Name>/(kb|rulebook|golden)/`, `.kiro/`, `packages/ui/` and `packages/engine/src/types.ts`.
+3. THE Template SHALL include `src/lanes.test.ts`, the lane guard of the Reference_Apps, forbidding a Claude Code commit from touching `apps/<App_Name>/(kb|rulebook|golden)/`, `.kiro/` and `packages/engine/src/types.ts`. It no longer lists `packages/ui/`, which is the Claude Code lane (amended 2026-11-23 with claim-check requirement 14.7).
 4. THE command SHALL NOT edit `apps/site`. A link from the site to the new app is a manual step the README names.
 
 ### Requirement 9: The Scaffold_Job

@@ -432,35 +432,42 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
   - Ensure all tests pass, ask the user if questions arise.
   - Confirm every task above is ticked, the pull request lists the pinned versions from task 1.1, and `packages/engine/src/types.ts` is unchanged by the ui-kit lane.
 
-- [ ] 12. Tokens and theme toggle (redesign, Claude Code lane)
+- [x] 12. Tokens and theme toggle (redesign, Claude Code lane)
   - Read first: `.kiro/steering/design-system.md` and `docs/redesign-proposal.md` sections 1 to 3. Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-proposal.md`, approved by the human on 2026-11-23: JSON-LD Organization, no new dependencies). Do not implement anything outside this task. Tasks 12 to 14 run in order, and the landing page, Claim Check and Pre-Flight redesign tasks wait for them.
-  - [ ] 12.1 Add the dark and light tokens, radius, shadow and glow tokens and the new durations
+  - [x] 12.1 Add the dark and light tokens, radius, shadow and glow tokens and the new durations
     - In `packages/ui/tokens.css` define every token of the dark and light tables, the three rgba borders, `--control-border-dark`, the radii (4, 8, 12, 999), `--highlight-inset`, `--glow-wax-soft`, `--glow-wax-pulse`, `--halo-paper` and `--dur-hover`, `--dur-enter`, `--dur-page`, `--dur-menu`. Dark is the default. Map them in `theme.css` and add the glow `@utility` classes. Apply the type scale. Add no font file.
     - Reduced motion: `--dur-panel` stays 0 ms, and the rest follow the steering motion table.
     - Close with Task_Evidence in both themes.
     - _Requirements: 32.1, 32.2, 32.3, 32.4, 32.7, 32.8, 32.10, 35.1, 35.5_
-  - [ ] 12.2 Extend the contrast test (Property 11)
+  - [x] 12.2 Extend the contrast test (Property 11)
     - Extend `tokens.contrast.test.ts` with every pair in the steering contrast tables, for both themes, with the floors given there. Assert no control boundary uses a decorative border or `hairline`, wax is never text on paper or light, and the dark focus ring is wax.
     - **Property 11: Contrast floor** (extended)
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.4, 34.1, 34.2, 34.3, 34.4**
     - Close with Task_Evidence.
-  - [ ] 12.3 Add `theme/storage.ts` and `ThemeToggle`
+  - [x] 12.3 Add `theme/storage.ts` and `ThemeToggle`
     - `packages/ui/src/theme/storage.ts` reads and writes `dc-theme` inside `try/catch` and falls back to `prefers-color-scheme`. It is the only file with `localStorage`. `ThemeToggle` is a button or switch whose accessible name says the theme it will set and which shows its state with an icon and a word, 44 by 44 px.
     - Playwright: the choice persists across reload; with storage throwing the page still renders and follows `prefers-color-scheme`; no flash of the wrong theme and no layout shift.
     - Close with Task_Evidence in both themes.
     - _Requirements: 32.5, 32.6, 36.2_
-  - [ ] 12.4 Narrow the refusals test (Property 12)
+  - [x] 12.4 Narrow the refusals test (Property 12)
     - Edit `packages/ui/src/refusals.test.ts`: allow `box-shadow` and gradients only when the value comes from a token and the use is on the list; drop the dark-mode refusal and assert `prefers-color-scheme: dark` appears in `tokens.css` only; allow `localStorage` in `packages/ui/src/theme/storage.ts` alone; keep the uppercase, third-party URL and arrow scans; fail on the Tailwind words `uppercase`, `ring` and `shadow`.
     - **Property 12: No refused patterns** (narrowed)
     - **Validates: Requirements 2.7, 2.9, 2.10, 2.11, 32.5, 32.6, 33.1, 33.2, 33.3, 33.4, 33.5, 33.7**
     - Close with Task_Evidence.
 
 - [ ] 13. AppShell and command menu (redesign, Claude Code lane)
+  - Pass 1 of 13.1 landed in PR #27 (centred shell, `ThemeToggle` in the wide header). It is not ticked: `Kbd`, the command trigger and the phone toggle are missing (Review of PR #27 (Kiro, 2026-11-23)).
   - [ ] 13.1 Add `Kbd` and extend `AppShell`
     - `Kbd` (Mono 13/20). `AppShell` gains the command trigger (showing its `Kbd` hint) and the `ThemeToggle` in the header, both at least 44 px and in the keyboard order after the navigation. Keep the skip link first. Update `kit/shell.html`.
     - Playwright: order, names, 44 px, the shell page passes axe at every width in both themes.
     - Close with Task_Evidence.
     - _Requirements: 21.11, 36.1, 36.2, 37.1_
+  - [ ] 13.3 Review follow-ups from PRs #26 and #27 (tick with 13.1)
+    - Put `ThemeToggle` in the phone header too (below 768 px it is absent today; requirement 36.1, 38.3). Playwright: it is reachable, 44 px and works at 390 px.
+    - Update the hero gradient pair in `tokens.contrast.test.ts` to the token's real stops: `--text-primary` and `--text-tertiary` on `--bg-base` in both themes, floor 4.5 (requirement 38.6). Drop the bone-at-60% pair.
+    - Cover the `wax` Button in `kit-button.spec.ts` (target, press, hover, focus ring, disabled, both themes).
+    - **Property 11: Contrast floor** (hero pair aligned)
+    - _Requirements: 34.1, 36.1, 38.1, 38.3, 38.6_
   - [ ] 13.2 Add `CommandMenu`
     - Radix Dialog, items as a prop, filtering by hand over at most about 60 items, combobox and listbox roles, Ctrl+K and Cmd+K, arrows, Enter, Escape, focus return, result count in the Live_Region, `--dur-menu` open and close (120 ms fade under reduced motion). No new dependency.
     - Playwright: every key path, focus return, the count announcement, no more than 60 rendered items, clean console, axe in both themes.
@@ -508,6 +515,8 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
 
 ## Notes
 
+- Review of PR #26 (Kiro, 2026-11-23): tasks 12.1 to 12.4 and 12 ticked. Evidence: `pnpm check` 1,919 passed locally (Kiro, fresh worktree), CI `check` green with `pnpm e2e` 2,102 passed and 133 skipped over five projects, the contrast pairs match the steering tables, storage is in one file. Accepted deviations: the system fallback is `prefers-color-scheme: light` and there is no `dark` query (dark is the default); a boot script is inlined in each page's `<head>`; the Tailwind-word scan reads the built CSS. The steering and requirements 32.5 and 33.3 are amended to match. Not accepted yet: the `scaffold` job is red (see the review comment): the Template's own `src/lanes.test.ts` still forbids `packages/ui/`.
+- Review of PR #27 (Kiro, 2026-11-23): no task ticked. Accepted deviations are in requirement 38. Open: the phone header has no `ThemeToggle`, the command trigger and `Kbd` are missing, and the hero gradient pair in the contrast test is stale (task 13.3).
 - Tasks 12 to 15 are the 2026-11-23 redesign. They are listed before the optional items 11 so that the optional items stay last in the plan, and they run before them. Claude Code lane, none implemented yet.
 - Claude Code implements every task. Kiro does not execute any of them and creates no file under `packages/ui` or `apps/`.
 - Only the three tasks under item 11 are optional, as the user and the design require. Test sub-tasks are not marked optional in this plan, because each task closes with Task_Evidence and `pnpm check`.
