@@ -60,8 +60,10 @@ function PhoneMenu({
 		<Collapsible.Root open={isOpen} onOpenChange={setOpen} asChild>
 			{/* biome-ignore lint/a11y/noStaticElementInteractions: Escape anywhere in the open menu closes it. */}
 			<div onKeyDown={closeOnEscape}>
-				<div className="flex items-center justify-between gap-4">
+				<div className="flex items-center gap-2">
 					{brand}
+					<span className="flex-1" />
+					<ThemeToggle />
 					<Collapsible.Trigger
 						ref={triggerRef}
 						data-menu-trigger
@@ -84,7 +86,7 @@ function Frame({ appName, nav, rail, footer, children }: AppShellProps) {
 	const isPhone = useMediaQuery(PHONE);
 	const mainRef = useRef<HTMLElement>(null);
 	const brand = (
-		<p className="flex items-baseline gap-3">
+		<p className="flex flex-col whitespace-nowrap md:flex-row md:items-baseline md:gap-3">
 			<span className="font-doc text-sys-body font-semibold text-text">
 				Dead Certain
 			</span>

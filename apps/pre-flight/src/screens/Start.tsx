@@ -10,7 +10,7 @@ const NOT_GITHUB =
 const FEATURES = [
 	[
 		"Facts from GitHub",
-		"Licence, CI, branch protection and more, read from the public API.",
+		"Licence, the .kiro folder, the README and more, read from the public API.",
 	],
 	[
 		"Only what it cannot see",

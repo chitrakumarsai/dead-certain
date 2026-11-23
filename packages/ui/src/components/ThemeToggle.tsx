@@ -34,7 +34,7 @@ export function ThemeToggle() {
 			className="inline-flex min-h-touch min-w-touch items-center justify-center gap-2 rounded-control px-3 text-sys-small text-text transition-colors duration-(--dur-hover) ease-kit hover:bg-surface-3 active:bg-surface-2"
 		>
 			{theme === "dark" ? <Moon /> : <Sun />}
-			<span>{WORD[theme]}</span>
+			<span className="max-md:sr-only">{WORD[theme]}</span>
 		</button>
 	);
 }
