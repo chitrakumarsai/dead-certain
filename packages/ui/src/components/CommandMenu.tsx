@@ -32,6 +32,13 @@ export const matches = (item: CommandItem, query: string): boolean =>
 		.toLowerCase()
 		.includes(query.trim().toLowerCase());
 
+/** The items the menu shows for a query: matches in order, at most MAX_COMMANDS. */
+export const visibleCommands = (
+	items: readonly CommandItem[],
+	query: string,
+): CommandItem[] =>
+	items.filter((item) => matches(item, query)).slice(0, MAX_COMMANDS);
+
 const countSentence = (n: number): string =>
 	n === 0 ? "No results" : n === 1 ? "1 result" : `${n} results`;
 
@@ -48,9 +55,7 @@ export function CommandMenu({ items }: CommandMenuProps) {
 	const optionId = (i: number) => `${listId}-${i}`;
 	const isFirstCount = useRef(true);
 
-	const shown = items
-		.filter((item) => matches(item, query))
-		.slice(0, MAX_COMMANDS);
+	const shown = visibleCommands(items, query);
 	const current = Math.min(active, Math.max(shown.length - 1, 0));
 
 	useEffect(() => {
