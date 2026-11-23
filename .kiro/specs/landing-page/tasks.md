@@ -17,7 +17,7 @@ This plan builds the landing page in `apps/site` in TypeScript strict mode. The 
 - **No imports from the apps' source.** Nothing under `apps/site/src/landing` imports from `apps/claim-check/src` or `apps/pre-flight/src`. Copy the small functions the design names, and keep the copies pinned by tests. The one file read from an app is `apps/claim-check/kb/dist/policy.json`.
 - **Names.** Only `hero/config.ts` names a fact or a goal.
 - **Design system.** Load `.kiro/steering/design-system.md` and section 8 of `docs/BUILD_PLAN.md`. Use the kit's components and tokens. Define no colour, font or spacing value of your own.
-- **Refusals (never build these).** No global dark mode. No uppercase labels or `text-transform: uppercase`. No `box-shadow` other than `none`. No gradient. No scroll-triggered entrance animation. No arrow or chevron glyph in a button label. No `localStorage`, `sessionStorage`, cookie, analytics or third-party request. No pumpkins, bats or blood. No motion except the X-ray develop.
+- **Refusals (never build these).** No uppercase labels or `text-transform: uppercase`. No caption above a heading. No arrow or chevron glyph in a button label. No `box-shadow`, gradient or `prefers-color-scheme: dark` unless the value comes from a token in `tokens.css` and the use is on the list in `.kiro/steering/design-system.md` (inset highlight, wax glow, paper halo; hero radial glow, hero headline fill, graph-paper grid, film grain, scan line; `prefers-color-scheme` in `tokens.css` only). No entrance animation on scroll, except the landing page's one fade and 16 px rise per section. No Tailwind `uppercase`, `ring` or `shadow` utilities. No `dangerouslySetInnerHTML`. No `localStorage` except the theme choice (`dc-theme`) in `packages/ui/src/theme/storage.ts`; no cookies, analytics or network request. No emoji. No exclamation marks. No apologies. No pumpkins, bats or blood. No `hairline` on text or control borders. No `wax` as text on paper or the light theme. No new dependency. No `Authorization`. (Replaced 2026-11-23. Tasks 1 to 8 as built followed the earlier refusals.)
 - **Copy.** Sentence case, active voice, plain words, no apology, no exclamation marks. Use the exact strings quoted in the requirements. A control keeps one name through a flow.
 - **Tests.** Pure logic in Vitest with no DOM. The page in Playwright against the built site. Every property test file ends in `.props.test.ts`, uses fast-check `4.10.2`, runs each property at least 100 times, and starts each with `// Feature: landing-page, Property N: <title>`.
 - **Task_Evidence (every task ends with it).** Before you ask for review, attach to the pull request: (1) screenshots at **390, 768 and 1280 px** of what the task built (do not commit them; for a task with no visible output, attach the page at the three widths); (2) a clean browser console read, zero errors and zero warnings; (3) a zero-violation axe result for each state touched; (4) `pnpm check` output, passing. Test-first tasks add the failing and the passing runs.
@@ -87,6 +87,30 @@ This plan builds the landing page in `apps/site` in TypeScript strict mode. The 
   - Confirm `git diff --stat main...HEAD` shows changes only in `apps/site`, `e2e`, `pnpm-lock.yaml` and nothing else.
   - Open the pull request for gate G5. Kiro reviews it against this spec. State what you could not finish. After the merge, the human loads the live URL in a private window and presses "See why" (requirement 10.2).
   - _Requirements: all_
+
+## Redesign tasks (2026-11-23, Claude Code lane, not implemented)
+
+Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-proposal.md`, approved by the human on 2026-11-23: JSON-LD Organization, no new dependencies). Implemented by **Claude Code lane. Not implemented in the Kiro session that wrote this.** Depends on `ui-kit` tasks 12 to 14. Run after `ui-kit` tasks 12 to 14, one at a time, in this order. Each task ends with Task_Evidence in both themes: screenshots at 390, 768 and 1280 px, a clean console, zero axe violations and `pnpm check`. Read `.kiro/steering/design-system.md` and `docs/redesign-proposal.md` first.
+
+- [ ] 9. Landing page redesign
+  - [ ] 9.1 Theme and shell
+    - Use the kit's `ThemeToggle` and command trigger in the page's shell. Pass `CommandMenu` its items (sections, apps, rulebook, repository, theme), at most about 60. No colour of the page's own.
+    - _Requirements: 11.1, 11.7_
+  - [ ] 9.2 Hero visuals and landing-only motion
+    - Hero radial glow, headline fill, graph-paper grid and film grain through kit tokens; h1 at opacity 0.01 with blur-in; one fade and 16 px rise per section; tilt with `animation-timeline: view()` where supported; spotlight and shine. Reduced motion shows everything in place. Lighthouse is a manual check, not a CI step.
+    - _Requirements: 11.2, 11.3, 11.4, 11.5, 11.8_
+  - [ ] 9.3 Sections in both themes
+    - Steps, the two app cards (`FeatureCard`), the scaffold block, the footer and the 404 page, with `Pill` and `Kbd` where they help. The hero proof stays the real engine's.
+    - _Requirements: 11.6_
+  - [ ] 9.4 SEO (cut first if time runs short)
+    - Canonical, `description`, Open Graph and Twitter tags, the `Organization` JSON-LD script, and the committed static OG PNGs rendered once with Playwright from a dedicated page. No dependency. Tests as in requirement 12.6.
+    - _Requirements: 12.1 to 12.6_
+  - [ ] 9.5 Tests
+    - Mirror the storage exception in `lane.test.ts`; run the page in both themes and the reduced-motion project; the no-request and storage-write test allows `dc-theme` only; a build test confirms the head tags.
+    - _Requirements: 13.1, 13.2, 13.3_
+
+- [ ] 10. Checkpoint, landing page redesign
+  - Run `pnpm check`, `pnpm test:props`, `pnpm build`, `pnpm dc validate`, `pnpm dc golden` and `pnpm e2e`. Attach the page in both themes at the three widths and the reduced-motion X-ray. Open the pull request. Kiro reviews it against this spec.
 
 ## Notes
 

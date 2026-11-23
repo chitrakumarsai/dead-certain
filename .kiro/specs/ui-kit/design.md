@@ -189,7 +189,7 @@ sequenceDiagram
 
 ```css
 :root {
-  color-scheme: light;               /* no global dark mode, ever */
+  color-scheme: light;               /* superseded 2026-11-23: dark default plus light theme, see "Redesign" at the end */
 
   --lightbox: #EDF2F3;  --paper: #FCFEFE;  --ink: #13222C;  --ink-soft: #4A5A64;
   --hairline: #C9D5D9;  --film: #0B1C26;   --bone: #DCE8EB;  --bone-soft: #8FA6AE;
@@ -1122,15 +1122,24 @@ For every `VerdictState`, check state and `FactSource`, the rendered output cont
 
 ### Property 11: Contrast floor
 
-For every pair in the contrast table, the computed ratio meets its floor. `hairline` is used by no text and no control border.
+For every pair in the contrast table, the computed ratio meets its floor. `hairline` is used by no text and no control border. The table now holds every pair in section 1 of `docs/redesign-proposal.md`, for both themes:
 
-**Validates: Requirements 2.1, 2.2, 2.3, 2.4**
+- Dark theme: `text-primary`, `text-secondary`, `text-tertiary`, `wax`, `paid-dark`, `reduced-dark` and `denied-dark` on `bg-base`, `bg-surface-1`, `bg-surface-2` and `bg-surface-3` (floor 4.5). The lowest is `denied-dark` on surface-3 at 4.72.
+- The hero gradient end (bone at 60%) on `bg-base`, 5.95 (floor 3, large text).
+- `on-wax` on `wax` (11.14) and on `wax-hover` (12.51); `bone` on `wax-muted` (10.91); `wax` on `wax-muted` (8.09).
+- `control-border-dark` on `bg-surface-2`, 6.26 (floor 3).
+- Light theme: `ink`, `ink-soft` and `text-tertiary` (`#5B6B74`) on `lightbox`, `paper`, `#F4F8F9` and `#E2EAEC` (floor 4.5; the lowest is `text-tertiary` on surface-3 at 4.53), and `paid`, `reduced` and `denied` on every light surface (at least 5.12).
+- Paper pairs, unchanged.
+- `--border-subtle`, `--border-default`, `--border-strong` and `hairline` are listed as decorative only. The test asserts that no control boundary uses them, and that `wax` is never text on paper or a light surface.
+- The dark focus ring is `wax` on every dark surface and on film. `focus-paper` on `bg-surface-3` (2.98) is not used on dark.
+
+**Validates: Requirements 2.1, 2.2, 2.3, 2.4, 34.1, 34.2, 34.3, 34.4**
 
 ### Property 12: No refused patterns
 
-The built CSS contains no `box-shadow` other than `none`, no `linear-gradient`, `radial-gradient` or `conic-gradient`, no `text-transform: uppercase`, no `prefers-color-scheme: dark`, and no `https://` URL. No rendered button label contains an arrow glyph.
+The built CSS contains a `box-shadow` other than `none` only where the value is a shadow token, and a `linear-gradient`, `radial-gradient` or `conic-gradient` only for the five allowed uses (hero radial glow, hero headline fill, graph-paper grid, film grain, scan line) and only through a token. `prefers-color-scheme: dark` appears in `tokens.css` only. It contains no `text-transform: uppercase` and no `https://` URL. No rendered button label contains an arrow glyph. `localStorage` appears in exactly one file, `packages/ui/src/theme/storage.ts`, and the landing page's `lane.test.ts` mirrors that exception. Tailwind's `uppercase`, `ring` and `shadow` words are absent from the sources. The old refusals of global dark mode, of every shadow and of every gradient are dropped.
 
-**Validates: Requirements 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 2.11**
+**Validates: Requirements 2.7, 2.9, 2.10, 2.11, 32.5, 32.6, 33.1, 33.2, 33.3, 33.4, 33.5, 33.7**
 
 ### Property 13: No runtime engine import
 
@@ -1303,3 +1312,15 @@ The tasks document should follow this order. Each slice is one or more tasks sma
     - the 200-node `ProofTree` timing measurement (the 200-node specimen is not optional)
 
 Fixtures grow alongside each slice. A fixture is added in the task that first needs it.
+
+## Redesign: darkroom and lightbox
+
+Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-proposal.md`, approved by the human on 2026-11-23: JSON-LD Organization, no new dependencies).
+
+- **Source of truth.** The token tables, the contrast ratios, the motion table and the refusals are in `.kiro/steering/design-system.md`. This section records only how the kit builds them. Requirements 32 to 37 hold the acceptance criteria.
+- **Theme mechanism.** `tokens.css` defines the dark values on `:root` and the light values under a theme attribute on `<html>` (`data-theme="light"`). `prefers-color-scheme` appears in `tokens.css` only, to choose the first theme when nothing is stored. `theme/storage.ts` is the only file that reads or writes `dc-theme`, inside `try/catch`, and applies the attribute. Claude Code may choose the exact attribute name and records it in the pull request. Avoid a flash of the wrong theme and a layout shift.
+- **Tailwind.** `theme.css` maps the new tokens. Glows and the inset highlight are `@utility` classes (`glow-wax-soft`, `glow-wax-pulse`, `halo-paper`, `highlight-inset`). The words `uppercase`, `ring` and `shadow` stay out of the sources.
+- **Film.** `Film` adds grain (an inline SVG `feTurbulence` data URI, so no image request), a `--border-strong` edge and bone strokes. `Sheet`, cards and `FeatureCard` do not.
+- **New components.** `CommandMenu` (Radix Dialog, items as a prop, hand filtering, combobox and listbox roles), `ThemeToggle`, `Toast` (the existing live region), `Kbd`, `Pill`, `FeatureCard` and `Illustration`. `AppShell` gains the command trigger and the toggle.
+- **Gallery.** `/kit` gets a theme switch. Every specimen renders in both themes. The Playwright projects run both themes. The earlier rule of no committed pixel baselines stays.
+- **Risks the design accepts.** Backdrop blur on the header, the blur-in on the LCP headline, the tilt and grain all cost paint time. Mitigations: the h1 starts at opacity 0.01, the tilt is CSS-only and static where `animation-timeline` is unsupported, and grain is drawn on film only.

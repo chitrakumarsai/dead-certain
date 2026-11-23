@@ -396,3 +396,11 @@ Every task ends with Task_Evidence: screenshots at 390, 768 and 1280 px (attache
 | Progress as an upper bound | Exact count | The engine exposes none, and an exact count needs a second engine run per fact. |
 | No state library | Redux, Zustand | One reducer is enough. It also avoids a dependency outside the list. |
 | Golden tests drive the real interface | Run the engine in the test | The engine is already proved by `dc golden`. These tests prove the interface agrees with it. |
+
+## Redesign: darkroom and lightbox
+
+Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-proposal.md`, approved by the human on 2026-11-23: JSON-LD Organization, no new dependencies). Implemented by **Claude Code lane. Not implemented in the Kiro session that wrote this.** Depends on `ui-kit` tasks 12 to 14.
+
+- The app consumes the kit's theme, `ThemeToggle`, `CommandMenu` and `Toast` through `AppShell`. It defines no token. `main.tsx` passes the command items (start over, copy link, rulebook, one item per rail answer). The copy-link confirmation moves to `Toast`.
+- Screens keep their structure and copy and take the new styling from the kit. The golden e2e is the guard: it drives the real interface in the default theme.
+- The privacy test allows one storage key, `dc-theme`.

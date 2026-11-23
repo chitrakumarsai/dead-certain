@@ -67,12 +67,12 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 2. WHEN the Kit_Test_Suite computes a ratio, THE Kit_Test_Suite SHALL fail if the ratio is below the floor of 4.5 for text pairs or 3 for focus rings and control boundaries listed in the table.
 3. THE Kit_Test_Suite SHALL assert that no text and no control boundary uses `--hairline`.
 4. THE Kit_Test_Suite SHALL assert that `--wax` is used only as a fill behind `--ink` or `--film` text, as a stroke, or as the focus ring on Film.
-5. THE Built_CSS SHALL contain zero `box-shadow` declarations other than `none`.
-6. THE Built_CSS SHALL contain zero uses of `linear-gradient`, `radial-gradient` or `conic-gradient`.
+5. ~~THE Built_CSS SHALL contain zero `box-shadow` declarations other than `none`.~~ Superseded by Requirement 33.1.
+6. ~~THE Built_CSS SHALL contain zero uses of `linear-gradient`, `radial-gradient` or `conic-gradient`.~~ Superseded by Requirement 33.2.
 7. THE Built_CSS SHALL contain zero `text-transform: uppercase` declarations.
-8. THE Built_CSS SHALL contain zero `prefers-color-scheme: dark` media queries.
+8. ~~THE Built_CSS SHALL contain zero `prefers-color-scheme: dark` media queries.~~ Superseded by Requirement 33.3.
 9. THE Built_CSS SHALL contain zero `https://` URLs.
-10. THE UI_Kit SHALL contain zero scroll-triggered entrance animations.
+10. THE UI_Kit SHALL contain zero scroll-triggered entrance animations. The landing page's one fade and rise per section is not in the kit (Requirement 33.5).
 11. THE Kit_Test_Suite SHALL fail WHEN any rendered Button label in the Gallery matches `/[→←↑↓➜»«]/u`.
 12. THE UI_Kit SHALL place the progress line of a QuestionCard below the question heading and not above it.
 13. THE UI_Kit SHALL write all copy in sentence case, in active voice and without exclamation marks.
@@ -129,7 +129,7 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 7. THE UI_Kit SHALL render `LineItem.label` verbatim for every ledger and check line.
 8. WHERE `FactDef.label` is absent, THE AnswersRail SHALL display `humanize(fact)` as the label.
 9. THE UI_Kit SHALL render clause text, `because` text and engine messages as text, with zero uses of `dangerouslySetInnerHTML` in `packages/ui/src`.
-10. THE UI_Kit SHALL store nothing in `localStorage`, cookies or analytics, and SHALL make zero network requests.
+10. THE UI_Kit SHALL store nothing in `localStorage`, cookies or analytics, and SHALL make zero network requests. The one exception is the theme choice (Requirement 32.5).
 
 ### Requirement 6: Button
 
@@ -423,6 +423,7 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 8. WHEN the skip link is activated, THE AppShell SHALL move focus to `<main>` without changing the URL hash.
 9. WHILE the viewport is below 1024 px, THE AppShell SHALL stack the rail above the content.
 10. THE Gallery SHALL show the AppShell on its own page `apps/site/kit/shell.html` in three iframes, and THE Kit_Test_Suite SHALL run axe on that page on its own at every width.
+11. THE AppShell SHALL carry the command trigger and the ThemeToggle (Requirement 36).
 
 ### Requirement 22: Stale link notice
 
@@ -511,7 +512,7 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 #### Acceptance Criteria
 
 1. THE UI_Kit SHALL use `--ease` for every transition and animation.
-2. THE UI_Kit SHALL limit choreographed motion to the X-ray develop.
+2. THE UI_Kit SHALL limit choreographed motion inside the apps to the X-ray develop. The motion table in Requirement 35 lists the other, small motions.
 3. WHILE `prefers-reduced-motion: reduce` applies, THE Tokens_Stylesheet SHALL set `--dur-panel` to 0 ms.
 4. WHILE `prefers-reduced-motion: reduce` applies, THE UI_Kit SHALL keep the 120 ms colour change on Button press and SHALL remove all other movement.
 5. THE UI_Kit SHALL drive every transition other than the X-ray develop with CSS and the motion tokens.
@@ -551,6 +552,7 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 7. IF a task needs a dependency outside the approved list, THEN THE Claude_Code_Lane SHALL ask the human before adding it.
 8. THE UI_Kit SHALL use no runtime CSS-in-JS.
 9. THE UI_Kit SHALL load `motion` only inside the X-ray develop chunk.
+10. THE redesign (Requirements 32 to 37) SHALL add no dependency. THE CommandMenu SHALL use the installed Radix Dialog, THE icons SHALL stay in the kit's own set and THE type SHALL stay in IBM Plex with no Inter.
 
 ### Requirement 30: Lane boundaries and delivery order
 
@@ -577,3 +579,88 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 4. WHERE the optional ProofTree timing measurement is built, THE Kit_Test_Suite SHALL record a Playwright trace that shows an arrow-key press to paint in under 50 ms on the 200-node fixture.
 5. THE Gallery SHALL keep the 200-node ProofTree specimen whether or not the timing measurement is built.
 6. THE Claude_Code_Lane SHALL build the optional items last and in any order, and SHALL drop them first if time runs short.
+
+## Redesign: darkroom and lightbox
+
+Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-proposal.md`, approved by the human on 2026-11-23: JSON-LD Organization, no new dependencies). Requirements 32 to 37 add to the requirements above. Where a criterion above is struck through, the requirement named beside it replaces it. Implemented by **Claude Code lane. Not implemented in the Kiro session that wrote this.**
+
+### Requirement 32: Themes and tokens
+
+**User Story:** As a user, I want a dark room by default and a light theme on request, so that I can read the interface in the setting I am in.
+
+#### Acceptance Criteria
+
+1. THE Tokens_Stylesheet SHALL define every token in the dark and light tables of `.kiro/steering/design-system.md` and SHALL be the only file that holds a hex colour.
+2. THE UI_Kit SHALL default to the dark theme and SHALL offer a light theme. Film SHALL be `#0B1C26` in both themes.
+3. THE UI_Kit SHALL set radius to 4 px for paper, 8 px for controls, 12 px for film and cards, and 999 px for pills.
+4. THE Tokens_Stylesheet SHALL define `--highlight-inset`, `--glow-wax-soft`, `--glow-wax-pulse`, `--halo-paper`, `--dur-hover` (110 ms), `--dur-enter` (200 ms), `--dur-page` (250 ms) and `--dur-menu` (150 ms), and SHALL keep `--dur-press` (120 ms), `--dur-panel` (200 ms), `--dur-xray` (500 ms), `--dur-reduced` (120 ms) and `--ease`.
+5. THE ThemeToggle SHALL store the choice in `localStorage` under the single key `dc-theme`, inside `try/catch`. WHEN no value is stored or storage throws, THE UI_Kit SHALL follow `prefers-color-scheme`.
+6. THE UI_Kit SHALL contain `localStorage` in exactly one file, `packages/ui/src/theme/storage.ts`.
+7. THE UI_Kit SHALL use `--control-border-dark` for the boundary of every input, radio card and toggle on the dark theme, and SHALL use the three rgba borders only on decorative card edges and dividers.
+8. THE UI_Kit SHALL draw the focus ring in `--wax` on the dark theme and on Film, and in `--focus-paper` on paper and light surfaces.
+9. THE UI_Kit SHALL give Film alone grain, a `--border-strong` edge and luminous bone strokes. An ordinary card SHALL have none of them.
+10. THE UI_Kit SHALL apply the type scale in the steering file and SHALL add no font family and no font file.
+
+### Requirement 33: Refusals, narrowed
+
+**User Story:** As a maintainer, I want the refused patterns to stay out except where a token allows them, so that the new depth stays calm.
+
+#### Acceptance Criteria
+
+1. THE Built_CSS SHALL contain a `box-shadow` other than `none` only where its value is a token (`--highlight-inset`, `--glow-wax-soft`, `--glow-wax-pulse`, `--halo-paper`), and SHALL use none that suggests elevation.
+2. THE Built_CSS SHALL contain `linear-gradient`, `radial-gradient` or `conic-gradient` only for the hero radial glow, the hero headline fill, the graph-paper grid, film grain and the scan line, and only through a token.
+3. THE Built_CSS SHALL contain `prefers-color-scheme: dark` in `tokens.css` only.
+4. THE Built_CSS SHALL keep zero `text-transform: uppercase` declarations and zero `https://` URLs, and no rendered Button label SHALL contain an arrow glyph.
+5. THE UI_Kit SHALL contain no scroll-triggered entrance animation. THE Landing_Page alone MAY fade and raise a section by 16 px once.
+6. THE UI_Kit SHALL keep these refusals: no caption above a heading, sentence case, no exclamation mark, no apology in an error, colour never alone, and no pumpkins, bats or blood.
+7. THE Kit_Test_Suite SHALL fail on the Tailwind words `uppercase`, `ring` and `shadow` in `packages/ui/src` and the apps' sources. Glows SHALL be custom `@utility` classes in `theme.css`.
+
+### Requirement 34: Contrast, both themes
+
+**User Story:** As a user with low vision, I want every colour pair to pass in both themes, so that the dark room is as legible as the lightbox.
+
+#### Acceptance Criteria
+
+1. THE Kit_Test_Suite SHALL compute the ratio of every pair in the contrast tables of `.kiro/steering/design-system.md` from `tokens.css`: the dark-theme foregrounds on all four dark surfaces, the hero gradient end on base (floor 3), `--on-wax` on `--wax` and on `--wax-hover`, bone and wax on `--wax-muted`, `--control-border-dark` on surface-2 (floor 3), and the light-theme ink, ink-soft and `--text-tertiary` on all four light surfaces, plus the verdict states on every light surface.
+2. THE Kit_Test_Suite SHALL fail when a text pair is below 4.5 or a control boundary, focus ring or large-text pair is below 3.
+3. THE Kit_Test_Suite SHALL assert that no control boundary uses `--border-subtle`, `--border-default`, `--border-strong` or `--hairline`, and that `--wax` is never text on paper or on a light surface.
+4. THE Kit_Test_Suite SHALL assert that on the dark theme the focus ring is wax.
+
+### Requirement 35: Motion table
+
+**User Story:** As a user sensitive to motion, I want each motion small, listed and removable, so that the interface stays calm.
+
+#### Acceptance Criteria
+
+1. THE UI_Kit SHALL use `--ease` and the duration tokens for hover (110 ms), enter (200 ms), page (250 ms), menu (150 ms), press (120 ms) and panel (200 ms), and SHALL drive each with CSS.
+2. THE UI_Kit SHALL limit blur-in, spotlight, shine and tilt to the landing page and `/kit`, and SHALL never use them inside the question and verdict flows of the apps.
+3. THE blur-in SHALL start at opacity 0.01, not 0. THE tilt SHALL use `animation-timeline: view()` where supported and SHALL be static elsewhere.
+4. THE success pulse SHALL mark a confirmed action only.
+5. WHILE `prefers-reduced-motion: reduce` applies, THE UI_Kit SHALL replace each motion with its reduced-motion entry in the steering motion table: a 120 ms fade, a colour change or a static state, and no movement.
+
+### Requirement 36: AppShell command trigger, ThemeToggle and CommandMenu
+
+**User Story:** As a keyboard user, I want one place to reach every action, and a way to switch theme, so that I never hunt through the page.
+
+#### Acceptance Criteria
+
+1. THE AppShell SHALL render a command trigger and the ThemeToggle in the header, reachable by keyboard and at least 44 by 44 px.
+2. THE ThemeToggle SHALL be a real button or switch with an accessible name that states the theme it will set, and SHALL show its state with an icon and a word.
+3. THE CommandMenu SHALL open from the trigger and from Ctrl+K and Cmd+K, SHALL be built on the Radix Dialog, and SHALL filter by hand over at most about 60 items.
+4. THE CommandMenu SHALL follow the combobox and listbox pattern: arrow keys move, Enter runs the item, Escape closes it, and focus returns to the control that opened it.
+5. THE CommandMenu SHALL announce the result count through the polite Live_Region.
+6. THE CommandMenu SHALL take its items as a prop, so that each app and the landing page supply their own. THE kit SHALL name no app item.
+7. THE CommandMenu SHALL open and close within `--dur-menu`, and under reduced motion SHALL fade in 120 ms.
+
+### Requirement 37: New components and the gallery in both themes
+
+**User Story:** As a reviewer, I want every new component and every existing one shown in both themes, so that I can inspect the whole system.
+
+#### Acceptance Criteria
+
+1. THE UI_Kit SHALL add `CommandMenu`, `ThemeToggle`, `Toast`, `Kbd`, `Pill`, `FeatureCard` and `Illustration`.
+2. THE Toast SHALL reuse the single polite Live_Region and SHALL not add a second one.
+3. THE UI_Kit SHALL draw icons and the Illustration as inline SVG with `currentColor`, redrawn at 16 px with a 1.5 px stroke where the kit's icon set is used, and SHALL add no icon package.
+4. THE Gallery SHALL render every specimen in both themes, with a theme switch on the page, and SHALL add specimens for each new component in each of its states.
+5. THE Kit_Test_Suite SHALL run axe on the full Gallery and on every Static_Screen at each width in both themes, with a clean console.
+6. THE Kit_Test_Suite SHALL keep the gzipped Kit_Bundle under 50 kB.

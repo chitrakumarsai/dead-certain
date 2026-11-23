@@ -537,3 +537,11 @@ Every task ends with Task_Evidence: screenshots at 390, 768 and 1280 px (attache
 | No replay link for reports | Encode answers in the fragment | The report depends on live data. Decided by the human. |
 | One goal, one checklist | A goal per checklist; several checklists as views; a picker | The knowledge base has one goal, and the app may not decide. One checklist holds every check, so the state and the counts are the engine's with no special cases. Open question 4, answered. |
 | Evidence under the tree | Edit `ProofTree` for per-node detail | The kit stays unchanged. |
+
+## Redesign: darkroom and lightbox
+
+Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-proposal.md`, approved by the human on 2026-11-23: JSON-LD Organization, no new dependencies). Implemented by **Claude Code lane. Not implemented in the Kiro session that wrote this.** Depends on `ui-kit` tasks 12 to 14.
+
+- The app consumes the kit's theme, `ThemeToggle`, `CommandMenu` and `Toast` through `AppShell`. It defines no token. The command items are built from the Checklist's groups and the three bundled repositories. The copy confirmations move to `Toast`.
+- Screens keep their structure and copy. The recorded-response journeys are the guard and run in the default theme.
+- The privacy test allows one storage key, `dc-theme`, and still forbids any host but `api.github.com`.

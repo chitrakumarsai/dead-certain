@@ -42,12 +42,12 @@ Scope: the root page, its hero, the three steps, the two app cards, the scaffold
 2. THE Site SHALL keep building the `/kit/` gallery pages exactly as before, and the Landing_Page SHALL link to the gallery.
 3. THE Site's `build` script SHALL compile the Claim_KB first (`node ../../packages/kb-tools/bin/dc.mjs build apps/claim-check`) and then run `vite build`, as the apps' build scripts now do, and the Site SHALL declare `@dead-certain/engine` as a dependency and `@dead-certain/kb-tools` as a dev dependency, both `workspace:*`. THE Site SHALL also declare `fast-check` `4.10.2` as a dev dependency, for the property tests (a package of section 7 of the build plan, approved by the human). BECAUSE `pnpm build` runs the Site's and both apps' builds in parallel, and each `dc` call rebuilds kb-tools' `dist`, which deletes `dc.mjs` under a build that is reading it, THE Site's `build` script SHALL compile the Claim_KB without rebuilding kb-tools. (Amended 2026-11-22: the first version named `pnpm -w run dc build`, which made three parallel rebuilds, and the gate's CI run failed with "dist/dc.mjs is missing".)
 4. THE Landing_Page SHALL load the Claim_KB from the compiled JSON, SHALL check its shape at start-up, and WHEN the check fails, SHALL still show the headline, the paragraph, the Steps' text without data, the App_Cards and the footer, and a plain notice in place of the Hero verdict that says the sample failed to load. The notice SHALL be a level-2 heading and text, since the page keeps its one level-1 heading.
-5. THE Landing_Page SHALL make no network request after the page and its own assets have loaded, SHALL load no third-party font, script or style, and SHALL use no `localStorage`, `sessionStorage`, cookie or analytics.
+5. THE Landing_Page SHALL make no network request after the page and its own assets have loaded, SHALL load no third-party font, script or style, and SHALL use no `localStorage` (except the kit's theme choice, `dc-theme`, written only by `packages/ui/src/theme/storage.ts`), no `sessionStorage`, cookie or analytics.
 6. THE Landing_Page SHALL NOT modify `packages/ui`, `packages/engine` or any file under `apps/claim-check` or `apps/pre-flight`.
 7. THE Landing_Page SHALL NOT import from `apps/claim-check/src` or `apps/pre-flight/src`. It may read `apps/claim-check/kb/dist/policy.json` only.
 8. THE Landing_Page SHALL name a fact or a goal in the Hero_Module only. Every other module SHALL read labels, clauses and rules from the Claim_KB.
 9. THE Landing_Page SHALL give the page content in the HTML a `<noscript>` message with the headline and the links to both apps, so that the page is not blank without JavaScript.
-10. THE Landing_Page SHALL set the document title to "Dead Certain. LLMs guess. The dead are certain." and a `description` meta of one sentence, and SHALL set `og:title`, `og:description` and `og:type` with the same text and no `og:image`.
+10. THE Landing_Page SHALL set the document title to "Dead Certain. LLMs guess. The dead are certain." and a `description` meta of one sentence, and SHALL set `og:title`, `og:description` and `og:type` with the same text. ~~and no `og:image`~~ Superseded by Requirement 12.
 
 ### Requirement 2: The Hero and its working verdict
 
@@ -126,7 +126,7 @@ Scope: the root page, its hero, the three steps, the two app cards, the scaffold
 
 #### Acceptance Criteria
 
-1. THE Landing_Page SHALL use the UI_Kit's tokens and components, and SHALL define no colour, font or spacing value of its own. It SHALL use no global dark mode, no uppercase label or `text-transform: uppercase`, no `box-shadow` other than `none`, no gradient, no scroll-triggered entrance animation, and no arrow or chevron glyph in a button label.
+1. THE Landing_Page SHALL use the UI_Kit's tokens and components, and SHALL define no colour, font or spacing value of its own. It SHALL use no uppercase label or `text-transform: uppercase`, and no arrow or chevron glyph in a button label. ~~No global dark mode, no `box-shadow` other than `none`, no gradient, no scroll-triggered entrance animation~~ are replaced by Requirement 11.
 2. THE Landing_Page SHALL have no pumpkin, bat, blood or other Halloween ornament.
 3. THE Landing_Page SHALL meet WCAG 2.2 AA: text contrast of at least 4.5:1 and interface parts of at least 3:1, touch targets of at least 44 px, layout that holds from 320 px wide and at 200% zoom, and colour never alone for meaning.
 4. THE Landing_Page SHALL have one `main` landmark, a `nav` named "Main", a `contentinfo` landmark, and a heading order with no skipped level.
@@ -188,9 +188,49 @@ Decided by the human (2026-11-20):
 2. **Verdict code.** Copy it into the Hero_Module. Do not import from the apps and do not add a shared package (requirement 1.7).
 3. **The sample claim.** Golden scenario `G-01` (requirement 2.5).
 4. **Mention the tools.** The page carries one sentence under the three steps that says the specs, engine and rules were written with Kiro and the interface with Claude Code, with a link to the `.kiro` folder in the repository (requirement 4.8).
-5. **Link preview image.** None. Open Graph tags are text only (requirement 1.10).
+5. **Link preview image.** Superseded 2026-11-23: static OG PNGs, rendered once and committed (requirement 12.4). Originally none.
 6. **The 404 page.** Built now (requirement 6.3).
 7. **Repository URL.** `https://github.com/chitrakumarsai/dead-certain`. The link to the README section "Add a third app" uses this address with the `#add-a-third-app` anchor once the `app-template` spec has added the section, and the README's top until then (requirement 5.3).
 8. **Lighthouse.** Not in CI. The budgets use the size, layout-shift and axe tests (requirement 9). A manual Lighthouse run for the submission stays the human's choice.
 
 No open question remains.
+
+## Redesign: darkroom and lightbox
+
+Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-proposal.md`, approved by the human on 2026-11-23: JSON-LD Organization, no new dependencies). Implemented by **Claude Code lane. Not implemented in the Kiro session that wrote this.** Depends on `ui-kit` tasks 12 to 14. If time runs short, cut SEO and OG images first, then the command menu (proposal section 8).
+
+### Requirement 11: Themes, hero visuals and landing-only motion
+
+**User Story:** As a visitor, I want a dark room with a lit verdict on it, so that the page feels like the product.
+
+#### Acceptance Criteria
+
+1. THE Landing_Page SHALL render in the dark theme by default and in the light theme on request, through the UI_Kit's `ThemeToggle`, and SHALL define no colour of its own.
+2. THE Landing_Page SHALL use the hero radial glow, the hero headline fill, the graph-paper grid and film grain, only through kit tokens and only where the steering file allows. It SHALL use no other gradient.
+3. THE Landing_Page SHALL fade and raise each section by 16 px once on entering the view, and SHALL do so on no other page.
+4. THE Landing_Page SHALL start the h1 at opacity 0.01, not 0, and SHALL use the tilt through `animation-timeline: view()` only where supported, and static elsewhere.
+5. WHILE `prefers-reduced-motion: reduce` applies, THE Landing_Page SHALL show every section in place with no rise, blur, tilt, spotlight or shine, and SHALL keep the X-ray's 120 ms fade.
+6. THE Landing_Page SHALL render the hero verdict, the steps, the two app cards (`FeatureCard`), the scaffold block, the footer and the 404 page in both themes with zero axe violations and the contrast floors of the UI_Kit.
+7. THE Landing_Page SHALL pass a command menu its own items (the page sections, the two apps, the rulebook, the repository and the theme toggle), at most about 60.
+8. THE Landing_Page SHALL keep Lighthouse mobile performance at 95 or above in a manual run, and SHALL add no Lighthouse run to CI.
+
+### Requirement 12: SEO
+
+**User Story:** As a person sharing the link, I want the page to preview well and describe itself to search engines, so that it is found and understood.
+
+#### Acceptance Criteria
+
+1. THE Landing_Page SHALL set a canonical link, a `description` meta and Open Graph and Twitter card tags for title, description, type, URL and image.
+2. THE Landing_Page SHALL embed JSON-LD of type `Organization` (decided 2026-11-23, not `Person`) with the project name and the repository URL, as a single `application/ld+json` script holding static text.
+3. THE Landing_Page SHALL make the JSON-LD a build-time constant and SHALL load no third-party script for it.
+4. THE Site SHALL ship its OG images as static PNGs, rendered once with Playwright from a dedicated page and committed, so that no image is generated at run time.
+5. THE Landing_Page SHALL add no dependency for any of this.
+6. THE site tests SHALL assert that every tag above is present in the built HTML, that the JSON-LD parses and has `@type` `Organization`, and that the image URL resolves to a committed file.
+
+### Requirement 13: Redesign tests
+
+#### Acceptance Criteria
+
+1. THE site tests SHALL mirror the storage exception in `apps/site/src/landing/lane.test.ts`: `localStorage` is allowed in no file under `apps/site/src/landing`, and the page reaches the theme only through the kit.
+2. THE site tests SHALL run the page at 390, 768 and 1280 px in both themes and in the reduced-motion project, with a clean console and zero axe violations.
+3. THE site tests SHALL assert that the page makes no request after load and writes no storage except `dc-theme`.

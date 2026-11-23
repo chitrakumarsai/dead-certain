@@ -46,7 +46,7 @@ Scope of this spec: the start screen, the consultation flow, the verdict, the X-
 2. THE Claim_Check SHALL render every page inside the UI_Kit `AppShell` with the app name "Claim Check" and navigation entries "Claim Check" and "Rulebook", with `current` set on the page shown. The "Claim Check" entry keeps the Replay_Fragment of the current session, so a visit to the rulebook does not lose the answers.
 3. THE Claim_Check SHALL load the Knowledge_Base from the compiled JSON of `pnpm dc build` and SHALL NOT parse YAML or compile rules in the browser.
 4. THE Claim_Check SHALL make no network request after the page and its assets have loaded, and SHALL load no third-party font, script or style.
-5. THE Claim_Check SHALL NOT use `localStorage`, `sessionStorage`, cookies, analytics or a backend.
+5. THE Claim_Check SHALL NOT use `localStorage`, `sessionStorage`, cookies, analytics or a backend. The one exception is the theme choice, `dc-theme`, which only the kit's `theme/storage.ts` writes.
 6. THE Claim_Check SHALL import the Engine and the UI_Kit as packages, and SHALL NOT modify `packages/engine/src/types.ts` or any file in `packages/ui`.
 7. THE Claim_Check SHALL name a fact or a goal in `src/config.ts` only, and every other module SHALL read the fact definitions, labels, clauses and currency from the Knowledge_Base.
 8. WHEN the Knowledge_Base file is missing or does not satisfy `KnowledgeBase` at start-up, THE Claim_Check SHALL show a plain-words notice that says the rules failed to load and that the page should be reloaded, and SHALL NOT show a blank page.
@@ -234,7 +234,7 @@ Scope of this spec: the start screen, the consultation flow, the verdict, the X-
 3. THE Claim_Check SHALL keep every touch target at least 44 px, SHALL hold its layout from 320 px wide and at 200% zoom, and SHALL show no horizontal scroll at those sizes.
 4. THE Claim_Check SHALL announce each new question, each verdict, each rail change, "Link copied" and each notice through the single polite live region.
 5. THE Claim_Check SHALL follow the copy rules: sentence case, active voice, no exclamation mark, no apology, one name for a control through a flow, and humor only in the footer and on the 404 page.
-6. THE Claim_Check SHALL contain none of the refused patterns: global dark mode, uppercase labels, a caption above a heading, a shadow, a gradient, an entrance animation on scroll, an arrow in a button label.
+6. THE Claim_Check SHALL contain none of the refused patterns: uppercase labels, a caption above a heading, an arrow in a button label, an entrance animation on scroll, and a shadow or gradient that does not come from a kit token. Dark mode is no longer refused (Requirement 16).
 7. THE built app SHALL send less than 200 kB of JavaScript, gzipped, not counting the on-demand develop chunk, and SHALL report the chunk's size beside it.
 8. THE Claim_Check SHALL show a cumulative layout shift below 0.05 on every screen.
 9. THE Claim_Check SHALL compute one consultation step in under 10 ms, measured in a benchmark over the built Knowledge_Base.
@@ -273,6 +273,40 @@ Scope of this spec: the start screen, the consultation flow, the verdict, the X-
 10. THE test suite SHALL cover the flows that scenarios do not: a keyboard-only run from start to verdict and into the X-ray and out, changing an answer from the rail so that the verdict recomputes and a skipped note appears, early stop with "That is enough to decide", a Stale_Link for each of `KB_MISMATCH`, `MALFORMED_TOKEN` and `UNSUPPORTED_VERSION`, the 404 page, the rulebook coverage in both directions, and the X-ray develop with and without reduced motion.
 11. THE test suite SHALL run at 390, 768 and 1280 px and in the reduced-motion project, and SHALL fail on any console error or warning.
 12. THE test suite SHALL produce Task_Evidence for the interface work: screenshots at 390, 768 and 1280 px, attached to the pull request and not committed.
+
+## Redesign: darkroom and lightbox
+
+Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-proposal.md`, approved by the human on 2026-11-23: JSON-LD Organization, no new dependencies). Implemented by **Claude Code lane. Not implemented in the Kiro session that wrote this.** Depends on `ui-kit` tasks 12 to 14.
+
+### Requirement 16: Themes and the shell
+
+**User Story:** As a policyholder, I want the app in the theme I prefer, with every action a keystroke away.
+
+#### Acceptance Criteria
+
+1. THE Claim_Check SHALL render every screen in the dark theme by default and in the light theme on request, through the kit's `ThemeToggle` in the `AppShell`.
+2. THE Claim_Check SHALL write no storage except `dc-theme`, and only through the kit.
+3. THE Claim_Check SHALL pass `CommandMenu` its items: start over, copy the link to this verdict, open the rulebook, and the answers in the rail, at most about 60.
+4. THE Claim_Check SHALL show "Link copied" through the kit's `Toast` and the single live region.
+5. THE Claim_Check SHALL use no motion inside the question and verdict flow beyond the kit's hover, enter, page and menu durations and the X-ray develop, and SHALL use no entrance animation on scroll.
+
+### Requirement 17: Screens
+
+#### Acceptance Criteria
+
+1. THE Claim_Check SHALL restyle the start screen, each question control, the verdict, the open X-ray, the rulebook page, the stale-link notice and the 404 page on the kit's components in both themes, with no change to their copy, order or behaviour.
+2. THE Claim_Check SHALL show paper as a lit sheet on the dark room and the proof on film with grain, a strong edge and bone strokes.
+3. THE Claim_Check SHALL keep verdict states as an icon and a word, with the dark-theme state colours on dark surfaces.
+4. THE Claim_Check SHALL keep every golden scenario passing unchanged.
+
+### Requirement 18: Redesign tests
+
+#### Acceptance Criteria
+
+1. THE end-to-end tests SHALL run the a11y, refusals and keyboard specs at 390, 768 and 1280 px in both themes and in the reduced-motion project, with a clean console and zero axe violations.
+2. THE privacy test SHALL fail on any storage write except `dc-theme`, and on any request after load.
+3. THE refusals test SHALL follow the narrowed list in the `ui-kit` spec (Requirement 33).
+4. THE budgets of Requirement 13 SHALL hold: JavaScript under 200 kB gzipped, layout shift under 0.05, one step under 10 ms.
 
 ## Open questions for the human and the Kiro lane
 
