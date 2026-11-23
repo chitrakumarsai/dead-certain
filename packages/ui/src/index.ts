@@ -28,8 +28,15 @@ export {
 	ClauseRef,
 	type ClauseRefProps,
 } from "./components/ClauseQuote";
+export {
+	type CommandItem,
+	CommandMenu,
+	type CommandMenuProps,
+	MAX_COMMANDS,
+} from "./components/CommandMenu";
 export { Disclosure, type DisclosureProps } from "./components/Disclosure";
 export { Film, type FilmProps } from "./components/Film";
+export { Kbd, type KbdProps } from "./components/Kbd";
 export { Ledger, type LedgerProps } from "./components/Ledger";
 export { ProofTree, type ProofTreeProps } from "./components/ProofTree";
 export {

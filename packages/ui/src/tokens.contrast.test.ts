@@ -186,11 +186,14 @@ test.each(LIGHT_PAIRS)(
 	},
 );
 
-test("the hero headline fill ends on text-tertiary, readable as large text in both themes", () => {
+test("both stops of the hero headline fill reach 4.5:1 on bg-base in both themes (Property 11)", () => {
 	for (const theme of ["dark", "light"] as const) {
 		const t = colourTokens(theme);
-		const end = contrast(t["text-tertiary"] as string, t["bg-base"] as string);
-		expect(end, theme).toBeGreaterThanOrEqual(4.5);
+		for (const stop of ["text-primary", "text-tertiary"])
+			expect(
+				contrast(t[stop] as string, t["bg-base"] as string),
+				`${theme} ${stop}`,
+			).toBeGreaterThanOrEqual(4.5);
 	}
 });
 

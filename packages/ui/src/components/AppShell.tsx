@@ -3,6 +3,7 @@ import { type KeyboardEvent, type ReactNode, useRef, useState } from "react";
 import { LiveRegion } from "../a11y/LiveRegion";
 import { Close, Menu } from "../icons";
 import { useMediaQuery } from "../useMediaQuery";
+import { type CommandItem, CommandMenu } from "./CommandMenu";
 import { ThemeToggle } from "./ThemeToggle";
 
 export interface AppShellProps {
@@ -11,6 +12,8 @@ export interface AppShellProps {
 	nav: readonly { label: string; href: string; current?: boolean }[];
 	/** The AnswersRail. It brings its own aside landmark, so none is added here. */
 	rail?: ReactNode;
+	/** What the command menu offers. Defaults to the navigation links. */
+	commands?: readonly CommandItem[];
 	/** Defaults to "No guesses were made in the production of this verdict." */
 	footer?: ReactNode;
 	children: ReactNode;
@@ -48,7 +51,11 @@ function NavList({
 function PhoneMenu({
 	nav,
 	brand,
-}: Pick<AppShellProps, "nav"> & { brand: ReactNode }) {
+	commands,
+}: Pick<AppShellProps, "nav"> & {
+	brand: ReactNode;
+	commands: readonly CommandItem[];
+}) {
 	const [isOpen, setOpen] = useState(false);
 	const triggerRef = useRef<HTMLButtonElement>(null);
 	const closeOnEscape = (event: KeyboardEvent<HTMLDivElement>): void => {
@@ -76,13 +83,31 @@ function PhoneMenu({
 				{/* Full width under the header row. */}
 				<Collapsible.Content className="pt-2">
 					<NavList nav={nav} onNavigate={() => setOpen(false)} />
+					<div className="pt-2">
+						<CommandMenu items={commands} />
+					</div>
 				</Collapsible.Content>
 			</div>
 		</Collapsible.Root>
 	);
 }
 
-function Frame({ appName, nav, rail, footer, children }: AppShellProps) {
+function Frame({
+	appName,
+	nav,
+	rail,
+	footer,
+	commands,
+	children,
+}: AppShellProps) {
+	const items =
+		commands ??
+		nav.map((item) => ({
+			id: item.href,
+			label: item.label,
+			group: "Pages",
+			href: item.href,
+		}));
 	const isPhone = useMediaQuery(PHONE);
 	const mainRef = useRef<HTMLElement>(null);
 	const brand = (
@@ -110,12 +135,13 @@ function Frame({ appName, nav, rail, footer, children }: AppShellProps) {
 			<header className="border-b border-border-subtle px-4 py-2 md:px-6">
 				<div className="mx-auto w-full max-w-page">
 					{isPhone ? (
-						<PhoneMenu nav={nav} brand={brand} />
+						<PhoneMenu nav={nav} brand={brand} commands={items} />
 					) : (
 						<div className="flex flex-wrap items-center gap-x-2 gap-y-2">
 							{brand}
 							<span className="flex-1" />
 							<NavList nav={nav} onNavigate={() => undefined} />
+							<CommandMenu items={items} />
 							<ThemeToggle />
 						</div>
 					)}
