@@ -33,5 +33,9 @@ test("__APP_NAME__: start, every question, the verdict and its proof", async ({
 
 	await seeWhy.click();
 	await expect(page.locator("[data-clause-heading]").first()).toBeVisible();
+	// Under reduced motion the proof fades in; axe mid-fade reads the text as low contrast.
+	await page.evaluate(() =>
+		Promise.all(document.getAnimations().map((a) => a.finished)),
+	);
 	await expectNoAxeViolations(page);
 });

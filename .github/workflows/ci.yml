@@ -92,7 +92,7 @@ jobs:
       - if: steps.changes.outputs.run == 'true'
         run: pnpm exec playwright install --with-deps chromium
       - if: steps.changes.outputs.run == 'true'
-        run: pnpm exec playwright test --project=1280 e2e/ci-probe-smoke.spec.ts
+        run: pnpm exec playwright test --project=1280 --project=reduced-motion e2e/ci-probe-smoke.spec.ts
 
   deploy:
     if: github.ref == 'refs/heads/main'
