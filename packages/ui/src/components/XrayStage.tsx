@@ -144,7 +144,7 @@ export function XrayStage({
 			className="flex flex-col gap-6 lg:flex-row lg:items-start lg:data-[film=side]:flex-col"
 		>
 			{rail && <div className="shrink-0">{rail}</div>}
-			<div className="flex min-w-0 flex-1 items-start gap-6">
+			<div className="flex min-w-0 flex-1 items-start justify-center gap-6">
 				<div ref={sheetRef} className="relative w-full max-w-column min-w-0">
 					{sheet}
 					{isOpen && !isReduced && develop && (

@@ -19,7 +19,8 @@ test("the sheet is paper with a hairline border, 4 px radius and no shadow", asy
 	await expect(sheet).toHaveCSS("border-top-width", "1px");
 	await expect(sheet).toHaveCSS("border-top-color", HAIRLINE);
 	await expect(sheet).toHaveCSS("border-radius", "4px");
-	await expect(sheet).toHaveCSS("box-shadow", "none");
+	// The paper halo: a glow on the dark room, none on the light theme.
+	await expect(sheet).toHaveClass(/\bhalo-paper\b/);
 	const wide = (testInfo.project.use.viewport?.width ?? 0) >= 768;
 	await expect(sheet).toHaveCSS("padding-left", wide ? "24px" : "16px");
 	const box = await sheet.boundingBox();

@@ -186,7 +186,15 @@ test.each(LIGHT_PAIRS)(
 	},
 );
 
-test("dark translucent pairs: hero headline end and wax-muted", () => {
+test("the hero headline fill ends on text-tertiary, readable as large text in both themes", () => {
+	for (const theme of ["dark", "light"] as const) {
+		const t = colourTokens(theme);
+		const end = contrast(t["text-tertiary"] as string, t["bg-base"] as string);
+		expect(end, theme).toBeGreaterThanOrEqual(4.5);
+	}
+});
+
+test("dark translucent pairs: wax-muted", () => {
 	const t = colourTokens("dark");
 	const base = t["bg-base"] as string;
 	const muted = over(
@@ -195,10 +203,6 @@ test("dark translucent pairs: hero headline end and wax-muted", () => {
 		t["bg-surface-1"] as string,
 	);
 
-	expect(contrast(over(hexRgb(t.bone as string), 0.6, base), base)).toBeCloseTo(
-		5.95,
-		1,
-	);
 	expect(contrast(t.bone as string, muted)).toBeCloseTo(10.91, 1);
 	expect(contrast(t.wax as string, muted)).toBeCloseTo(8.09, 1);
 });

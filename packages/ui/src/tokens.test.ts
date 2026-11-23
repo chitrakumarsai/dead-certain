@@ -15,7 +15,7 @@ function block(selector: string): Map<string, string> {
 	return new Map(
 		[...body.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)].map((m) => [
 			m[1] as string,
-			(m[2] as string).trim(),
+			(m[2] as string).replace(/\s+/g, " ").trim(),
 		]),
 	);
 }

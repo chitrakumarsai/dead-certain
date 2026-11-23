@@ -4,7 +4,7 @@ import type { Surface } from "../types";
 export interface ButtonProps
 	extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className"> {
 	/** Defaults to "secondary". */
-	variant?: "primary" | "secondary" | "quiet";
+	variant?: "primary" | "secondary" | "quiet" | "wax";
 	/** Defaults to the surface the button sits on. */
 	surface?: Surface;
 	/** Plain words. No arrows or chevrons. */
@@ -23,6 +23,8 @@ const ENABLED = {
 		"border border-control-border bg-transparent text-text hover:bg-text/10 active:bg-text/20",
 	quiet:
 		"bg-transparent text-text underline underline-offset-4 hover:decoration-2 active:text-text-soft",
+	// The one call to action on a screen: a wax fill, never wax text.
+	wax: "border-2 border-transparent bg-wax text-on-wax glow-wax-soft hover:bg-wax-hover active:bg-wax",
 };
 
 const DISABLED =

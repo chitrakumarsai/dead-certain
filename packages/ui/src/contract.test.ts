@@ -52,9 +52,9 @@ test("every replay failure is an engine error code", () => {
 	expectTypeOf<ReplayFailure>().toExtend<ErrorCode>();
 });
 
-test("Button props: three variants, an optional surface, plain children", () => {
+test("Button props: four variants, an optional surface, plain children", () => {
 	expectTypeOf<ButtonProps["variant"]>().toEqualTypeOf<
-		"primary" | "secondary" | "quiet" | undefined
+		"primary" | "secondary" | "quiet" | "wax" | undefined
 	>();
 	expectTypeOf<ButtonProps["surface"]>().toEqualTypeOf<Surface | undefined>();
 	expectTypeOf<"Continue">().toExtend<ButtonProps["children"]>();
