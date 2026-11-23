@@ -49,7 +49,7 @@ Scope: the start screen, the collector contract, live collection steps, the repo
 3. THE Pre_Flight SHALL render every screen inside the UI_Kit `AppShell` with the app name "Pre-Flight" and the one navigation entry "Pre-Flight".
 4. THE Pre_Flight SHALL load the Knowledge_Base from the compiled JSON of `pnpm dc build` and SHALL NOT parse YAML or compile rules in the browser.
 5. THE Pre_Flight SHALL make no network request except the Collector's requests to `https://api.github.com/`, and SHALL load no third-party font, script or style.
-6. THE Pre_Flight SHALL NOT use `localStorage`, `sessionStorage`, cookies, analytics or a backend, and SHALL send no credential, token or `Authorization` header.
+6. THE Pre_Flight SHALL NOT use `localStorage`, `sessionStorage`, cookies, analytics or a backend, and SHALL send no credential, token or `Authorization` header. The one exception is the theme choice, `dc-theme`, which only the kit's `theme/storage.ts` writes.
 7. THE Pre_Flight SHALL NOT modify `packages/engine/src/types.ts` or any file in `packages/ui`.
 8. THE Pre_Flight SHALL name a fact or a goal in `src/checklists.ts` and in `collectors/extractors.ts` only, and every other module SHALL read definitions, labels, clauses and currency from the Knowledge_Base.
 9. WHEN the Knowledge_Base file is missing or does not satisfy `KnowledgeBase` at start-up, THE Pre_Flight SHALL show a plain-words notice that the rules failed to load and that the page should be reloaded, and SHALL NOT show a blank page.
@@ -240,7 +240,7 @@ Scope: the start screen, the collector contract, live collection steps, the repo
 3. THE Pre_Flight SHALL keep every touch target at least 44 px, SHALL hold its layout from 320 px wide and at 200% zoom, and SHALL show no horizontal scroll at those sizes, including for long paths and `.gitignore` lines.
 4. THE Pre_Flight SHALL announce each finished step, the Summary, each Summary change, each error and "Report copied" through the single polite live region.
 5. THE Pre_Flight SHALL follow the copy rules: sentence case, active voice, no exclamation mark, no apology, one name for a control through a flow ("See why" opens "Why"), and no humor.
-6. THE Pre_Flight SHALL contain none of the refused patterns: global dark mode, uppercase labels, a caption above a heading, a shadow, a gradient, an entrance animation on scroll, an arrow in a button label.
+6. THE Pre_Flight SHALL contain none of the refused patterns: uppercase labels, a caption above a heading, an arrow in a button label, an entrance animation on scroll, and a shadow or gradient that does not come from a kit token. Dark mode is no longer refused (Requirement 14).
 7. THE built app SHALL send less than 200 kB of JavaScript, gzipped, not counting the on-demand X-ray develop chunk and the snapshot chunk, and SHALL report both chunks' sizes beside it.
 8. THE Pre_Flight SHALL show a cumulative layout shift below 0.05 on every screen, including when the Collection_Steps give way to the Report.
 9. THE Pre_Flight SHALL run one `audit` call in under 10 ms over a Bundled_Snapshot's facts, measured in a benchmark.
@@ -277,6 +277,41 @@ Scope: the start screen, the collector contract, live collection steps, the repo
 10. THE end-to-end tests SHALL cover a keyboard-only run from the start screen to the export.
 11. THE end-to-end tests SHALL run at 390, 768 and 1280 px and in the reduced-motion project, and SHALL fail on any console error or warning.
 12. THE end-to-end tests SHALL produce Task_Evidence for the interface work: screenshots at 390, 768 and 1280 px, attached to the pull request and not committed.
+
+## Redesign: darkroom and lightbox
+
+Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-proposal.md`, approved by the human on 2026-11-23: JSON-LD Organization, no new dependencies). Implemented by **Claude Code lane. Not implemented in the Kiro session that wrote this.** Depends on `ui-kit` tasks 12 to 14.
+
+### Requirement 14: Themes and the shell
+
+**User Story:** As a developer, I want the audit in the theme I prefer, with every action a keystroke away.
+
+#### Acceptance Criteria
+
+1. THE Pre_Flight SHALL render every screen in the dark theme by default and in the light theme on request, through the kit's `ThemeToggle` in the `AppShell`.
+2. THE Pre_Flight SHALL write no storage except `dc-theme`, and only through the kit.
+3. THE Pre_Flight SHALL pass `CommandMenu` its items: audit another repository, export Markdown, copy the replay link, the three sample repositories, and jump to each check group, at most about 60.
+4. THE Pre_Flight SHALL show copy confirmations through the kit's `Toast` and the single live region.
+5. THE Pre_Flight SHALL use no motion inside the audit flow beyond the kit's hover, enter, page and menu durations and the X-ray develop, and SHALL use no entrance animation on scroll.
+6. THE Pre_Flight SHALL keep its network rule: requests only to `https://api.github.com/`, no `Authorization` header.
+
+### Requirement 15: Screens
+
+#### Acceptance Criteria
+
+1. THE Pre_Flight SHALL restyle the start screen, the steps, the Report in each state (ready, not ready, with warnings), the inline question, the open X-ray, the export and each error screen on the kit's components in both themes, with no change to copy, order or behaviour.
+2. THE Pre_Flight SHALL keep every check state as an icon and a word, with the dark-theme state colours on dark surfaces.
+3. THE Pre_Flight SHALL keep each needed question only on the check whose input it asks for.
+4. THE Pre_Flight SHALL keep every golden scenario and every recorded-response journey passing unchanged.
+
+### Requirement 16: Redesign tests
+
+#### Acceptance Criteria
+
+1. THE end-to-end tests SHALL run the journey, a11y, refusals and keyboard specs at 390, 768 and 1280 px in both themes and in the reduced-motion project, with a clean console and zero axe violations.
+2. THE privacy test SHALL fail on any storage write except `dc-theme`, on any request that is not to `api.github.com` and on any `Authorization` header.
+3. THE refusals test SHALL follow the narrowed list in the `ui-kit` spec (Requirement 33).
+4. THE budgets of Requirement 11 SHALL hold.
 
 ## Open questions and decisions
 

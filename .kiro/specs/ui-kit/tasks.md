@@ -16,7 +16,7 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
 - **Dependencies.** Task 1.1 picks exact versions with `context7` for the approved list in requirement 29.4 and nothing else. Pin every dependency to an exact version: no `^`, no `~`. If any task needs a package outside that list, **stop and ask the human before adding it**. This includes an icon package, jsdom, Testing Library, Lighthouse and any CSS-in-JS library, all of which are refused (requirements 29.6, 29.8).
 - **Lanes.** Stay in `packages/ui`, `apps/site`, `e2e` and the root configuration files you need. Do not touch `.kiro/**` or `apps/*/kb`. Do not edit `packages/engine/src/types.ts`. If a task seems to need a contract change, stop and seek consent from both lanes (requirement 30.6). Where the contract lacks a value, take it as a prop, as the design says.
 - **Engine imports.** Import from `@dead-certain/engine/types` with `import type` only. No value import from `@dead-certain/engine` anywhere under `packages/ui/src` outside test files (requirement 5.1, 5.2).
-- **Refusals (never build these).** No global dark mode and no `prefers-color-scheme: dark`. No uppercase labels or `text-transform: uppercase`. No `box-shadow` other than `none`. No `linear-gradient`, `radial-gradient` or `conic-gradient`. No scroll-triggered entrance animation. No arrow or chevron glyphs in button labels. No `dangerouslySetInnerHTML`. No `localStorage`, cookies, analytics or network request. No emoji. No exclamation marks. No humor except the AppShell footer. No `hairline` on text or control borders. No `wax` as text colour.
+- **Refusals (never build these).** No uppercase labels or `text-transform: uppercase`. No caption above a heading. No arrow or chevron glyph in a button label. No `box-shadow`, gradient or `prefers-color-scheme: dark` unless the value comes from a token in `tokens.css` and the use is on the list in `.kiro/steering/design-system.md` (inset highlight, wax glow, paper halo; hero radial glow, hero headline fill, graph-paper grid, film grain, scan line; `prefers-color-scheme` in `tokens.css` only). No entrance animation on scroll, except the landing page's one fade and 16 px rise per section. No Tailwind `uppercase`, `ring` or `shadow` utilities. No `dangerouslySetInnerHTML`. No `localStorage` except the theme choice (`dc-theme`) in `packages/ui/src/theme/storage.ts`; no cookies, analytics or network request. No emoji. No exclamation marks. No apologies. No pumpkins, bats or blood. No `hairline` on text or control borders. No `wax` as text on paper or the light theme. No new dependency. (Replaced 2026-11-23. For tasks 1 to 11 as built, the earlier refusals applied.)
 - **Copy.** Sentence case, active voice, plain words, no apology. Use the exact strings quoted in the requirements.
 - **Styling.** Tailwind utilities over the token custom properties. Take colour, size, radius and spacing from `tokens.css` only. No hex value outside `tokens.css`.
 - **Motion.** Import `motion` in `components/xrayDevelop.tsx` only (loaded on demand by `XrayStage`), through `LazyMotion` with `domAnimation` and `m`. Every other transition is CSS and uses the motion tokens.
@@ -432,6 +432,62 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
   - Ensure all tests pass, ask the user if questions arise.
   - Confirm every task above is ticked, the pull request lists the pinned versions from task 1.1, and `packages/engine/src/types.ts` is unchanged by the ui-kit lane.
 
+- [ ] 12. Tokens and theme toggle (redesign, Claude Code lane)
+  - Read first: `.kiro/steering/design-system.md` and `docs/redesign-proposal.md` sections 1 to 3. Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-proposal.md`, approved by the human on 2026-11-23: JSON-LD Organization, no new dependencies). Do not implement anything outside this task. Tasks 12 to 14 run in order, and the landing page, Claim Check and Pre-Flight redesign tasks wait for them.
+  - [ ] 12.1 Add the dark and light tokens, radius, shadow and glow tokens and the new durations
+    - In `packages/ui/tokens.css` define every token of the dark and light tables, the three rgba borders, `--control-border-dark`, the radii (4, 8, 12, 999), `--highlight-inset`, `--glow-wax-soft`, `--glow-wax-pulse`, `--halo-paper` and `--dur-hover`, `--dur-enter`, `--dur-page`, `--dur-menu`. Dark is the default. Map them in `theme.css` and add the glow `@utility` classes. Apply the type scale. Add no font file.
+    - Reduced motion: `--dur-panel` stays 0 ms, and the rest follow the steering motion table.
+    - Close with Task_Evidence in both themes.
+    - _Requirements: 32.1, 32.2, 32.3, 32.4, 32.7, 32.8, 32.10, 35.1, 35.5_
+  - [ ] 12.2 Extend the contrast test (Property 11)
+    - Extend `tokens.contrast.test.ts` with every pair in the steering contrast tables, for both themes, with the floors given there. Assert no control boundary uses a decorative border or `hairline`, wax is never text on paper or light, and the dark focus ring is wax.
+    - **Property 11: Contrast floor** (extended)
+    - **Validates: Requirements 2.1, 2.2, 2.3, 2.4, 34.1, 34.2, 34.3, 34.4**
+    - Close with Task_Evidence.
+  - [ ] 12.3 Add `theme/storage.ts` and `ThemeToggle`
+    - `packages/ui/src/theme/storage.ts` reads and writes `dc-theme` inside `try/catch` and falls back to `prefers-color-scheme`. It is the only file with `localStorage`. `ThemeToggle` is a button or switch whose accessible name says the theme it will set and which shows its state with an icon and a word, 44 by 44 px.
+    - Playwright: the choice persists across reload; with storage throwing the page still renders and follows `prefers-color-scheme`; no flash of the wrong theme and no layout shift.
+    - Close with Task_Evidence in both themes.
+    - _Requirements: 32.5, 32.6, 36.2_
+  - [ ] 12.4 Narrow the refusals test (Property 12)
+    - Edit `packages/ui/src/refusals.test.ts`: allow `box-shadow` and gradients only when the value comes from a token and the use is on the list; drop the dark-mode refusal and assert `prefers-color-scheme: dark` appears in `tokens.css` only; allow `localStorage` in `packages/ui/src/theme/storage.ts` alone; keep the uppercase, third-party URL and arrow scans; fail on the Tailwind words `uppercase`, `ring` and `shadow`.
+    - **Property 12: No refused patterns** (narrowed)
+    - **Validates: Requirements 2.7, 2.9, 2.10, 2.11, 32.5, 32.6, 33.1, 33.2, 33.3, 33.4, 33.5, 33.7**
+    - Close with Task_Evidence.
+
+- [ ] 13. AppShell and command menu (redesign, Claude Code lane)
+  - [ ] 13.1 Add `Kbd` and extend `AppShell`
+    - `Kbd` (Mono 13/20). `AppShell` gains the command trigger (showing its `Kbd` hint) and the `ThemeToggle` in the header, both at least 44 px and in the keyboard order after the navigation. Keep the skip link first. Update `kit/shell.html`.
+    - Playwright: order, names, 44 px, the shell page passes axe at every width in both themes.
+    - Close with Task_Evidence.
+    - _Requirements: 21.11, 36.1, 36.2, 37.1_
+  - [ ] 13.2 Add `CommandMenu`
+    - Radix Dialog, items as a prop, filtering by hand over at most about 60 items, combobox and listbox roles, Ctrl+K and Cmd+K, arrows, Enter, Escape, focus return, result count in the Live_Region, `--dur-menu` open and close (120 ms fade under reduced motion). No new dependency.
+    - Playwright: every key path, focus return, the count announcement, no more than 60 rendered items, clean console, axe in both themes.
+    - Close with Task_Evidence.
+    - _Requirements: 36.3, 36.4, 36.5, 36.6, 36.7, 29.10_
+
+- [ ] 14. Kit components and /kit in both themes (redesign, Claude Code lane)
+  - [ ] 14.1 Add `Toast` and `Pill`
+    - `Toast` reuses the single polite Live_Region. `Pill` is radius 999. Success pulse only on a confirmed action.
+    - Close with Task_Evidence.
+    - _Requirements: 37.1, 37.2, 35.4_
+  - [ ] 14.2 Add `FeatureCard` and `Illustration`
+    - Cards take radius 12, a decorative edge and the inset highlight, and no grain. Spotlight and shine are static under reduced motion and appear on the landing page and `/kit` only. `Illustration` is inline SVG with `currentColor`.
+    - Close with Task_Evidence.
+    - _Requirements: 32.9, 35.2, 37.1, 37.3_
+  - [ ] 14.3 Restyle `Film` and the existing components for both themes
+    - `Film` gets grain, a `--border-strong` edge and bone strokes. Re-skin every existing component with the new tokens, `--control-border-dark` on dark controls, the wax focus ring on dark and the verdict colours per theme, with no change to behaviour or copy.
+    - Close with Task_Evidence in both themes.
+    - _Requirements: 32.7, 32.8, 32.9_
+  - [ ] 14.4 `/kit` in both themes
+    - Add the theme switch to the gallery and render every specimen in both themes, plus specimens for each new component in each state. Run the Playwright projects in both themes. Axe on the full gallery and each Static_Screen at each width in both themes; clean console. Keep the gzipped Kit_Bundle under 50 kB and report the size.
+    - Close with Task_Evidence, with the `/kit` page at 390, 768 and 1280 px in both themes.
+    - _Requirements: 37.4, 37.5, 37.6, 28.11_
+
+- [ ] 15. Checkpoint, redesign of the kit
+  - Run `pnpm check`, `pnpm test:props` and `pnpm e2e`. Confirm tasks 12 to 14 have their evidence on the pull request and `packages/engine/src/types.ts` is unchanged. Kiro reviews the pull request against this spec.
+
 - [ ] 11. Optional items (build last, drop first if time runs short)
   - [ ]* 11.1 Add the fallback font metric faces
     - Define `Plex Sans Fallback`, `Plex Serif Fallback` and `Plex Mono Fallback` in `fonts.css` on local system fonts with `size-adjust`, `ascent-override`, `descent-override` and `line-gap-override`. Measure the overrides (for example with a Playwright script that compares line boxes with the Plex faces) and record the measured values in a code comment. End each font stack with its fallback face.
@@ -452,6 +508,7 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
 
 ## Notes
 
+- Tasks 12 to 15 are the 2026-11-23 redesign. They are listed before the optional items 11 so that the optional items stay last in the plan, and they run before them. Claude Code lane, none implemented yet.
 - Claude Code implements every task. Kiro does not execute any of them and creates no file under `packages/ui` or `apps/`.
 - Only the three tasks under item 11 are optional, as the user and the design require. Test sub-tasks are not marked optional in this plan, because each task closes with Task_Evidence and `pnpm check`.
 - Properties 1, 2, 3, 5, 6, 7, 8, 9 and 18 are fast-check property tests (`*.props.test.ts`). Property 4 is a unit test plus a source scan. Properties 10 to 17 are checked by unit scans, type-level checks and Playwright, as the design's testing strategy says. Each is tied to a task above.
@@ -511,7 +568,17 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     { "id": 45, "tasks": ["9.6"] },
     { "id": 46, "tasks": ["11.1"] },
     { "id": 47, "tasks": ["11.2"] },
-    { "id": 48, "tasks": ["11.3"] }
+    { "id": 48, "tasks": ["11.3"] },
+    { "id": 49, "tasks": ["12.1"] },
+    { "id": 50, "tasks": ["12.2"] },
+    { "id": 51, "tasks": ["12.3"] },
+    { "id": 52, "tasks": ["12.4"] },
+    { "id": 53, "tasks": ["13.1"] },
+    { "id": 54, "tasks": ["13.2"] },
+    { "id": 55, "tasks": ["14.1"] },
+    { "id": 56, "tasks": ["14.2"] },
+    { "id": 57, "tasks": ["14.3"] },
+    { "id": 58, "tasks": ["14.4"] }
   ]
 }
 ```

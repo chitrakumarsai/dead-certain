@@ -19,7 +19,7 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
 - **Names.** Only `src/checklists.ts` and `collectors/extractors.ts` name a fact or a goal.
 - **Untrusted data.** Every string from GitHub is untrusted. Render it as text. Never use `dangerouslySetInnerHTML`, never build a URL from it, never put it in Markdown without the escaping in the design.
 - **Test-first (collector tasks).** For each collector task: write the test, run it and keep the failing output, write the code, run it and keep the passing output. Put both runs in the task's evidence. A test that never failed proves nothing.
-- **Refusals (never build these).** No global dark mode. No uppercase labels or `text-transform: uppercase`. No `box-shadow` other than `none`. No gradient. No scroll-triggered entrance animation. No arrow or chevron glyph in a button label. No `localStorage`, `sessionStorage`, cookies or analytics. No `Authorization` header or token. No request to any host but `api.github.com`. No emoji. No exclamation mark. No humor. No hex value outside the kit's `tokens.css`. No motion library import in the app.
+- **Refusals (never build these).** No uppercase labels or `text-transform: uppercase`. No caption above a heading. No arrow or chevron glyph in a button label. No `box-shadow`, gradient or `prefers-color-scheme: dark` unless the value comes from a token in `tokens.css` and the use is on the list in `.kiro/steering/design-system.md` (inset highlight, wax glow, paper halo; hero radial glow, hero headline fill, graph-paper grid, film grain, scan line; `prefers-color-scheme` in `tokens.css` only). No entrance animation on scroll, except the landing page's one fade and 16 px rise per section. No Tailwind `uppercase`, `ring` or `shadow` utilities. No `dangerouslySetInnerHTML`. No `localStorage` except the theme choice (`dc-theme`) in `packages/ui/src/theme/storage.ts`; no cookies, analytics or network request. No emoji. No exclamation marks. No apologies. No pumpkins, bats or blood. No `hairline` on text or control borders. No `wax` as text on paper or the light theme. No new dependency. No request to any host but `api.github.com`. No `Authorization` header or token. (Replaced 2026-11-23. Tasks 1 to 21 as built followed the earlier refusals.)
 - **Copy.** Sentence case, active voice, plain words, no apology. Use the exact strings quoted in the requirements. A control keeps one name through a flow.
 - **Tests.** Pure logic is tested in Vitest with no DOM. Screens are tested in Playwright against the built app. Every property test file ends in `.props.test.ts`, uses fast-check `4.10.2`, runs each property at least 100 times, and starts each property with a comment `// Feature: pre-flight-app, Property N: <title>`.
 - **Task_Evidence (every task ends with it).** Before you ask for review, produce all four, and attach them to the pull request:
@@ -179,7 +179,7 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
     - _Requirements: 11.1, 11.3, 11.4_
   - [x] 20.4 Copy and refusals scan on every screen for exclamation marks, uppercase labels, arrow glyphs in buttons, shadows, gradients and apologies. Write `e2e/preflight-refusals.spec.ts`.
     - _Requirements: 11.5, 11.6_
-  - [x] 20.5 Privacy: fail on any storage write, any cookie, any request that is not to `api.github.com`, and any `Authorization` header. Write `e2e/preflight-privacy.spec.ts`.
+  - [x] 20.5 Privacy (since the redesign any storage write except `dc-theme`; see task 27): fail on any storage write, any cookie, any request that is not to `api.github.com`, and any `Authorization` header. Write `e2e/preflight-privacy.spec.ts`.
     - _Requirements: 1.5, 1.6_
   - [x] 20.6 Budgets: a build test gzips the main JavaScript (excluding the develop and snapshot chunks) and fails above 200 kB, reporting both chunk sizes; a layout-shift check below 0.05 on each screen; a Vitest benchmark that one `audit` over a snapshot's facts takes under 10 ms.
     - _Requirements: 11.7 to 11.9_
@@ -192,6 +192,32 @@ This plan builds Pre-Flight (`apps/pre-flight`) in TypeScript strict mode. The o
   - Update `README.md` with a short Pre-Flight section: what it is, how to run it, the four requests it makes and why, how to re-record the snapshots. State anything you could not finish.
   - Open the pull request for the gate. Kiro reviews it against this spec.
   - _Requirements: all_
+
+## Redesign tasks (2026-11-23, Claude Code lane, not implemented)
+
+Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-proposal.md`, approved by the human on 2026-11-23: JSON-LD Organization, no new dependencies). Implemented by **Claude Code lane. Not implemented in the Kiro session that wrote this.** Depends on `ui-kit` tasks 12 to 14. Run last, after the Claim Check redesign (its tasks 17 to 22), one at a time, in this order. Branch `cc/phase6-pre-flight-redesign`. Each task ends with Task_Evidence in both themes (screenshots at 390, 768 and 1280 px, a clean console, zero axe violations, `pnpm check`). Do not touch `apps/pre-flight/{kb,rulebook,golden}`.
+
+- [ ] 22. Theme, shell and command menu
+  - Wire the kit's `ThemeToggle` and `CommandMenu` into `AppShell` with the items in requirement 14.3 and move copy confirmations to `Toast`.
+  - Playwright: the toggle persists, the menu opens with Ctrl+K and Cmd+K, each item runs, focus returns.
+  - _Requirements: 14.1 to 14.6_
+- [ ] 23. Start screen and steps
+  - Restyle the start screen, the sample buttons and the steps in both themes. `preflight-journey` start steps pass unchanged and repeat in the light theme.
+  - _Requirements: 15.1, 15.4_
+- [ ] 24. Report and checks
+  - Restyle the Report in each state, the summary, the check groups, `CheckRow` and the inline question in both themes with the dark state colours.
+  - _Requirements: 15.1, 15.2, 15.3, 15.4_
+- [ ] 25. X-ray, export and errors
+  - Restyle the open X-ray (film material), the Markdown export and each error screen in both themes. The reduced-motion develop still passes.
+  - _Requirements: 15.1, 15.2_
+- [ ] 26. Journeys in both themes
+  - Run the recorded-response journeys for each bundled repository in both themes.
+  - _Requirements: 15.4, 16.1_
+- [ ] 27. Cross-cutting tests in both themes
+  - Run the a11y, keyboard and refusals specs in both themes. Change the privacy test to allow the `dc-theme` write and nothing else. Update the refusals scan to the narrowed list. Re-check the budgets.
+  - _Requirements: 16.1 to 16.4_
+- [ ] 28. Checkpoint, Pre-Flight redesign
+  - Run `pnpm check`, `pnpm test:props`, `pnpm build`, `pnpm dc validate`, `pnpm dc golden` and `pnpm e2e`. Attach every screen in both themes at the three widths and the reduced-motion X-ray. Open the pull request. Kiro reviews it against this spec.
 
 ## Notes
 

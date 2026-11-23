@@ -16,7 +16,7 @@ This plan builds Claim Check (`apps/claim-check`) in TypeScript strict mode: the
 - **Lanes.** Stay in `apps/claim-check` (except `kb`, `rulebook`, `golden`), `e2e` and the root configuration you need. Do not touch `.kiro/**`, `packages/ui`, `packages/engine` or `packages/kb-tools`. Do not edit `packages/engine/src/types.ts`. If a task seems to need a change there, stop and seek consent from both lanes. Where the contract or the kit lacks a value, take it as an app-side prop or helper, as the design says.
 - **Engine imports.** The app may import values from `@dead-certain/engine` (`start`, `next`, `answer`, `explain`, `whatIf`, `encode`, `decode`, `print`, `EngineError`). It never calls `audit`.
 - **Names.** Only `src/config.ts` names a fact or a goal. Every other module reads the knowledge base.
-- **Refusals (never build these).** No global dark mode. No uppercase labels or `text-transform: uppercase`. No `box-shadow` other than `none`. No gradient. No scroll-triggered entrance animation. No arrow or chevron glyph in a button label. No `dangerouslySetInnerHTML`. No `localStorage`, `sessionStorage`, cookies, analytics or network request. No emoji. No exclamation mark. No humor except the footer and the 404 page. No hex value outside the kit's `tokens.css`. No motion library import in the app: the develop lives in `XrayStage`.
+- **Refusals (never build these).** No uppercase labels or `text-transform: uppercase`. No caption above a heading. No arrow or chevron glyph in a button label. No `box-shadow`, gradient or `prefers-color-scheme: dark` unless the value comes from a token in `tokens.css` and the use is on the list in `.kiro/steering/design-system.md` (inset highlight, wax glow, paper halo; hero radial glow, hero headline fill, graph-paper grid, film grain, scan line; `prefers-color-scheme` in `tokens.css` only). No entrance animation on scroll, except the landing page's one fade and 16 px rise per section. No Tailwind `uppercase`, `ring` or `shadow` utilities. No `dangerouslySetInnerHTML`. No `localStorage` except the theme choice (`dc-theme`) in `packages/ui/src/theme/storage.ts`; no cookies, analytics or network request. No emoji. No exclamation marks. No apologies. No pumpkins, bats or blood. No `hairline` on text or control borders. No `wax` as text on paper or the light theme. No new dependency. (Replaced 2026-11-23. Tasks 1 to 16 as built followed the earlier refusals.)
 - **Copy.** Sentence case, active voice, plain words, no apology. Use the exact strings quoted in the requirements. A control keeps one name through a flow.
 - **Tests.** Pure logic is tested in Vitest with no DOM. Screens are tested in Playwright against the built app. Every property test file ends in `.props.test.ts`, uses fast-check `4.10.2`, runs each property at least 100 times, and starts each property with a comment `// Feature: claim-check-app, Property N: <title>`.
 - **Task_Evidence (every task ends with it).** Before you tick a task, produce all four, and attach them to the pull request:
@@ -154,7 +154,7 @@ This plan builds Claim Check (`apps/claim-check`) in TypeScript strict mode: the
     - _Requirements: 13.1, 13.3, 13.4_
   - [x] 15.3 Copy and refusals: a scan of every screen for exclamation marks, uppercase labels, arrow glyphs in buttons, shadows, gradients and apologies. Write `e2e/claim-check-refusals.spec.ts`.
     - _Requirements: 13.5, 13.6, 6.10_
-  - [x] 15.4 No network: fail the test on any request after load, and any storage write. Write `e2e/claim-check-privacy.spec.ts`.
+  - [x] 15.4 No network: fail the test on any request after load, and any storage write (since the redesign, any except `dc-theme`; see task 21). Write `e2e/claim-check-privacy.spec.ts`.
     - _Requirements: 1.4, 1.5, 10.8_
   - [x] 15.5 Budgets: a build test that gzips the app's JavaScript (excluding the develop chunk) and fails above 200 kB, and reports the chunk size; a Playwright layout-shift check below 0.05 on each screen; a Vitest benchmark that one `next` step over the built knowledge base takes under 10 ms. No Lighthouse unless the human approves it.
     - _Requirements: 13.7 to 13.10_
@@ -167,6 +167,29 @@ This plan builds Claim Check (`apps/claim-check`) in TypeScript strict mode: the
   - Update `README.md` with a short Claim Check section: what it is, how to run it, and where the replay link lives. State anything you could not finish.
   - Open the pull request for gate G3. Kiro reviews it against this spec.
   - _Requirements: all_
+
+## Redesign tasks (2026-11-23, Claude Code lane, not implemented)
+
+Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-proposal.md`, approved by the human on 2026-11-23: JSON-LD Organization, no new dependencies). Implemented by **Claude Code lane. Not implemented in the Kiro session that wrote this.** Depends on `ui-kit` tasks 12 to 14. Run after `ui-kit` tasks 12 to 14 and the landing page tasks 9 and 10, one at a time, in this order. Branch `cc/phase6-claim-check-redesign`. Each task ends with Task_Evidence in both themes (screenshots at 390, 768 and 1280 px, a clean console, zero axe violations, `pnpm check`). Do not touch `apps/claim-check/{kb,rulebook,golden}`.
+
+- [ ] 17. Theme, shell and command menu
+  - Wire the kit's `ThemeToggle` and `CommandMenu` into `AppShell` with the items in requirement 16.3, and move "Link copied" to `Toast`. Import the new kit styles.
+  - Playwright: the toggle persists, the menu opens with Ctrl+K and Cmd+K, each item runs, focus returns.
+  - _Requirements: 16.1 to 16.5_
+- [ ] 18. Start and question screens
+  - Restyle `Start.tsx`, `Consult.tsx` and the answers rail in both themes. Existing specs `claim-check-start`, `-consult` and `-rail` pass unchanged in the default theme and are repeated in the light theme.
+  - _Requirements: 17.1, 17.2, 17.4_
+- [ ] 19. Verdict and X-ray screens
+  - Restyle `Verdict.tsx`, `Xray.tsx` and the replay link in both themes with the dark state colours and the film material. `claim-check-verdict`, `-xray` and `-replay` pass in both themes, including the reduced-motion develop.
+  - _Requirements: 17.1, 17.2, 17.3, 17.4_
+- [ ] 20. Rulebook, stale-link and 404 screens
+  - Restyle `Rulebook.tsx`, `Stale.tsx` and `NotFound.tsx` in both themes. `claim-check-pages` passes in both themes.
+  - _Requirements: 17.1, 17.3_
+- [ ] 21. Cross-cutting tests in both themes
+  - Run the a11y, keyboard and refusals specs in both themes. Change the privacy test to allow the `dc-theme` write and nothing else. Update the refusals scan to the narrowed list. Re-check the budgets.
+  - _Requirements: 18.1 to 18.4_
+- [ ] 22. Checkpoint, Claim Check redesign
+  - Run `pnpm check`, `pnpm test:props`, `pnpm build`, `pnpm dc validate`, `pnpm dc golden` and `pnpm e2e`. Attach the five screens in both themes at the three widths and the reduced-motion X-ray. Open the pull request. Kiro reviews it against this spec.
 
 ## Notes
 
