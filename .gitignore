@@ -46,3 +46,5 @@ __pycache__/
 !/e2e/fixtures/*.md
 # Kiro's session log, versioned so the submission write-up has a public record.
 !/docs/kiro-log.md
+# The approved redesign: the ui-kit, landing, claim-check and pre-flight tasks cite it.
+!/docs/redesign-proposal.md

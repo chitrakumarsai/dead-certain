@@ -60,6 +60,7 @@ test("the skip link is the first stop and moves focus to the content", async ({
 });
 
 const TOKEN_SPECIMENS = [
+	"tokens-theme",
 	"tokens-colour",
 	"tokens-type",
 	"tokens-spacing",
@@ -98,15 +99,18 @@ for (const id of ["tokens-type", "tokens-motion"]) {
 test("paper specimens sit on the lightbox", async ({ page }) => {
 	await page.goto("./kit/");
 
-	const backdrop = await page.locator("#tokens-type").evaluate((el) => {
-		let node: Element | null = el;
-		while (node) {
-			const colour = getComputedStyle(node).backgroundColor;
-			if (colour !== "rgba(0, 0, 0, 0)") return colour;
-			node = node.parentElement;
-		}
-		return "none";
-	});
+	// The ground a specimen is drawn on, inside its figure.
+	const backdrop = await page
+		.locator("#tokens-type > div > div")
+		.evaluate((el) => {
+			let node: Element | null = el;
+			while (node) {
+				const colour = getComputedStyle(node).backgroundColor;
+				if (colour !== "rgba(0, 0, 0, 0)") return colour;
+				node = node.parentElement;
+			}
+			return "none";
+		});
 
 	expect(backdrop).toBe("rgb(237, 242, 243)");
 });
@@ -157,19 +161,26 @@ test("motion durations replay, or are stated as text under reduced motion", asyn
 	await expect(replay).toHaveAttribute("aria-pressed", "true");
 });
 
-test("kit page loads the tokens: lightbox background and a token focus ring", async ({
+test("kit page loads the tokens: the room background and a token focus ring", async ({
 	page,
 }) => {
 	await page.goto("./kit/");
 
+	// The room follows the system theme: lightbox and blue in light, dark room and wax in dark.
+	const isLight = await page.evaluate(
+		() => matchMedia("(prefers-color-scheme: light)").matches,
+	);
 	await expect(page.locator("body")).toHaveCSS(
 		"background-color",
-		"rgb(237, 242, 243)",
+		isLight ? "rgb(237, 242, 243)" : "rgb(7, 19, 26)",
 	);
 	await waitForKit(page);
 	await page.keyboard.press("Tab");
 	const skipLink = page.getByRole("link", { name: "Skip to the content" });
-	await expect(skipLink).toHaveCSS("outline-color", "rgb(31, 111, 235)");
+	await expect(skipLink).toHaveCSS(
+		"outline-color",
+		isLight ? "rgb(31, 111, 235)" : "rgb(242, 193, 46)",
+	);
 	await expect(skipLink).toHaveCSS("outline-width", "2px");
 	await expect(skipLink).toHaveCSS("outline-offset", "2px");
 });

@@ -40,6 +40,22 @@ test.each([
 	["text-summary", "var(--leading-summary)"],
 	["ease-kit", "transition-timing-function: var(--ease)"],
 	["figures", "font-variant-numeric: tabular-nums lining-nums"],
+	["bg-bg-base", "background-color: var(--bg-base)"],
+	["bg-surface-3", "background-color: var(--bg-surface-3)"],
+	["border-border-subtle", "border-color: var(--border-subtle)"],
+	["text-text-tertiary", "color: var(--text-tertiary)"],
+	["bg-wax-muted", "background-color: var(--wax-muted)"],
+	["text-on-wax", "color: var(--on-wax)"],
+	["text-paid-dark", "color: var(--paid-dark)"],
+	["rounded-card", "border-radius: var(--radius-card)"],
+	["rounded-pill", "border-radius: var(--radius-pill)"],
+	["text-display", "var(--tracking-display)"],
+	["text-h2", "font-size: var(--text-h2)"],
+	["text-kbd", "font-size: var(--text-kbd)"],
+	["highlight-inset", "box-shadow: var(--highlight-inset)"],
+	["glow-wax-soft", "box-shadow: var(--glow-wax-soft)"],
+	["glow-wax-pulse", "box-shadow: var(--glow-wax-pulse)"],
+	["halo-paper", "box-shadow: var(--halo-paper)"],
 ])("%s compiles to %s", async (className, declaration) => {
 	expect(await build([className])).toContain(declaration);
 });
@@ -54,6 +70,8 @@ test.each([
 	"rounded-lg",
 	"font-sans",
 	"text-xl",
+	"shadow-lg",
+	"uppercase",
 ])("%s is off the scale and does not compile", async (className) => {
 	const withClass = await build([className]);
 	const without = await build([]);

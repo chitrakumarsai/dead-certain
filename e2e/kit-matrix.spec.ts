@@ -198,8 +198,9 @@ test("film specimens sit inside a film, and every specimen sits on the lightbox"
 		.locator("figure[data-specimen]")
 		.evaluateAll((figures) =>
 			figures.map((figure) => {
-				// The colour a specimen is drawn on: its nearest painted ancestor.
-				let node: Element | null = figure;
+				// The colour a specimen is drawn on: the nearest painted ancestor of its content.
+				let node: Element | null =
+					figure.querySelector(":scope > div > div") ?? figure;
 				while (node) {
 					const bg = getComputedStyle(node).backgroundColor;
 					if (bg !== "rgba(0, 0, 0, 0)") return bg;

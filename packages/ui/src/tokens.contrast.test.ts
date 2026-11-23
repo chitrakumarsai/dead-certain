@@ -9,22 +9,71 @@ const UI_ROOT = new URL("../", import.meta.url);
 const read = (path: string): string =>
 	readFileSync(new URL(path, UI_ROOT), "utf8");
 
-/** Colour tokens from tokens.css, with one level of var() resolved. */
-function colourTokens(): Record<string, string> {
-	const raw = Object.fromEntries(
-		[...read("tokens.css").matchAll(/--([\w-]+):\s*([^;]+);/g)].map((m) => [
+/** The declarations of the first rule whose prelude is `selector`. */
+function declarations(selector: string): Record<string, string> {
+	const css = read("tokens.css");
+	const start = css.indexOf(`${selector} {`);
+	const body = css.slice(css.indexOf("{", start) + 1, css.indexOf("}", start));
+	return Object.fromEntries(
+		[...body.matchAll(/--([\w-]+):\s*([^;]+);/g)].map((m) => [
 			m[1] as string,
 			(m[2] as string).trim(),
 		]),
 	);
+}
+
+/**
+ * Colour tokens for a theme, with var() resolved. An rgb(r g b / a%) token
+ * resolves to that colour laid over the theme's --bg-base, as it renders.
+ */
+function colourTokens(
+	theme: "dark" | "light" = "dark",
+): Record<string, string> {
+	const raw = {
+		...declarations(":root"),
+		...(theme === "light" ? declarations(':root[data-theme="light"]') : {}),
+	};
 	const resolve = (value: string): string => {
 		const name = /^var\(--([\w-]+)\)$/.exec(value)?.[1];
-		return name ? (raw[name] as string) : value;
+		return name && raw[name] ? resolve(raw[name] as string) : value;
 	};
-	return Object.fromEntries(
+	const solid = Object.fromEntries(
 		Object.entries(raw).map(([name, value]) => [name, resolve(value)]),
 	);
+	return Object.fromEntries(
+		Object.entries(solid).map(([name, value]) => [
+			name,
+			translucent(value, solid["bg-base"] as string) ?? value,
+		]),
+	);
 }
+
+/** `rgb(r g b / a%)` over `bg`, as #rrggbb, or undefined for any other value. */
+function translucent(value: string, bg: string): string | undefined {
+	const m = /^rgb\((\d+) (\d+) (\d+) \/ (\d+)%\)$/.exec(value);
+	if (!m) return undefined;
+	return over(
+		m.slice(1, 4).map(Number) as [number, number, number],
+		Number(m[4]) / 100,
+		bg,
+	);
+}
+
+/** `fg` at `alpha` laid over the #rrggbb colour `bg`. */
+function over(fg: [number, number, number], alpha: number, bg: string): string {
+	const base = [1, 3, 5].map((i) => Number.parseInt(bg.slice(i, i + 2), 16));
+	return `#${fg
+		.map((c, i) => Math.round(c * alpha + (base[i] as number) * (1 - alpha)))
+		.map((c) => c.toString(16).padStart(2, "0"))
+		.join("")}`;
+}
+
+const hexRgb = (hex: string): [number, number, number] =>
+	[1, 3, 5].map((i) => Number.parseInt(hex.slice(i, i + 2), 16)) as [
+		number,
+		number,
+		number,
+	];
 
 const TEXT = 4.5;
 const NON_TEXT = 3;
@@ -52,7 +101,7 @@ const PAIRS: [string, string, number, number][] = [
 ];
 
 test.each(PAIRS)("%s on %s meets %d:1", (fg, bg, floor, printed) => {
-	const tokens = colourTokens();
+	const tokens = colourTokens("light");
 
 	const ratio = contrast(tokens[fg] as string, tokens[bg] as string);
 
@@ -60,10 +109,128 @@ test.each(PAIRS)("%s on %s meets %d:1", (fg, bg, floor, printed) => {
 	expect(ratio).toBeCloseTo(printed, 1);
 });
 
-test("hairline on paper is the one pair with no floor: it fails 3:1", () => {
-	const tokens = colourTokens();
+// The steering contrast tables, redesign 2026-11-23: [fg, bg, floor, printed].
+const SURFACES = ["bg-base", "bg-surface-1", "bg-surface-2", "bg-surface-3"];
 
-	const ratio = contrast(tokens.hairline as string, tokens.paper as string);
+const DARK_TEXT: [string, number[]][] = [
+	["text-primary", [15.03, 13.89, 12.76, 11.03]],
+	["text-secondary", [10.64, 9.84, 9.04, 7.81]],
+	["text-tertiary", [7.37, 6.81, 6.26, 5.41]],
+	["wax", [11.14, 10.3, 9.46, 8.17]],
+	["paid-dark", [8.49, 7.85, 7.21, 6.23]],
+	["reduced-dark", [8.38, 7.75, 7.12, 6.15]],
+	["denied-dark", [6.43, 5.95, 5.46, 4.72]],
+];
+
+const DARK_PAIRS: [string, string, number, number][] = [
+	...DARK_TEXT.flatMap(([fg, printed]) =>
+		SURFACES.map(
+			(bg, i) =>
+				[fg, bg, TEXT, printed[i] as number] as [
+					string,
+					string,
+					number,
+					number,
+				],
+		),
+	),
+	["on-wax", "wax", TEXT, 11.14],
+	["on-wax", "wax-hover", TEXT, 12.51],
+	["control-border-dark", "bg-surface-2", NON_TEXT, 6.26],
+	["focus-dark", "bg-surface-3", NON_TEXT, 8.17],
+];
+
+const LIGHT_PAIRS: [string, string, number, number][] = [
+	...(
+		[
+			["text-primary", [14.38, 16.05, 15.19, 13.31]],
+			["text-secondary", [6.33, 7.06, 6.69, 5.86]],
+			["text-tertiary", [4.89, 5.46, 5.17, 4.53]],
+			["paid", [5.53, 6.16, 5.84, 5.12]],
+			["reduced", [5.66, 6.31, 5.97, 5.24]],
+			["denied", [6.28, 7.01, 6.64, 5.82]],
+		] as [string, number[]][]
+	).flatMap(([fg, printed]) =>
+		SURFACES.map(
+			(bg, i) =>
+				[fg, bg, TEXT, printed[i] as number] as [
+					string,
+					string,
+					number,
+					number,
+				],
+		),
+	),
+	["control-border", "bg-surface-2", NON_TEXT, 6.69],
+	["focus", "bg-base", NON_TEXT, 4.1],
+];
+
+test.each(DARK_PAIRS)("dark: %s on %s meets %d:1", (fg, bg, floor, printed) => {
+	const tokens = colourTokens("dark");
+
+	const ratio = contrast(tokens[fg] as string, tokens[bg] as string);
+
+	expect(ratio).toBeGreaterThanOrEqual(floor);
+	expect(ratio).toBeCloseTo(printed, 1);
+});
+
+test.each(LIGHT_PAIRS)(
+	"light: %s on %s meets %d:1",
+	(fg, bg, floor, printed) => {
+		const tokens = colourTokens("light");
+
+		const ratio = contrast(tokens[fg] as string, tokens[bg] as string);
+
+		expect(ratio).toBeGreaterThanOrEqual(floor);
+		expect(ratio).toBeCloseTo(printed, 1);
+	},
+);
+
+test("dark translucent pairs: hero headline end and wax-muted", () => {
+	const t = colourTokens("dark");
+	const base = t["bg-base"] as string;
+	const muted = over(
+		hexRgb(t.wax as string),
+		0.12,
+		t["bg-surface-1"] as string,
+	);
+
+	expect(contrast(over(hexRgb(t.bone as string), 0.6, base), base)).toBeCloseTo(
+		5.95,
+		1,
+	);
+	expect(contrast(t.bone as string, muted)).toBeCloseTo(10.91, 1);
+	expect(contrast(t.wax as string, muted)).toBeCloseTo(8.09, 1);
+});
+
+test("decorative borders stay below 3:1 on base, so nothing may use them as a control edge", () => {
+	const t = colourTokens("dark");
+
+	expect(
+		contrast(t["border-subtle"] as string, t["bg-base"] as string),
+	).toBeCloseTo(1.13, 1);
+	expect(
+		contrast(t["border-default"] as string, t["bg-base"] as string),
+	).toBeCloseTo(1.25, 1);
+	expect(
+		contrast(t["border-strong"] as string, t["bg-base"] as string),
+	).toBeCloseTo(1.59, 1);
+});
+
+test("the dark room's focus ring is wax, and the paper one fails there", () => {
+	const t = colourTokens("dark");
+
+	expect(t.focus).toBe(t.wax);
+	expect(
+		contrast(t["focus-paper"] as string, t["bg-surface-3"] as string),
+	).toBeLessThan(NON_TEXT);
+});
+
+test("hairline on paper is the one pair with no floor: it fails 3:1", () => {
+	const ratio = contrast(
+		colourTokens().hairline as string,
+		colourTokens().paper as string,
+	);
 
 	expect(ratio).toBeLessThan(NON_TEXT);
 });

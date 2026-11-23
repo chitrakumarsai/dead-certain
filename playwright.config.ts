@@ -15,6 +15,8 @@ export default defineConfig({
 	forbidOnly: true,
 	use: { baseURL: SITE_URL },
 	// The design's three evidence widths, plus reduced motion at the widest.
+	// Chrome reports a light system theme by default, so these run the light
+	// theme; the dark project runs every spec again in the default dark room.
 	projects: [
 		{
 			name: "390",
@@ -34,6 +36,14 @@ export default defineConfig({
 				...chrome,
 				viewport: { width: 1280, height: HEIGHT },
 				contextOptions: { reducedMotion: "reduce" },
+			},
+		},
+		{
+			name: "dark",
+			use: {
+				...chrome,
+				viewport: { width: 1280, height: HEIGHT },
+				colorScheme: "dark",
 			},
 		},
 	],

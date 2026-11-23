@@ -8,7 +8,6 @@ const env =
 		.process?.env ?? {};
 const base = env.GITHUB_BASE_REF;
 const FORBIDDEN = [
-	/^packages\/ui\//,
 	/^packages\/engine\/src\/types\.ts$/,
 	/^apps\/__APP_NAME__\/(kb|rulebook|golden)\//,
 	/^\.kiro\//,

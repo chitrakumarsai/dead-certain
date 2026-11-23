@@ -42,6 +42,22 @@
 	--color-paid: var(--paid);
 	--color-reduced: var(--reduced);
 	--color-denied: var(--denied);
+	--color-bg-base: var(--bg-base);
+	--color-surface-1: var(--bg-surface-1);
+	--color-surface-2: var(--bg-surface-2);
+	--color-surface-3: var(--bg-surface-3);
+	--color-border-subtle: var(--border-subtle);
+	--color-border-default: var(--border-default);
+	--color-border-strong: var(--border-strong);
+	--color-text-primary: var(--text-primary);
+	--color-text-secondary: var(--text-secondary);
+	--color-text-tertiary: var(--text-tertiary);
+	--color-wax-hover: var(--wax-hover);
+	--color-wax-muted: var(--wax-muted);
+	--color-on-wax: var(--on-wax);
+	--color-paid-dark: var(--paid-dark);
+	--color-reduced-dark: var(--reduced-dark);
+	--color-denied-dark: var(--denied-dark);
 
 	/* Surface context: these follow data-surface. Prefer them in components. */
 	--color-surface: var(--surface);
@@ -69,6 +85,8 @@
 	--radius-paper: var(--radius-paper);
 	--radius-control: var(--radius-control);
 	--radius-film: var(--radius-film);
+	--radius-card: var(--radius-card);
+	--radius-pill: var(--radius-pill);
 
 	/* Type: three voices, seven styles. */
 	--font-doc: var(--font-doc);
@@ -85,14 +103,25 @@
 	--text-verdict--line-height: var(--leading-verdict);
 	--text-summary: var(--text-summary);
 	--text-summary--line-height: var(--leading-summary);
+	--text-display: var(--text-display);
+	--text-display--line-height: var(--leading-display);
+	--text-display--letter-spacing: var(--tracking-display);
+	--text-h2: var(--text-h2);
+	--text-h2--line-height: var(--leading-h2);
+	--text-h2--letter-spacing: var(--tracking-h2);
 	--text-sys-body: var(--text-sys-body);
 	--text-sys-body--line-height: var(--leading-sys-body);
 	--text-question: var(--text-question);
 	--text-question--line-height: var(--leading-question);
+	--text-question--letter-spacing: var(--tracking-question);
 	--text-sys-small: var(--text-sys-small);
 	--text-sys-small--line-height: var(--leading-sys-small);
 	--text-mono: var(--text-mono);
 	--text-mono--line-height: var(--leading-mono);
+	--text-ui-small: var(--text-ui-small);
+	--text-ui-small--line-height: var(--leading-ui-small);
+	--text-kbd: var(--text-kbd);
+	--text-kbd--line-height: var(--leading-kbd);
 
 	/* Motion: one curve. Durations are read directly, as duration-(--dur-press). */
 	--ease-kit: var(--ease);
@@ -106,11 +135,33 @@
 }
 
 /*
+ * Depth comes only from these four tokens (steering: Spacing, radius, layout).
+ * Tailwind's own shadow and ring utilities stay blocked above.
+ */
+@utility highlight-inset {
+	box-shadow: var(--highlight-inset);
+}
+
+@utility glow-wax-soft {
+	box-shadow: var(--glow-wax-soft);
+}
+
+@utility glow-wax-pulse {
+	box-shadow: var(--glow-wax-pulse);
+}
+
+@utility halo-paper {
+	box-shadow: var(--halo-paper);
+}
+
+/*
  * Windows high-contrast mode. Surfaces, borders and icons take system colours
  * through the same context properties. Focus is an outline, so it survives.
  */
 @media (forced-colors: active) {
 	:root,
+	:root[data-theme],
+	:root:not([data-theme="dark"]),
 	[data-surface="paper"],
 	[data-surface="film"] {
 		--surface: Canvas;

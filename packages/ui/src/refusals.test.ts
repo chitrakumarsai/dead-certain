@@ -16,25 +16,49 @@ const matches = (css: string, pattern: RegExp): string[] =>
 const withoutComments = (css: string): string =>
 	css.replace(/\/\*[\s\S]*?\*\//g, "");
 
+/** Depth tokens a box-shadow may use (steering: Spacing, radius, layout). */
+const DEPTH =
+	/^(none|var\(--(highlight-inset|glow-wax-soft|glow-wax-pulse|halo-paper)\))\s*(!important)?$/;
+
+/** Tokens that may hold a gradient (steering: What this design refuses). */
+const GRADIENT_TOKENS =
+	/^--(glow-hero|fill-hero-text|grid-calibration|grain|scan-line)\s*:/;
+
+/** The declaration a match sits in: from the last `{` or `;` before it. */
+const declarationAt = (css: string, index: number): string =>
+	css
+		.slice(
+			Math.max(css.lastIndexOf("{", index), css.lastIndexOf(";", index)) + 1,
+			index,
+		)
+		.trim();
+
 const CSS_REFUSALS: Refusal[] = [
 	{
-		name: "box-shadow other than none",
+		name: "box-shadow other than a depth token",
 		found: (css) =>
-			matches(css, /box-shadow\s*:\s*[^;}]+/g).filter(
-				(decl) => !/:\s*none\s*(!important)?$/.test(decl.trim()),
-			),
+			[...css.matchAll(/box-shadow\s*:\s*([^;}]+)/g)]
+				.filter((m) => !DEPTH.test((m[1] as string).trim()))
+				.map((m) => m[0]),
 	},
 	{
-		name: "gradient",
-		found: (css) => matches(css, /(linear|radial|conic)-gradient/g),
+		name: "gradient outside a gradient token",
+		found: (css) =>
+			[...css.matchAll(/(linear|radial|conic)-gradient/g)]
+				.filter((m) => !GRADIENT_TOKENS.test(declarationAt(css, m.index)))
+				.map((m) => declarationAt(css, m.index)),
 	},
 	{
 		name: "uppercase text",
 		found: (css) => matches(css, /text-transform\s*:\s*uppercase/g),
 	},
 	{
-		name: "global dark mode",
-		found: (css) => matches(css, /prefers-color-scheme\s*:\s*dark/g),
+		name: "Tailwind uppercase, ring or shadow utility",
+		found: (css) =>
+			matches(
+				css,
+				/\.(uppercase|inset-ring|ring|inset-shadow|shadow)(-[\w-]+)?(?=[\s{,:])/g,
+			),
 	},
 	{
 		name: "third-party URL",
@@ -46,11 +70,16 @@ const SOURCE_REFUSALS =
 	/dangerouslySetInnerHTML|localStorage|sessionStorage|document\.cookie|\bfetch\(|XMLHttpRequest|sendBeacon/;
 
 test.each([
-	["a{box-shadow:0 1px 2px #000}", "box-shadow other than none"],
-	["a{background:linear-gradient(red,blue)}", "gradient"],
-	["a{background:conic-gradient(red,blue)}", "gradient"],
+	["a{box-shadow:0 1px 2px #000}", "box-shadow other than a depth token"],
+	["a{box-shadow:var(--other)}", "box-shadow other than a depth token"],
+	[
+		"a{background:linear-gradient(red,blue)}",
+		"gradient outside a gradient token",
+	],
+	["a{--wash:conic-gradient(red,blue)}", "gradient outside a gradient token"],
 	["a{text-transform:uppercase}", "uppercase text"],
-	["@media (prefers-color-scheme:dark){a{color:#fff}}", "global dark mode"],
+	[".shadow-lg{color:red}", "Tailwind uppercase, ring or shadow utility"],
+	[".ring{color:red}", "Tailwind uppercase, ring or shadow utility"],
 	["@font-face{src:url(https://fonts.example/x.woff2)}", "third-party URL"],
 ])("the scan refuses %s", (css, name) => {
 	const refusal = CSS_REFUSALS.find((r) => r.name === name) as Refusal;
@@ -58,9 +87,9 @@ test.each([
 	expect(refusal.found(css)).not.toEqual([]);
 });
 
-test("the scan allows box-shadow none, a licence comment and relative URLs", () => {
+test("the scan allows depth tokens, gradient tokens, a licence comment and relative URLs", () => {
 	const css =
-		"/*! lib | MIT | https://lib.example */a{box-shadow:none}@font-face{src:url(./x.woff2)}";
+		"/*! lib | MIT | https://lib.example */a{box-shadow:none}b{box-shadow:var(--glow-wax-soft)}:root{--grain:linear-gradient(red,blue)}.ringside{color:red}@font-face{src:url(./x.woff2)}";
 
 	expect(CSS_REFUSALS.flatMap((r) => r.found(css))).toEqual([]);
 });
@@ -99,14 +128,53 @@ test.each(CSS_REFUSALS)("the built CSS has no $name", ({ found }) => {
 	expect(found(builtCss)).toEqual([]);
 });
 
+/** The one file allowed to touch localStorage (steering: Theme). */
+const THEME_STORAGE = "theme/storage.ts";
+
 test("kit source has no raw HTML injection, storage or network call", () => {
 	const src = new URL("./", import.meta.url);
 	const offenders = (readdirSync(src, { recursive: true }) as string[])
 		.filter((file) => /\.tsx?$/.test(file) && !/\.test\.tsx?$/.test(file))
 		.filter((file) => !file.startsWith("testkit/"))
-		.filter((file) =>
-			SOURCE_REFUSALS.test(readFileSync(new URL(file, src), "utf8")),
-		);
+		.filter((file) => {
+			const text = readFileSync(new URL(file, src), "utf8");
+			const scanned =
+				file === THEME_STORAGE ? text.replace(/\blocalStorage\b/g, "") : text;
+			return SOURCE_REFUSALS.test(scanned);
+		});
+
+	expect(offenders).toEqual([]);
+});
+
+test("theme storage touches localStorage and nothing else refused", () => {
+	const text = readFileSync(new URL(THEME_STORAGE, import.meta.url), "utf8");
+
+	expect(text).toMatch(/\blocalStorage\b/);
+	expect(text).not.toMatch(/sessionStorage|document\.cookie|\bfetch\(/);
+});
+
+test("prefers-color-scheme: dark appears in no stylesheet or source but tokens.css", () => {
+	const roots = [
+		"../",
+		"../../../apps/site/src/",
+		"../../../apps/claim-check/src/",
+		"../../../apps/pre-flight/src/",
+	].map((path) => new URL(path, import.meta.url));
+	const offenders = roots.flatMap((root) =>
+		(readdirSync(root, { recursive: true }) as string[])
+			.filter(
+				(file) => /\.(css|tsx?)$/.test(file) && !file.includes("node_modules"),
+			)
+			.filter(
+				(file) => !file.endsWith("tokens.css") && !/\.test\.tsx?$/.test(file),
+			)
+			.filter((file) =>
+				/prefers-color-scheme\s*:\s*dark/.test(
+					readFileSync(new URL(file, root), "utf8"),
+				),
+			)
+			.map((file) => `${root.pathname}${file}`),
+	);
 
 	expect(offenders).toEqual([]);
 });
