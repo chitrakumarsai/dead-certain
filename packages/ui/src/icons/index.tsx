@@ -4,16 +4,19 @@ interface IconProps {
 	className?: string;
 }
 
-/** 24 px grid, 2 px stroke in currentColor, hidden from assistive technology. */
+/**
+ * Drawn on a 24 px grid and shown at 16 px. The 2.25 stroke scales to 1.5 px
+ * (requirement 37.3). currentColor, hidden from assistive technology.
+ */
 function Icon({ className, children }: IconProps & { children: ReactNode }) {
 	return (
 		<svg
 			viewBox="0 0 24 24"
-			width="24"
-			height="24"
+			width="16"
+			height="16"
 			fill="none"
 			stroke="currentColor"
-			strokeWidth="2"
+			strokeWidth="2.25"
 			strokeLinecap="round"
 			strokeLinejoin="round"
 			aria-hidden="true"

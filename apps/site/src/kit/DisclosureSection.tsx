@@ -55,6 +55,7 @@ export function DisclosureSection() {
 
 			<Specimen
 				id="disclosure-closed"
+				ground="paper"
 				title="Closed"
 				note="Click, Enter or Space opens it. The chevron swaps its glyph; it does not rotate."
 			>
@@ -65,6 +66,7 @@ export function DisclosureSection() {
 
 			<Specimen
 				id="disclosure-open"
+				ground="paper"
 				title="Open"
 				note="Escape inside the panel closes it and puts focus back on the trigger."
 			>

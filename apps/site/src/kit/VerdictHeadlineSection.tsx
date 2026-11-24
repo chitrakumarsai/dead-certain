@@ -132,6 +132,7 @@ export function VerdictHeadlineSection() {
 			{HEADLINES.flatMap(({ slug, title, headline }) =>
 				SIZES.map(({ size, title: sizeTitle }) => (
 					<Specimen
+						ground="paper"
 						key={`${slug}-${size}`}
 						id={`verdictheadline-${slug}-${size}`}
 						title={`${title}, ${sizeTitle}`}
@@ -146,6 +147,7 @@ export function VerdictHeadlineSection() {
 				)),
 			)}
 			<Specimen
+				ground="paper"
 				id="verdictheadline-appears"
 				title="Appears"
 				note="When a verdict appears its heading takes focus and the live region reads it."

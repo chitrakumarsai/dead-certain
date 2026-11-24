@@ -154,7 +154,6 @@ const ALL = Object.values(MATRIX).flat();
 const isFilm = (id: string) =>
 	/-film$/.test(id) || id.startsWith("prooftree-") || id === "film-side";
 /** --lightbox, the page the paper sits on. */
-const LIGHTBOX = "rgb(237, 242, 243)";
 
 test("every cell of the design's specimen matrix is a specimen with a heading and a note", async ({
 	page,
@@ -183,7 +182,7 @@ test("every specimen's deep link scrolls it into view", async ({ page }) => {
 	}
 });
 
-test("film specimens sit inside a film, and every specimen sits on the lightbox", async ({
+test("film specimens sit inside a film; the rest sit on the room or on a paper sheet", async ({
 	page,
 }) => {
 	await page.goto("./kit/");
@@ -194,20 +193,34 @@ test("film specimens sit inside a film, and every specimen sits on the lightbox"
 			id,
 		).toBeVisible();
 	}
+	// ui-kit 14.4: a specimen is drawn on the room, which follows the theme,
+	// or on a real sheet. Nothing paints a ground of its own any more.
 	const grounds = await page
 		.locator("figure[data-specimen]")
 		.evaluateAll((figures) =>
 			figures.map((figure) => {
-				// The colour a specimen is drawn on: the nearest painted ancestor of its content.
-				let node: Element | null =
-					figure.querySelector(":scope > div > div") ?? figure;
+				const wrapper = figure.querySelector(":scope > div");
+				// The first surface inside: a Sheet, or a specimen of the Sheet itself.
+				if (
+					wrapper
+						?.querySelector("[data-surface]")
+						?.getAttribute("data-surface") === "paper"
+				)
+					return [figure.id, "paper"];
+				let node: Element | null = wrapper;
 				while (node) {
 					const bg = getComputedStyle(node).backgroundColor;
-					if (bg !== "rgba(0, 0, 0, 0)") return bg;
+					if (bg !== "rgba(0, 0, 0, 0)") return [figure.id, bg];
 					node = node.parentElement;
 				}
-				return "none";
+				return [figure.id, "none"];
 			}),
 		);
-	expect(new Set(grounds)).toEqual(new Set([LIGHTBOX]));
+	const room = await page.evaluate(
+		() => getComputedStyle(document.body).backgroundColor,
+	);
+	for (const [id, ground] of grounds) {
+		expect(["paper", room], id).toContain(ground);
+		if (id?.endsWith("-paper")) expect(ground, id).toBe("paper");
+	}
 });

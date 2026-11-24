@@ -1,23 +1,27 @@
 import {
 	expect,
 	expectNoAxeViolations,
+	THEMES,
 	test,
 	waitForKit,
 } from "./kit-fixtures";
 
-test("kit page has a clean console and no axe violations", async ({
-	page,
-}, testInfo) => {
-	await page.goto("./kit/");
-	await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+for (const colorScheme of THEMES) {
+	test(`kit page in the ${colorScheme} theme has a clean console and no axe violations`, async ({
+		page,
+	}, testInfo) => {
+		await page.emulateMedia({ colorScheme });
+		await page.goto("./kit/");
+		await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 
-	await expectNoAxeViolations(page);
-	// Evidence for the pull request. test-results/ is git-ignored.
-	await page.screenshot({
-		path: testInfo.outputPath("kit.png"),
-		fullPage: true,
+		await expectNoAxeViolations(page);
+		// Evidence for the pull request. test-results/ is git-ignored.
+		await page.screenshot({
+			path: testInfo.outputPath(`kit-${colorScheme}.png`),
+			fullPage: true,
+		});
 	});
-});
+}
 
 for (const level of ["warn", "error"] as const) {
 	test(`the console gate fails a test that logs console.${level}`, async ({
@@ -96,23 +100,25 @@ for (const id of ["tokens-type", "tokens-motion"]) {
 	});
 }
 
-test("paper specimens sit on the lightbox", async ({ page }) => {
+test("room specimens sit on the room, which follows the theme", async ({
+	page,
+}) => {
 	await page.goto("./kit/");
 
 	// The ground a specimen is drawn on, inside its figure.
-	const backdrop = await page
-		.locator("#tokens-type > div > div")
-		.evaluate((el) => {
-			let node: Element | null = el;
-			while (node) {
-				const colour = getComputedStyle(node).backgroundColor;
-				if (colour !== "rgba(0, 0, 0, 0)") return colour;
-				node = node.parentElement;
-			}
-			return "none";
-		});
+	const backdrop = await page.locator("#tokens-type > div").evaluate((el) => {
+		let node: Element | null = el;
+		while (node) {
+			const colour = getComputedStyle(node).backgroundColor;
+			if (colour !== "rgba(0, 0, 0, 0)") return colour;
+			node = node.parentElement;
+		}
+		return "none";
+	});
 
-	expect(backdrop).toBe("rgb(237, 242, 243)");
+	expect(backdrop).toBe(
+		await page.evaluate(() => getComputedStyle(document.body).backgroundColor),
+	);
 });
 
 test("colour swatches print the contrast ratio computed from the tokens", async ({

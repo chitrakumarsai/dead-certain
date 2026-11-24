@@ -71,6 +71,12 @@ export async function expectNoAxeViolations(
 export { expect };
 
 /**
+ * Both themes, for the axe gates that must hold at every width in each
+ * (requirement 37.5). The system setting picks the theme when none is stored.
+ */
+export const THEMES = ["light", "dark"] as const;
+
+/**
  * Waits until the gallery has mounted and handed focus back to the body.
  * Press Tab only after this, or the hand-back can take the focus away.
  */

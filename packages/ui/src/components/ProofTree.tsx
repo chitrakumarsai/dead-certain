@@ -242,7 +242,7 @@ function TreeNode({
 			)}
 			{isOpen && (
 				// biome-ignore lint/a11y/useSemanticElements: a tree's child list is role="group"; a fieldset is for form controls.
-				<div role="group" className="ml-2 border-l-2 border-text-soft pl-4">
+				<div role="group" className="ml-2 border-l-2 border-bone pl-4">
 					{node.children.map((child, i) => (
 						<TreeNode
 							// biome-ignore lint/suspicious/noArrayIndexKey: the index path is the node's identity.

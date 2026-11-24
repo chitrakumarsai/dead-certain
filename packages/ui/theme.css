@@ -39,9 +39,10 @@
 	--color-bone: var(--bone);
 	--color-bone-soft: var(--bone-soft);
 	--color-wax: var(--wax);
-	--color-paid: var(--paid);
-	--color-reduced: var(--reduced);
-	--color-denied: var(--denied);
+	/* Verdict states follow the surface (tokens.css); paper keeps the paper set. */
+	--color-paid: var(--state-paid);
+	--color-reduced: var(--state-reduced);
+	--color-denied: var(--state-denied);
 	--color-bg-base: var(--bg-base);
 	--color-surface-1: var(--bg-surface-1);
 	--color-surface-2: var(--bg-surface-2);
@@ -153,6 +154,83 @@
 
 @utility halo-paper {
 	box-shadow: var(--halo-paper);
+}
+
+/* Film only: grain over the film colour (steering: Two materials). */
+@utility film-grain {
+	background-image: var(--grain);
+}
+
+/*
+ * The success pulse marks a confirmed action only (requirement 35.4). The glow
+ * sits on a pseudo-element and only its opacity moves. Reduced motion shows
+ * the final state with no pulse.
+ */
+@utility pulse-confirm {
+	position: relative;
+	&::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		box-shadow: var(--glow-wax-pulse);
+		opacity: 0;
+		pointer-events: none;
+		animation: dc-pulse var(--dur-xray) var(--ease) 1;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		&::after {
+			animation: none;
+		}
+	}
+}
+
+@keyframes dc-pulse {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}
+
+/*
+ * FeatureCard's spotlight and shine, for the landing page and /kit only
+ * (requirement 35.2). Neither is a gradient: a blurred wax disc that follows
+ * the pointer, and a thin bar that crosses once on hover. Both move by
+ * transform alone and hold still under reduced motion.
+ */
+@utility card-spotlight {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: var(--space-24);
+	height: var(--space-24);
+	margin: calc(var(--space-24) / -2) 0 0 calc(var(--space-24) / -2);
+	border-radius: var(--radius-pill);
+	background: var(--wax-muted);
+	filter: blur(var(--space-6));
+	opacity: 0;
+	pointer-events: none;
+	translate: var(--spot-x, 50%) var(--spot-y, 0);
+	transition: opacity var(--dur-hover) var(--ease);
+	@media (prefers-reduced-motion: reduce) {
+		translate: var(--space-12) var(--space-12);
+	}
+}
+
+/* A full-card layer whose right edge is the bar. FeatureCard moves it across on hover. */
+@utility card-shine {
+	position: absolute;
+	inset: 0;
+	border-right: var(--space-6) solid var(--border-default);
+	transform: skewX(-12deg);
+	translate: -110% 0;
+	pointer-events: none;
+	transition: translate var(--dur-page) var(--ease);
+	@media (prefers-reduced-motion: reduce) {
+		display: none;
+	}
 }
 
 /* Landing hero only: radial glow over the graph-paper grid. */

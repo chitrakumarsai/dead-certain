@@ -71,6 +71,7 @@ export function WhatIfListSection() {
 			</p>
 
 			<Specimen
+				ground="paper"
 				id="whatiflist-money"
 				title="Money"
 				note="Claim Check: each row shows the signed change in the amount payable."
@@ -86,6 +87,7 @@ export function WhatIfListSection() {
 				/>
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="whatiflist-no-money"
 				title="No money"
 				note="Pre-Flight: with no amount, each row names the new verdict."
@@ -100,6 +102,7 @@ export function WhatIfListSection() {
 				/>
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="whatiflist-edges"
 				title="Value and change edge cases"
 				note="Yes/no reads lower case; enums like MIT and money stay verbatim. No change in amount or state gives the generic line; an unknown amount is said."
@@ -115,6 +118,7 @@ export function WhatIfListSection() {
 				/>
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="whatiflist-empty"
 				title="Empty"
 				note="When no single answer changes the outcome, the list and its heading are left out."

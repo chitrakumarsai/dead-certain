@@ -9,10 +9,8 @@ test("the sheet is paper with a hairline border, 4 px radius and no shadow", asy
 }, testInfo) => {
 	await page.goto("./kit/#sheet-paper");
 	const sheet = page
-		// The first paper inside the specimen's own paper ground.
-		.locator(
-			'[data-specimen="sheet-paper"] [data-surface="paper"] [data-surface="paper"]',
-		)
+		// The specimen sits on the room, so the first paper is the sheet itself.
+		.locator('[data-specimen="sheet-paper"] [data-surface="paper"]')
 		.first();
 
 	await expect(sheet).toHaveCSS("background-color", PAPER);
@@ -47,7 +45,13 @@ test("the side film is a labelled section with a focusable title and Close", asy
 
 	await expect(film).toHaveAttribute("data-surface", "film");
 	await expect(film).toHaveCSS("background-color", FILM);
-	await expect(film).toHaveCSS("border-top-width", "0px");
+	// ui-kit 14.3: film alone has a --border-strong edge (bone at 18%) and grain.
+	await expect(film).toHaveCSS("border-top-width", "1px");
+	await expect(film).toHaveCSS("border-top-color", "rgba(220, 232, 235, 0.18)");
+	await expect(film).toHaveCSS(
+		"background-image",
+		/^url\("data:image\/svg\+xml/,
+	);
 	await expect(film).toHaveCSS("border-radius", "12px");
 	await expect(film).toHaveCSS("box-shadow", "none");
 	await expect(film.getByRole("heading", { name: "Why" })).toHaveAttribute(

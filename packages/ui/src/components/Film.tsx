@@ -57,8 +57,10 @@ function FilmHeader({
 	);
 }
 
-// The film is never printed: the verdict prints alone, with its ledger.
-const FILM_CLASS = "bg-surface p-4 text-text md:p-6 print:hidden";
+// Film alone has grain and a --border-strong edge, so it keeps meaning proof.
+// It is never printed: the verdict prints alone, with its ledger.
+const FILM_CLASS =
+	"border border-border-strong bg-surface film-grain p-4 text-text md:p-6 print:hidden";
 
 /**
  * The dark proof surface. The children are rendered once into a node that

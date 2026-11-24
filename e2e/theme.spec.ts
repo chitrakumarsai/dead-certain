@@ -22,7 +22,9 @@ test("with nothing stored the room follows the system, and dark is the default",
 	expect(await theme(page)).toBeNull();
 	expect(await bodyBackground(page)).toBe(DARK_ROOM);
 	await expect(
-		page.getByRole("button", { name: /^Dark theme\. Switch to light theme$/ }),
+		page
+			.getByRole("banner")
+			.getByRole("button", { name: /^Dark theme\. Switch to light theme$/ }),
 	).toBeVisible();
 });
 
@@ -30,9 +32,14 @@ test("the choice persists across a reload and is applied before first paint", as
 	page,
 }) => {
 	await page.goto(KIT);
-	await page.getByRole("button", { name: /^Dark theme/ }).click();
+	await page
+		.getByRole("banner")
+		.getByRole("button", { name: /^Dark theme/ })
+		.click();
 	await expect(
-		page.getByRole("button", { name: "Light theme. Switch to dark theme" }),
+		page
+			.getByRole("banner")
+			.getByRole("button", { name: "Light theme. Switch to dark theme" }),
 	).toBeFocused();
 	expect(await bodyBackground(page)).toBe(LIGHTBOX);
 	expect(await page.evaluate(() => localStorage.getItem("dc-theme"))).toBe(
@@ -74,7 +81,10 @@ test("when storage throws the page still renders and follows the system", async 
 	page.on("pageerror", (error) => errors.push(error.message));
 
 	await page.goto(KIT);
-	await page.getByRole("button", { name: /^Dark theme/ }).click();
+	await page
+		.getByRole("banner")
+		.getByRole("button", { name: /^Dark theme/ })
+		.click();
 
 	expect(await bodyBackground(page)).toBe(LIGHTBOX);
 	expect(errors).toEqual([]);
@@ -105,8 +115,20 @@ test("switching the theme moves nothing on the page", async ({ page }) => {
 		}).observe({ type: "layout-shift" });
 	});
 
-	await page.getByRole("button", { name: /^Dark theme/ }).click();
-	await page.getByRole("button", { name: /^Light theme/ }).click();
+	const toggle = page
+		.getByRole("banner")
+		.getByRole("button", { name: /theme/ });
+	const before = await toggle.boundingBox();
+	await page
+		.getByRole("banner")
+		.getByRole("button", { name: /^Dark theme/ })
+		.click();
+	// "Dark" and "Light" differ in width; the toggle must not, or a right-aligned toggle shifts.
+	expect(await toggle.boundingBox()).toEqual(before);
+	await page
+		.getByRole("banner")
+		.getByRole("button", { name: /^Light theme/ })
+		.click();
 
 	expect(
 		await page.evaluate(() => (window as unknown as { shift: number }).shift),

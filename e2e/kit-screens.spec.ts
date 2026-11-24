@@ -1,4 +1,4 @@
-import { expect, expectNoAxeViolations, test } from "./kit-fixtures";
+import { expect, expectNoAxeViolations, THEMES, test } from "./kit-fixtures";
 
 const SCREENS = [
 	["start", "Check a hospital claim before you file it"],
@@ -10,16 +10,19 @@ const SCREENS = [
 ] as const;
 
 for (const [name, heading] of SCREENS) {
-	test(`the ${name} screen loads on its own with a clean console and no axe violations`, async ({
-		page,
-	}) => {
-		await page.goto(`./kit/screen.html?screen=${name}`);
+	for (const colorScheme of THEMES) {
+		test(`the ${name} screen in the ${colorScheme} theme loads on its own with a clean console and no axe violations`, async ({
+			page,
+		}) => {
+			await page.emulateMedia({ colorScheme });
+			await page.goto(`./kit/screen.html?screen=${name}`);
 
-		await expect(
-			page.getByText(heading.split(". ").at(-1) ?? heading).first(),
-		).toBeVisible();
-		await expectNoAxeViolations(page);
-	});
+			await expect(
+				page.getByText(heading.split(". ").at(-1) ?? heading).first(),
+			).toBeVisible();
+			await expectNoAxeViolations(page);
+		});
+	}
 }
 
 test("the verdict screen's heading is focusable and takes focus", async ({

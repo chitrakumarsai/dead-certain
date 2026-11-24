@@ -58,6 +58,10 @@
 	--control-border: var(--control-border-dark);
 	--divider: var(--border-default);
 	--focus: var(--focus-dark);
+	/* Verdict states follow the surface: the dark set on the dark room and film. */
+	--state-paid: var(--paid-dark);
+	--state-reduced: var(--reduced-dark);
+	--state-denied: var(--denied-dark);
 
 	/* Spacing, 4 px base. The suffix matches the Tailwind key, so p-4 is 16 px. */
 	--space-1: 4px;
@@ -141,6 +145,8 @@
 		linear-gradient(var(--border-subtle) 1px, transparent 1px) 0 0 / 48px 48px,
 		linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px) 0 0 / 48px
 		48px;
+	/* Film only: fractal noise as an inline SVG, so there is no image request. */
+	--grain: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.86 0 0 0 0 0.91 0 0 0 0 0.92 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
 	--fill-hero-text: linear-gradient(
 		180deg,
 		var(--text-primary) 35%,
@@ -173,6 +179,9 @@
 	--control-border: var(--ink-soft);
 	--divider: var(--hairline);
 	--focus: var(--focus-paper);
+	--state-paid: var(--paid);
+	--state-reduced: var(--reduced);
+	--state-denied: var(--denied);
 }
 
 /* With no stored choice, follow the system. Same values as the block above. */
@@ -201,6 +210,9 @@
 		--control-border: var(--ink-soft);
 		--divider: var(--hairline);
 		--focus: var(--focus-paper);
+		--state-paid: var(--paid);
+		--state-reduced: var(--reduced);
+		--state-denied: var(--denied);
 	}
 }
 
@@ -229,16 +241,23 @@
 	}
 }
 
-/* A paper sheet set inside film is paper again. */
+/* A paper sheet set inside film is paper again. Paper is light in both themes, so its edges are ink. */
 [data-surface="paper"] {
+	--border-subtle: rgb(19 34 44 / 6%);
+	--border-default: rgb(19 34 44 / 10%);
+	--border-strong: rgb(19 34 44 / 18%);
 	--surface: var(--paper);
 	--text: var(--ink);
 	--text-soft: var(--ink-soft);
 	--control-border: var(--ink-soft);
 	--divider: var(--hairline);
 	--focus: var(--focus-paper);
+	--state-paid: var(--paid);
+	--state-reduced: var(--reduced);
+	--state-denied: var(--denied);
 }
 
+/* Film is dark in both themes, so its edges and states are always the dark set. */
 [data-surface="film"] {
 	--surface: var(--film);
 	--text: var(--bone);
@@ -246,6 +265,12 @@
 	--control-border: var(--bone-soft);
 	--divider: var(--bone-soft);
 	--focus: var(--focus-film);
+	--border-subtle: rgb(220 232 235 / 6%);
+	--border-default: rgb(220 232 235 / 10%);
+	--border-strong: rgb(220 232 235 / 18%);
+	--state-paid: var(--paid-dark);
+	--state-reduced: var(--reduced-dark);
+	--state-denied: var(--denied-dark);
 }
 
 :focus-visible {

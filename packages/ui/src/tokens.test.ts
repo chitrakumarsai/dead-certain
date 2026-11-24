@@ -122,6 +122,13 @@ test("paper surface restores the paper context, for paper set inside film", () =
 		"--control-border": "var(--ink-soft)",
 		"--divider": "var(--hairline)",
 		"--focus": "var(--focus-paper)",
+		// Paper is light in both themes: ink edges and the paper verdict set.
+		"--border-subtle": "rgb(19 34 44 / 6%)",
+		"--border-default": "rgb(19 34 44 / 10%)",
+		"--border-strong": "rgb(19 34 44 / 18%)",
+		"--state-paid": "var(--paid)",
+		"--state-reduced": "var(--reduced)",
+		"--state-denied": "var(--denied)",
 	});
 });
 
@@ -133,6 +140,13 @@ test("film surface swaps the surface-context properties", () => {
 		"--control-border": "var(--bone-soft)",
 		"--divider": "var(--bone-soft)",
 		"--focus": "var(--focus-film)",
+		// Film is dark in both themes: bone edges and the dark verdict set.
+		"--border-subtle": "rgb(220 232 235 / 6%)",
+		"--border-default": "rgb(220 232 235 / 10%)",
+		"--border-strong": "rgb(220 232 235 / 18%)",
+		"--state-paid": "var(--paid-dark)",
+		"--state-reduced": "var(--reduced-dark)",
+		"--state-denied": "var(--denied-dark)",
 	});
 });
 

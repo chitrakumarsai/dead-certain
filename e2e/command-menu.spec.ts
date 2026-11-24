@@ -1,6 +1,20 @@
 import type { Page } from "@playwright/test";
 import { expect, expectNoAxeViolations, test } from "./kit-fixtures";
 
+/**
+ * Waits for the dialog's --dur-menu fade to finish. Axe measured contrast
+ * mid-fade once and failed (Kiro, re-review of PR #29).
+ */
+async function expectSettled(page: Page): Promise<void> {
+	await expect
+		.poll(() =>
+			page
+				.getByRole("dialog")
+				.evaluate((dialog) => getComputedStyle(dialog).opacity),
+		)
+		.toBe("1");
+}
+
 // ui-kit tasks 13.1 and 13.2: the command trigger, Kbd and the command menu.
 const trigger = (page: Page) => page.locator("header [data-command-trigger]");
 const input = (page: Page) => page.getByRole("combobox", { name: "Go to" });
@@ -106,6 +120,7 @@ test("the open menu passes axe", async ({ page }, testInfo) => {
 	await page.goto("./");
 	await trigger(page).click();
 	await expect(input(page)).toBeFocused();
+	await expectSettled(page);
 	await expectNoAxeViolations(page);
 });
 
@@ -156,6 +171,7 @@ test.describe("on a phone", () => {
 
 			await inPanel.click();
 			await expect(input(page)).toBeFocused();
+			await expectSettled(page);
 			await expectNoAxeViolations(page);
 			await page.keyboard.press("Escape");
 			await expect(input(page)).toBeHidden();

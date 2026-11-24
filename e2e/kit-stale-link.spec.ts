@@ -41,7 +41,12 @@ test("every failure has its own heading, body and way forward", async ({
 
 test("a neutral state inside main: no alert, no dialog, no denial colour", async ({
 	page,
-}) => {
+}, testInfo) => {
+	// The notice sits on the room, as in the apps: --text-soft in each theme.
+	const soft =
+		testInfo.project.name === "dark"
+			? "rgb(180, 198, 204)"
+			: "rgb(74, 90, 100)";
 	await page.goto("./kit/#stalelink-kb-mismatch");
 
 	for (const [id] of NOTICES) {
@@ -53,11 +58,8 @@ test("a neutral state inside main: no alert, no dialog, no denial colour", async
 		await expect(
 			page.locator(`main [data-specimen="stalelink-${id}"]`),
 		).toHaveCount(1);
-		// --text-soft on paper (ink-soft), not --denied.
-		await expect(notice.locator("[data-notice-icon]")).toHaveCSS(
-			"color",
-			"rgb(74, 90, 100)",
-		);
+		// --text-soft, not --denied.
+		await expect(notice.locator("[data-notice-icon]")).toHaveCSS("color", soft);
 	}
 });
 

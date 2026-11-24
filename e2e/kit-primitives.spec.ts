@@ -25,12 +25,13 @@ for (const surface of ["paper", "film"] as const) {
 		}
 		for (const icon of await icons.all()) {
 			await expect(icon).toHaveAttribute("aria-hidden", "true");
+			// Drawn on a 24 grid, shown at 16 px: a 2.25 stroke is 1.5 px (requirement 37.3).
 			await expect(icon).toHaveAttribute("viewBox", "0 0 24 24");
-			await expect(icon).toHaveAttribute("stroke-width", "2");
+			await expect(icon).toHaveAttribute("stroke-width", "2.25");
 			await expect(icon).toHaveAttribute("stroke", "currentColor");
 			const box = await icon.boundingBox();
-			expect(box?.width).toBe(24);
-			expect(box?.height).toBe(24);
+			expect(box?.width).toBe(16);
+			expect(box?.height).toBe(16);
 		}
 		await expectNoAxeViolations(page, `[data-specimen="icons-${surface}"]`);
 	});
