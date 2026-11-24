@@ -523,3 +523,9 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
   - Written into the specs: ui-kit requirements 37.3 and 38.14 to 38.17, the icon line in `design.md`, and the spotlight (`--dur-hover`) and shine (`--dur-page`) durations in the steering motion table, which had left them to this review.
   - Ticked: 14.1, 14.2, 14.3. Not ticked: 14.4, 14 and 15, until the layout-shift test is green in CI. 14.4 carries a note saying what to find.
   - Not verified here: the 28.11 bundle size (44.4 kB) is taken from the PR; the kit-size test passed in `pnpm check`. Screenshots at 390, 768 and 1280 px were not viewed.
+
+- Re-review of PR #31 at `17e5de8` for ui-kit task 14.4 and the task 15 checkpoint, on `kiro/6-kit-review` (PR #32). No hook ran. It holds; 14.4, 14 and 15 ticked (14.1 to 14.3 were ticked at the first review).
+  - Evidence: CI run 45361930424 green (`check`, `scaffold`). `pnpm check` ran 1,923 tests, all passed; `pnpm e2e` 2,231 passed and 139 skipped, read from the run log. The diff since `2b429b6` is two files: `ThemeToggle.tsx` and `theme.spec.ts`.
+  - The cause of the layout shift was the toggle's width: "Dark" and "Light" differ by about 1.4 px, and the kit header right-aligns it. The fix puts both words in one grid cell, the other hidden, so the width holds. The accessible name comes from `aria-label`, so it is unchanged. `theme.spec.ts` now also asserts the toggle's box is the same after switching.
+  - Written into ui-kit requirement 38.16. The note under 14.4 now records the fix.
+  - Not verified: no new screenshots were taken or viewed; the toggle is about 1.4 px wider in one theme. I did not run the tests locally on `17e5de8`.
