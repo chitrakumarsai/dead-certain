@@ -43,7 +43,13 @@ export function ThemeToggle() {
 			className="inline-flex min-h-touch min-w-touch items-center justify-center gap-2 rounded-control px-3 text-sys-small text-text transition-colors duration-(--dur-hover) ease-kit hover:bg-surface-3 active:bg-surface-2"
 		>
 			{theme === "dark" ? <Moon /> : <Sun />}
-			<span className="max-md:sr-only">{WORD[theme]}</span>
+			{/* Both words share one cell, so the button keeps the wider word's width and switching moves nothing. */}
+			<span className="grid max-md:sr-only">
+				<span className="col-start-1 row-start-1">{WORD[theme]}</span>
+				<span aria-hidden="true" className="invisible col-start-1 row-start-1">
+					{WORD[OTHER[theme]]}
+				</span>
+			</span>
 		</button>
 	);
 }

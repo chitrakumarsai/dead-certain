@@ -115,10 +115,16 @@ test("switching the theme moves nothing on the page", async ({ page }) => {
 		}).observe({ type: "layout-shift" });
 	});
 
+	const toggle = page
+		.getByRole("banner")
+		.getByRole("button", { name: /theme/ });
+	const before = await toggle.boundingBox();
 	await page
 		.getByRole("banner")
 		.getByRole("button", { name: /^Dark theme/ })
 		.click();
+	// "Dark" and "Light" differ in width; the toggle must not, or a right-aligned toggle shifts.
+	expect(await toggle.boundingBox()).toEqual(before);
 	await page
 		.getByRole("banner")
 		.getByRole("button", { name: /^Light theme/ })
