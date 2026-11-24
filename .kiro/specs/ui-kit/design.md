@@ -373,7 +373,7 @@ interface ClauseQuoteProps {
 - `mark`: when found in `clause.text`, the substring renders in a `<mark>` with `--wax` fill and `ink` text (paper) or `film` text (film). When `mark` is absent or not found, nothing is highlighted and the `deciding` left rule alone shows the deciding clause. The component never guesses a sentence.
 - Rendered as `<blockquote>` with a `cite`-labelled heading. Text is never injected as HTML.
 
-**Icons** are inline SVG components with `aria-hidden="true"`, `currentColor` stroke, 2 px stroke and a 24 px grid. Set: `CheckCircle`, `MinusCircle`, `CrossCircle`, `QuestionCircle`, `InfoCircle`, `Chevron`, `Close`, `Menu`. No icon package is added (Q4).
+**Icons** are inline SVG components with `aria-hidden="true"`, `currentColor` stroke and a 24-unit grid, shown at 16 px with a 2.25 stroke (1.5 px on screen, requirement 38.14). Set: `CheckCircle`, `MinusCircle`, `CrossCircle`, `QuestionCircle`, `InfoCircle`, `Chevron`, `Close`, `Menu`. No icon package is added (Q4).
 
 ### AnswerControl
 

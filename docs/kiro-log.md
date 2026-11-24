@@ -516,3 +516,16 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
   - Probed by hand, not committed: with focus in the page and Ctrl+K pressed, Escape returns focus to the header trigger, as requirement 36.4 now says.
   - Found, non-blocking: one first local run failed axe `color-contrast` on one node in the 390 px phone test under the 1280 project, and 104 repeats afterwards all passed. Axe likely ran while the dialog's 150 ms opacity fade was in progress. Asked for the tests to wait for opacity 1 before axe.
   - Tickable only as far as ui-kit goes: landing 9.1 (its own commands) and the `FeatureCard` and kit restyle in task 14 are untouched.
+
+- Review of PR #31 (`cc/phase6-kit`, head `2b429b6`, ui-kit tasks 14.1 to 14.4) and the task 15 checkpoint, on `kiro/6-kit-review` in its own worktree. No hook ran. Verdict: changes requested, for one red CI test.
+  - Checkpoint, run on the PR head: `pnpm check` 1,922 passed and 1 skipped; `pnpm test:props` passed; `pnpm e2e` 2,231 passed and 139 skipped; `packages/engine/src/types.ts` unchanged. CI run 45351811821: `scaffold` green, `check` red. `pnpm e2e` there had 3 failures, all "switching the theme moves nothing on the page" (1280, reduced-motion, dark), with a layout shift of 0.0000141 against an expected 0. It passed 15 of 15 on repeat locally, so the cause is not found.
+  - The four listed choices are accepted. Icons at 16 px with a 2.25 stroke render 1.5 px (a deviation from "redrawn", requirement 37.3). Spotlight and shine use no gradient and stay inside 33.2. `ThemeToggle` follows `data-theme`. The rewritten tests assert the new rules, not weaker ones: a 1 px `--border-strong` Film edge, a grain `background-image`, bone strokes, 16 px icons.
+  - Written into the specs: ui-kit requirements 37.3 and 38.14 to 38.17, the icon line in `design.md`, and the spotlight (`--dur-hover`) and shine (`--dur-page`) durations in the steering motion table, which had left them to this review.
+  - Ticked: 14.1, 14.2, 14.3. Not ticked: 14.4, 14 and 15, until the layout-shift test is green in CI. 14.4 carries a note saying what to find.
+  - Not verified here: the 28.11 bundle size (44.4 kB) is taken from the PR; the kit-size test passed in `pnpm check`. Screenshots at 390, 768 and 1280 px were not viewed.
+
+- Re-review of PR #31 at `17e5de8` for ui-kit task 14.4 and the task 15 checkpoint, on `kiro/6-kit-review` (PR #32). No hook ran. It holds; 14.4, 14 and 15 ticked (14.1 to 14.3 were ticked at the first review).
+  - Evidence: CI run 45361930424 green (`check`, `scaffold`). `pnpm check` ran 1,923 tests, all passed; `pnpm e2e` 2,231 passed and 139 skipped, read from the run log. The diff since `2b429b6` is two files: `ThemeToggle.tsx` and `theme.spec.ts`.
+  - The cause of the layout shift was the toggle's width: "Dark" and "Light" differ by about 1.4 px, and the kit header right-aligns it. The fix puts both words in one grid cell, the other hidden, so the width holds. The accessible name comes from `aria-label`, so it is unchanged. `theme.spec.ts` now also asserts the toggle's box is the same after switching.
+  - Written into ui-kit requirement 38.16. The note under 14.4 now records the fix.
+  - Not verified: no new screenshots were taken or viewed; the toggle is about 1.4 px wider in one theme. I did not run the tests locally on `17e5de8`.
