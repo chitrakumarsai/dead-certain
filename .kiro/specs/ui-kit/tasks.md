@@ -481,20 +481,21 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
     - _Requirements: 36.3, 36.4, 36.5, 36.6, 36.7, 29.10_
 
 - [ ] 14. Kit components and /kit in both themes (redesign, Claude Code lane)
-  - [ ] 14.1 Add `Toast` and `Pill`
+  - [x] 14.1 Add `Toast` and `Pill`
     - `Toast` reuses the single polite Live_Region. `Pill` is radius 999. Success pulse only on a confirmed action.
     - Close with Task_Evidence.
     - _Requirements: 37.1, 37.2, 35.4_
-  - [ ] 14.2 Add `FeatureCard` and `Illustration`
+  - [x] 14.2 Add `FeatureCard` and `Illustration`
     - Cards take radius 12, a decorative edge and the inset highlight, and no grain. Spotlight and shine are static under reduced motion and appear on the landing page and `/kit` only. `Illustration` is inline SVG with `currentColor`.
     - Close with Task_Evidence.
     - _Requirements: 32.9, 35.2, 37.1, 37.3_
-  - [ ] 14.3 Restyle `Film` and the existing components for both themes
+  - [x] 14.3 Restyle `Film` and the existing components for both themes
     - `Film` gets grain, a `--border-strong` edge and bone strokes. Re-skin every existing component with the new tokens, `--control-border-dark` on dark controls, the wax focus ring on dark and the verdict colours per theme, with no change to behaviour or copy.
     - Close with Task_Evidence in both themes.
     - _Requirements: 32.7, 32.8, 32.9_
   - [ ] 14.4 `/kit` in both themes
     - Add the theme switch to the gallery and render every specimen in both themes, plus specimens for each new component in each state. Run the Playwright projects in both themes. Axe on the full gallery and each Static_Screen at each width in both themes; clean console. Keep the gzipped Kit_Bundle under 50 kB and report the size.
+    - Open after the review of PR #31 (Kiro): CI `check` failed on `theme.spec.ts` "switching the theme moves nothing on the page" (1280, dark and reduced-motion) with a layout shift of 0.0000141 where the test expects 0. It passes locally (15 of 15). Find what moves on the `/kit` page when the theme switches (the gallery now holds two toggles, and the word changes from Dark to Light) and fix it, or record why the shift is real and accepted. Then CI `check` must be green.
     - Close with Task_Evidence, with the `/kit` page at 390, 768 and 1280 px in both themes.
     - _Requirements: 37.4, 37.5, 37.6, 28.11_
 

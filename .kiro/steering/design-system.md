@@ -161,8 +161,8 @@ All animation uses `cubic-bezier(0.2, 0, 0, 1)` (`--ease`).
 | Menu, popover, command menu | 150 ms (`--dur-menu`) | Everywhere | 120 ms fade |
 | X-ray develop (scan line) | 500 ms (`--dur-xray`) | Apps and landing | 120 ms fade (`--dur-reduced`), no scan line |
 | Blur-in | Set in the ui-kit design | Landing hero headline only. It starts at opacity 0.01, not 0, to protect LCP | No blur, no movement |
-| Spotlight | Set in the ui-kit design | Landing page and `/kit` only | Static |
-| Shine | Set in the ui-kit design | Landing page and `/kit` only | Static |
+| Spotlight | 110 ms fade (`--dur-hover`), follows the pointer | Landing page and `/kit` only | Static |
+| Shine | 250 ms crossing (`--dur-page`) | Landing page and `/kit` only | Static |
 | Tilt | Scroll-linked with `animation-timeline: view()` where supported | Landing page only. Static where unsupported | Static |
 | Success pulse | `--glow-wax-pulse` | A confirmed action (copy link, copy command) | One frame of the final state, no pulse |
 
