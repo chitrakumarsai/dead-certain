@@ -101,6 +101,7 @@ export function PrimitivesSection() {
 
 			<Specimen
 				id="icons-paper"
+				ground="paper"
 				title="Icons on paper"
 				note="Inline SVG on a 24 px grid with a 2 px stroke in the text colour. Each is hidden from assistive technology; a word always carries the meaning."
 			>

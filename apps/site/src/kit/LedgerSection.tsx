@@ -120,6 +120,7 @@ export function LedgerSection() {
 
 			{LEDGERS.map((ledger) => (
 				<Specimen
+					ground="paper"
 					key={ledger.id}
 					id={ledger.id}
 					title={ledger.title}
@@ -134,6 +135,7 @@ export function LedgerSection() {
 				</Specimen>
 			))}
 			<Specimen
+				ground="paper"
 				id="ledger-wrap"
 				title="320 px wrap"
 				note="A long label wraps; the amount never does."

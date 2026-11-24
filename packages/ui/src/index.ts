@@ -35,9 +35,19 @@ export {
 	MAX_COMMANDS,
 } from "./components/CommandMenu";
 export { Disclosure, type DisclosureProps } from "./components/Disclosure";
+export {
+	FeatureCard,
+	type FeatureCardProps,
+} from "./components/FeatureCard";
 export { Film, type FilmProps } from "./components/Film";
+export {
+	Illustration,
+	type IllustrationName,
+	type IllustrationProps,
+} from "./components/Illustration";
 export { Kbd, type KbdProps } from "./components/Kbd";
 export { Ledger, type LedgerProps } from "./components/Ledger";
+export { Pill, type PillProps } from "./components/Pill";
 export { ProofTree, type ProofTreeProps } from "./components/ProofTree";
 export {
 	ProportionBar,
@@ -59,6 +69,7 @@ export {
 	type StaleLinkNoticeProps,
 } from "./components/StaleLinkNotice";
 export { ThemeToggle } from "./components/ThemeToggle";
+export { Toast, type ToastProps } from "./components/Toast";
 export {
 	VerdictHeadline,
 	type VerdictHeadlineProps,

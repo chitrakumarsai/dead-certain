@@ -32,6 +32,7 @@ export function SourceBadgeSection() {
 						<Specimen
 							key={`${source}-${surface}`}
 							id={`sourcebadge-${source}-${surface}`}
+							ground={surface === "paper" ? "paper" : "room"}
 							title={`${source[0]?.toUpperCase()}${source.slice(1)} on ${surface}`}
 							note={note}
 						>

@@ -150,6 +150,7 @@ export function AnswerControlSection() {
 			</p>
 
 			<Specimen
+				ground="paper"
 				id="answercontrol-boolean-empty"
 				title="Yes or no, empty"
 				note="Arrow keys move between the two. With focus on the group, 1 picks Yes and 2 picks No."
@@ -157,6 +158,7 @@ export function AnswerControlSection() {
 				<Live fact="is_emergency" />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-boolean-filled"
 				title="Yes or no, filled"
 				note="The choice is filled and carries a check mark, so colour is not the only sign."
@@ -164,6 +166,7 @@ export function AnswerControlSection() {
 				<Live fact="is_emergency" start={true} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-boolean-invalid"
 				title="Yes or no, invalid"
 				note="The message sits under the field and is read as the group's description."
@@ -171,6 +174,7 @@ export function AnswerControlSection() {
 				<Live fact="is_emergency" error={ANSWER_MESSAGES.chooseOne} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-boolean-disabled"
 				title="Yes or no, disabled"
 				note="Disabled while the answer cannot change."
@@ -179,6 +183,7 @@ export function AnswerControlSection() {
 			</Specimen>
 
 			<Specimen
+				ground="paper"
 				id="answercontrol-enum-2"
 				title="Choice of 2"
 				note="One card per option, labelled in words. The digit on each card is its shortcut."
@@ -186,6 +191,7 @@ export function AnswerControlSection() {
 				<Live fact="claim_route" />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-enum-6"
 				title="Choice of 6"
 				note="With focus on the group, 1 to 6 pick by position. Digits outside the group do nothing."
@@ -193,6 +199,7 @@ export function AnswerControlSection() {
 				<Live fact="room_type" />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-enum-10"
 				title="Choice of 10"
 				note="Only the first nine have a digit. The tenth is reached with arrow keys or a click."
@@ -200,6 +207,7 @@ export function AnswerControlSection() {
 				<Live fact="treating_specialty" />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-enum-filled"
 				title="Choice, filled"
 				note="The chosen card is filled and carries a check mark."
@@ -207,6 +215,7 @@ export function AnswerControlSection() {
 				<Live fact="room_type" start="semi_private" />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-enum-invalid"
 				title="Choice, invalid"
 				note="The message sits under the cards and is read as the group's description."
@@ -214,6 +223,7 @@ export function AnswerControlSection() {
 				<Live fact="room_type" error={ANSWER_MESSAGES.chooseOne} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-enum-disabled"
 				title="Choice, disabled"
 				note="Disabled cards keep the chosen one marked, with a dashed border."
@@ -222,6 +232,7 @@ export function AnswerControlSection() {
 			</Specimen>
 
 			<Specimen
+				ground="paper"
 				id="answercontrol-money-empty"
 				title="Money, empty"
 				note="The rupee sign is visible, and screen readers hear Indian rupees with the question."
@@ -229,6 +240,7 @@ export function AnswerControlSection() {
 				<Live fact="room_rent_per_day" />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-money-typing"
 				title="Money, typing"
 				note="Type here. Digits regroup as you type and the caret stays put. Enter shows any problem."
@@ -236,6 +248,7 @@ export function AnswerControlSection() {
 				<Live fact="room_rent_per_day" start={1425} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-money-filled"
 				title="Money, filled"
 				note="The field holds ₹1,42,500 and emits 14250000 paise."
@@ -243,6 +256,7 @@ export function AnswerControlSection() {
 				<Live fact="room_rent_per_day" start={14250000} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-money-zero"
 				title="Money, zero"
 				note="Without a minimum, zero is a valid answer."
@@ -250,6 +264,7 @@ export function AnswerControlSection() {
 				<Live fact="room_rent_per_day" start={0} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-money-invalid-empty"
 				title="Money, no amount"
 				note="Shown when Enter is pressed on an empty field."
@@ -257,6 +272,7 @@ export function AnswerControlSection() {
 				<Live fact="room_rent_per_day" error={ANSWER_MESSAGES.enterAmount} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-money-invalid-format"
 				title="Money, not a number"
 				note="Shown for text such as a lone decimal point."
@@ -264,6 +280,7 @@ export function AnswerControlSection() {
 				<Live fact="room_rent_per_day" error={ANSWER_MESSAGES.moneyFormat} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-money-invalid-decimals"
 				title="Money, too many decimals"
 				note="The number of decimal places comes from the currency."
@@ -271,6 +288,7 @@ export function AnswerControlSection() {
 				<Live fact="room_rent_per_day" error={decimalsMessage(2)} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-money-below-min-one"
 				title="Money, below a minimum of one paisa"
 				note="The app sets a minimum of 1. Type 0 and press Enter."
@@ -278,6 +296,7 @@ export function AnswerControlSection() {
 				<Live fact="sum_insured" min={1} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-money-below-min-amount"
 				title="Money, below a minimum of ₹500"
 				note="The app sets a minimum of ₹500. Type 499 and press Enter."
@@ -285,6 +304,7 @@ export function AnswerControlSection() {
 				<Live fact="sum_insured" min={50000} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-money-disabled"
 				title="Money, disabled"
 				note="Disabled while the answer cannot change."
@@ -293,6 +313,7 @@ export function AnswerControlSection() {
 			</Specimen>
 
 			<Specimen
+				ground="paper"
 				id="answercontrol-number-unit"
 				title="Number with a unit"
 				note="The unit sits after the field as visible text and is read with the question."
@@ -300,6 +321,7 @@ export function AnswerControlSection() {
 				<Live fact="stay_days" unit="days" />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-number-plain"
 				title="Number without a unit"
 				note="The field brings up the decimal keypad on phones."
@@ -307,6 +329,7 @@ export function AnswerControlSection() {
 				<Live fact="age" />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-number-typing"
 				title="Number, typing"
 				note="Type here. Enter shows a problem if the text is not a number."
@@ -314,6 +337,7 @@ export function AnswerControlSection() {
 				<Live fact="stay_days" unit="days" start={4} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-number-invalid"
 				title="Number, invalid"
 				note="Shown for an empty field or text that is not a number."
@@ -321,6 +345,7 @@ export function AnswerControlSection() {
 				<Live fact="age" error={ANSWER_MESSAGES.enterNumber} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-number-disabled"
 				title="Number, disabled"
 				note="Disabled while the answer cannot change."
@@ -329,6 +354,7 @@ export function AnswerControlSection() {
 			</Specimen>
 
 			<Specimen
+				ground="paper"
 				id="answercontrol-date-empty"
 				title="Date, empty"
 				note="The browser's own date picker. It emits an ISO date; text shown to people uses formatDate."
@@ -336,6 +362,7 @@ export function AnswerControlSection() {
 				<Live fact="admission_date" />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-date-filled"
 				title="Date, filled"
 				note="Holds 2026-11-10, which reads as 10 Nov 2026 in any time zone."
@@ -343,6 +370,7 @@ export function AnswerControlSection() {
 				<Live fact="admission_date" start="2026-11-10" />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-date-invalid"
 				title="Date, invalid"
 				note="Shown when Enter is pressed with no date picked."
@@ -350,6 +378,7 @@ export function AnswerControlSection() {
 				<Live fact="admission_date" error={ANSWER_MESSAGES.pickDate} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="answercontrol-date-disabled"
 				title="Date, disabled"
 				note="Disabled while the answer cannot change."

@@ -1,7 +1,7 @@
 import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "@dead-certain/ui/styles.css";
-import { LiveRegion, useAnnounce } from "@dead-certain/ui";
+import { LiveRegion, ThemeToggle, useAnnounce } from "@dead-certain/ui";
 import {
 	ANSWER_CONTROL_SPECIMENS,
 	AnswerControlSection,
@@ -12,13 +12,19 @@ import {
 } from "./AnswersRailSection";
 import { APP_SHELL_SPECIMENS, AppShellSection } from "./AppShellSection";
 import { BUTTON_SPECIMENS, ButtonsSection } from "./ButtonsSection";
+import { CARD_SPECIMENS, CardsSection } from "./CardsSection";
 import { CHECK_ROW_SPECIMENS, CheckRowSection } from "./CheckRowSection";
 import {
 	CLAUSE_QUOTE_SPECIMENS,
 	ClauseQuoteSection,
 } from "./ClauseQuoteSection";
+import {
+	COMMAND_MENU_SPECIMENS,
+	CommandMenuSection,
+} from "./CommandMenuSection";
 import { DISCLOSURE_SPECIMENS, DisclosureSection } from "./DisclosureSection";
 import { LEDGER_SPECIMENS, LedgerSection } from "./LedgerSection";
+import { NOTICE_SPECIMENS, NoticesSection } from "./NoticesSection";
 import { PRIMITIVE_SPECIMENS, PrimitivesSection } from "./PrimitivesSection";
 import { PROOF_TREE_SPECIMENS, ProofTreeSection } from "./ProofTreeSection";
 import {
@@ -63,9 +69,20 @@ const SECTIONS = [
 	{ title: "ProofTree", specimens: PROOF_TREE_SPECIMENS },
 	{ title: "XrayStage", specimens: XRAY_STAGE_SPECIMENS },
 	{ title: "AppShell", specimens: APP_SHELL_SPECIMENS },
+	{ title: "CommandMenu", specimens: COMMAND_MENU_SPECIMENS },
+	{ title: "Toast, Pill and Kbd", specimens: NOTICE_SPECIMENS },
+	{ title: "FeatureCard and Illustration", specimens: CARD_SPECIMENS },
 	{ title: "StaleLinkNotice", specimens: STALE_LINK_SPECIMENS },
 	{ title: "Screens", specimens: SCREEN_SPECIMENS },
 ];
+
+/** The gallery's sections, for its CommandMenu. */
+const COMMANDS = SECTIONS.map((section) => ({
+	id: section.title,
+	label: section.title,
+	group: "Sections",
+	href: `#${section.specimens[0]?.id ?? "content"}`,
+}));
 
 function Gallery() {
 	const announce = useAnnounce();
@@ -93,11 +110,15 @@ function Gallery() {
 			>
 				Skip to the content
 			</a>
-			<header className="pt-4">
-				<h1 className="text-question font-semibold">Component kit</h1>
-				<p className="max-w-column pt-2 text-text-soft">
-					Every Dead Certain component in every state, on sample data.
-				</p>
+			<header className="flex flex-wrap items-start justify-between gap-4 pt-4">
+				<div>
+					<h1 className="text-question font-semibold">Component kit</h1>
+					<p className="max-w-column pt-2 text-text-soft">
+						Every Dead Certain component in every state, on sample data. Switch
+						the theme to see each one in the dark room and on the lightbox.
+					</p>
+				</div>
+				<ThemeToggle />
 			</header>
 			<nav aria-label="Contents" className="pt-6">
 				{SECTIONS.map((section) => (
@@ -137,6 +158,9 @@ function Gallery() {
 				<ProofTreeSection />
 				<XrayStageSection />
 				<AppShellSection />
+				<CommandMenuSection items={COMMANDS} />
+				<NoticesSection />
+				<CardsSection />
 				<StaleLinkSection />
 				<ScreensSection />
 			</main>

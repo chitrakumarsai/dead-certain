@@ -16,7 +16,8 @@ const tree = (page: Page, state: string) =>
 		name: "Proof",
 	});
 /** bone-soft, the film's --text-soft. */
-const STROKE = "rgb(143, 166, 174)";
+// Luminous bone strokes on film (ui-kit 14.3).
+const STROKE = "rgb(220, 232, 235)";
 
 test("the proof tree specimens exist on film and pass axe", async ({
 	page,
@@ -126,7 +127,7 @@ test("the deciding clause is quoted once, after the tree, and stays when branche
 	await expect(quote).toBeVisible();
 });
 
-test("strokes are drawn in the film's soft text colour", async ({ page }) => {
+test("strokes are drawn in bone", async ({ page }) => {
 	await page.goto("./kit/#prooftree-expanded");
 
 	await expect(

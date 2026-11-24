@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useSyncExternalStore } from "react";
 import { Moon, Sun } from "../icons";
 import {
 	applyTheme,
@@ -10,6 +10,16 @@ import {
 const WORD: Record<Theme, string> = { dark: "Dark", light: "Light" };
 const OTHER: Record<Theme, Theme> = { dark: "light", light: "dark" };
 
+/** Every toggle on the page follows data-theme on <html>, so two never disagree. */
+function subscribe(onChange: () => void): () => void {
+	const observer = new MutationObserver(onChange);
+	observer.observe(document.documentElement, {
+		attributes: true,
+		attributeFilter: ["data-theme"],
+	});
+	return () => observer.disconnect();
+}
+
 /**
  * Shows the theme on screen with an icon and a word, and switches to the
  * other one. The name starts with the visible word (WCAG 2.5.3) and says
@@ -17,13 +27,12 @@ const OTHER: Record<Theme, Theme> = { dark: "light", light: "dark" };
  */
 export function ThemeToggle() {
 	// The boot script has set data-theme before React runs, so the first read is right.
-	const [theme, setTheme] = useState<Theme>(currentTheme);
+	const theme = useSyncExternalStore(subscribe, currentTheme);
 
 	const toggle = (): void => {
 		const next = OTHER[theme];
 		applyTheme(next);
 		storeTheme(next);
-		setTheme(next);
 	};
 
 	return (

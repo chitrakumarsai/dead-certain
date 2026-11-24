@@ -84,6 +84,7 @@ export function ClauseQuoteSection() {
 						<Specimen
 							key={`${state}-${surface}`}
 							id={`clausequote-${state}-${surface}`}
+							ground={surface === "paper" ? "paper" : "room"}
 							title={`${title}, on ${surface}`}
 							note={note}
 						>
@@ -100,6 +101,7 @@ export function ClauseQuoteSection() {
 			</div>
 			<Specimen
 				id="clausequote-id-only"
+				ground="paper"
 				title="Clause id only"
 				note="When the app has no text for a cited clause, the id is printed as plain text, with no quote."
 			>

@@ -143,6 +143,7 @@ export function QuestionCardSection() {
 			</p>
 
 			<Specimen
+				ground="paper"
 				id="questioncard-boolean"
 				title="Yes or no"
 				note="Enter on the heading or Continue checks the answer. With none chosen, the message appears and focus moves to Yes."
@@ -150,6 +151,7 @@ export function QuestionCardSection() {
 				<Card question={questionFor("is_emergency")} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="questioncard-enum"
 				title="Choice"
 				note="Digit keys pick a card while focus is in the group."
@@ -157,6 +159,7 @@ export function QuestionCardSection() {
 				<Card question={questionFor("room_type")} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="questioncard-money"
 				title="Money, with why and clause"
 				note="The screen from the plan. Continue is never disabled: on an empty field it explains what is needed."
@@ -164,6 +167,7 @@ export function QuestionCardSection() {
 				<Card question={questionFor("room_rent_per_day")} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="questioncard-number"
 				title="Number with a unit"
 				note="Enter in the field submits a number, or says why the text is not one."
@@ -171,6 +175,7 @@ export function QuestionCardSection() {
 				<Card question={questionFor("stay_days")} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="questioncard-date"
 				title="Date"
 				note="The browser's own date picker."
@@ -178,6 +183,7 @@ export function QuestionCardSection() {
 				<Card question={questionFor("admission_date")} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="questioncard-why-only"
 				title="Why without a clause"
 				note="The panel holds only the reason."
@@ -185,6 +191,7 @@ export function QuestionCardSection() {
 				<Card question={questionFor("is_emergency")} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="questioncard-clause-only"
 				title="Clause without a why"
 				note="The panel holds only the clause."
@@ -192,6 +199,7 @@ export function QuestionCardSection() {
 				<Card question={ageWithoutWhy} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="questioncard-no-why"
 				title="No why and no clause"
 				note="With nothing to explain, there is no panel."
@@ -199,6 +207,7 @@ export function QuestionCardSection() {
 				<Card question={questionFor("demo_video_short")} />
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="questioncard-invalid"
 				title="Invalid"
 				note="An error from the app, such as the engine rejecting the answer. Editing the field clears it."
@@ -209,6 +218,7 @@ export function QuestionCardSection() {
 				/>
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="questioncard-first"
 				title="First question"
 				note="There is nothing to go back to, so there is no Back button."
@@ -220,6 +230,7 @@ export function QuestionCardSection() {
 				/>
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="questioncard-last"
 				title="Last question"
 				note="When nothing more can follow, the progress line says so."
@@ -230,6 +241,7 @@ export function QuestionCardSection() {
 				/>
 			</Specimen>
 			<Specimen
+				ground="paper"
 				id="questioncard-flow"
 				title="Moving between questions"
 				note="Each new question takes focus at its heading, and the live region reads the progress line."

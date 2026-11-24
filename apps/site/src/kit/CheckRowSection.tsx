@@ -133,7 +133,7 @@ export function CheckRowSection() {
 			</p>
 
 			{ROWS.map(({ id, title, note, row }) => (
-				<Specimen key={id} id={id} title={title} note={note}>
+				<Specimen ground="paper" key={id} id={id} title={title} note={note}>
 					<Sample {...row} />
 				</Specimen>
 			))}

@@ -97,7 +97,7 @@ export function ProportionBarSection() {
 			</p>
 
 			{BARS.map(({ id, title, note, parts }) => (
-				<Specimen key={id} id={id} title={title} note={note}>
+				<Specimen ground="paper" key={id} id={id} title={title} note={note}>
 					<div className="max-w-column">
 						<ProportionBar
 							total={CLAIMED_AMOUNT}
