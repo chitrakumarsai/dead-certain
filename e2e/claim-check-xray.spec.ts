@@ -131,6 +131,12 @@ test("the develop: a scan line, or a 120 ms fade under reduced motion", async ({
 		await expect(reveal).toHaveCSS("transition-duration", "0.12s");
 	} else {
 		await expect(line).toHaveCount(1);
+		// A 2 px film line: w-0.5 once compiled to nothing and the line was 0 px wide.
+		const edge =
+			(await line.getAttribute("data-direction")) === "across"
+				? "border-left-width"
+				: "border-top-width";
+		await expect(line.locator("div")).toHaveCSS(edge, "2px");
 		const clip = await reveal.evaluate((el) => getComputedStyle(el).clipPath);
 		expect(clip).not.toBe("inset(0px 0% 0% 0px)");
 	}

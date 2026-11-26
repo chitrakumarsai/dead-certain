@@ -180,7 +180,7 @@ export function CommandMenu({ items }: CommandMenuProps) {
 						))}
 					</div>
 					{shown.length === 0 && (
-						<p className="px-5 pb-4 text-sys-small text-text-secondary">
+						<p className="px-4 pb-4 text-sys-small text-text-secondary">
 							Nothing matches. Try fewer letters.
 						</p>
 					)}
