@@ -22,7 +22,7 @@ const DEPTH =
 
 /** Tokens that may hold a gradient (steering: What this design refuses). */
 const GRADIENT_TOKENS =
-	/^--(glow-hero|fill-hero-text|grid-calibration|grain|scan-line)\s*:/;
+	/^--(glow-hero|fill-hero-text|grid-calibration|grain)\s*:/;
 
 /** The declaration a match sits in: from the last `{` or `;` before it. */
 const declarationAt = (css: string, index: number): string =>
@@ -77,6 +77,10 @@ test.each([
 		"gradient outside a gradient token",
 	],
 	["a{--wash:conic-gradient(red,blue)}", "gradient outside a gradient token"],
+	[
+		":root{--scan-line:linear-gradient(red,blue)}",
+		"gradient outside a gradient token",
+	],
 	["a{text-transform:uppercase}", "uppercase text"],
 	[".shadow-lg{color:red}", "Tailwind uppercase, ring or shadow utility"],
 	[".ring{color:red}", "Tailwind uppercase, ring or shadow utility"],
