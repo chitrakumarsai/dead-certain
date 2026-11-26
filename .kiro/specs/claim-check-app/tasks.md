@@ -177,7 +177,7 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
   - Playwright: the toggle persists, the menu opens with Ctrl+K and Cmd+K, each item runs, focus returns.
   - _Requirements: 16.1 to 16.5_
 - [ ] 18. Start and question screens
-  - Restyle `Start.tsx`, `Consult.tsx` and the answers rail in both themes. Existing specs `claim-check-start`, `-consult` and `-rail` pass unchanged in the default theme and are repeated in the light theme.
+  - Restyle `Start.tsx`, `Consult.tsx` and the answers rail in both themes. Replace `md:pt-20` on the start section (line 44 of `Start.tsx`), which is not a spacing token and emits no CSS, with `md:pt-16` (64 px), and check the desktop gap against the 1280 px screenshot (found at the review of PR #33; ui-kit requirement 39). Existing specs `claim-check-start`, `-consult` and `-rail` pass unchanged in the default theme and are repeated in the light theme.
   - _Requirements: 17.1, 17.2, 17.4_
 - [ ] 19. Verdict and X-ray screens
   - Restyle `Verdict.tsx`, `Xray.tsx` and the replay link in both themes with the dark state colours and the film material. `claim-check-verdict`, `-xray` and `-replay` pass in both themes, including the reduced-motion develop.

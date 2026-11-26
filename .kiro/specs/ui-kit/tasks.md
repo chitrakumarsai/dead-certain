@@ -502,6 +502,17 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
 - [x] 15. Checkpoint, redesign of the kit
   - Run `pnpm check`, `pnpm test:props` and `pnpm e2e`. Confirm tasks 12 to 14 have their evidence on the pull request and `packages/engine/src/types.ts` is unchanged. Kiro reviews the pull request against this spec.
 
+- [ ] 16. Spacing classes that compile (Claude Code lane, from the review of PR #33)
+  - Fix `px-5` in `CommandMenu.tsx` (the "No results" paragraph) to `px-4`. Add the scan of requirement 39.2 as a Vitest file over the sources, with a case that fails on `pt-10`, `md:pt-20` and `px-5`, and make it pass. The two start screens' `md:pt-20` are fixed in `claim-check-app` task 18 and `pre-flight-app` task 23. Until they land, the scan lists those two lines in a named allowlist with a comment pointing to those tasks, and each of those tasks removes its entry.
+  - Close with Task_Evidence (the command menu's empty state at 390, 768 and 1280 px in both themes, and the scan's failing and passing runs).
+  - _Requirements: 39.1 to 39.3_
+
+- [ ] 17. The kit renders on the server (Claude Code lane, prerequisite of `seo` task 10)
+  - Make `ThemeToggle` render both variants with token-driven visibility, read the theme on press, and drop the `MutationObserver` subscription and the hidden-copy cell. Add the visibility tokens to each theme block and the system fallback in `tokens.css`. Add the `renderToString` test of requirement 40.1 for every kit component the start routes use.
+  - Playwright: the toggle's name, width and behaviour at 390, 768 and 1280 px in both themes; two toggles on `/kit` agree; `theme.spec.ts` "moves nothing" still passes; the kit has no `prefers-color-scheme: dark` in its built CSS.
+  - Close with Task_Evidence in both themes.
+  - _Requirements: 40.1 to 40.6, 36.2, 33.3_
+
 - [ ] 11. Optional items (build last, drop first if time runs short)
   - [ ]* 11.1 Add the fallback font metric faces
     - Define `Plex Sans Fallback`, `Plex Serif Fallback` and `Plex Mono Fallback` in `fonts.css` on local system fonts with `size-adjust`, `ascent-override`, `descent-override` and `line-gap-override`. Measure the overrides (for example with a Playwright script that compares line boxes with the Plex faces) and record the measured values in a code comment. End each font stack with its fallback face.

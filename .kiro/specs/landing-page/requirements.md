@@ -188,7 +188,7 @@ Decided by the human (2026-11-20):
 2. **Verdict code.** Copy it into the Hero_Module. Do not import from the apps and do not add a shared package (requirement 1.7).
 3. **The sample claim.** Golden scenario `G-01` (requirement 2.5).
 4. **Mention the tools.** The page carries one sentence under the three steps that says the specs, engine and rules were written with Kiro and the interface with Claude Code, with a link to the `.kiro` folder in the repository (requirement 4.8).
-5. **Link preview image.** Superseded 2026-11-23: static OG PNGs, rendered once and committed (requirement 12.4). Originally none.
+5. **Link preview image.** Superseded 2026-11-23: static OG PNGs, rendered once and committed (now `seo` requirement 7). Originally none.
 6. **The 404 page.** Built now (requirement 6.3).
 7. **Repository URL.** `https://github.com/chitrakumarsai/dead-certain`. The link to the README section "Add a third app" uses this address with the `#add-a-third-app` anchor once the `app-template` spec has added the section, and the README's top until then (requirement 5.3).
 8. **Lighthouse.** Not in CI. The budgets use the size, layout-shift and axe tests (requirement 9). A manual Lighthouse run for the submission stays the human's choice.
@@ -214,7 +214,9 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 7. THE Landing_Page SHALL pass a command menu its own items (the page sections, the two apps, the rulebook, the repository and the theme toggle), at most about 60.
 8. THE Landing_Page SHALL keep Lighthouse mobile performance at 95 or above in a manual run, and SHALL add no Lighthouse run to CI.
 
-### Requirement 12: SEO
+### Requirement 12: SEO (moved to the `seo` spec, 2026-11-26)
+
+> **Moved.** This requirement now lives in `.kiro/specs/seo/requirements.md` (requirements 1, 4, 6, 7 and 8), by the owner's decision of 2026-11-26. The text below is kept so earlier references resolve. Where it differs from the `seo` spec, the `seo` spec wins: the JSON-LD is a `WebSite`, a `SoftwareSourceCode` and a `WebApplication` with an `Organization` author, not a single `Organization` (12.2, 12.6), and the title in 1.10 keeps its full stop.
 
 **User Story:** As a person sharing the link, I want the page to preview well and describe itself to search engines, so that it is found and understood.
 
@@ -246,4 +248,4 @@ Review of PR #27 (Kiro, 2026-11-23).
 3. THE App_Cards SHALL be whole-card links: the app's name stays the link and its target covers the card. The card SHALL show its hover state as a border change only.
 4. THE Scaffold_Command SHALL sit in a panel on `--bg-surface-1`.
 5. THE page's own sizes (`max-w-3xl`, `max-w-xl`, `max-w-md`) are Tailwind's scale, not a new token. They are accepted for this pass.
-6. THE command menu, landing motion (blur-in, section rise, tilt, spotlight, shine), SEO and OG images, `FeatureCard` use, the footer and the 404 page restyle remain open. Tasks 9.1 to 9.5 stay unticked.
+6. THE command menu, landing motion (blur-in, section rise, tilt, spotlight, shine), `FeatureCard` use, the footer and the 404 page restyle remain open. Tasks 9.1 to 9.5 stay unticked. (SEO and OG images moved to the `seo` spec on 2026-11-26.)
