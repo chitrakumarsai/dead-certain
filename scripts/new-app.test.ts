@@ -23,6 +23,8 @@ function sandbox(): string {
 		`${tmp}/.github/workflows/ci.yml`,
 	);
 	fs.cpSync(`${ROOT}scripts`, `${tmp}/scripts`, { recursive: true });
+	fs.mkdirSync(`${tmp}/packages/ui/src`, { recursive: true });
+	fs.cpSync(`${ROOT}packages/ui/src/site.ts`, `${tmp}/packages/ui/src/site.ts`);
 	for (const app of ["claim-check", "pre-flight", "site"]) {
 		fs.mkdirSync(`${tmp}/apps/${app}`, { recursive: true });
 		fs.writeFileSync(
@@ -66,7 +68,7 @@ afterEach(() => {
 });
 
 describe("pnpm new-app, run for real", () => {
-	it("creates the app, edits the two shared files and prints the steps (1.3, 1.6)", () => {
+	it("creates the app, edits the three shared files and prints the steps (1.3, 1.6, 13.2)", () => {
 		const tmp = sandbox();
 		const r = run(tmp, "loan-check");
 		expect(r.status, r.stderr).toBe(0);
@@ -83,17 +85,25 @@ describe("pnpm new-app, run for real", () => {
 		expect(
 			fs.readFileSync(`${tmp}/.github/workflows/ci.yml`, "utf8"),
 		).toContain("pnpm dc build apps/loan-check");
+		expect(fs.readFileSync(`${tmp}/packages/ui/src/site.ts`, "utf8")).toContain(
+			'\tloanCheck: {\n\t\tpath: "loan-check/",',
+		);
 		expect(r.stdout).toContain("pnpm --filter @dead-certain/loan-check dev");
 	});
 
 	it("changes nothing with --dry-run, and prints the plan (1.4)", () => {
 		const tmp = sandbox();
 		const pw = fs.readFileSync(`${tmp}/playwright.config.ts`, "utf8");
+		const site = fs.readFileSync(`${tmp}/packages/ui/src/site.ts`, "utf8");
 		const r = run(tmp, "loan-check", "--dry-run");
 		expect(r.status).toBe(0);
 		expect(r.stdout).toMatch(/^Dry run/);
 		expect(fs.existsSync(`${tmp}/apps/loan-check`)).toBe(false);
 		expect(fs.readFileSync(`${tmp}/playwright.config.ts`, "utf8")).toBe(pw);
+		expect(fs.readFileSync(`${tmp}/packages/ui/src/site.ts`, "utf8")).toBe(
+			site,
+		);
+		expect(r.stdout).toContain("Lines to insert in packages/ui/src/site.ts:");
 	});
 
 	it("refuses a taken name with exit 1 and changes nothing (2.3)", () => {

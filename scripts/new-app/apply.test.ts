@@ -28,24 +28,33 @@ const PLAN: Plan = {
 			after: "ci after",
 			inserted: [],
 		},
+		{
+			path: "packages/ui/src/site.ts",
+			before: "site before",
+			after: "site after",
+			inserted: [],
+		},
 	],
 };
 const SEED = {
 	"playwright.config.ts": "pw before",
 	".github/workflows/ci.yml": "ci before",
+	"packages/ui/src/site.ts": "site before",
 	"e2e/kit.spec.ts": "kit",
 };
 
 describe("apply", () => {
-	it("writes every file and both edits", () => {
+	it("writes every file and the three edits", () => {
 		const fs = new MemoryFs(SEED);
 		expect(apply(PLAN, fs)).toEqual({ ok: true });
 		for (const f of PLAN.create) expect(fs.files.get(f.path)).toBe(f.text);
 		expect(fs.files.get("playwright.config.ts")).toBe("pw after");
 		expect(fs.files.get(".github/workflows/ci.yml")).toBe("ci after");
+		expect(fs.files.get("packages/ui/src/site.ts")).toBe("site after");
 		expect(fs.dirs.has("apps/loan-check/src/session")).toBe(true);
 	});
 
+	// Every write is failed in turn, the site.ts edit's included (13.6).
 	it("leaves the file system as it began when any write fails (2.6)", () => {
 		const total = (() => {
 			const fs = new MemoryFs(SEED);

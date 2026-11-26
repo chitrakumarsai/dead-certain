@@ -1,6 +1,6 @@
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
-import { insertAtMarker, nextPort } from "./markers.ts";
+import { insertAtMarker, type MarkerName, nextPort } from "./markers.ts";
 
 const line = fc
 	.string({ maxLength: 20 })
@@ -16,20 +16,27 @@ describe("marker properties", () => {
 				fc.constantFrom("", "  ", "\t\t"),
 				fc.array(line, { minLength: 1, maxLength: 3 }),
 				fc.boolean(),
-				(before, after, indent, inserted, crlf) => {
+				fc.constantFrom<MarkerName>(
+					"urls",
+					"servers",
+					"dc-build",
+					"copy",
+					"pages",
+				),
+				(before, after, indent, inserted, crlf, marker) => {
 					const eol = crlf ? "\r\n" : "\n";
 					const text = [
 						...before,
-						`${indent}# new-app:copy`,
+						`${indent}// new-app:${marker}`,
 						...after,
 						"",
 					].join(eol);
-					const r = insertAtMarker(text, "copy", inserted);
+					const r = insertAtMarker(text, marker, inserted);
 					if (!r.ok) throw new Error(r.message);
 					const expected = [
 						...before,
 						...inserted.map((l) => `${indent}${l}`),
-						`${indent}# new-app:copy`,
+						`${indent}// new-app:${marker}`,
 						...after,
 						"",
 					].join(eol);

@@ -6,6 +6,8 @@ const PLAYWRIGHT =
 	'const A = "http://localhost:4174/dead-certain/a/";\n// new-app:urls\nexport default {\n\twebServer: [\n\t\t// new-app:servers\n\t],\n};\n';
 const CI =
 	"      - run: pnpm dc build apps/a\n      # new-app:dc-build\n      - run: cp -R apps/a/dist apps/site/dist/a\n      # new-app:copy\n";
+const SITE =
+	'export const ENTRIES = {\n\ta: {\n\t\tpath: "a/",\n\t},\n\t// new-app:pages\n};\n';
 const TOKENS = [
 	"__APP_NAME__",
 	"__APP_TITLE__",
@@ -41,6 +43,7 @@ const inputs = (
 	templateFiles,
 	playwright: PLAYWRIGHT,
 	ci: CI,
+	site: SITE,
 	existingApps,
 	packageNames: existingApps.map((a) => `@dead-certain/${a}`),
 });

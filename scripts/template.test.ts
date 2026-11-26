@@ -24,6 +24,7 @@ const plan = planFor(
 		templateFiles,
 		playwright: read(`${ROOT}playwright.config.ts`),
 		ci: read(`${ROOT}.github/workflows/ci.yml`),
+		site: read(`${ROOT}packages/ui/src/site.ts`),
 		existingApps: ["claim-check", "pre-flight", "site"],
 		packageNames: [],
 	},

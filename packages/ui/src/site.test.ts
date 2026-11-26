@@ -34,8 +34,12 @@ test("the owner's strings, within their limits and unique (requirements 2.4, 3.1
 		expect(PAGES[key].description.length, key).toBeLessThanOrEqual(155);
 		expect(`${PAGES[key].title}${PAGES[key].description}`).not.toMatch(/!/);
 	}
-	expect(new Set(KEYS.map((k) => PAGES[k].title)).size).toBe(KEYS.length);
-	expect(new Set(KEYS.map((k) => PAGES[k].description)).size).toBe(KEYS.length);
+	// Indexable pages only: apps from pnpm new-app share one noindex description (app-template 13.3).
+	const shown = KEYS.filter((k) => PAGES[k].index);
+	expect(new Set(shown.map((k) => PAGES[k].title)).size).toBe(shown.length);
+	expect(new Set(shown.map((k) => PAGES[k].description)).size).toBe(
+		shown.length,
+	);
 	expect(KEYS.filter((k) => PAGES[k].index)).toEqual([
 		"home",
 		"claimCheck",

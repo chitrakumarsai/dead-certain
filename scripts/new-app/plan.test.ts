@@ -32,6 +32,7 @@ const inputs = (over: Partial<Inputs> = {}): Inputs => ({
 	templateFiles: FIXTURE,
 	playwright: read("playwright.config.ts"),
 	ci: read(".github/workflows/ci.yml"),
+	site: read("packages/ui/src/site.ts"),
 	existingApps: ["claim-check", "pre-flight", "site"],
 	packageNames: [
 		"@dead-certain/claim-check",
@@ -109,6 +110,44 @@ describe("planFor", () => {
 			"      - run: cp -R apps/loan-check/dist apps/site/dist/loan-check\n      # new-app:copy",
 		);
 		expect(pw?.before).toBe(inputs().playwright);
+	});
+
+	it("adds a noindex PAGES entry before new-app:pages, and refuses a key or path PAGES has (13.2 to 13.4)", () => {
+		const plan = planFor(inputs(), "loan-check");
+		if (!("create" in plan)) throw new Error(plan.message);
+		const site = plan.edits.find((e) => e.path === "packages/ui/src/site.ts");
+		expect(site?.before).toBe(inputs().site);
+		expect(site?.after).toContain(
+			[
+				"\tloanCheck: {",
+				'\t\tpath: "loan-check/",',
+				'\t\tname: "Loan Check",',
+				'\t\ttitle: "Loan Check",',
+				'\t\tdescription: "An app built with the Dead Certain skeleton.",',
+				"\t\tindex: false,",
+				"\t},",
+				"\t// new-app:pages",
+			].join("\n"),
+		);
+		// "not-found" is a valid name whose key, notFound, PAGES already has.
+		expect(planFor(inputs(), "not-found")).toMatchObject({ code: "EXISTS" });
+		const pathTaken = inputs().site.replace(
+			'path: "kit/"',
+			'path: "loan-check/"',
+		);
+		expect(planFor(inputs({ site: pathTaken }), "loan-check")).toMatchObject({
+			code: "EXISTS",
+		});
+		const doubled = `${inputs().site}\n// new-app:pages\n`;
+		expect(planFor(inputs({ site: doubled }), "loan-check")).toMatchObject({
+			code: "MARKER",
+		});
+		expect(
+			planFor(
+				inputs({ site: inputs().site.replace("new-app:pages", "") }),
+				"loan-check",
+			),
+		).toMatchObject({ code: "MARKER" });
 	});
 
 	it("refuses a name in apps, a package that exists, or a shared file that already names it (2.3)", () => {

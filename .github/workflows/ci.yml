@@ -91,6 +91,9 @@ jobs:
         run: pnpm dc validate && pnpm dc golden && pnpm dc build
       - if: steps.changes.outputs.run == 'true'
         run: pnpm check && pnpm build
+      # The probe's generated PAGES entry passes as it stands (app-template 13.5).
+      - if: steps.changes.outputs.run == 'true'
+        run: pnpm seo:check
       - if: steps.changes.outputs.run == 'true'
         run: pnpm exec playwright install --with-deps chromium
       - if: steps.changes.outputs.run == 'true'
