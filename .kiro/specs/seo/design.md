@@ -73,6 +73,7 @@ export type PageKey = "home" | "claimCheck" | "preFlight" | "kit" | "notFound";
 
 export interface PageSeo {
 	path: string; // relative to BASE; "" is the home page; never "#" or "?"
+	name: string; // the page's own name, for JSON-LD and manifests
 	title: string; // at most 60
 	description: string; // at most 155
 	index: boolean;
@@ -158,7 +159,7 @@ The landing page's Hero verdict is computed on the server by the same `audit` ca
 
 | Case | Behaviour |
 | --- | --- |
-| A page is built that is not in `PAGES` | The plugin throws, so the build fails. |
+| A page is built that is not in `PAGES` | The plugin leaves it untouched (a new app must not break the scaffold build), and `seo:check` fails on it in CI. `app-template` requirement 13 adds the entry. |
 | `absolute` gets a hash, a query or a path outside `BASE` | It throws. |
 | A title or description is over its limit | The unit test fails. The build also fails, since `headTags` throws. |
 | `git log` fails or the clone is shallow | `lastmod` is omitted. The build does not fail. |

@@ -116,6 +116,12 @@ This plan builds `pnpm new-app <name>` and `templates/app` in TypeScript strict 
   - Open the pull request for gate G5. Kiro reviews it against this spec. State what you could not finish.
   - _Requirements: all_
 
+- [ ] 9. A new app's search metadata entry (Claude Code lane, from the review of PR #39; after `seo` task 7)
+  - Add the marker `// new-app:pages` inside `PAGES` in `packages/ui/src/site.ts`, and derive `PageKey` as `keyof typeof PAGES` (adjust `APPS` and `SOURCES` to match). Extend the planner, test-first, to insert the entry of requirement 13.3 and to refuse when the marker is missing or doubled. Add the `seo:check` step to the Scaffold_Job. Do not edit `.kiro/steering/new-app.md`, which is Kiro's: say in the pull request what it must list.
+  - Tests: the planner inserts one entry with the marker's indentation and changes nothing else (extend Property 4); rollback restores `site.ts`; the Scaffold_Job's probe app passes `seo:check`.
+  - Close with Task_Evidence.
+  - _Requirements: 13.1 to 13.6_
+
 ## Notes
 
 - Gate G5 review (Kiro, 2026-11-22): tasks 1 to 8 are ticked. Two parts of the Task_Evidence are not on the pull request: the 18 screenshots were shared with the human outside it, and the Scaffold_Job's two runs were cancelled as workflows by a later push, though each `scaffold` job finished (green on `bf911a7`, red on `0ce19b6`, green again on `3b0b75b`). Task 2.3 was built before 2.2, which is accepted.

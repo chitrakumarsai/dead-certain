@@ -28,41 +28,42 @@ This plan makes the three public pages findable and previewable, in four pull re
 
 ## Tasks
 
-- [ ] 1. The configuration module
+- [x] 1. The configuration module
   - Write `packages/ui/src/site.test.ts` and `site.props.test.ts` first, then `packages/ui/src/site.ts` with `ORIGIN`, `BASE`, `REPO`, `PageSeo`, `PAGES` (the strings of requirement 3), `absolute`, `headTags`, `jsonLd`, `sitemapXml` and `robotsTxt`. It imports nothing and is not exported from `src/index.ts`. Check that the kit's `boundary`, `deps` and `contract` tests accept the new file.
   - Tests: lengths, uniqueness, `absolute` throws on `#`, `?` and a path outside `BASE`, the head list for each key, JSON-LD content and escaping, sitemap and robots text.
   - **Property 1: Head tags are complete and single**, **Property 2: JSON-LD round-trips and cannot close the script**, **Property 3: The sitemap lists exactly the indexable pages**, **Property 4: `absolute` stays inside the base**
   - _Requirements: 1.3, 1.4, 2.1 to 2.5, 3.1, 3.2, 4.2, 4.3, 5.1, 5.3, 6.1 to 6.4_
 
-- [ ] 2. The head plugin
+- [x] 2. The head plugin
   - Write `scripts/seo-vite.ts` with `seoHead(pageKey)` and use it in the three `vite.config.ts` files and for `404.html` and the three `kit/*.html` pages. Remove the hand-written title, description and Open Graph tags from `apps/site/index.html`, `apps/site/404.html`, `apps/claim-check/index.html` and `apps/pre-flight/index.html`. Read `--bg-base` of both themes from `tokens.css` for the two `theme-color` metas. The plugin throws for a page not in `PAGES`.
   - Until task 8 adds the files, `ogImage` is unset in `PAGES`, so the image tags and the icon links are not written, and the check of task 6 does not require them. Task 8 sets `ogImage` and `ogAlt`, and the requirement applies from then on. State this order in the pull request.
   - Playwright: in each built page the head holds each tag once; the title after load equals the built title for each app's start screen (skip `useTitle` on the start screens); the existing specs pass.
   - _Requirements: 3.3, 4.1 to 4.5_
 
-- [ ] 3. Sitemap and robots.txt
+- [x] 3. Sitemap and robots.txt
   - In the site's plugin, add the `closeBundle` step that writes `sitemap.xml` and `robots.txt` from `PAGES`. `lastmod` comes from `git log -1 --format=%cs -- <folders>` per page and is omitted when `git rev-parse --is-shallow-repository` is true.
   - Tests: the text of both files, and a case with a shallow flag.
   - _Requirements: 5.1 to 5.4_
 
-- [ ] 4. Structured data
+- [x] 4. Structured data
   - Write the script tag in the plugin from `jsonLd(key)`: the `@graph` on `home`, one `WebApplication` on each app, none on `kit` and `notFound`. Static text, `<` escaped.
   - Playwright or a build test: each script parses, the `@type` values are exactly as in requirement 6, there is no `Person`, every URL is absolute under `ORIGIN + BASE` or `REPO`.
   - _Requirements: 1.3, 6.1 to 6.4_
 
-- [ ] 5. Manifests
+- [x] 5. Manifests
   - Add the manifest for each app (`name`, `short_name`, `start_url`, `scope`, `display` "browser", `theme_color` and `background_color` from the tokens) and its link in the head. The `icons` member and the icon links are added in task 8 with the files.
   - _Requirements: 4.1, 7.6_
 
-- [ ] 6. The SEO check
+- [x] 6. The SEO check
   - Write `scripts/seo-check.ts` test-first: `checkPage(html, key)` returns `{ page, rule, detail }` items; one test per failure in requirement 8.2 and 8.3. Add `pnpm seo:check` to the root `package.json` and the CI step after `pnpm build` in the `check` job. The check requires the image tags and icon files only for a page whose `ogImage` is set.
   - **Property 5: The checker agrees with the builder**
   - _Requirements: 8.1 to 8.4_
 
-- [ ] 7. Checkpoint, head and structured data
+- [x] 7. Checkpoint, head and structured data
   - Run `pnpm check`, `pnpm test:props`, `pnpm build` and `pnpm e2e`. Attach the built head of each page and the sitemap. Open the pull request. Kiro reviews it against this spec.
 
 - [ ] 8. OG images and icons
+  - Carried from the review of PR #39: check the `WebApplication` JSON-LD by hand with a schema validator. Its `author` is `{ "@id": <org> }`, and the Organization node is defined on the home page only, so the page's data may not stand alone. If the validator wants it, inline `@type` and `name` in the reference and amend requirement 6.2.
   - Add the fixture `apps/site/kit/og.html` and `apps/site/src/kit/og.tsx` (noindex, key `kit`). Draw the three images of requirement 7.2 from the Hero_Module and the compiled knowledge bases. Write `scripts/og.ts` (build, preview on a free port, Playwright at 1200 by 630, dark theme) that writes the three PNGs, the four icon files (`favicon.ico` as a PNG-in-ICO container written by hand) and `og.json`. Add a root script `pnpm og`. Commit the assets.
   - Tests: the PNG signature, size and header dimensions; `og.json` against the text computed with no browser; every `og:image`, icon and manifest link resolves to a built file.
   - Write the three `og:image:alt` sentences (at most 125 characters), record them in `og.json`, set `ogImage` and `ogAlt` in `PAGES`, and add the icon links and the manifests' `icons`.
@@ -96,6 +97,8 @@ This plan makes the three public pages findable and previewable, in four pull re
   - Run `pnpm check`, `pnpm test:props`, `pnpm build`, `pnpm seo:check` and `pnpm e2e`. Attach the two pages in both themes at the three widths. Open the pull request on `cc/phase7-seo-rulebook`. Kiro reviews it against this spec.
 
 ## Notes
+
+- Review of PR #39 (Kiro, 2026-11-26): tasks 1 to 7 ticked. Accepted: no `index.html` change for Claim Check and a pass-through for a page with no entry (requirements 4.1), `PageSeo.name` (2.2), kit titles (3.3), the system-only theme colour (4.4, already accepted) and the refusals exception for `site.ts` (ui-kit 33.3). New apps get their `PAGES` entry from `pnpm new-app`: `app-template` requirement 13 and task 9. Task 8 follows after that is agreed.
 
 - Moved from `landing-page` on 2026-11-26: requirement 12 and task 9.4. See requirement 11 for the mapping. Landing task 9.5's head-tag test is satisfied by tasks 1, 2 and 6.
 - If time runs short, drop task 14 and 15 first, then 12's Lighthouse note. Tasks 1 to 7 are small and cost nothing at run time, so they go first.

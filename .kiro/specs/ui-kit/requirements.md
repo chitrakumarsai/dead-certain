@@ -610,7 +610,7 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 
 1. THE Built_CSS SHALL contain a `box-shadow` other than `none` only where its value is a token (`--highlight-inset`, `--glow-wax-soft`, `--glow-wax-pulse`, `--halo-paper`), and SHALL use none that suggests elevation.
 2. THE Built_CSS SHALL contain `linear-gradient`, `radial-gradient` or `conic-gradient` only for the hero radial glow, the hero headline fill, the graph-paper grid and film grain, and only through a token. The scan line is a solid 2 px `--film` border, so it has no gradient and no token (accepted at the review of PR #35).
-3. THE Built_CSS SHALL contain no `prefers-color-scheme: dark`. Because dark is the default, the system fallback is `prefers-color-scheme: light`, and it appears in `tokens.css` only.
+3. THE Built_CSS SHALL contain no `prefers-color-scheme: dark`. Because dark is the default, the system fallback is `prefers-color-scheme: light`, and it appears in `tokens.css` only. The one exception is `packages/ui/src/site.ts`, where the string is the `media` attribute of the dark `theme-color` meta (seo requirement 4.4), an HTML attribute and not a style. `refusals.test.ts` names that file (accepted at the review of PR #39).
 4. THE Built_CSS SHALL keep zero `text-transform: uppercase` declarations and zero `https://` URLs, and no rendered Button label SHALL contain an arrow glyph.
 5. THE UI_Kit SHALL contain no scroll-triggered entrance animation. THE Landing_Page alone MAY fade and raise a section by 16 px once.
 6. THE UI_Kit SHALL keep these refusals: no caption above a heading, sentence case, no exclamation mark, no apology in an error, colour never alone, and no pumpkins, bats or blood.
