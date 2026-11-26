@@ -139,7 +139,7 @@ Scope: the command, the template, the starter knowledge, the generic app, the sh
 
 #### Acceptance Criteria
 
-1. THE command SHALL write only under `apps/<App_Name>/`, `e2e/` and in the two Shared_Files, and SHALL refuse to run a Plan that names any other path.
+1. THE command SHALL write only under `apps/<App_Name>/`, `e2e/` and in the Shared_Files (two, and three from requirement 13), and SHALL refuse to run a Plan that names any other path.
 2. THE command SHALL NOT write under `.kiro`, `packages`, `docs`, `.claude`, `.github` other than `workflows/ci.yml`, or `templates`.
 3. THE Template SHALL include `src/lanes.test.ts`, the lane guard of the Reference_Apps, forbidding a Claude Code commit from touching `apps/<App_Name>/(kb|rulebook|golden)/`, `.kiro/` and `packages/engine/src/types.ts`. It no longer lists `packages/ui/`, which is the Claude Code lane (amended 2026-11-23 with claim-check requirement 14.7).
 4. THE command SHALL NOT edit `apps/site`. A link from the site to the new app is a manual step the README names.
@@ -164,7 +164,7 @@ Scope: the command, the template, the starter knowledge, the generic app, the sh
 
 1. THE `README.md` SHALL have a section headed "Add a third app" that holds the README_Block and the explanation around it.
 2. THE README_Block SHALL hold, in order, `pnpm install`, `pnpm new-app my-app` and `pnpm install` again. A second fenced block under the heading "Run it" SHALL hold `pnpm --filter @dead-certain/my-app dev`, so that the first block's commands all end.
-3. THE section SHALL say, in plain words, what `new-app` creates and which two shared files it edits, what the starter app shows, and which address the dev server prints.
+3. THE section SHALL say, in plain words, what `new-app` creates and which shared files it edits (three, from requirement 13), what the starter app shows, and which address the dev server prints.
 4. THE section SHALL explain how to replace the Starter_KB: write the rulebook in `apps/my-app/rulebook/`, run the `knowledge-engineer` agent with the prompt from section 12 of the build plan (with the golden path `apps/my-app/golden/`), review each rule, then `pnpm dc validate`, `pnpm dc build` and `pnpm dc golden`. It SHALL name `config.ts` as the one file that names facts.
 5. THE section SHALL say that a link from the site to the new app is added by hand, and where.
 6. THE section SHALL state the time the README_Block takes on a clean clone, measured once by the human in Phase 5, and SHALL leave the figure out until it is measured.
@@ -205,7 +205,8 @@ Scope: the command, the template, the starter knowledge, the generic app, the sh
 3. THE command SHALL insert one entry before that Marker, with the Marker's indentation: `path` `<App_Name>/`, `name` and `title` the App_Name in title case, `description` "An app built with the Dead Certain skeleton.", and `index` false. A noindex entry needs no image, no JSON-LD and no manifest, so the generated app passes `seo:check` as it stands. The human sets `index`, the copy and the image when the app is ready to be found.
 4. THE entry's key SHALL be derived from the App_Name as a camel-case identifier, and `PageKey` SHALL be `keyof typeof PAGES`, so no second list needs an edit.
 5. THE Scaffold_Job SHALL run `pnpm seo:check` on the probe app's build, and SHALL fail when it does not pass.
-6. THE rule that the command leaves every other byte of the Shared_Files unchanged (requirement 4.4) and its rollback (requirement 6) SHALL cover this file.
+6. THE command SHALL refuse with `EXISTS` and change nothing WHEN `PAGES` already holds the entry's key or its path (for example the name `not-found`, whose key is the 404 page's). Accepted at the review of PR #41.
+7. THE rule that the command leaves every other byte of the Shared_Files unchanged (requirement 4.4) and its rollback (requirement 6) SHALL cover this file.
 
 ## Open questions and decisions
 

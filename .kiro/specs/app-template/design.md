@@ -2,7 +2,7 @@
 
 ## Overview
 
-`pnpm new-app <name>` copies `templates/app/` to `apps/<name>/`, substitutes four placeholders, and inserts five lines into two shared files so that Playwright and CI know about the new app. Nothing else changes. After `pnpm install` the app builds, runs and passes its own smoke test.
+`pnpm new-app <name>` copies `templates/app/` to `apps/<name>/`, substitutes four placeholders, and inserts five lines into two shared files so that Playwright and CI know about the new app, and one `PAGES` entry into a third (`packages/ui/src/site.ts`) so that the site's SEO check passes for it. Nothing else changes. After `pnpm install` the app builds, runs and passes its own smoke test.
 
 The design has two halves with a hard seam.
 
@@ -35,7 +35,7 @@ This spec is implemented by the Claude Code lane. The Starter_KB (three files of
 graph TD
     CMD["pnpm new-app my-app"] --> MAIN[scripts/new-app.ts main]
     MAIN --> ARGS[parseArgs]
-    MAIN --> READ[read inputs: template files, two shared files, apps/ listing, workspace marker]
+    MAIN --> READ[read inputs: template files, three shared files, apps/ listing, workspace marker]
     READ --> PLAN["planFor(inputs, name) - pure"]
     PLAN -->|refusal| STOP[print message, exit 1]
     PLAN -->|dry-run| PRINT[print the Plan, exit 0]
@@ -151,6 +151,7 @@ Written by the Kiro lane. Proposed domain: a library fine. Three or four askable
 | `new-app:servers` | `playwright.config.ts` | One object: `command`, `url`, `reuseExistingServer`, as a multi-line entry. It is inserted as a unit (several lines, one marker) |
 | `new-app:dc-build` | `ci.yml` | `- run: pnpm dc build apps/<name>` |
 | `new-app:copy` | `ci.yml` | `- run: cp -R apps/<name>/dist apps/site/dist/<name>` |
+| `new-app:pages` | `packages/ui/src/site.ts` | One `PAGES` entry (key from `keyOf(name)`, noindex, fixed description), inserted as a unit with the marker's indentation. The planner refuses (`EXISTS`) when `PAGES` already has the key or the path |
 
 A marker is a comment (`// new-app:urls` and `# new-app:dc-build`), so the Markers cost nothing at run time. `nextPort` reads every `localhost:<digits>` in `playwright.config.ts`, and returns the maximum plus one (4176 today). If there are none, it returns 4174.
 
@@ -272,7 +273,7 @@ Each message names the cause and the next step, in sentence case, with no apolog
 
 ### Property 6: A failed apply leaves nothing behind
 
-*For any* Plan and any failing write position, `apply` ends with the file system, including both shared files, equal to its state before the call.
+*For any* Plan and any failing write position, `apply` ends with the file system, including all three shared files, equal to its state before the call.
 
 **Validates: Requirements 2.6**
 
