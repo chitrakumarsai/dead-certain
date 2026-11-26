@@ -20,7 +20,7 @@ Scope: the command, the template, the starter knowledge, the generic app, the sh
 - **Generated_App**: The directory `apps/<App_Name>/` the command creates.
 - **Plan**: The list of files to create and edits to make, computed before anything is written.
 - **Marker**: A comment line in a shared file, of the form `new-app:<id>`, that tells the command where to insert a line.
-- **Shared_Files**: `playwright.config.ts` and `.github/workflows/ci.yml`. They are the only existing files the command edits.
+- **Shared_Files**: `playwright.config.ts` and `.github/workflows/ci.yml`. They are the only existing files the command edits, until requirement 13 adds `packages/ui/src/site.ts`.
 - **Starter_KB**: The files `kb/starter.yaml`, `rulebook/starter.md` and `golden/scenarios.yaml` in the Template. They describe a toy domain.
 - **Reference_Apps**: `apps/claim-check` and `apps/pre-flight`.
 - **README_Block**: The first fenced `sh` block under the README heading "Add a third app": the commands that create the app and link it into the workspace. They all end. A second block, "Run it", holds the dev-server command, which does not end and which the Scaffold_Job does not run.
@@ -118,7 +118,7 @@ Scope: the command, the template, the starter knowledge, the generic app, the sh
 2. THE port SHALL be one more than the highest preview port already named in `playwright.config.ts`, and SHALL be unique in the file.
 3. THE command SHALL add to `.github/workflows/ci.yml`: the step `pnpm dc build apps/<App_Name>` before `pnpm check`, and the step `cp -R apps/<App_Name>/dist apps/site/dist/<App_Name>` after the Reference_Apps' copy steps, each inserted before its Marker.
 4. THE command SHALL insert each line with the indentation of the Marker's line, and SHALL leave every other byte of both files unchanged.
-5. THE Shared_Files SHALL carry the four Markers (`new-app:urls`, `new-app:servers`, `new-app:dc-build`, `new-app:copy`) as comments, added as part of this spec's tasks, each once.
+5. THE Shared_Files SHALL carry the four Markers (`new-app:urls`, `new-app:servers`, `new-app:dc-build`, `new-app:copy`) as comments, added as part of this spec's tasks, each once. Requirement 13 adds a fifth, `new-app:pages`, in `packages/ui/src/site.ts`.
 6. THE Generated_App's `e2e/<App_Name>-smoke.spec.ts` SHALL open the app at its preview URL (a string literal built from `__APP_PORT__` and `__APP_NAME__`, so the spec is valid TypeScript as it stands), answer the starter question or questions, reach the verdict, open "See why", check the clause is shown, and check for zero axe violations, at every project width in the Playwright config.
 7. WHEN a person later adds an app by hand, THE Markers SHALL still be in place and the command SHALL still work.
 
@@ -221,3 +221,16 @@ Decided by the human (2026-11-20):
 7. **Scaffold_Job cost.** Path filters: the job's later steps run only when `scripts/`, `templates/`, `README.md`, `playwright.config.ts` or `ci.yml` change (design, "The Scaffold_Job"; task 6.2).
 
 No open question remains.
+
+### Requirement 13: A new app gets its search metadata entry (added at the review of PR #39, 2026-11-26)
+
+**User Story:** As a person who scaffolds an app, I want the site's SEO check to pass without a hand edit, so that a new app does not break the deploy.
+
+#### Acceptance Criteria
+
+1. THE `seoHead()` plugin leaves a page with no `PAGES` entry untouched, and `pnpm seo:check` fails on it once CI copies the app into the site. A new app SHALL therefore get an entry in the same run that creates it.
+2. THE Shared_Files SHALL include `packages/ui/src/site.ts`, which SHALL carry a fifth Marker, `new-app:pages`, as a comment inside the `PAGES` object, once.
+3. THE command SHALL insert one entry before that Marker, with the Marker's indentation: `path` `<App_Name>/`, `name` and `title` the App_Name in title case, `description` "An app built with the Dead Certain skeleton.", and `index` false. A noindex entry needs no image, no JSON-LD and no manifest, so the generated app passes `seo:check` as it stands. The human sets `index`, the copy and the image when the app is ready to be found.
+4. THE entry's key SHALL be derived from the App_Name as a camel-case identifier, and `PageKey` SHALL be `keyof typeof PAGES`, so no second list needs an edit.
+5. THE Scaffold_Job SHALL run `pnpm seo:check` on the probe app's build, and SHALL fail when it does not pass.
+6. THE rule that the command leaves every other byte of the Shared_Files unchanged (requirement 4.4) and its rollback (requirement 6) SHALL cover this file.

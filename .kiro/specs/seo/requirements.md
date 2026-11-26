@@ -54,7 +54,7 @@ Scope: the five page keys (`home`, `claimCheck`, `preFlight`, `kit`, `notFound`)
 #### Acceptance Criteria
 
 1. THE Site_Config SHALL export `ORIGIN` ("https://chitrakumarsai.github.io"), `BASE` ("/dead-certain/"), `REPO` ("https://github.com/chitrakumarsai/dead-certain"), the `PageSeo` type, `PAGES` keyed by Page_Key, and `absolute(path)`. Changing to a custom domain SHALL need an edit to `ORIGIN` and `BASE` only.
-2. A `PageSeo` SHALL hold `path` (relative to `BASE`, ending in `/` or a file name, never a hash or a query), `title`, `description`, `index`, and for an Indexable_Page `ogImage` and `ogAlt`.
+2. A `PageSeo` SHALL hold `path` (relative to `BASE`, ending in `/` or a file name, never a hash or a query), `name` (the page's own name, used by the Structured_Data and the manifest; accepted at the review of PR #39), `title`, `description`, `index`, and for an Indexable_Page `ogImage` and `ogAlt`.
 3. THE Site_Config SHALL import nothing and SHALL hold no hex colour. Build scripts import it by relative path. It is not exported from the kit's public index.
 4. THE tests SHALL fail when a title is longer than 60 characters, a description is longer than 155, two pages share a title or a description, or `absolute` returns a URL outside `ORIGIN + BASE`.
 5. THE page copy SHALL be exactly the table in Requirement 3.
@@ -76,7 +76,7 @@ Scope: the five page keys (`home`, `claimCheck`, `preFlight`, `kit`, `notFound`)
    | `kit` | Dead Certain kit | 16 | The component gallery of the Dead Certain design system. | 56 |
 
 2. THE `home` title SHALL keep its full stop (owner decision 2). THE descriptions SHALL contain no count of checks or rules, because a count goes stale when a rulebook changes.
-3. THE built HTML of each page SHALL carry exactly its `PAGES` title. WHEN the page has loaded and hydrated, `document.title` of each app's start screen SHALL still equal that title, so the title a crawler reads after running scripts matches the one in the HTML. (The apps' per-screen titles of the form "<heading>. Claim Check" stay for the other screens.)
+3. THE built HTML of each page SHALL carry exactly its `PAGES` title. Every page under `kit/` carries the `kit` title, and `kit/screen.html` may rename its tab at run time, because the kit is noindex (accepted at the review of PR #39). WHEN the page has loaded and hydrated, `document.title` of each app's start screen SHALL still equal that title, so the title a crawler reads after running scripts matches the one in the HTML. (The apps' per-screen titles of the form "<heading>. Claim Check" stay for the other screens.)
 
 ### Requirement 4: Head tags
 
@@ -84,7 +84,7 @@ Scope: the five page keys (`home`, `claimCheck`, `preFlight`, `kit`, `notFound`)
 
 #### Acceptance Criteria
 
-1. THE Seo_Head SHALL write, for every page, the title, `description`, a `robots` meta, `theme-color`, the icon links, and for an app the manifest link. No page SHALL carry a tag twice: the plugin owns the title, description and Open Graph text tags that `index.html` holds today, which SHALL be removed from the three `index.html` files and `404.html`.
+1. THE Seo_Head SHALL write, for every page, the title, `description`, a `robots` meta, `theme-color`, the icon links, and for an app the manifest link. No page SHALL carry a tag twice: the plugin owns the title, description and Open Graph text tags that `index.html` holds today, which SHALL be removed from `apps/site/index.html`, `apps/pre-flight/index.html`, `404.html` and the kit pages. Claim Check's `index.html` keeps its two hand-written lines, which the plugin strips at build, because `scripts/drift.test.ts` pins the Template to that file line for line (accepted at the review of PR #39). A page with no `PAGES` entry, such as an app made by `pnpm new-app`, passes through the plugin untouched, so the scaffold build does not fail, and the Seo_Check reports it (Requirement 8.2). `app-template` requirement 13 gives each new app its entry.
 2. FOR an Indexable_Page THE Seo_Head SHALL write `robots` as `index, follow`, one `canonical` link equal to `absolute(path)`, `og:title`, `og:description`, `og:type` (`website`), `og:url` (equal to the canonical), `og:site_name` ("Dead Certain"), `og:locale` (`en`), `og:image` (absolute), `og:image:width` (1200), `og:image:height` (630), `og:image:alt`, `twitter:card` (`summary_large_image`), `twitter:title`, `twitter:description`, `twitter:image` and `twitter:image:alt`. (The image tags and the icon links appear from task 8, when `ogImage` is set in `PAGES`; until then the plugin writes none and the check does not require them.)
 3. FOR `kit` and `notFound` THE Seo_Head SHALL write `robots` as `noindex, nofollow`, no canonical, and no Open Graph or Twitter tags.
 4. THE `theme-color` SHALL be two metas, one per `(prefers-color-scheme: dark)` and `(prefers-color-scheme: light)`, whose values the plugin reads from `--bg-base` in `tokens.css` at build time. No hex value SHALL be written into a script or config (ui-kit requirement 32.1). It follows the system setting, not the stored `dc-theme` choice, and that is accepted.
