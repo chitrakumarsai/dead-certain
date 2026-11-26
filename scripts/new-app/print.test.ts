@@ -20,6 +20,7 @@ const plan = planFor(
 		],
 		playwright: read("playwright.config.ts"),
 		ci: read(".github/workflows/ci.yml"),
+		site: read("packages/ui/src/site.ts"),
 		existingApps: ["claim-check", "pre-flight", "site"],
 		packageNames: [],
 	},

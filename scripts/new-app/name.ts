@@ -25,6 +25,10 @@ export const titleOf = (name: string): string =>
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(" ");
 
+/** "loan-check" gives "loanCheck", its key in PAGES (13.4). */
+export const keyOf = (name: string): string =>
+	name.replace(/-([a-z0-9])/g, (_, c: string) => c.toUpperCase());
+
 /** "loan-check" gives "LOAN_CHECK" (3.7). */
 export const constOf = (name: string): string =>
 	name.toUpperCase().replace(/-/g, "_");

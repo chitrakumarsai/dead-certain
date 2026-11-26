@@ -76,6 +76,7 @@ function main(): number {
 		})),
 		playwright: fs.readFileSync(at("playwright.config.ts"), "utf8") as string,
 		ci: fs.readFileSync(at(".github/workflows/ci.yml"), "utf8") as string,
+		site: fs.readFileSync(at("packages/ui/src/site.ts"), "utf8") as string,
 		existingApps: folders(at("apps")),
 		packageNames: [
 			...folders(at("apps")).map((a) => packageName(at(`apps/${a}`))),

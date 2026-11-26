@@ -1,6 +1,6 @@
-// Marker edits in the two shared files (requirements 2.4, 6.1 to 6.5). Pure.
+// Marker edits in the shared files (requirements 2.4, 6.1 to 6.5). Pure.
 
-export type MarkerName = "urls" | "servers" | "dc-build" | "copy";
+export type MarkerName = "urls" | "servers" | "dc-build" | "copy" | "pages";
 export type MarkerResult =
 	| { ok: true; text: string }
 	| { ok: false; message: string };

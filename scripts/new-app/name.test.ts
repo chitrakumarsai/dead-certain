@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { constOf, RESERVED, titleOf, validateName } from "./name.ts";
+import { constOf, keyOf, RESERVED, titleOf, validateName } from "./name.ts";
 
 const TAKEN = ["claim-check", "pre-flight"];
 
@@ -77,5 +77,12 @@ describe("titleOf and constOf (3.7)", () => {
 		expect(titleOf("ab")).toBe("Ab");
 		expect(constOf("loan-check")).toBe("LOAN_CHECK");
 		expect(constOf("x2-y3")).toBe("X2_Y3");
+	});
+
+	it("keyOf camel-cases the name for its PAGES key (13.4)", () => {
+		expect(keyOf("loan-check")).toBe("loanCheck");
+		expect(keyOf("ci-probe")).toBe("ciProbe");
+		expect(keyOf("x2-y3-z")).toBe("x2Y3Z");
+		expect(keyOf("ab")).toBe("ab");
 	});
 });

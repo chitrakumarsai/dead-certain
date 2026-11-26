@@ -6,8 +6,6 @@ export const ORIGIN = "https://chitrakumarsai.github.io";
 export const BASE = "/dead-certain/";
 export const REPO = "https://github.com/chitrakumarsai/dead-certain";
 
-export type PageKey = "home" | "claimCheck" | "preFlight" | "kit" | "notFound";
-
 export interface PageSeo {
 	/** Relative to BASE, ending in "/" or a file name; "" is the home page. Never "#" or "?". */
 	path: string;
@@ -21,7 +19,7 @@ export interface PageSeo {
 	ogAlt?: string;
 }
 
-export const PAGES: Record<PageKey, PageSeo> = {
+const ENTRIES = {
 	home: {
 		path: "",
 		name: "Dead Certain",
@@ -60,7 +58,12 @@ export const PAGES: Record<PageKey, PageSeo> = {
 		description: "There is nothing at this address.",
 		index: false,
 	},
-};
+	// new-app:pages
+} satisfies Record<string, PageSeo>;
+
+/** Derived, so pnpm new-app adds a page by adding its entry alone (app-template 13.4). */
+export type PageKey = keyof typeof ENTRIES;
+export const PAGES: Record<PageKey, PageSeo> = ENTRIES;
 
 /** The two apps, with their schema.org category. */
 const APPS: Partial<Record<PageKey, string>> = {

@@ -1,6 +1,6 @@
 // The whole scaffold, worked out before anything is written (design: The Plan). Pure.
 import { insertAtMarker, type MarkerName, nextPort } from "./markers.ts";
-import { validateName } from "./name.ts";
+import { keyOf, validateName } from "./name.ts";
 import { substitute } from "./substitute.ts";
 
 export interface Inputs {
@@ -8,13 +8,18 @@ export interface Inputs {
 	templateFiles: readonly { path: string; text: string }[];
 	playwright: string;
 	ci: string;
+	/** packages/ui/src/site.ts */
+	site: string;
 	/** Folder names under apps/. */
 	existingApps: readonly string[];
 	/** Workspace package names. */
 	packageNames: readonly string[];
 }
 
-export type SharedPath = "playwright.config.ts" | ".github/workflows/ci.yml";
+export type SharedPath =
+	| "playwright.config.ts"
+	| ".github/workflows/ci.yml"
+	| "packages/ui/src/site.ts";
 
 export interface Plan {
 	name: string;
@@ -87,6 +92,16 @@ export function planFor(inputs: Inputs, name: string): Plan | Refusal {
 	] as const)
 		if (mentions.some((re) => re.test(text)))
 			return { code: "EXISTS", message: `${path} already mentions ${name}.` };
+	const key = keyOf(name);
+	// A valid key holds only [a-zA-Z0-9], so it needs no escaping either.
+	if (
+		new RegExp(`^\\s*${key}: \\{`, "m").test(inputs.site) ||
+		inputs.site.includes(`path: "${name}/"`)
+	)
+		return {
+			code: "EXISTS",
+			message: `packages/ui/src/site.ts already has a page ${key} or ${name}/.`,
+		};
 
 	const values = {
 		NAME: name,
@@ -135,6 +150,18 @@ export function planFor(inputs: Inputs, name: string): Plan | Refusal {
 		["copy", cpLine],
 	]);
 	if ("code" in ci) return ci;
+	// Noindex, so it needs no image, JSON-LD or manifest to pass seo:check (13.3).
+	const pageLines = [
+		`${key}: {`,
+		`\tpath: "${name}/",`,
+		`\tname: "${title}",`,
+		`\ttitle: "${title}",`,
+		'\tdescription: "An app built with the Dead Certain skeleton.",',
+		"\tindex: false,",
+		"},",
+	];
+	const site = edit(inputs.site, [["pages", pageLines]]);
+	if ("code" in site) return site;
 
 	return {
 		name,
@@ -155,6 +182,12 @@ export function planFor(inputs: Inputs, name: string): Plan | Refusal {
 				before: inputs.ci,
 				after: ci.text,
 				inserted: [...dcLine, ...cpLine],
+			},
+			{
+				path: "packages/ui/src/site.ts",
+				before: inputs.site,
+				after: site.text,
+				inserted: pageLines,
 			},
 		],
 	};
