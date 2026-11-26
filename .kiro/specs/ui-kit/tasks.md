@@ -513,6 +513,11 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
   - Close with Task_Evidence in both themes.
   - _Requirements: 40.1 to 40.6, 36.2, 33.3_
 
+- [ ] 18. Narrow the gradient allowlist (Claude Code lane, from the review of PR #35)
+  - Remove `scan-line` from the gradient-token pattern in `packages/ui/src/refusals.test.ts` (line 25), and from any other test or scan that allows it, so that a `--scan-line` gradient is refused as any other. Add a case to the refusals test that a `--scan-line: linear-gradient(...)` declaration fails.
+  - Close with Task_Evidence (`pnpm check` output; no visible change).
+  - _Requirements: 33.2, 38.5_
+
 - [ ] 11. Optional items (build last, drop first if time runs short)
   - [ ]* 11.1 Add the fallback font metric faces
     - Define `Plex Sans Fallback`, `Plex Serif Fallback` and `Plex Mono Fallback` in `fonts.css` on local system fonts with `size-adjust`, `ascent-override`, `descent-override` and `line-gap-override`. Measure the overrides (for example with a Playwright script that compares line boxes with the Plex faces) and record the measured values in a code comment. End each font stack with its fallback face.

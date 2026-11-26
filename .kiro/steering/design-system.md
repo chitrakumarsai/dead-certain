@@ -145,7 +145,7 @@ Every monetary amount uses tabular lining figures.
 - Breakpoints: 390 (base), 768, 1024, 1280.
 - Depth comes only from the tokens `--highlight-inset` (`inset 0 1px 0 rgb(255 255 255 / 4%)`), `--glow-wax-soft`, `--glow-wax-pulse` and `--halo-paper`, used through `@utility` classes in `theme.css`. Nothing suggests elevation.
 - Paper has a hairline border and carries `halo-paper` (a glow on the dark room, none on the light theme). Film has a `--border-strong` edge and grain.
-- Named gradient tokens, used through `@utility` classes in `theme.css`: `--glow-hero`, `--grid-calibration` (`bg-hero`, the landing hero only) and `--fill-hero-text` (`text-hero-fill`, the landing headline only, `CanvasText` in forced colours). The light-theme `--glow-hero` is focus blue at 8%, because wax is nearly invisible on the lightbox. `grain` and `scan-line` are the other two gradient tokens.
+- Named gradient tokens, used through `@utility` classes in `theme.css`: `--glow-hero`, `--grid-calibration` (`bg-hero`, the landing hero only) and `--fill-hero-text` (`text-hero-fill`, the landing headline only, `CanvasText` in forced colours). The light-theme `--glow-hero` is focus blue at 8%, because wax is nearly invisible on the lightbox. `grain` is the other gradient token. The X-ray scan line is a solid 2 px `--film` border, not a gradient, so there is no `scan-line` token.
 
 ## Motion
 
@@ -226,7 +226,7 @@ Lifted, with limits (decided 2026-11-23):
 | --- | --- | --- |
 | No global dark mode | A dark default and a light theme | The toggle stores the choice under `dc-theme` only, in `try/catch`, in `packages/ui/src/theme/storage.ts`, and falls back to `prefers-color-scheme` |
 | No drop shadows | The inset top highlight, the wax glow and the paper halo | Through the shadow and glow tokens only. Still no shadow that suggests elevation |
-| No gradient washes | The hero radial glow, the hero headline fill, the graph-paper grid, film grain and the scan line | Nowhere else. Every gradient value comes from a token. Grain is an inline SVG `feTurbulence` data URI, drawn on film only |
+| No gradient washes | The hero radial glow, the hero headline fill, the graph-paper grid and film grain | Nowhere else. Every gradient value comes from a token. Grain is an inline SVG `feTurbulence` data URI, drawn on film only |
 | No entrance animation on scroll | One fade and 16 px rise per section | The landing page only. Never inside the apps |
 
 Still refused: no uppercase labels, no caption above headings, no arrows in button labels, sentence case, no exclamation marks, no apologies in errors, color never alone, and no pumpkins, bats or blood.
