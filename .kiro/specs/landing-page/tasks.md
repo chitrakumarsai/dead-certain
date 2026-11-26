@@ -102,11 +102,11 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
   - [ ] 9.3 Sections in both themes
     - Steps, the two app cards (`FeatureCard`), the scaffold block, the footer and the 404 page, with `Pill` and `Kbd` where they help. The hero proof stays the real engine's.
     - _Requirements: 11.6_
-  - [ ] 9.4 SEO (cut first if time runs short)
-    - Canonical, `description`, Open Graph and Twitter tags, the `Organization` JSON-LD script, and the committed static OG PNGs rendered once with Playwright from a dedicated page. No dependency. Tests as in requirement 12.6.
-    - _Requirements: 12.1 to 12.6_
+  - [x] 9.4 SEO (moved to the `seo` spec, not done here)
+    - Ticked only so that task 9 can close: nothing is owed in this file. Moved to `.kiro/specs/seo/tasks.md` (tasks 1 to 9, prerender 10 to 13, rulebook pages 14 and 15) on 2026-11-26, by the owner's decision. Do not do it here. The work is tracked in the `seo` spec.
+    - _Requirements: moved with requirement 12_
   - [ ] 9.5 Tests
-    - Mirror the storage exception in `lane.test.ts`; run the page in both themes and the reduced-motion project; the no-request and storage-write test allows `dc-theme` only; a build test confirms the head tags.
+    - Mirror the storage exception in `lane.test.ts`; run the page in both themes and the reduced-motion project; the no-request and storage-write test allows `dc-theme` only; the head-tag build test is the `seo` spec's `seo:check` (tasks 1 to 6 there), not a second one here.
     - _Requirements: 13.1, 13.2, 13.3_
 
 - [ ] 10. Checkpoint, landing page redesign

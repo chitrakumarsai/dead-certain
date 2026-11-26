@@ -202,7 +202,7 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
   - Playwright: the toggle persists, the menu opens with Ctrl+K and Cmd+K, each item runs, focus returns.
   - _Requirements: 14.1 to 14.6_
 - [ ] 23. Start screen and steps
-  - Restyle the start screen, the sample buttons and the steps in both themes. `preflight-journey` start steps pass unchanged and repeat in the light theme.
+  - Restyle the start screen, the sample buttons and the steps in both themes. Replace `md:pt-20` on the start section (line 65 of `Start.tsx`), which is not a spacing token and emits no CSS, with `md:pt-16` (64 px), and check the desktop gap against the 1280 px screenshot (found at the review of PR #33; ui-kit requirement 39). The form wrapper's `pt-10` was fixed to `pt-8` in PR #33. `preflight-journey` start steps pass unchanged and repeat in the light theme.
   - _Requirements: 15.1, 15.4_
 - [ ] 24. Report and checks
   - Restyle the Report in each state, the summary, the check groups, `CheckRow` and the inline question in both themes with the dark state colours.

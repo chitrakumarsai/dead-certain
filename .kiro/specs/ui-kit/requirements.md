@@ -688,3 +688,26 @@ Review of PR #27 (Kiro, 2026-11-23), with Review of PR #26 (Kiro, 2026-11-23). R
 15. THE FeatureCard spotlight SHALL be a blurred `--wax-muted` disc that follows the pointer, and its shine SHALL be a bar that crosses once on hover, both moved by `translate` or `transform` and neither a gradient. The spotlight fades in over `--dur-hover` and the shine crosses over `--dur-page`. Under reduced motion the spotlight is still and the shine is not drawn. These durations are the values the steering motion table left to the kit design.
 16. THE ThemeToggle SHALL read its theme from `data-theme` on `<html>` through `useSyncExternalStore` and a `MutationObserver`, so that two toggles on one page always agree. Storage behaviour is unchanged (Requirement 32.5). Its visible word SHALL share one grid cell with a hidden copy of the other word, so the button keeps the wider word's width and a right-aligned toggle does not move when the theme switches (accepted at the re-review of PR #31, `17e5de8`; the button is about 1.4 px wider in one theme).
 17. THE `--state-paid`, `--state-reduced` and `--state-denied` tokens SHALL give the verdict colours of the surface: the dark set on the dark room and on Film, and the paper set on paper and in the light theme. THE `[data-surface="paper"]` and `[data-surface="film"]` blocks SHALL also set `--border-subtle`, `--border-default` and `--border-strong` to ink and bone edges, so each surface keeps its edge in both themes. THE Film SHALL carry `--grain` from an inline SVG `feTurbulence` data URI, with no image request and no `https://` URL.
+
+### Requirement 39: Spacing classes that compile (added at the review of PR #33, 2026-11-26)
+
+**User Story:** As a maintainer, I want a spacing class off the scale to fail a test, so that a missing gap is caught before a person sees it.
+
+#### Acceptance Criteria
+
+1. THE reset theme defines spacing keys 0, 1, 2, 3, 4, 6, 8, 12, 16 and 24 only (Requirement 1.11), so a utility such as `pt-10`, `md:pt-20` or `px-5` compiles to nothing. PR #33 found `pt-10` on the Pre-Flight start form, which left no gap.
+2. THE Kit_Test_Suite SHALL scan the class names in `packages/ui/src` and in the apps' and site's `src` for a spacing utility (`p`, `px`, `py`, `pt`, `pr`, `pb`, `pl`, `m`, `mx`, `my`, `mt`, `mr`, `mb`, `ml`, `gap`, `gap-x`, `gap-y`, `space-x`, `space-y`, `inset`, `top`, `right`, `bottom`, `left`, `size`, `w`, `h`), with any variant prefix, whose step is not a key of the scale, and SHALL fail on it. The scan allows the named sizes the theme defines (`touch`, `column`, `page`, `card` and the like) and arbitrary values written with brackets, which a separate rule already refuses.
+3. THE CommandMenu's "No results" paragraph SHALL use `px-4`, which lines its text up with the search field.
+
+### Requirement 40: The kit renders on the server (prerequisite of the `seo` prerender)
+
+**User Story:** As a crawler, I want the server's HTML to match what the browser builds first, so that a prerendered page hydrates without a warning.
+
+#### Acceptance Criteria
+
+1. `renderToString` SHALL NOT throw for any component the start routes of the site, Claim Check and Pre-Flight use, and the Kit_Test_Suite SHALL render each kit component that a start route uses with `react-dom/server` in Vitest, with no DOM, and fail on a throw.
+2. THE ThemeToggle SHALL render both theme variants in one fixed grid cell: the Moon with "Dark", and the Sun with "Light". Each variant SHALL carry its own accessible name as visually hidden text ("Dark theme. Switch to light theme" and "Light theme. Switch to dark theme"), so that the name is computed from content and needs no script. Tokens SHALL choose which variant is visible and exposed to assistive technology, by `visibility`, set in each theme block of `tokens.css` and in its system fallback, so that no `prefers-color-scheme: dark` appears in the Built_CSS (Requirement 33.3).
+3. THE ThemeToggle SHALL read the current theme from `<html>` when it is pressed, and not from React state, so that any number of toggles on a page agree with no subscription and no `MutationObserver`. Storage behaviour is unchanged (Requirement 32.5).
+4. THE ThemeToggle's markup SHALL be the same on the server and on the first client render in the dark and light themes, and its width SHALL be the same in both (the wider word sets it). This replaces the subscription and the hidden copy of Requirement 38.16, which are accepted as the interim and are removed by task 17.
+5. THE `useMediaQuery` hook already returns `false` as its server snapshot, and a component SHALL NOT render different markup from `window` or `localStorage` on its first render.
+6. THE Playwright suite SHALL keep Requirement 36.2 passing: the accessible name starts with the visible word and says the theme it will set, at every width and in both themes.
