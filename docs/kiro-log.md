@@ -545,3 +545,5 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
   - Requirement 39.3 named the empty state "No results"; the real text is "Nothing matches. Try fewer letters." The requirement now quotes it.
   - Non-blocking gap: the scan checks `w`, `h`, `size`, padding, margin, gap, `space` and the inset utilities only. It does not check `min-w`, `min-h`, `max-h`, `translate`, `basis` or `leading`, and it reads `.ts` and `.tsx` only. Requirement 39.2 lists what it must cover, so this is within the spec.
   - Not verified: I did not run the tests locally, and I did not view the screenshots (they are not attached).
+
+- Task 16 ticked on PR #36, after CI went green on PR #35 (`check`, `scaffold`) and PR #36. No hook ran. Merge order set by the human: #35, then #36, then Claude Code commits ui-kit task 18 and opens its pull request for review. Task 18 stays open.
