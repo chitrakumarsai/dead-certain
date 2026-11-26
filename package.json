@@ -12,6 +12,7 @@
 		"test:props": "vitest run .props. --passWithNoTests",
 		"build": "pnpm -r --if-present build",
 		"e2e": "playwright test",
+		"seo:check": "node --experimental-strip-types --no-warnings=ExperimentalWarning scripts/seo-check.ts",
 		"dc": "pnpm -s --filter @dead-certain/kb-tools exec vite build --logLevel warn && node packages/kb-tools/bin/dc.mjs",
 		"record:snapshots": "node --experimental-strip-types apps/pre-flight/collectors/record.ts",
 		"new-app": "node --experimental-strip-types scripts/new-app.ts"

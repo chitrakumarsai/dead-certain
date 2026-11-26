@@ -45,6 +45,8 @@ jobs:
       - run: cp -R apps/claim-check/dist apps/site/dist/claim-check
       - run: cp -R apps/pre-flight/dist apps/site/dist/pre-flight
       # new-app:copy
+      # The head, sitemap and robots.txt of the site as deployed (seo requirement 8).
+      - run: pnpm seo:check
       - if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:

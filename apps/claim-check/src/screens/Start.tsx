@@ -1,5 +1,5 @@
 import { Button } from "@dead-certain/ui";
-import { useTitle } from "../useTitle";
+import { useBuiltTitle } from "../useTitle";
 
 const HEADING = "Check a hospital claim before you file it";
 
@@ -36,7 +36,7 @@ function Tiles({ items }: { items: readonly (readonly [string, string])[] }) {
 
 /** Screen 1: what the check does, and the way in (requirement 2). */
 export function Start({ onStart }: { onStart: () => void }) {
-	useTitle(HEADING);
+	useBuiltTitle();
 	return (
 		<div className="mx-auto w-full max-w-page">
 			<section
