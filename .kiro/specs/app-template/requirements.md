@@ -194,6 +194,19 @@ Scope: the command, the template, the starter knowledge, the generic app, the sh
 3. AFTER the gate's pull request merges, THE Kiro_Lane SHALL update `.kiro/steering/new-app.md` so that it matches the real command: the real file layout (with `golden/`), `ci.yml` and not `deploy.yml`, the Playwright wiring, the Markers, and `golden/scenarios.yaml` and not `kb/golden.yaml`.
 4. AFTER the gate's pull request merges, THE Kiro_Lane SHALL review it against this spec and amend the spec where it accepts a deviation.
 
+### Requirement 13: A new app gets its search metadata entry (added at the review of PR #39, 2026-11-26)
+
+**User Story:** As a person who scaffolds an app, I want the site's SEO check to pass without a hand edit, so that a new app does not break the deploy.
+
+#### Acceptance Criteria
+
+1. THE `seoHead()` plugin leaves a page with no `PAGES` entry untouched, and `pnpm seo:check` fails on it once CI copies the app into the site. A new app SHALL therefore get an entry in the same run that creates it.
+2. THE Shared_Files SHALL include `packages/ui/src/site.ts`, which SHALL carry a fifth Marker, `new-app:pages`, as a comment inside the `PAGES` object, once.
+3. THE command SHALL insert one entry before that Marker, with the Marker's indentation: `path` `<App_Name>/`, `name` and `title` the App_Name in title case, `description` "An app built with the Dead Certain skeleton.", and `index` false. A noindex entry needs no image, no JSON-LD and no manifest, so the generated app passes `seo:check` as it stands. The human sets `index`, the copy and the image when the app is ready to be found.
+4. THE entry's key SHALL be derived from the App_Name as a camel-case identifier, and `PageKey` SHALL be `keyof typeof PAGES`, so no second list needs an edit.
+5. THE Scaffold_Job SHALL run `pnpm seo:check` on the probe app's build, and SHALL fail when it does not pass.
+6. THE rule that the command leaves every other byte of the Shared_Files unchanged (requirement 4.4) and its rollback (requirement 6) SHALL cover this file.
+
 ## Open questions and decisions
 
 Decided by the brief:
@@ -221,16 +234,3 @@ Decided by the human (2026-11-20):
 7. **Scaffold_Job cost.** Path filters: the job's later steps run only when `scripts/`, `templates/`, `README.md`, `playwright.config.ts` or `ci.yml` change (design, "The Scaffold_Job"; task 6.2).
 
 No open question remains.
-
-### Requirement 13: A new app gets its search metadata entry (added at the review of PR #39, 2026-11-26)
-
-**User Story:** As a person who scaffolds an app, I want the site's SEO check to pass without a hand edit, so that a new app does not break the deploy.
-
-#### Acceptance Criteria
-
-1. THE `seoHead()` plugin leaves a page with no `PAGES` entry untouched, and `pnpm seo:check` fails on it once CI copies the app into the site. A new app SHALL therefore get an entry in the same run that creates it.
-2. THE Shared_Files SHALL include `packages/ui/src/site.ts`, which SHALL carry a fifth Marker, `new-app:pages`, as a comment inside the `PAGES` object, once.
-3. THE command SHALL insert one entry before that Marker, with the Marker's indentation: `path` `<App_Name>/`, `name` and `title` the App_Name in title case, `description` "An app built with the Dead Certain skeleton.", and `index` false. A noindex entry needs no image, no JSON-LD and no manifest, so the generated app passes `seo:check` as it stands. The human sets `index`, the copy and the image when the app is ready to be found.
-4. THE entry's key SHALL be derived from the App_Name as a camel-case identifier, and `PageKey` SHALL be `keyof typeof PAGES`, so no second list needs an edit.
-5. THE Scaffold_Job SHALL run `pnpm seo:check` on the probe app's build, and SHALL fail when it does not pass.
-6. THE rule that the command leaves every other byte of the Shared_Files unchanged (requirement 4.4) and its rollback (requirement 6) SHALL cover this file.
