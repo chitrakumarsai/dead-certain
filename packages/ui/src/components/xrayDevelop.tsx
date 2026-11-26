@@ -60,8 +60,8 @@ export function ScanLine({ isWide }: { isWide: boolean }) {
 					<div
 						className={
 							isWide
-								? "absolute inset-y-0 left-0 w-0.5 bg-film"
-								: "absolute inset-x-0 top-0 h-0.5 bg-film"
+								? "absolute inset-y-0 left-0 border-l-2 border-film"
+								: "absolute inset-x-0 top-0 border-t-2 border-film"
 						}
 					/>
 				</m.div>
