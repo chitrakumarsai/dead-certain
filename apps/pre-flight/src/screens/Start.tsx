@@ -79,7 +79,7 @@ export function Start() {
 					your browser except requests to GitHub.
 				</p>
 			</section>
-			<div className="mx-auto w-full max-w-column pt-10 text-left">
+			<div className="mx-auto w-full max-w-column pt-8 text-left">
 				<Sheet>
 					<form className="flex flex-col gap-2" onSubmit={submit} noValidate>
 						<label htmlFor={fieldId} className="text-sys-body font-semibold">
