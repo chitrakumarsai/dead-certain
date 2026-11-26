@@ -513,7 +513,7 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
   - Close with Task_Evidence in both themes.
   - _Requirements: 40.1 to 40.6, 36.2, 33.3_
 
-- [ ] 18. Narrow the gradient allowlist (Claude Code lane, from the review of PR #35)
+- [x] 18. Narrow the gradient allowlist (Claude Code lane, from the review of PR #35)
   - Remove `scan-line` from the gradient-token pattern in `packages/ui/src/refusals.test.ts` (line 25), and from any other test or scan that allows it, so that a `--scan-line` gradient is refused as any other. Add a case to the refusals test that a `--scan-line: linear-gradient(...)` declaration fails.
   - Close with Task_Evidence (`pnpm check` output; no visible change).
   - _Requirements: 33.2, 38.5_
