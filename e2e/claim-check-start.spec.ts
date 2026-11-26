@@ -22,8 +22,9 @@ test.describe("Claim Check start screen", () => {
 		await expect(
 			page.getByText("Your answers stay in your browser."),
 		).toBeVisible();
+		// The start screen keeps the title the build wrote (seo requirement 3.3).
 		await expect(page).toHaveTitle(
-			"Check a hospital claim before you file it. Claim Check",
+			"Claim Check: what a health policy pays on a hospital bill",
 		);
 		await expectNoAxeViolations(page);
 	});

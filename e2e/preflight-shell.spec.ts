@@ -5,7 +5,9 @@ test("Pre-Flight opens in the shell with its nav and footer", async ({
 	page,
 }) => {
 	await page.goto(PRE_FLIGHT_URL);
-	await expect(page).toHaveTitle("Pre-Flight");
+	await expect(page).toHaveTitle(
+		"Pre-Flight: check a GitHub repository before you submit",
+	);
 	// At 390 px the nav sits behind the Menu button.
 	const menu = page.getByRole("button", { name: "Menu" });
 	if (await menu.isVisible()) await menu.click();

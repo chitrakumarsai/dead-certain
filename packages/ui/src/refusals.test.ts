@@ -170,7 +170,11 @@ test("prefers-color-scheme: dark appears in no stylesheet or source but tokens.c
 				(file) => /\.(css|tsx?)$/.test(file) && !file.includes("node_modules"),
 			)
 			.filter(
-				(file) => !file.endsWith("tokens.css") && !/\.test\.tsx?$/.test(file),
+				(file) =>
+					!file.endsWith("tokens.css") &&
+					// seo requirement 4.4: the theme-color meta's media attribute, not a style.
+					!file.endsWith("src/site.ts") &&
+					!/\.test\.tsx?$/.test(file),
 			)
 			.filter((file) =>
 				/prefers-color-scheme\s*:\s*dark/.test(
