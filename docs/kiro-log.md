@@ -547,3 +547,7 @@ Two were accepted as they are: `UNKNOWN_ERROR` is unreachable from parsed input,
   - Not verified: I did not run the tests locally, and I did not view the screenshots (they are not attached).
 
 - Task 16 ticked on PR #36, after CI went green on PR #35 (`check`, `scaffold`) and PR #36. No hook ran. Merge order set by the human: #35, then #36, then Claude Code commits ui-kit task 18 and opens its pull request for review. Task 18 stays open.
+
+- Review of PR #37 (`cc/phase6-gradient-allowlist`, head `928f90f`, ui-kit task 18), on `kiro/9-gradient-review` in its own worktree. No hook ran. Approved and task 18 ticked.
+  - `GRADIENT_TOKENS` in `refusals.test.ts` drops `scan-line` and allows four tokens, matching ui-kit 33.2 and 38.5. The new case refuses `:root{--scan-line:linear-gradient(red,blue)}`; the PR reports it failing on the old allowlist (1 failed, 21 passed) and passing now (22 of 22). `git grep scan-line` on main found no other allowance, only `data-scan-line` element attributes. CI `check` and `scaffold` green.
+  - Not verified here: the failing and passing runs and `pnpm check` are the PR figures; I did not run them locally.
