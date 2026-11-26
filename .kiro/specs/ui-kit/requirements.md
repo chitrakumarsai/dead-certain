@@ -406,6 +406,7 @@ This spec is implemented by the Claude Code lane. The Kiro lane writes the spec 
 11. THE XrayStage SHALL accept the targets `{ kind: "verdict" }` and `{ kind: "line", fact }`.
 12. WHEN `print` media applies, THE XrayStage SHALL hide the Film through the Film's `print:hidden` panel and scrim.
 13. THE XrayStage SHALL start loading the X-ray develop module when it mounts, and WHEN the Film opens before the module has loaded, or the user prefers reduced motion, THE XrayStage SHALL show the proof with the 120 ms fade and no scan line, and whether a reveal animates SHALL be fixed when the reveal mounts, so the proof never remounts.
+14. THE scan line SHALL be a 2 px solid `--film` border on a moving layer (`border-l-2` across, `border-t-2` down), and the Playwright develop test SHALL assert the 2 px width, because a width written as `w-0.5` is off the spacing scale and compiles to nothing. It was 0 px wide until the review of PR #35, which accepted the fix.
 
 ### Requirement 21: AppShell
 
@@ -608,7 +609,7 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 #### Acceptance Criteria
 
 1. THE Built_CSS SHALL contain a `box-shadow` other than `none` only where its value is a token (`--highlight-inset`, `--glow-wax-soft`, `--glow-wax-pulse`, `--halo-paper`), and SHALL use none that suggests elevation.
-2. THE Built_CSS SHALL contain `linear-gradient`, `radial-gradient` or `conic-gradient` only for the hero radial glow, the hero headline fill, the graph-paper grid, film grain and the scan line, and only through a token.
+2. THE Built_CSS SHALL contain `linear-gradient`, `radial-gradient` or `conic-gradient` only for the hero radial glow, the hero headline fill, the graph-paper grid and film grain, and only through a token. The scan line is a solid 2 px `--film` border, so it has no gradient and no token (accepted at the review of PR #35).
 3. THE Built_CSS SHALL contain no `prefers-color-scheme: dark`. Because dark is the default, the system fallback is `prefers-color-scheme: light`, and it appears in `tokens.css` only.
 4. THE Built_CSS SHALL keep zero `text-transform: uppercase` declarations and zero `https://` URLs, and no rendered Button label SHALL contain an arrow glyph.
 5. THE UI_Kit SHALL contain no scroll-triggered entrance animation. THE Landing_Page alone MAY fade and raise a section by 16 px once.
@@ -675,7 +676,7 @@ Review of PR #27 (Kiro, 2026-11-23), with Review of PR #26 (Kiro, 2026-11-23). R
 2. THE Sheet SHALL carry the `halo-paper` depth utility.
 3. THE AppShell SHALL centre its header, main area and footer at `--page-max` (1120 px). THE ThemeToggle SHALL sit in the header at every width (Requirement 36.1).
 4. THE XrayStage SHALL centre the sheet while the film is closed, and SHALL centre the sheet and film together while it is open.
-5. THE Tokens_Stylesheet SHALL define `--page-max`, `--glow-hero`, `--grid-calibration` and `--fill-hero-text`, and `theme.css` SHALL define `bg-hero` and `text-hero-fill`. The only gradients in the kit SHALL live in the named gradient tokens (`--glow-hero`, `--grid-calibration`, `--fill-hero-text`, `grain`, `scan-line`).
+5. THE Tokens_Stylesheet SHALL define `--page-max`, `--glow-hero`, `--grid-calibration` and `--fill-hero-text`, and `theme.css` SHALL define `bg-hero` and `text-hero-fill`. The only gradients in the kit SHALL live in the named gradient tokens (`--glow-hero`, `--grid-calibration`, `--fill-hero-text`, `grain`). There is no `scan-line` token (Requirement 33.2).
 6. THE `text-hero-fill` utility SHALL fall back to `CanvasText` while `forced-colors: active` applies. THE hero headline gradient SHALL end at `--text-tertiary`, so its darkest stop meets the 4.5 text floor on both themes.
 7. THE light-theme `--glow-hero` SHALL be focus blue at 8%.
 8. THE apps' refusal end-to-end specs SHALL allow a `box-shadow` only on an element with `halo-paper`, `glow-wax-soft`, `glow-wax-pulse` or `highlight-inset`, and a gradient only on `bg-hero` or `text-hero-fill`. THE `tokens.test.ts` comparison of the light block with its system fallback SHALL collapse whitespace.
@@ -697,7 +698,7 @@ Review of PR #27 (Kiro, 2026-11-23), with Review of PR #26 (Kiro, 2026-11-23). R
 
 1. THE reset theme defines spacing keys 0, 1, 2, 3, 4, 6, 8, 12, 16 and 24 only (Requirement 1.11), so a utility such as `pt-10`, `md:pt-20` or `px-5` compiles to nothing. PR #33 found `pt-10` on the Pre-Flight start form, which left no gap.
 2. THE Kit_Test_Suite SHALL scan the class names in `packages/ui/src` and in the apps' and site's `src` for a spacing utility (`p`, `px`, `py`, `pt`, `pr`, `pb`, `pl`, `m`, `mx`, `my`, `mt`, `mr`, `mb`, `ml`, `gap`, `gap-x`, `gap-y`, `space-x`, `space-y`, `inset`, `top`, `right`, `bottom`, `left`, `size`, `w`, `h`), with any variant prefix, whose step is not a key of the scale, and SHALL fail on it. The scan allows the named sizes the theme defines (`touch`, `column`, `page`, `card` and the like) and arbitrary values written with brackets, which a separate rule already refuses.
-3. THE CommandMenu's "No results" paragraph SHALL use `px-4`, which lines its text up with the search field.
+3. THE CommandMenu's empty-state paragraph ("Nothing matches. Try fewer letters.") SHALL use `px-4`, which lines its text up with the search field.
 
 ### Requirement 40: The kit renders on the server (prerequisite of the `seo` prerender)
 
