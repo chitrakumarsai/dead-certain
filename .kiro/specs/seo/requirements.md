@@ -56,7 +56,7 @@ Scope: the five page keys (`home`, `claimCheck`, `preFlight`, `kit`, `notFound`)
 1. THE Site_Config SHALL export `ORIGIN` ("https://chitrakumarsai.github.io"), `BASE` ("/dead-certain/"), `REPO` ("https://github.com/chitrakumarsai/dead-certain"), the `PageSeo` type, `PAGES` keyed by Page_Key, and `absolute(path)`. Changing to a custom domain SHALL need an edit to `ORIGIN` and `BASE` only.
 2. A `PageSeo` SHALL hold `path` (relative to `BASE`, ending in `/` or a file name, never a hash or a query), `name` (the page's own name, used by the Structured_Data and the manifest; accepted at the review of PR #39), `title`, `description`, `index`, and for an Indexable_Page `ogImage` and `ogAlt`.
 3. THE Site_Config SHALL import nothing and SHALL hold no hex colour. Build scripts import it by relative path. It is not exported from the kit's public index.
-4. THE tests SHALL fail when a title is longer than 60 characters, a description is longer than 155, two pages share a title or a description, or `absolute` returns a URL outside `ORIGIN + BASE`.
+4. THE tests SHALL fail when a title is longer than 60 characters, a description is longer than 155, two indexable pages share a title or a description (a noindex page made by `pnpm new-app` repeats one fixed description; accepted at the review of PR #41), or `absolute` returns a URL outside `ORIGIN + BASE`.
 5. THE page copy SHALL be exactly the table in Requirement 3.
 
 ### Requirement 3: Titles and descriptions

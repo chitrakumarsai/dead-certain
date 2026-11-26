@@ -43,7 +43,7 @@ The Template is not a workspace package and is not built or type-checked on its 
 
 ## 3. What it edits
 
-Two shared files, at four marker comments. Each marker occurs once, and the command refuses if one is missing or doubled. Leave the markers in place.
+Three shared files, at five marker comments. Each marker occurs once, and the command refuses if one is missing or doubled. Leave the markers in place.
 
 | Marker | File | Line added before it |
 | --- | --- | --- |
@@ -51,8 +51,11 @@ Two shared files, at four marker comments. Each marker occurs once, and the comm
 | `new-app:servers` | `playwright.config.ts` | A `webServer` entry that builds the app and previews it on its port with `--strictPort` |
 | `new-app:dc-build` | `.github/workflows/ci.yml` | `- run: pnpm dc build apps/<name>` |
 | `new-app:copy` | `.github/workflows/ci.yml` | `- run: cp -R apps/<name>/dist apps/site/dist/<name>` |
+| `new-app:pages` | `packages/ui/src/site.ts` | The app's entry in `PAGES`, keyed by the camel-cased name (`loan-check` gives `loanCheck`): `path` `<name>/`, `name` and `title` the name in title case, `description` "An app built with the Dead Certain skeleton." and `index: false` |
 
 The port is one more than the highest preview port in `playwright.config.ts` (4176 for the third app). It is not `deploy.yml`: the workflow is `ci.yml`.
+
+The `PAGES` entry makes `pnpm seo:check` pass for the new app as generated. It is noindex, so it has no image, no structured data and no manifest, and search engines are told to skip it. The command refuses if `PAGES` already has the key or the path (for example `not-found`, whose key `notFound` is the 404 page's). When the app is ready to be found, set `index` to true by hand in `site.ts`, write its real title and description (60 and 155 characters at most, no counts of rules or checks), and add its image, JSON-LD and manifest as the `seo` spec describes (Claude Code lane). Until then it is not in the sitemap.
 
 The command does not edit `apps/site`. Add the link to the new app by hand in `apps/site/index.html`, beside the other apps (Claude Code lane).
 
@@ -100,10 +103,11 @@ pnpm dc golden apps/<name>
 pnpm dc build apps/<name>
 pnpm check
 pnpm build
+pnpm seo:check
 pnpm e2e
 ```
 
-`pnpm dc golden` prints a `TOO_FEW_SCENARIOS` warning for the starter (4 scenarios, 12 asked for). That is expected until the agent writes the real set. Attach the test output and screenshots at 390, 768 and 1280 px to the pull request.
+`pnpm seo:check` reads the built site and each app's `dist`, so it needs `pnpm build` first. `pnpm dc golden` prints a `TOO_FEW_SCENARIOS` warning for the starter (4 scenarios, 12 asked for). That is expected until the agent writes the real set. Attach the test output and screenshots at 390, 768 and 1280 px to the pull request.
 
 ## Lanes
 
