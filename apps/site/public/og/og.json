@@ -1,0 +1,45 @@
+{
+	"home": {
+		"file": "og/home.png",
+		"alt": "The Dead Certain wordmark and tagline beside a sample verdict, ₹1,32,000 of ₹2,10,000 will be paid, with its proof.",
+		"text": [
+			"Dead Certain",
+			"LLMs guess. The dead are certain.",
+			"₹1,32,000 of ₹2,10,000 will be paid",
+			"OUT-03",
+			"PAY-02",
+			"PAY-01"
+		]
+	},
+	"claimCheck": {
+		"file": "og/claim-check.png",
+		"alt": "A sample claim: ₹1,32,000 of ₹2,10,000 will be paid. The room rent over the limit line and its clause are marked.",
+		"text": [
+			"₹1,32,000 of ₹2,10,000 will be paid",
+			"Hospital bill",
+			"Annexure 1 items",
+			"Room rent over the limit",
+			"Other charges reduced for room rent",
+			"Co-payment",
+			"Amount payable",
+			"4.2"
+		]
+	},
+	"preFlight": {
+		"file": "og/pre-flight.png",
+		"alt": "Five Pre-Flight checks on a sample repository: three passed and two failed, each with its rule.",
+		"text": [
+			"Check a repository before you submit it",
+			"Public repository",
+			"R-01",
+			"Open-source licence",
+			"R-02",
+			".kiro directory",
+			"R-04",
+			".kiro committed",
+			"R-05",
+			"README run instructions",
+			"R-07"
+		]
+	}
+}

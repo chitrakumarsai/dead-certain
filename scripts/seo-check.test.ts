@@ -9,8 +9,14 @@ import {
 	pageTags,
 	robotsTxt,
 	sitemapXml,
+	webManifest,
 } from "../packages/ui/src/site.ts";
-import { checkPage, checkRobots, checkSitemap } from "./seo-check.ts";
+import {
+	checkManifest,
+	checkPage,
+	checkRobots,
+	checkSitemap,
+} from "./seo-check.ts";
 import { render } from "./seo-testing.ts";
 
 const colours = bgBase(
@@ -168,4 +174,25 @@ test("robots.txt must name the sitemap", () => {
 	expect(rules(checkRobots("User-agent: *\nAllow: /\n"))).toEqual([
 		"robots.txt",
 	]);
+});
+
+test("a manifest's icons must resolve to built files (requirement 7.7)", () => {
+	const manifest = webManifest("claimCheck", "#000000");
+	const path = "claim-check/manifest.webmanifest";
+	expect(checkManifest(manifest, path, () => true)).toEqual([]);
+	expect(
+		rules(checkManifest(manifest, path, (p) => p !== "icon-512.png")),
+	).toEqual(["manifest"]);
+	expect(rules(checkManifest("{}", path, () => true))).toEqual(["manifest"]);
+});
+
+test("an og:image with no built file is reported", () => {
+	expect(
+		rules(
+			checkPage(render(pageTags("home", colours)), "home", "index.html", {
+				colours,
+				exists: (p: string) => p !== "og/home.png",
+			}),
+		),
+	).toContain("link");
 });

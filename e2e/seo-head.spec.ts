@@ -25,7 +25,10 @@ for (const [key, url] of PAGE_URLS)
 		expect(await count('meta[name="description"]')).toBe(1);
 		expect(await count('meta[name="robots"]')).toBe(1);
 		expect(await count('meta[name="theme-color"]')).toBe(2);
+		expect(await count('link[rel="icon"]')).toBe(1);
+		expect(await count('link[rel="apple-touch-icon"]')).toBe(1);
 		const index = PAGES[key].index;
+		expect(await count('meta[property="og:image"]')).toBe(index ? 1 : 0);
 		expect(await count('link[rel="canonical"]')).toBe(index ? 1 : 0);
 		expect(await count('meta[property="og:title"]')).toBe(index ? 1 : 0);
 		expect(await count('script[type="application/ld+json"]')).toBe(

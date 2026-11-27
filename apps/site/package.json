@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"build": "node ../../packages/kb-tools/bin/dc.mjs build apps/claim-check && vite build",
+		"build": "node ../../packages/kb-tools/bin/dc.mjs build apps/claim-check && node ../../packages/kb-tools/bin/dc.mjs build apps/pre-flight && vite build",
 		"preview": "vite preview"
 	},
 	"devDependencies": {

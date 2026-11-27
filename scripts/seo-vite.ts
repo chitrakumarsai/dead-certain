@@ -71,7 +71,7 @@ const colours = (): ThemeColours =>
 /** The tags the plugin owns, so a page never carries two (requirement 4.1). */
 export const stripOwned = (html: string): string =>
 	html.replace(
-		/^[ \t]*(<title>[\s\S]*?<\/title>|<meta\s+(name="(description|robots|theme-color|twitter:[^"]*)"|property="og:[^"]*")[^>]*>|<link\s+rel="(canonical|manifest)"[^>]*>)[ \t]*\r?\n/gm,
+		/^[ \t]*(<title>[\s\S]*?<\/title>|<meta\s+(name="(description|robots|theme-color|twitter:[^"]*)"|property="og:[^"]*")[^>]*>|<link\s+rel="(canonical|manifest|icon|apple-touch-icon)"[^>]*>)[ \t]*\r?\n/gm,
 		"",
 	);
 
