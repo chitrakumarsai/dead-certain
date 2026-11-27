@@ -172,7 +172,7 @@ This plan builds Claim Check (`apps/claim-check`) in TypeScript strict mode: the
 
 Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-proposal.md`, approved by the human on 2026-11-23: JSON-LD Organization, no new dependencies). Implemented by **Claude Code lane. Not implemented in the Kiro session that wrote this.** Depends on `ui-kit` tasks 12 to 14. Run after `ui-kit` tasks 12 to 14 and the landing page tasks 9 and 10, one at a time, in this order. Branch `cc/phase6-claim-check-redesign`. Each task ends with Task_Evidence in both themes (screenshots at 390, 768 and 1280 px, a clean console, zero axe violations, `pnpm check`). Do not touch `apps/claim-check/{kb,rulebook,golden}`.
 
-- [ ] 17. Theme, shell and command menu
+- [x] 17. Theme, shell and command menu
   - Wire the kit's `ThemeToggle` and `CommandMenu` into `AppShell` with the items in requirement 16.3, and move "Link copied" to `Toast`. Import the new kit styles.
   - Playwright: the toggle persists, the menu opens with Ctrl+K and Cmd+K, each item runs, focus returns.
   - _Requirements: 16.1 to 16.5_
@@ -187,6 +187,7 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
   - _Requirements: 17.1, 17.3_
 - [ ] 21. Cross-cutting tests in both themes
   - Run the a11y, keyboard and refusals specs in both themes. Change the privacy test to allow the `dc-theme` write and nothing else. Update the refusals scan to the narrowed list. Re-check the budgets.
+  - From the review of PR #45: run the command-menu item tests of `claim-check-commands.spec.ts` at 390 px too, through the Menu panel (they skip below 768 px today), and check that the "Link copied" toast at 390 and 320 px covers neither the copy button nor the page's last line and causes no sideways scroll.
   - _Requirements: 18.1 to 18.4_
 - [ ] 22. Checkpoint, Claim Check redesign
   - Run `pnpm check`, `pnpm test:props`, `pnpm build`, `pnpm dc validate`, `pnpm dc golden` and `pnpm e2e`. Attach the five screens in both themes at the three widths and the reduced-motion X-ray. Open the pull request. Kiro reviews it against this spec.

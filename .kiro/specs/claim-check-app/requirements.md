@@ -287,7 +287,7 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 1. THE Claim_Check SHALL render every screen in the dark theme by default and in the light theme on request, through the kit's `ThemeToggle` in the `AppShell`.
 2. THE Claim_Check SHALL write no storage except `dc-theme`, and only through the kit.
 3. THE Claim_Check SHALL pass `CommandMenu` its items: start over, copy the link to this verdict, open the rulebook, and the answers in the rail, at most about 60.
-4. THE Claim_Check SHALL show "Link copied" through the kit's `Toast` and the single live region.
+4. THE Claim_Check SHALL show "Link copied" through the kit's `Toast` and the single live region, from the verdict's button and from the menu's "Copy link to this verdict" item, which share one copy-link state. The copied link stays shown under the button (requirement 10.5) and the copy-by-hand box stays (10.6). The toast stays until it is dismissed or the step changes, and Dismiss moves focus to the copy button (accepted at the review of PR #45).
 5. THE Claim_Check SHALL use no motion inside the question and verdict flow beyond the kit's hover, enter, page and menu durations and the X-ray develop, and SHALL use no entrance animation on scroll.
 
 ### Requirement 17: Screens
