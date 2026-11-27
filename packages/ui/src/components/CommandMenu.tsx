@@ -88,9 +88,21 @@ export function CommandMenu({ items }: CommandMenuProps) {
 		setActive(0);
 	};
 
+	// The chosen item runs once focus is back on the trigger, so an item that
+	// moves focus (a reopened question, a new page) is not undone by the return.
+	const chosen = useRef<CommandItem | null>(null);
+	const triggerRef = useRef<HTMLButtonElement>(null);
 	const choose = (item: CommandItem | undefined) => {
 		if (item === undefined) return;
+		chosen.current = item;
 		change(false);
+	};
+	const runChosen = (event: Event) => {
+		const item = chosen.current;
+		chosen.current = null;
+		if (item === null) return;
+		event.preventDefault();
+		triggerRef.current?.focus();
 		item.onSelect?.();
 		if (item.href !== undefined) location.assign(item.href);
 	};
@@ -119,6 +131,7 @@ export function CommandMenu({ items }: CommandMenuProps) {
 	return (
 		<Dialog.Root open={isOpen} onOpenChange={change}>
 			<Dialog.Trigger
+				ref={triggerRef}
 				data-command-trigger
 				aria-keyshortcuts="Meta+K Control+K"
 				className="inline-flex min-h-touch min-w-touch items-center gap-3 rounded-control border border-border-strong px-3 text-sys-small text-text-soft transition-colors duration-(--dur-hover) ease-kit hover:bg-surface-3 hover:text-text"
@@ -128,7 +141,10 @@ export function CommandMenu({ items }: CommandMenuProps) {
 			</Dialog.Trigger>
 			<Dialog.Portal>
 				<Dialog.Overlay className="fixed inset-0 bg-bg-base/70 transition-opacity duration-(--dur-menu) ease-kit starting:opacity-0" />
-				<Dialog.Content className="fixed inset-x-4 top-24 mx-auto max-w-column rounded-card border border-border-strong bg-surface-2 text-text-primary halo-paper transition-opacity duration-(--dur-menu) ease-kit starting:opacity-0">
+				<Dialog.Content
+					onCloseAutoFocus={runChosen}
+					className="fixed inset-x-4 top-24 mx-auto max-w-column rounded-card border border-border-strong bg-surface-2 text-text-primary halo-paper transition-opacity duration-(--dur-menu) ease-kit starting:opacity-0"
+				>
 					<Dialog.Title className="sr-only">Go to</Dialog.Title>
 					<Dialog.Description className="sr-only">
 						Type to filter. Arrows move through the results and Enter opens one.
