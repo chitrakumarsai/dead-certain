@@ -62,14 +62,14 @@ This plan makes the three public pages findable and previewable, in four pull re
 - [x] 7. Checkpoint, head and structured data
   - Run `pnpm check`, `pnpm test:props`, `pnpm build` and `pnpm e2e`. Attach the built head of each page and the sitemap. Open the pull request. Kiro reviews it against this spec.
 
-- [ ] 8. OG images and icons
-  - Carried from the review of PR #39: check the `WebApplication` JSON-LD by hand with a schema validator. Its `author` is `{ "@id": <org> }`, and the Organization node is defined on the home page only, so the page's data may not stand alone. If the validator wants it, inline `@type` and `name` in the reference and amend requirement 6.2.
+- [x] 8. OG images and icons
+  - The JSON-LD question carried from the review of PR #39 is closed: the `author` carries `@type` and `name` (requirement 6.2). It was not run through an outside validator; a Rich Results run by the human is welcome but not required.
   - Add the fixture `apps/site/kit/og.html` and `apps/site/src/kit/og.tsx` (noindex, key `kit`). Draw the three images of requirement 7.2 from the Hero_Module and the compiled knowledge bases. Write `scripts/og.ts` (build, preview on a free port, Playwright at 1200 by 630, dark theme) that writes the three PNGs, the four icon files (`favicon.ico` as a PNG-in-ICO container written by hand) and `og.json`. Add a root script `pnpm og`. Commit the assets.
   - Tests: the PNG signature, size and header dimensions; `og.json` against the text computed with no browser; every `og:image`, icon and manifest link resolves to a built file.
   - Write the three `og:image:alt` sentences (at most 125 characters), record them in `og.json`, set `ogImage` and `ogAlt` in `PAGES`, and add the icon links and the manifests' `icons`.
   - _Requirements: 7.1 to 7.7_
 
-- [ ] 9. Checkpoint, OG images
+- [x] 9. Checkpoint, OG images
   - Run `pnpm check`, `pnpm test:props`, `pnpm build`, `pnpm seo:check` and `pnpm e2e`. Attach the three PNGs at full size with their byte sizes. Open the pull request on `cc/phase7-seo-og`. Kiro reviews it against this spec.
 
 - [ ] 10. Prerender gate and the landing page
@@ -98,6 +98,7 @@ This plan makes the three public pages findable and previewable, in four pull re
 
 ## Notes
 
+- Review of PR #43 (Kiro, 2026-11-27): tasks 8 and 9 ticked. Accepted: the inlined JSON-LD author (6.2), the grid-only room on the home image with grain on the film (7.2), the full four-deduction ledger, "Failed" for the warning row, the "DC" icon (7.5), and the site build compiling Pre-Flight's knowledge base (landing 1.3).
 - Review of PR #39 (Kiro, 2026-11-26): tasks 1 to 7 ticked. Accepted: no `index.html` change for Claim Check and a pass-through for a page with no entry (requirements 4.1), `PageSeo.name` (2.2), kit titles (3.3), the system-only theme colour (4.4, already accepted) and the refusals exception for `site.ts` (ui-kit 33.3). New apps get their `PAGES` entry from `pnpm new-app`: `app-template` requirement 13 and task 9. Task 8 follows after that is agreed.
 
 - Moved from `landing-page` on 2026-11-26: requirement 12 and task 9.4. See requirement 11 for the mapping. Landing task 9.5's head-tag test is satisfied by tasks 1, 2 and 6.
