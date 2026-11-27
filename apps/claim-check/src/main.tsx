@@ -1,11 +1,17 @@
 import type { KnowledgeBase } from "@dead-certain/engine";
-import { AnswersRail, AppShell, useAnnounce } from "@dead-certain/ui";
-import { StrictMode, useEffect } from "react";
+import { AnswersRail, AppShell, Toast, useAnnounce } from "@dead-certain/ui";
+import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { commandsFor } from "./commands";
 import "./styles.css";
 import { loadedKb } from "./kb";
 import { useRoute } from "./route";
 import { Consult } from "./screens/Consult";
+import {
+	COPY_BUTTON_ID,
+	CopyLinkContext,
+	useCopyLinkState,
+} from "./screens/CopyLink";
 import { LoadFailure } from "./screens/LoadFailure";
 import { NotFound } from "./screens/NotFound";
 import { Rulebook } from "./screens/Rulebook";
@@ -44,13 +50,33 @@ function App({ kb }: { kb: KnowledgeBase }) {
 		},
 	];
 	const step = stepOf(view);
+	const copyLink = useCopyLinkState();
+	const { reset } = copyLink;
+	// The toast and the shown link belong to the verdict they copied.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset on each new step
+	useEffect(reset, [step.kind, route.page, reset]);
+	const [isToastDismissed, setToastDismissed] = useState(false);
+	useEffect(() => {
+		if (copyLink.state === "copied") setToastDismissed(false);
+	}, [copyLink.state]);
+	const answers =
+		route.page === "check" &&
+		(step.kind === "question" || step.kind === "verdict")
+			? railEntries(view.session)
+			: [];
+	const commands = commandsFor({
+		step: step.kind,
+		answers,
+		dispatch,
+		copy: () => void copyLink.copy(),
+	});
 
 	const showRail =
 		route.page === "check" &&
 		(step.kind === "question" || step.kind === "verdict");
 	const rail = showRail ? (
 		<AnswersRail
-			answers={railEntries(view.session)}
+			answers={answers}
 			onChange={(fact) => dispatch({ type: "edit", fact })}
 			skipped={view.skipped}
 			{...(step.kind === "question" ? { current: step.question.fact } : {})}
@@ -99,8 +125,28 @@ function App({ kb }: { kb: KnowledgeBase }) {
 			nav={nav}
 			// On the verdict the stage hosts the rail, so it folds up beside the film.
 			rail={step.kind === "verdict" ? undefined : rail}
+			commands={commands}
 		>
-			{page}
+			<CopyLinkContext.Provider value={copyLink}>
+				{page}
+			</CopyLinkContext.Provider>
+			<div className="pointer-events-none fixed inset-x-0 bottom-6 flex justify-center px-4">
+				<div className="pointer-events-auto">
+					<Toast
+						message={
+							copyLink.state === "copied" && !isToastDismissed
+								? "Link copied"
+								: null
+						}
+						isConfirmed
+						onDismiss={() => {
+							setToastDismissed(true);
+							// Dismiss takes the focused button away; focus goes back to the copy button.
+							document.getElementById(COPY_BUTTON_ID)?.focus();
+						}}
+					/>
+				</div>
+			</div>
 			{/* Last, so its sentence follows the headline's own announcement. */}
 			<ChangeAnnouncer view={view} />
 		</AppShell>
