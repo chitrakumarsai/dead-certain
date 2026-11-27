@@ -14,7 +14,7 @@ export interface PageSeo {
 	title: string;
 	description: string;
 	index: boolean;
-	/** Relative to BASE. Set in seo task 8 with the committed images. */
+	/** Relative to BASE; written by pnpm og, with ogAlt equal to og.json's alt. */
 	ogImage?: string;
 	ogAlt?: string;
 }
@@ -27,6 +27,9 @@ const ENTRIES = {
 		description:
 			"A model drafts the rules once. A small engine decides every verdict in your browser and shows the proof, clause by clause.",
 		index: true,
+		ogImage: "og/home.png",
+		ogAlt:
+			"The Dead Certain wordmark and tagline beside a sample verdict, ₹1,32,000 of ₹2,10,000 will be paid, with its proof.",
 	},
 	claimCheck: {
 		path: "claim-check/",
@@ -35,6 +38,9 @@ const ENTRIES = {
 		description:
 			"Answer a few questions and see the amount a sample health policy pays, each deduction, and the clause behind it.",
 		index: true,
+		ogImage: "og/claim-check.png",
+		ogAlt:
+			"A sample claim: ₹1,32,000 of ₹2,10,000 will be paid. The room rent over the limit line and its clause are marked.",
 	},
 	preFlight: {
 		path: "pre-flight/",
@@ -43,6 +49,9 @@ const ENTRIES = {
 		description:
 			"Enter a public repository and get a pass or fail for each checklist item, with the rule and evidence behind it. Runs in your browser.",
 		index: true,
+		ogImage: "og/pre-flight.png",
+		ogAlt:
+			"Five Pre-Flight checks on a sample repository: three passed and two failed, each with its rule.",
 	},
 	kit: {
 		path: "kit/",
@@ -251,11 +260,22 @@ export function appNode(page: PageSeo, category: string): object {
 		operatingSystem: "Any",
 		browserRequirements: "Requires JavaScript",
 		isAccessibleForFree: true,
-		author: { "@id": ORG_ID },
+		// Inlined, so the page's data stands alone: the Organization node is on home only.
+		author: { "@type": "Organization", "@id": ORG_ID, name: "Dead Certain" },
 	};
 }
 
-/** Every head tag the build writes for a page: headTags, theme colours, the manifest link and the JSON-LD. */
+/** The icon links every page carries, and the two PNGs each manifest lists (requirement 7.5). */
+export const ICONS = {
+	favicon: `${BASE}favicon.ico`,
+	appleTouch: `${BASE}apple-touch-icon.png`,
+	manifest: [
+		{ src: `${BASE}icon-192.png`, sizes: "192x192", type: "image/png" },
+		{ src: `${BASE}icon-512.png`, sizes: "512x512", type: "image/png" },
+	],
+} as const;
+
+/** Every head tag the build writes for a page: headTags, theme colours, icons, the manifest link and the JSON-LD. */
 export function pageTags(key: PageKey, colours: ThemeColours): HeadTag[] {
 	const tags = [
 		...headTags(key),
@@ -274,6 +294,14 @@ export function pageTags(key: PageKey, colours: ThemeColours): HeadTag[] {
 				media: "(prefers-color-scheme: light)",
 				content: colours.light,
 			},
+		},
+		{
+			tag: "link" as const,
+			attrs: { rel: "icon", href: ICONS.favicon, sizes: "32x32" },
+		},
+		{
+			tag: "link" as const,
+			attrs: { rel: "apple-touch-icon", href: ICONS.appleTouch },
 		},
 	];
 	if (APPS[key])
@@ -294,7 +322,7 @@ export function pageTags(key: PageKey, colours: ThemeColours): HeadTag[] {
 	return tags;
 }
 
-/** An app's web manifest. The icons join it in seo task 8. */
+/** An app's web manifest, with the two PNG icons. */
 export function webManifest(key: PageKey, colour: string): string {
 	if (!APPS[key]) throw new Error(`${key} is not an app`);
 	const page = PAGES[key];
@@ -308,6 +336,7 @@ export function webManifest(key: PageKey, colour: string): string {
 			display: "browser",
 			theme_color: colour,
 			background_color: colour,
+			icons: ICONS.manifest,
 		},
 		null,
 		"\t",

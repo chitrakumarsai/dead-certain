@@ -67,7 +67,9 @@ function identity(t: HeadTag): string | null {
 	if (t.tag === "script")
 		return t.attrs.type === "application/ld+json" ? "json-ld" : null;
 	if (t.tag === "link")
-		return ["canonical", "manifest"].includes(t.attrs.rel ?? "")
+		return ["canonical", "manifest", "icon", "apple-touch-icon"].includes(
+			t.attrs.rel ?? "",
+		)
 			? `link ${t.attrs.rel}`
 			: null;
 	const id = t.attrs.name ?? t.attrs.property ?? "";
@@ -188,6 +190,13 @@ export function checkPage(
 	}
 
 	const pageUrl = absolute(builtPath);
+	for (const t of actual) {
+		const id = t.attrs.property ?? t.attrs.name ?? "";
+		if (id !== "og:image" && id !== "twitter:image") continue;
+		const file = builtFileOf(t.attrs.content ?? "", pageUrl);
+		if (!file || file.startsWith("outside ") || !options.exists(file))
+			fail("link", `${id} ${t.attrs.content} has no built file`);
+	}
 	for (const m of html.matchAll(/\s(?:href|src)="([^"]*)"/g)) {
 		const file = builtFileOf(decode(m[1] as string), pageUrl);
 		if (file?.startsWith("outside ")) fail("link", file);
@@ -225,6 +234,31 @@ export function checkSitemap(
 			});
 	}
 	return items;
+}
+
+/** Every icon a manifest lists resolves to a built file (requirement 7.7). */
+export function checkManifest(
+	text: string,
+	builtPath: string,
+	exists: (builtPath: string) => boolean,
+): Item[] {
+	const fail = (detail: string) => [
+		{ page: builtPath, rule: "manifest", detail },
+	];
+	let icons: unknown;
+	try {
+		icons = (JSON.parse(text) as { icons?: unknown }).icons;
+	} catch {
+		return fail("does not parse");
+	}
+	if (!Array.isArray(icons) || icons.length === 0) return fail("no icons");
+	return icons.flatMap((icon: { src?: unknown }) => {
+		const src = typeof icon.src === "string" ? icon.src : "";
+		const file = builtFileOf(src, absolute(builtPath));
+		return file && !file.startsWith("outside ") && exists(file)
+			? []
+			: fail(`icon ${src} has no built file`);
+	});
 }
 
 export function checkRobots(text: string): Item[] {
@@ -268,6 +302,10 @@ function main(): number {
 		items.push(
 			...checkPage(read(path), pageKeyFor(path), path, { colours, exists }),
 		);
+	for (const path of [...files.keys()].filter((p) =>
+		p.endsWith("manifest.webmanifest"),
+	))
+		items.push(...checkManifest(read(path), path, exists));
 	items.push(
 		...(exists("sitemap.xml")
 			? checkSitemap(read("sitemap.xml"), exists)

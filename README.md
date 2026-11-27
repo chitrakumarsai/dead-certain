@@ -10,7 +10,7 @@ pnpm new-app my-app
 pnpm install
 ```
 
-`pnpm new-app` copies `templates/app` to `apps/my-app` and its smoke test to `e2e/my-app-smoke.spec.ts`. It edits two shared files: `playwright.config.ts` gets the app's address and preview server, and `.github/workflows/ci.yml` gets the steps that compile the app's rules and publish it. The second `pnpm install` adds the new app to the workspace. Commit `pnpm-lock.yaml` with the app, because CI installs with a frozen lockfile.
+`pnpm new-app` copies `templates/app` to `apps/my-app` and its smoke test to `e2e/my-app-smoke.spec.ts`. It edits three shared files: `playwright.config.ts` gets the app's address and preview server, `.github/workflows/ci.yml` gets the steps that compile the app's rules and publish it, and `packages/ui/src/site.ts` gets the app's search entry, which stays out of search results until you set `index: true`. The second `pnpm install` adds the new app to the workspace. Commit `pnpm-lock.yaml` with the app, because CI installs with a frozen lockfile.
 
 The new app works at once. It runs a toy rulebook, the fine for a late library book: a few questions, a result, each line with its rule and clause, and "See why" for the proof.
 

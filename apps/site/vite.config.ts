@@ -17,6 +17,8 @@ export default defineConfig({
 				kit: "kit/index.html",
 				shell: "kit/shell.html",
 				screen: "kit/screen.html",
+				// The OG image fixture (seo 7.1), screenshotted by pnpm og.
+				og: "kit/og.html",
 			},
 		},
 	},

@@ -91,8 +91,13 @@ test("an indexable page gets index, a canonical, and the Open Graph and Twitter 
 	expect(attr("claimCheck", "twitter:description")).toBe(
 		PAGES.claimCheck.description,
 	);
-	// Task 8 sets ogImage; until then no image tag is written.
-	expect(tags.some((t) => /image/.test(t.attrs.property ?? ""))).toBe(false);
+	expect(attr("claimCheck", "og:image")).toBe(absolute("og/claim-check.png"));
+	expect(attr("claimCheck", "og:image:width")).toBe("1200");
+	expect(attr("claimCheck", "og:image:height")).toBe("630");
+	expect(attr("claimCheck", "og:image:alt")).toBe(PAGES.claimCheck.ogAlt);
+	expect(attr("claimCheck", "twitter:image")).toBe(
+		absolute("og/claim-check.png"),
+	);
 });
 
 test("kit and notFound are noindex, with no canonical and no Open Graph or Twitter tag", () => {
@@ -190,7 +195,7 @@ test("app JSON-LD: one WebApplication by the same Organization; none on kit or n
 				operatingSystem: "Any",
 				browserRequirements: "Requires JavaScript",
 				isAccessibleForFree: true,
-				author: { "@id": orgId },
+				author: { "@type": "Organization", "@id": orgId, name: "Dead Certain" },
 			},
 		]);
 	}
@@ -226,6 +231,10 @@ test("an app's manifest: its name, start and scope at its path, display browser,
 		display: "browser",
 		theme_color: "#000000",
 		background_color: "#000000",
+		icons: [
+			{ src: `${BASE}icon-192.png`, sizes: "192x192", type: "image/png" },
+			{ src: `${BASE}icon-512.png`, sizes: "512x512", type: "image/png" },
+		],
 	});
 	expect(() => webManifest("home", "#000000")).toThrow();
 });
