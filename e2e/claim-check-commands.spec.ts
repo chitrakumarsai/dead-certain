@@ -87,6 +87,8 @@ test("the menu offers start over, copy link, the rulebook and the answers (16.3)
 	wideOnly(testInfo.project.use.viewport?.width);
 	await openClaimCheck(page, VERDICT);
 	await page.keyboard.press("Control+k");
+	// Wait for the whole list: start over, copy link, rulebook, and one Change per answer.
+	await expect(options(page)).toHaveCount(3 + Object.keys(DENIED).length);
 	const labels = await options(page).allTextContents();
 	for (const label of [
 		"Start over",
