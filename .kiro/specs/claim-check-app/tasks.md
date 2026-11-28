@@ -176,7 +176,7 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
   - Wire the kit's `ThemeToggle` and `CommandMenu` into `AppShell` with the items in requirement 16.3, and move "Link copied" to `Toast`. Import the new kit styles.
   - Playwright: the toggle persists, the menu opens with Ctrl+K and Cmd+K, each item runs, focus returns.
   - _Requirements: 16.1 to 16.5_
-- [ ] 18. Start and question screens
+- [x] 18. Start and question screens
   - Restyle `Start.tsx`, `Consult.tsx` and the answers rail in both themes. Replace `md:pt-20` on the start section (line 44 of `Start.tsx`), which is not a spacing token and emits no CSS, with `md:pt-16` (64 px), and check the desktop gap against the 1280 px screenshot (found at the review of PR #33; ui-kit requirement 39). Existing specs `claim-check-start`, `-consult` and `-rail` pass unchanged in the default theme and are repeated in the light theme.
   - _Requirements: 17.1, 17.2, 17.4_
 - [ ] 19. Verdict and X-ray screens
@@ -186,6 +186,7 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
   - Restyle `Rulebook.tsx`, `Stale.tsx` and `NotFound.tsx` in both themes. `claim-check-pages` passes in both themes.
   - _Requirements: 17.1, 17.3_
 - [ ] 21. Cross-cutting tests in both themes
+  - From the review of PR #47: the light theme of `claim-check-start`, `-consult` and `-rail` is covered by the 390, 768, 1280 and reduced-motion projects, which run the default light scheme, and the `dark` project reruns every spec in dark. Keep it that way: if a project gains a `colorScheme`, add the other theme explicitly.
   - Run the a11y, keyboard and refusals specs in both themes. Change the privacy test to allow the `dc-theme` write and nothing else. Update the refusals scan to the narrowed list. Re-check the budgets.
   - From the review of PR #45: run the command-menu item tests of `claim-check-commands.spec.ts` at 390 px too, through the Menu panel (they skip below 768 px today), and check that the "Link copied" toast at 390 and 320 px covers neither the copy button nor the page's last line and causes no sideways scroll.
   - _Requirements: 18.1 to 18.4_
