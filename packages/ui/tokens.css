@@ -278,6 +278,11 @@
 	outline-offset: 2px;
 }
 
+/* A heading the kit focuses for screen readers (tabindex -1) is not a control: no ring. */
+:is(h1, h2, h3, h4, h5, h6)[tabindex="-1"]:focus-visible {
+	outline: none;
+}
+
 /* A field inside a framed control hands its ring to the frame, so there is one ring. */
 [data-focus-ring="frame"]:focus-visible {
 	outline: none;

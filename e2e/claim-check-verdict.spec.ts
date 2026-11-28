@@ -1,6 +1,12 @@
 import { VERDICT_WORDS } from "@dead-certain/ui";
-import { answerInUi, money, verdictFor } from "./claim-check-engine";
+import {
+	answerInUi,
+	money,
+	reducedToken,
+	verdictFor,
+} from "./claim-check-engine";
 import { openClaimCheck, startCheck } from "./claim-check-helpers";
+import { ringShows } from "./keyboard";
 import { expect, expectNoAxeViolations, test } from "./kit-fixtures";
 
 const BASE = {
@@ -108,4 +114,17 @@ test("a printed verdict hides the controls and fits one page", async ({
 	const pages = (pdf.toString("latin1").match(/\/Type\s*\/Page[^s]/g) ?? [])
 		.length;
 	expect(pages).toBe(1);
+});
+
+// claim-check task 19: a heading the app focuses for screen readers draws no
+// ring; the next control reached by Tab still does.
+test("an opened verdict link focuses the headline with no ring, and Tab still shows one", async ({
+	page,
+}) => {
+	await openClaimCheck(page, `#/?r=${reducedToken}`);
+	const headline = page.locator("main h1[data-state]");
+	await expect(headline).toBeFocused();
+	await expect(headline).toHaveCSS("outline-style", "none");
+	await page.keyboard.press("Tab");
+	expect(await ringShows(page)).toBe(true);
 });
