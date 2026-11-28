@@ -294,7 +294,7 @@ Amended 2026-11-23 for the darkroom and lightbox redesign (`docs/redesign-propos
 
 #### Acceptance Criteria
 
-1. THE Claim_Check SHALL restyle the start screen, each question control, the verdict, the open X-ray, the rulebook page, the stale-link notice and the 404 page on the kit's components in both themes, with no change to their copy, order or behaviour.
+1. THE Claim_Check SHALL restyle the start screen, each question control, the verdict, the open X-ray, the rulebook page, the stale-link notice and the 404 page on the kit's components in both themes, with no change to their copy, order or behaviour. A screen that already uses the kit's components and tokens needs no restyle; only a defect (a spacing class off the scale) is fixed (accepted at the review of PR #47: the start screen, `Consult` and the rail needed only `md:pt-16`).
 2. THE Claim_Check SHALL show paper as a lit sheet on the dark room and the proof on film with grain, a strong edge and bone strokes.
 3. THE Claim_Check SHALL keep verdict states as an icon and a word, with the dark-theme state colours on dark surfaces.
 4. THE Claim_Check SHALL keep every golden scenario passing unchanged.

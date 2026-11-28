@@ -510,6 +510,7 @@ The design lists no items for the Kiro lane, so this plan has no handoff section
 - [ ] 17. The kit renders on the server (Claude Code lane, prerequisite of `seo` task 10)
   - Make `ThemeToggle` render both variants with token-driven visibility, read the theme on press, and drop the `MutationObserver` subscription and the hidden-copy cell. Add the visibility tokens to each theme block and the system fallback in `tokens.css`. Add the `renderToString` test of requirement 40.1 for every kit component the start routes use.
   - Playwright: the toggle's name, width and behaviour at 390, 768 and 1280 px in both themes; two toggles on `/kit` agree; `theme.spec.ts` "moves nothing" still passes; the kit has no `prefers-color-scheme: dark` in its built CSS.
+  - Also delete the unused `base` variable in `packages/ui/src/tokens.contrast.test.ts` (line 202, a Biome warning already on main; found at the review of PR #47).
   - Close with Task_Evidence in both themes.
   - _Requirements: 40.1 to 40.6, 36.2, 33.3_
 

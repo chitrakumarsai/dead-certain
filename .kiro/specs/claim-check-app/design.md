@@ -257,7 +257,7 @@ The page lists clauses in id order (natural numeric sort, so `4.10` follows `4.9
 
 ### Page chrome
 
-`AppShell` gets `appName="Claim Check"`, `nav` with the two entries and the rail on the check page. The footer keeps the kit's default line "No guesses were made in the production of this verdict." Print styles come from the kit; the app adds a print rule that hides the Back button, the actions and the rail.
+`AppShell` gets `appName="Claim Check"`, `nav` with the two entries and the rail on the check page. The footer keeps the kit's default line "No guesses were made in the production of this verdict." It shows on every screen, including the start and question screens before a verdict exists, as a sign-off of the product and not a caption of the current screen (accepted at the review of PR #47) Print styles come from the kit; the app adds a print rule that hides the Back button, the actions and the rail.
 
 ## Data Models
 
