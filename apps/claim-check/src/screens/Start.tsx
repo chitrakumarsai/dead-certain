@@ -41,7 +41,7 @@ export function Start({ onStart }: { onStart: () => void }) {
 		<div className="mx-auto w-full max-w-page">
 			<section
 				aria-labelledby="start-heading"
-				className="flex flex-col items-center pt-12 text-center md:pt-20"
+				className="flex flex-col items-center pt-12 text-center md:pt-16"
 			>
 				<h1
 					id="start-heading"

@@ -24,10 +24,7 @@ function offScale(source: string): string[] {
 }
 
 // Removed by claim-check-app task 18 and pre-flight-app task 23, which fix these lines.
-const ALLOWED = new Set([
-	"apps/claim-check/src/screens/Start.tsx: md:pt-20",
-	"apps/pre-flight/src/screens/Start.tsx: md:pt-20",
-]);
+const ALLOWED = new Set(["apps/pre-flight/src/screens/Start.tsx: md:pt-20"]);
 
 const ROOTS = [
 	"packages/ui/src/",
